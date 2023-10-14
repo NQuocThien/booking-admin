@@ -1,25 +1,16 @@
-import { Accordion, Nav } from "react-bootstrap";
-import { RiDashboard2Line } from "react-icons/ri";
-import { FaBeer, FaCoffee, FaMusic, FaCar, FaHeart } from 'react-icons/fa'; // Import tất cả biểu tượng
+import { Accordion } from "react-bootstrap";
+// Import tất cả biểu tượng
 import s from 'src/assets/scss/layout/MainLayout.module.scss';
 import NavItem from "./NavItem";
 import { Item } from "@src/assets/nav/_nav";
-import { IconType } from "react-icons/lib";
 import React from "react";
 // Đối tượng chứa tất cả các biểu tượng
-const iconComponents: { [key: string]: IconType } = {
-    FaBeer: FaBeer,
-    FaCoffee: FaCoffee,
-    FaMusic: FaMusic,
-    FaCar: FaCar,
-    FaHeart: FaHeart,
-    RiDashboard2Line,
-};
-
+import * as ICON from 'react-icons/md';
 function getIcon(iconName: string | undefined) {
+    const iconTemp: any = ICON;
     if (iconName)
-        if (iconComponents[iconName]) {
-            return React.createElement(iconComponents[iconName]);
+        if (iconTemp[iconName]) {
+            return React.createElement(iconTemp[iconName]);
         } else {
             return null;
         }

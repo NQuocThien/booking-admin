@@ -1,25 +1,15 @@
 import { Badge, Nav } from "react-bootstrap";
-import { RiDashboard2Line } from "react-icons/ri";
-import { FaBeer, FaCoffee, FaMusic, FaCar, FaHeart } from 'react-icons/fa'; // Import tất cả biểu tượng
-import { IconType } from "react-icons/lib";
+import * as MaterialDesign from "react-icons/md";
 import s from 'src/assets/scss/layout/MainLayout.module.scss';
 import React from "react";
 import { Item } from "@src/assets/nav/_nav";
-
+import { Link } from "react-router-dom";
 // Đối tượng chứa tất cả các biểu tượng
-const iconComponents: { [key: string]: IconType } = {
-    FaBeer: FaBeer,
-    FaCoffee: FaCoffee,
-    FaMusic: FaMusic,
-    FaCar: FaCar,
-    FaHeart: FaHeart,
-    RiDashboard2Line,
-};
-
 function getIcon(iconName: string | undefined) {
+    const listIcon: any = MaterialDesign
     if (iconName)
-        if (iconComponents[iconName]) {
-            return React.createElement(iconComponents[iconName]);
+        if (listIcon[iconName]) {
+            return React.createElement(listIcon[iconName]);
         } else {
             return null;
         }
@@ -38,7 +28,12 @@ function NavItem({ item }: { item: Item }) {
                 {icon}
             </div>
             }
-            <div className={s.title}>{item.name}</div>
+            <Link
+                to={item.to && item.to || ''}
+                className={s.title}
+            >
+                {item.name}
+            </Link>
             <Badge
                 bg={item.badge?.color}
                 className={s.badge}

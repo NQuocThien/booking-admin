@@ -1,4 +1,3 @@
-import { NavItem } from "react-bootstrap"
 export interface Item {
     component: 'NavItem' | 'NavGroup' | 'NavTitle';
     name: string;
@@ -15,7 +14,7 @@ const _nav: Item[] = [
         component: 'NavItem',
         name: 'Dashboard',
         to: '/dashboard',
-        iconName: 'RiDashboard2Line',
+        iconName: 'MdDashboardCustomize',
         badge: {
             nameBadge: 'Mới',
             color: 'info'
@@ -23,24 +22,43 @@ const _nav: Item[] = [
     },
     {
         component: 'NavTitle',
-        name: 'Components',
+        name: 'Admin',
     },
     {
         component: 'NavGroup',
-        name: 'Item Groups',
-        iconName: 'FaCoffee',
+        name: 'Chung',
+        iconName: 'MdDisplaySettings',
         items: [
             {
                 component: 'NavItem',
-                name: 'Item 1 ',
-                to: '/base/accordion',
-                iconName: 'FaMusic'
+                name: 'Thông tin User',
+                to: '/users',
+                iconName: 'MdSupervisedUserCircle'
             },
             {
                 component: 'NavItem',
-                name: 'Item 2 ',
+                name: 'Thông tin Website',
+                to: '/infor',
+                iconName: 'MdWebhook'
+            },
+        ],
+    },
+    {
+        component: 'NavGroup',
+        name: 'Chung',
+        iconName: 'MdDisplaySettings',
+        items: [
+            {
+                component: 'NavItem',
+                name: 'Thông tin User',
                 to: '/base/accordion',
-                iconName: 'FaCar'
+                iconName: 'MdSupervisedUserCircle'
+            },
+            {
+                component: 'NavItem',
+                name: 'Thông tin Website',
+                to: '/base/accordion',
+                iconName: 'MdWebhook'
             },
         ],
     },

@@ -1,6 +1,3 @@
-import CIcon from '@coreui/icons-react';
-import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react';
-import SimpleBar from 'simplebar-react'
 import { Row, Col, Image, Nav } from 'react-bootstrap'
 import s from 'src/assets/scss/layout/MainLayout.module.scss'
 import items from 'src/assets/nav/_nav';
@@ -15,7 +12,7 @@ function MainNavigation() {
             <Row
                 className={s.nav__content}
             >
-                <Nav>
+                <Nav variant="pills">
                     <SideBarNav items={items} />
                 </Nav>
             </Row>

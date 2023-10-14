@@ -1,13 +1,17 @@
 .App{
+    min-height: 100vh;
+    // background-color: #000;
+
     .body{
-        height: 600px;
+        height: 100vh;
         .header{
-            background-color: rgb(182, 190, 190);
+            background-color: rgb(174, 179, 179);
             height: 64px;
             border-bottom: 1px solid #000;
             &__top{
                 &_menu{
                     display: flex;
+                    color: #fff;
                     font-size: 30px;
                     padding-left: 20px ;
                     align-items: center;
@@ -15,13 +19,26 @@
                 }
                 &_infor{
                    .avatar{
-                    height: 50px;
-                    width: 50px;
+                    height: 45px;
+                    width: 45px;
                     border-radius: 25px;
                     cursor: pointer;
                    }
                 }
             }
+        }
+        .footer{
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #b4b4b4;
+            div{
+                text-align: center;
+            }
+        }
+        .main{
+            min-height: calc(100% - 64px - 30px);
         }
     }
     .nav{
@@ -35,31 +52,31 @@
         }
         &__content{
             background-color: #3c4b64;
-            // background-color: #000;
             height: 100%;
             margin-top: 10px;
             display: flex;
             flex-direction: column;
-            gap: 105px;
+            padding-left: 5px;
             &_item{
-                // background-color: aqua;
                 display: flex;
-                justify-content: space-around;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 4px;
                 width: 100%;
                 height: 50px;
                 cursor: pointer;
                 .icon{
-                    font-size: 36px;
+                    font-size: 30px;
                     color: white;
                     display: flex;
                     align-items: center;
                 }
+               
                 .title{
                     color: rgb(255, 255, 255);
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 400;
+                    text-decoration: none;
                 }
                 .badge{
                     
@@ -72,7 +89,7 @@
                     color: #fff;
                 }
                 .icon{
-                    font-size: 36px;
+                    font-size: 30px;
                     margin-right: 6px;
                 }
                 .title{

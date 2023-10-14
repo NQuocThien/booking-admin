@@ -1,14 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
-// import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainLayout from './layout/MainLayout';
-import s from 'src/assets/scss/layout/MainLayout.module.scss'
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 function App() {
   return (
-    <div className={s.App}>
-      <MainLayout />
-    </div>
+    <MainLayout />
+    // <div>test</div>
   );
 }
 

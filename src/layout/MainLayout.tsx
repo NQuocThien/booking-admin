@@ -1,36 +1,81 @@
 import { Container, Row, Col } from 'react-bootstrap';
+import { useState } from 'react';
 import s from 'src/assets/scss/layout/MainLayout.module.scss'
 import MainHeader from './MainHeader';
-import HeaderBottom from './BottomHeader';
+// import HeaderBottom from './BottomHeader';
 import MainNavigation from './MainNavigation';
+import MainContent from './MainContent';
+
 function MainLayout() {
+    const [showed, setShowed] = useState<boolean>(true);
+    const changedShowed = () => {
+        if (showed)
+            setShowed(false)
+        else
+            setShowed(true)
+    }
     return (
-        <Container fluid>
+        <Container fluid className={s.App}>
             <Row
                 className='no-gutters'
             >
-                <Col
-                    xl={2} lg={2} md={2}
-                    className={s.nav}
-                >
-                    <MainNavigation />
-                </Col>
-                <Col
-                    xl={10} lg={10} md={10}
-                    className={s.body}
-                >
-                    <Row className={s.header}>
-                        <MainHeader />
-                    </Row>
-                    <Row>
-                        <h1>content</h1>
-                    </Row>
-                    <Row>
-                        <footer>
-                            footer
-                        </footer>
-                    </Row>
-                </Col>
+                {/* // navigation */}
+                {showed && (
+                    <Col
+                        xl={2} lg={2} md={2}
+                        className={s.nav}
+                    >
+                        <MainNavigation />
+                    </Col>
+                )}
+                {/* // content */}
+                {showed && (
+                    <Col
+                        xl={10} lg={10} md={10}
+                        className={s.body}
+                    >
+                        {/* // header */}
+                        <Row className={s.header}>
+                            <MainHeader
+                                setNav={changedShowed}
+                            />
+                        </Row>
+                        {/* // main */}
+                        <Row className={s.main}>
+                            <MainContent />
+                        </Row>
+                        {/* //footer */}
+                        <Row className={s.footer}>
+                            <footer>
+                                <div className={s.footer__conent}> &copy; Nguyễn Quốc Thiện - DTH205987 - DH21TH2</div>
+                            </footer>
+                        </Row>
+                    </Col>
+                )}
+                {!showed && (
+
+                    <Col
+                        xl={12} lg={12} md={12}
+                        className={s.body}
+                    >
+                        {/* // header */}
+                        <Row className={s.header}>
+                            <MainHeader
+                                setNav={changedShowed}
+                            />
+                        </Row>
+                        {/* // main */}
+                        <Row className={s.main}>
+                            <MainContent />
+                        </Row>
+                        {/* //footer */}
+                        <Row className={s.footer}>
+                            <footer>
+                                <div className={s.footer__conent}> &copy; Nguyễn Quốc Thiện - DTH205987 - DH21TH2</div>
+                            </footer>
+                        </Row>
+                    </Col>
+                )}
 
             </Row>
 

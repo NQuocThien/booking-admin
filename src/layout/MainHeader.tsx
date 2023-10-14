@@ -1,13 +1,14 @@
-import { Container, Row, Col, Dropdown, Image } from "react-bootstrap";
+import { Row, Col, Dropdown, Image } from "react-bootstrap";
 import { AiOutlineMenu } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import s from 'src/assets/scss/layout/MainLayout.module.scss';
-function MainHeader() {
+function MainHeader({ setNav }: { setNav: () => void }) {
     return (
         <Row className={s.header__top}>
             <Col
                 xl={2} lg={2} md={2} className={s.header__top_menu} >
-                <AiOutlineMenu />
+                <AiOutlineMenu
+                    onClick={() => setNav()}
+                />
             </Col>
             <Col
                 xl={{ span: 2, offset: 8 }} lg={{ span: 2, offset: 8 }} md={{ span: 2, offset: 8 }}

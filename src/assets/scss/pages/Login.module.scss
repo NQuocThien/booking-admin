@@ -1,0 +1,22 @@
+.login{
+    position:absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    &__form{
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        margin-top: 60px;
+    }
+}
+.layer{
+    background-color: #0080ba;
+    opacity: .5;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left:0;
+    height: 100%;
+    width: 100%;
+}   

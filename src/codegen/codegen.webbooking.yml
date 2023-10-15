@@ -1,0 +1,22 @@
+overwrite: true
+# cần biến NEXT_PUBLIC_GRAPHQL_URI_SERVERSIDE trong .env.development.local
+schema: 'http://localhost:4000/graphql'
+documents: src/codegen/graphql-definition/webbooking-service/*.ts
+generates:
+  src/graphql/webbooking-service.generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+      - add:
+          content: '/*'
+      - add:
+          content: ' * ------------------------------------------------------'
+      - add:
+          content: ' * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)'
+      - add:
+          content: ' * -------------------------------------------------------'
+      - add:
+          content: ' */'
+      - add:
+          content: '/* eslint-disable */'

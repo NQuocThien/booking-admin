@@ -1,10 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainLayout from './layout/MainLayout';
-import { BrowserRouter, HashRouter } from 'react-router-dom';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
+import client from 'src/config/graphql/apolo-client';
+import { AuthContextProvider } from './context/AuthContext';
 function App() {
   return (
-    <MainLayout />
-    // <div>test</div>
+
+    <ApolloProvider client={client}>
+      <AuthContextProvider>
+        <MainLayout />
+      </AuthContextProvider>
+    </ApolloProvider>
   );
 }
 

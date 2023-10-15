@@ -5,6 +5,8 @@ import MainHeader from './MainHeader';
 // import HeaderBottom from './BottomHeader';
 import MainNavigation from './MainNavigation';
 import MainContent from './MainContent';
+import { useGetSettingQuery } from 'src/graphql/webbooking-service.generated';
+import ToastsPcn from 'src/components/toasts/toasts';
 
 function MainLayout() {
     const [showed, setShowed] = useState<boolean>(true);
@@ -14,8 +16,15 @@ function MainLayout() {
         else
             setShowed(true)
     }
+    const { refetch: refetchData, data: dataSetting } = useGetSettingQuery({
+        fetchPolicy: 'no-cache'
+    })
+    // console.group('test data: ')
+    // console.log(dataSetting)
+    // console.groupEnd()
     return (
         <Container fluid className={s.App}>
+            <ToastsPcn />
             <Row
                 className='no-gutters'
             >

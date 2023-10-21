@@ -19,9 +19,7 @@ function MainLayout() {
     const { refetch: refetchData, data: dataSetting } = useGetSettingQuery({
         fetchPolicy: 'no-cache'
     })
-    // console.group('test data: ')
-    // console.log(dataSetting)
-    // console.groupEnd()
+
     return (
         <Container fluid className={s.App}>
             <ToastsPcn />

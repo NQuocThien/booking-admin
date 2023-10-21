@@ -1,0 +1,17 @@
+.inforUser{
+    // background-color: black;
+    &__form{
+        margin-top: 20px;
+        &_btns{
+            display: flex;
+            justify-content: flex-start;
+            gap:20px
+        }
+        &_avatar{
+            width: 160px;
+            height: 160px;
+            margin: 10px 0;
+            border-radius: 50% ;
+        }
+    }
+}

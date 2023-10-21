@@ -9,7 +9,7 @@ export interface Item {
         color: 'success' | 'info' | 'warning' | 'danger' | 'primary' | 'secondary' | 'light' | 'dark';
     }
 }
-const _nav: Item[] = [
+const _navAdmin: Item[] = [
     {
         component: 'NavItem',
         name: 'Dashboard',
@@ -38,29 +38,45 @@ const _nav: Item[] = [
             {
                 component: 'NavItem',
                 name: 'Thông tin Website',
-                to: '/infor',
+                to: '/client',
                 iconName: 'MdWebhook'
             },
         ],
+    }
+]
+const _navClinic: Item[] = [
+    {
+        component: 'NavItem',
+        name: 'Trang chủ',
+        to: '/home',
+        iconName: 'MdHomeFilled',
+        badge: {
+            nameBadge: 'Mới',
+            color: 'info'
+        }
+    },
+    {
+        component: 'NavTitle',
+        name: 'Clinic',
     },
     {
         component: 'NavGroup',
-        name: 'Chung',
-        iconName: 'MdDisplaySettings',
+        name: 'Bệnh Nhân',
+        iconName: 'MdOutlineManageAccounts',
         items: [
             {
                 component: 'NavItem',
-                name: 'Thông tin User',
-                to: '/base/accordion',
+                name: 'Danh sách đăng ký',
+                to: '/',
                 iconName: 'MdSupervisedUserCircle'
             },
             {
                 component: 'NavItem',
-                name: 'Thông tin Website',
-                to: '/base/accordion',
+                name: '',
+                to: '/infor',
                 iconName: 'MdWebhook'
             },
         ],
-    },
+    }
 ]
-export default _nav
+export { _navAdmin, _navClinic } 

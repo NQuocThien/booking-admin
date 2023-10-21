@@ -1,9 +1,17 @@
 import { Row, Col, Image, Nav } from 'react-bootstrap'
 import s from 'src/assets/scss/layout/MainLayout.module.scss'
-import items from 'src/assets/nav/_nav';
+import { _navAdmin, _navClinic } from 'src/assets/nav/_nav';
 import SideBarNav from 'src/components/layout/SideBarNav';
+import { useAuth } from 'src/context/AuthContext';
 function MainNavigation() {
 
+    const { isLoginIn, userInfor } = useAuth()
+    var items: any;
+    if (isLoginIn)
+        if (userInfor?.roles?.includes('admin'))
+            items = _navAdmin;
+        else
+            items = _navClinic;
     return (
         <div>
             <Row className={s.nav__top}>

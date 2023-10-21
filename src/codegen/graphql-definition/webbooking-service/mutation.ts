@@ -13,3 +13,19 @@ export const Login = gql`
   }
 }
 `
+export const UpdateUserById = gql`
+  mutation UdateUserByID($input: UpdateUserInput!)
+  {
+    updateUser(updateUserInput: $input){
+      id
+    }
+  }
+`
+export const UpdateUserByIdWithPass = gql`
+  mutation UpdateUserByIdWithPass($input: UpdateUserWithPassInput!)
+{
+  updateUserWithPass(updateUserInput: $input){
+    id
+  }
+}
+`

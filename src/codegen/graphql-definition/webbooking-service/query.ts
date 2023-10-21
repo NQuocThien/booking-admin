@@ -15,6 +15,7 @@ export const CheckLoginQuery = gql`
     username
     password
     type
+    roles
   }
 }
 `

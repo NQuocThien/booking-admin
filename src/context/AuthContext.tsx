@@ -28,7 +28,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     const [userInfor, setUserInfor] = useState<any>(null)
     const tokenKey = process.env.REACT_APP_ACCESS_TOKEN ? process.env.REACT_APP_ACCESS_TOKEN : 'access_token'
     const token: string = getLocalStorage(tokenKey) || 'null'
-    console.log('state token: ', token)
+    // console.log('state token: ', token)
     const { refetch: refetchData, data } = useCheckLoginQueryQuery({
         context: {
             headers: {

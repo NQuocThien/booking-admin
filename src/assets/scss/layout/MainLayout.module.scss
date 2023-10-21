@@ -24,6 +24,10 @@
                     border-radius: 25px;
                     cursor: pointer;
                    }
+                   &_item{
+                    text-decoration: none;
+                    color: #000;
+                   }
                 }
             }
         }
@@ -38,7 +42,9 @@
             }
         }
         .main{
-            min-height: calc(100% - 64px - 30px);
+            padding: 10px 0;
+            height: calc(100% - 64px - 30px);
+            overflow-y: scroll;
         }
     }
     .nav{

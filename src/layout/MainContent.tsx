@@ -13,12 +13,14 @@ function MainContent() {
             <Suspense fallback={<Spinner animation="border" variant="primary" />}>
                 <Routes>
                     {routes.map((route: any, idx) => {
+                        // console.log(route.path)
                         return (route.element && (
                             <Route
                                 key={idx}
                                 path={route.path}
                                 element={<route.element />}
                             ></Route>
+
                         ))
                     })}
                     <Route

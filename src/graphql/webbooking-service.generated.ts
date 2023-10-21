@@ -249,10 +249,24 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginRespone', access_token: string, user: { __typename?: 'User', fullname: string, email: string, type: number, username: string } } };
 
+export type UdateUserByIdMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+
+export type UdateUserByIdMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string } };
+
+export type UpdateUserByIdWithPassMutationVariables = Exact<{
+  input: UpdateUserWithPassInput;
+}>;
+
+
+export type UpdateUserByIdWithPassMutation = { __typename?: 'Mutation', updateUserWithPass: { __typename?: 'User', id: string } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, type: number, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
+export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, type: number, roles?: Array<string> | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
 
 export type GetSettingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -299,6 +313,72 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const UdateUserByIdDocument = gql`
+    mutation UdateUserByID($input: UpdateUserInput!) {
+  updateUser(updateUserInput: $input) {
+    id
+  }
+}
+    `;
+export type UdateUserByIdMutationFn = Apollo.MutationFunction<UdateUserByIdMutation, UdateUserByIdMutationVariables>;
+
+/**
+ * __useUdateUserByIdMutation__
+ *
+ * To run a mutation, you first call `useUdateUserByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUdateUserByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [udateUserByIdMutation, { data, loading, error }] = useUdateUserByIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUdateUserByIdMutation(baseOptions?: Apollo.MutationHookOptions<UdateUserByIdMutation, UdateUserByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UdateUserByIdMutation, UdateUserByIdMutationVariables>(UdateUserByIdDocument, options);
+      }
+export type UdateUserByIdMutationHookResult = ReturnType<typeof useUdateUserByIdMutation>;
+export type UdateUserByIdMutationResult = Apollo.MutationResult<UdateUserByIdMutation>;
+export type UdateUserByIdMutationOptions = Apollo.BaseMutationOptions<UdateUserByIdMutation, UdateUserByIdMutationVariables>;
+export const UpdateUserByIdWithPassDocument = gql`
+    mutation UpdateUserByIdWithPass($input: UpdateUserWithPassInput!) {
+  updateUserWithPass(updateUserInput: $input) {
+    id
+  }
+}
+    `;
+export type UpdateUserByIdWithPassMutationFn = Apollo.MutationFunction<UpdateUserByIdWithPassMutation, UpdateUserByIdWithPassMutationVariables>;
+
+/**
+ * __useUpdateUserByIdWithPassMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserByIdWithPassMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserByIdWithPassMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserByIdWithPassMutation, { data, loading, error }] = useUpdateUserByIdWithPassMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserByIdWithPassMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserByIdWithPassMutation, UpdateUserByIdWithPassMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserByIdWithPassMutation, UpdateUserByIdWithPassMutationVariables>(UpdateUserByIdWithPassDocument, options);
+      }
+export type UpdateUserByIdWithPassMutationHookResult = ReturnType<typeof useUpdateUserByIdWithPassMutation>;
+export type UpdateUserByIdWithPassMutationResult = Apollo.MutationResult<UpdateUserByIdWithPassMutation>;
+export type UpdateUserByIdWithPassMutationOptions = Apollo.BaseMutationOptions<UpdateUserByIdWithPassMutation, UpdateUserByIdWithPassMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -313,6 +393,7 @@ export const CheckLoginQueryDocument = gql`
     username
     password
     type
+    roles
   }
 }
     `;

@@ -5,7 +5,7 @@ function CurrentUserDetailPage() {
     const [udateUserByIdMutation] = useUdateUserByIdMutation({
         fetchPolicy: 'no-cache'
     })
-    console.log('test env: ', process.env.REACT_APP_BACKEND_URI_IMAGE)
+    // console.log('test env: ', process.env.REACT_APP_BACKEND_URI_IMAGE)
     const [updateUserByIdWithPassMutation] = useUpdateUserByIdWithPassMutation({
         fetchPolicy: 'no-cache'
     })

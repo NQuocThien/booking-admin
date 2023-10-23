@@ -29,3 +29,27 @@ export const UpdateUserByIdWithPass = gql`
   }
 }
 `
+export const UpdateGeneralInfor = gql`
+ mutation UpdateGeneralInfor($input: GeneralInforUpdateInput!){
+	updateGeneralInfor(updateGeneralInforInput: $input){
+      company 
+      address
+      copyrigth
+      email
+      hotline
+      liscenceBusiness
+      liscenceOparating
+      ID
+      logoFooter{
+        filename
+        url
+        type
+      }
+     	logoHeader{
+        filename
+        url
+        type
+      }
+	}
+}
+`

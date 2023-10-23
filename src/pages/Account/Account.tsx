@@ -45,7 +45,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                     .then(() => {
                         showToast('😘 Đã lưu thay đổi thành công', 'success')
                         const { passwordNew, ...newUser } = dataUserUpdated
-                        console.log('data submit: ', newUser);
+                        // console.log('data submit: ', newUser);
                         handleChangeUserInfor(newUser)
                         setDisabled(true)
                     })
@@ -72,7 +72,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             // lấy header
             const token = getLocalStorage(process.env.ACCESS_TOKEN ? process.env.ACCESS_TOKEN : 'access_token')
             if (token) {
-                console.log('\t-> Data Udate: ', dataUserUpdate)
+                // console.log('\t-> Data Udate: ', dataUserUpdate)
                 update(token, dataUserUpdate)
                     .then(() => {
                         showToast('😘 Đã lưu thay đổi thành công', 'success')
@@ -91,15 +91,15 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (selectedFile) {
-            console.log(' upload image')
+            // console.log(' upload image')
             const typeFile = ETypeFile.Image
             uploadFile(typeFile, [selectedFile], (error: any, result: any) => {
                 if (error) {
-                    console.error('Upload error:', error);
+                    // console.error('Upload error:', error);
                     showToast('😥 Lỗi upload avatar', 'error')
 
                 } else {
-                    console.log('Upload successful. Result:', result);
+                    // console.log('Upload successful. Result:', result);
                     showToast('👍 Đã lưu ảnh')
 
                     const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`
@@ -108,17 +108,17 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                         type: typeFile,
                         url: ulrImage
                     }
-                    console.log('linkImage:', linkImage)
+                    // console.log('linkImage:', linkImage)
                     // thực hiện submit
                     handleUpdateInforUser(linkImage);
                 }
             });
         } else {
-            console.log('-> ⚙️ Don\'t change image !')
+            // console.log('-> ⚙️ Don\'t change image !')
             handleUpdateInforUser()
         }
 
-        console.log('Submited')
+        // console.log('Submited')
 
     }; // xữa lý khi submit
     const [formData, setFormData] = useState<UpdateUserWithPassInput>({
@@ -166,7 +166,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     } // xữ lý hành động update hủy update
 
     useEffect(() => {
-        console.log('user infor', userInfor)
+        // console.log('user infor', userInfor)
         // handleChangeUserInfor(() => userInforReleasePass)
         const currentUser = { ...userInfor, password: '', passwordNew: '' }
         setFormData(currentUser)

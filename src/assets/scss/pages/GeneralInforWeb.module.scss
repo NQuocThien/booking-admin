@@ -11,9 +11,15 @@
     gap: 3px;
     &__logo{
         @include item();
-        .image{
+        .image_header{
             height: 150px;
             width: 150px;
+            cursor: pointer;
+            border: 1px solid #333;
+        }
+        .image_footer{
+            height: 190px;
+            width: 380px;
             cursor: pointer;
             border: 1px solid #333;
         }

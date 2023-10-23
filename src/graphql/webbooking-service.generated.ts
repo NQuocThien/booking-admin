@@ -68,6 +68,32 @@ export type ExperienceInput = {
   state?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type GeneralInfor = {
+  __typename?: 'GeneralInfor';
+  ID?: Maybe<Scalars['String']['output']>;
+  address: Scalars['String']['output'];
+  company: Scalars['String']['output'];
+  copyrigth: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  hotline: Scalars['String']['output'];
+  liscenceBusiness: Scalars['String']['output'];
+  liscenceOparating: Scalars['String']['output'];
+  logoFooter: LinkImage;
+  logoHeader: LinkImage;
+};
+
+export type GeneralInforUpdateInput = {
+  address: Scalars['String']['input'];
+  company: Scalars['String']['input'];
+  copyrigth: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  hotline: Scalars['String']['input'];
+  liscenceBusiness: Scalars['String']['input'];
+  liscenceOparating: Scalars['String']['input'];
+  logoFooter: LinkImageInput;
+  logoHeader: LinkImageInput;
+};
+
 export type LinkImage = {
   __typename?: 'LinkImage';
   filename: Scalars['String']['output'];
@@ -105,6 +131,7 @@ export type Mutation = {
   logout: LogoutUser;
   removeProfile: Profile;
   signup: User;
+  updateGeneralInfor: GeneralInfor;
   updateProfile: Profile;
   updateSetting: Setting;
   updateUser: User;
@@ -134,6 +161,11 @@ export type MutationRemoveProfileArgs = {
 
 export type MutationSignupArgs = {
   createUserInput: CreateUserInput;
+};
+
+
+export type MutationUpdateGeneralInforArgs = {
+  updateGeneralInforInput: GeneralInforUpdateInput;
 };
 
 
@@ -177,6 +209,7 @@ export type Query = {
   __typename?: 'Query';
   checklogin: User;
   getAllProfile: Array<Profile>;
+  getGeneralInfor: GeneralInfor;
   getSetting: Setting;
   getUser: User;
   users: Array<User>;
@@ -263,6 +296,13 @@ export type UpdateUserByIdWithPassMutationVariables = Exact<{
 
 export type UpdateUserByIdWithPassMutation = { __typename?: 'Mutation', updateUserWithPass: { __typename?: 'User', id: string } };
 
+export type UpdateGeneralInforMutationVariables = Exact<{
+  input: GeneralInforUpdateInput;
+}>;
+
+
+export type UpdateGeneralInforMutation = { __typename?: 'Mutation', updateGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string, type: string } } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -272,6 +312,11 @@ export type GetSettingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSettingQuery = { __typename?: 'Query', getSetting: { __typename?: 'Setting', defaultLang: string } };
+
+export type GetGeneralInforQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGeneralInforQuery = { __typename?: 'Query', getGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string, type: string } } };
 
 
 export const LoginDocument = gql`
@@ -379,6 +424,56 @@ export function useUpdateUserByIdWithPassMutation(baseOptions?: Apollo.MutationH
 export type UpdateUserByIdWithPassMutationHookResult = ReturnType<typeof useUpdateUserByIdWithPassMutation>;
 export type UpdateUserByIdWithPassMutationResult = Apollo.MutationResult<UpdateUserByIdWithPassMutation>;
 export type UpdateUserByIdWithPassMutationOptions = Apollo.BaseMutationOptions<UpdateUserByIdWithPassMutation, UpdateUserByIdWithPassMutationVariables>;
+export const UpdateGeneralInforDocument = gql`
+    mutation UpdateGeneralInfor($input: GeneralInforUpdateInput!) {
+  updateGeneralInfor(updateGeneralInforInput: $input) {
+    company
+    address
+    copyrigth
+    email
+    hotline
+    liscenceBusiness
+    liscenceOparating
+    ID
+    logoFooter {
+      filename
+      url
+      type
+    }
+    logoHeader {
+      filename
+      url
+      type
+    }
+  }
+}
+    `;
+export type UpdateGeneralInforMutationFn = Apollo.MutationFunction<UpdateGeneralInforMutation, UpdateGeneralInforMutationVariables>;
+
+/**
+ * __useUpdateGeneralInforMutation__
+ *
+ * To run a mutation, you first call `useUpdateGeneralInforMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGeneralInforMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGeneralInforMutation, { data, loading, error }] = useUpdateGeneralInforMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGeneralInforMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGeneralInforMutation, UpdateGeneralInforMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGeneralInforMutation, UpdateGeneralInforMutationVariables>(UpdateGeneralInforDocument, options);
+      }
+export type UpdateGeneralInforMutationHookResult = ReturnType<typeof useUpdateGeneralInforMutation>;
+export type UpdateGeneralInforMutationResult = Apollo.MutationResult<UpdateGeneralInforMutation>;
+export type UpdateGeneralInforMutationOptions = Apollo.BaseMutationOptions<UpdateGeneralInforMutation, UpdateGeneralInforMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -458,3 +553,54 @@ export function useGetSettingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetSettingQueryHookResult = ReturnType<typeof useGetSettingQuery>;
 export type GetSettingLazyQueryHookResult = ReturnType<typeof useGetSettingLazyQuery>;
 export type GetSettingQueryResult = Apollo.QueryResult<GetSettingQuery, GetSettingQueryVariables>;
+export const GetGeneralInforDocument = gql`
+    query GetGeneralInfor {
+  getGeneralInfor {
+    company
+    address
+    copyrigth
+    email
+    hotline
+    liscenceBusiness
+    liscenceOparating
+    ID
+    logoFooter {
+      filename
+      url
+      type
+    }
+    logoHeader {
+      filename
+      url
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGeneralInforQuery__
+ *
+ * To run a query within a React component, call `useGetGeneralInforQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGeneralInforQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGeneralInforQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGeneralInforQuery(baseOptions?: Apollo.QueryHookOptions<GetGeneralInforQuery, GetGeneralInforQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGeneralInforQuery, GetGeneralInforQueryVariables>(GetGeneralInforDocument, options);
+      }
+export function useGetGeneralInforLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGeneralInforQuery, GetGeneralInforQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGeneralInforQuery, GetGeneralInforQueryVariables>(GetGeneralInforDocument, options);
+        }
+export type GetGeneralInforQueryHookResult = ReturnType<typeof useGetGeneralInforQuery>;
+export type GetGeneralInforLazyQueryHookResult = ReturnType<typeof useGetGeneralInforLazyQuery>;
+export type GetGeneralInforQueryResult = Apollo.QueryResult<GetGeneralInforQuery, GetGeneralInforQueryVariables>;

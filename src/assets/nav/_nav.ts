@@ -31,14 +31,14 @@ const _navAdmin: Item[] = [
         items: [
             {
                 component: 'NavItem',
-                name: 'Thông tin User',
-                to: '/users',
+                name: 'Quản lý User',
+                to: '/general/users',
                 iconName: 'MdSupervisedUserCircle'
             },
             {
                 component: 'NavItem',
                 name: 'Thông tin Website',
-                to: '/client',
+                to: '/general/client',
                 iconName: 'MdWebhook'
             },
         ],

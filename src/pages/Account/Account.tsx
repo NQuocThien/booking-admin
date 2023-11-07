@@ -42,7 +42,9 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             }
             if (token) {
                 updateWithPass(token, dataUserUpdated)
-                    .then(() => {
+                    .then((res) => {
+                        // if (res && res.updateUserWithPass)
+                        console.log(res)
                         showToast('😘 Đã lưu thay đổi thành công', 'success')
                         const { passwordNew, ...newUser } = dataUserUpdated
                         // console.log('data submit: ', newUser);
@@ -69,12 +71,14 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                     email: formData.email,
                 }
             }
+            console.log('Inpurt request: ', dataUserUpdate)
             // lấy header
             const token = getLocalStorage(process.env.ACCESS_TOKEN ? process.env.ACCESS_TOKEN : 'access_token')
             if (token) {
                 // console.log('\t-> Data Udate: ', dataUserUpdate)
                 update(token, dataUserUpdate)
-                    .then(() => {
+                    .then((res) => {
+                        console.log('res: ', res)
                         showToast('😘 Đã lưu thay đổi thành công', 'success')
                         const newUserUpdated: User = {
                             ...dataUserUpdate,
@@ -108,7 +112,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                         type: typeFile,
                         url: ulrImage
                     }
-                    // console.log('linkImage:', linkImage)
+                    console.log('linkImage res:', linkImage)
                     // thực hiện submit
                     handleUpdateInforUser(linkImage);
                 }
@@ -157,7 +161,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             // load lại dữ liệu gốc
             const currentUser = { ...userInfor, password: '', passwordNew: '' }
             setFormData(currentUser)
-            setSelectedFile(null)
+            // setSelectedFile(null)
             // Đống form update password
             setStateUpdatePass(false)
             // disable form 
@@ -166,8 +170,6 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     } // xữ lý hành động update hủy update
 
     useEffect(() => {
-        // console.log('user infor', userInfor)
-        // handleChangeUserInfor(() => userInforReleasePass)
         const currentUser = { ...userInfor, password: '', passwordNew: '' }
         setFormData(currentUser)
 

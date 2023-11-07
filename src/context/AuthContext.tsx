@@ -8,7 +8,7 @@ interface AuthContextType {
     logout: () => void;
     userInfor: User;
     handleChangeUserInfor: (dataUser: User) => void
-
+    checkExpirationToken: () => void
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function useAuth() {
@@ -40,7 +40,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     useEffect(() => { // thực hiện kiểm tra đăng nhập và get thông tin user
         if (data) {
             setIsLoginIn(true)
-            console.log('data, ', data)
+            // console.log('data, ', data)
             setUserInfor(data.checklogin)
         } else {
             setIsLoginIn(false)
@@ -50,9 +50,9 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     //check login
     const login = (token: string) => { // check login
         // save token in local storage
+        console.log('login =====')
         setLocalStorage(tokenKey, token);
         setIsLoginIn(true)
-        console.log(' call login func')
     }
     const logout = () => {
         setIsLoginIn(false)
@@ -62,8 +62,20 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     const handleChangeUserInfor = (dataUser: any) => {
         setUserInfor(dataUser)
     }
+    const checkExpirationToken = () => {
+        // cắt token lấy payload và giải mã Base64 URL-encoded  thành JSON rồi chuyển json thành object
+        const expirationTime = JSON.parse(atob(token.split('.')[1])).exp;
+        const currentTime = Math.floor(Date.now() / 1000); // Lấy thời gian hiện tại ở đơn vị giây
+        if (expirationTime && expirationTime < currentTime) {
+            // console.log('Token đã hết hạn.');
+            logout();
+        }
+        //  else {
+        //     // console.log('Token còn hiệu lực.');
+        // }
+    }
     return (
-        <AuthContext.Provider value={{ isLoginIn, login, logout, userInfor, handleChangeUserInfor }}>
+        <AuthContext.Provider value={{ isLoginIn, login, logout, userInfor, handleChangeUserInfor, checkExpirationToken }}>
             {children}
             {/* {console.log('bottom')} */}
         </AuthContext.Provider>

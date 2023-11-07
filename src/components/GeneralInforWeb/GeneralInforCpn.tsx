@@ -1,11 +1,11 @@
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
 import s from 'src/assets/scss/pages/GeneralInforWeb.module.scss';
-import { ETypeFile, uploadFile, getUrlImage } from "src/utils/upload";
+import { ETypeFile, uploadFile, getUrlImage, TypeFile } from "src/utils/upload";
 import { showToast } from "../toasts/toasts";
 import { GeneralInforUpdateInput, useGetGeneralInforQuery, useUpdateGeneralInforMutation } from "src/graphql/webbooking-service.generated";
 import { getLocalStorage } from "src/utils/contain";
-
+import { useAuth } from '../../context/AuthContext'
 interface IFormData {
     logoHeader: Blob | null;
     logoFooter: Blob | null;
@@ -17,20 +17,18 @@ interface IFormData {
     liscenceBusiness: string;
     liscenceOparating: string;
 }
+interface ILinkImage {
+    filename: string;
+    type: string;
+    url: string
+}
 interface ILogoImage {
-    logoHeader: {
-        filename: string;
-        type: string;
-        url: string
-    }
-    logoFooter: {
-        filename: string;
-        type: string;
-        url: string
-    }
+    logoHeader?: ILinkImage
+    logoFooter?: ILinkImage
 }
 
 function GeneralInforWebCpn() {
+    const { checkExpirationToken } = useAuth();
     const { refetch, data } = useGetGeneralInforQuery({ fetchPolicy: 'no-cache' });
     const fileLogoHeaderRef = useRef<HTMLInputElement | null>(null);
     const fileLogoFooterRef = useRef<HTMLInputElement | null>(null);
@@ -48,14 +46,7 @@ function GeneralInforWebCpn() {
     });
     const [updateGeneralInfor] = useUpdateGeneralInforMutation({ fetchPolicy: 'no-cache' });
     useEffect(() => {
-        setFormData(pre => ({
-            ...pre,
-            company: '1234'
-        }))
-
-        console.log('test form data', formData)
         if (data?.getGeneralInfor) {
-            console.log('test ', data)
             setFormData(pre => ({
                 ...pre,
                 company: data?.getGeneralInfor.company,
@@ -81,7 +72,9 @@ function GeneralInforWebCpn() {
             liscenceBusiness: formData.liscenceBusiness,
             liscenceOparating: formData.liscenceOparating,
         }
-
+        console.group('test data input');
+        console.log(input)
+        console.groupEnd();
         updateGeneralInfor({
             variables: {
                 input: input
@@ -91,77 +84,55 @@ function GeneralInforWebCpn() {
                     'Authorization': `Bearer ${token}`
                 }
             }
-        }).then(() => showToast('👌Lưu thành công', 'success'))
+        }).then(() => {
+            refetch();
+            showToast('👌Lưu thành công', 'success')
+        })
             .catch(err => { throw new Error('can not save') })
     }
-    const handleUploadImage = async () => {
-        var dataLogo: ILogoImage = {
-            logoFooter: {
-                filename: '',
-                url: '',
-                type: ''
-            },
-            logoHeader: {
-                filename: '',
-                url: '',
-                type: ''
-            },
-        };
-        const typeFile = ETypeFile.Image;
-        // upload logo header
-        try {
-            await uploadFile(typeFile, [formData.logoHeader], (error: any, result: any) => {
+    const uploadFilePromise = (typeFile: TypeFile, logo: Blob | null, messageName: string) => {
+        return new Promise((resolve, reject) => {
+            uploadFile(typeFile, [logo], (error: any, result: any) => {
                 if (error) {
                     // console.error('Upload error:', error);
-                    showToast('😥 Lỗi upload logo header', 'error')
-                    throw new Error('Upload error')
-
+                    showToast(`😥 Lỗi upload logo ${messageName}`, 'error')
+                    reject(error)
                 } else {
-                    showToast('👍 Đã lưu logo header', 'success')
+                    showToast(`👍 Đã lưu logo ${messageName}`, 'success')
 
                     const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`
-                    const linkImage = {
+                    const linkImage: ILinkImage = {
                         filename: result[0]?.filename + '',
                         type: typeFile + '',
                         url: ulrImage
                     }
-                    dataLogo = {
-                        ...dataLogo,
-                        logoHeader: linkImage
-                    }
-                    // console.log('Upload successful. Result header:', dataLogo);
-                    uploadFile(typeFile, [formData.logoFooter], (error: any, result: any) => {
-                        if (error) {
-                            // console.error('Upload error:', error);
-                            showToast('😥 Lỗi upload logo footer', 'error')
-                            throw new Error('Upload error')
-
-                        } else {
-                            // console.log('Upload successful. Result:', result);
-                            showToast('👍 Đã lưu logo footer', 'success')
-
-                            const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`
-                            const linkImage = {
-                                filename: result[0]?.filename + '',
-                                type: typeFile + '',
-                                url: ulrImage
-                            }
-                            dataLogo = {
-                                ...dataLogo,
-                                logoFooter: linkImage
-                            }
-                            // console.log('Upload successful. Result footer:', dataLogo);
-                            // console.group('test data upload')
-                            // console.log(dataLogo)
-                            // console.groupEnd()
-                            handleSave(dataLogo);
-                        }
-                    });
+                    resolve(linkImage)
                 }
+
             });
+        })
+    }
+    const handleUploadImage = async () => {
+        var dataLogo: ILogoImage = {};
+        const typeFile = ETypeFile.Image;
+        // upload logo header
+        try {
+            if (formData.logoHeader) {
+                await uploadFilePromise(typeFile, formData.logoHeader, 'Header')
+                    .then((result) => {
+                        dataLogo = { logoHeader: result as ILinkImage };
+                    })
 
+            }
+            if (formData.logoFooter) {
+                const footerResult = await uploadFilePromise(typeFile, formData.logoFooter, 'Footer');
+                dataLogo = { ...dataLogo, logoFooter: footerResult as ILinkImage };
+            }
 
-
+            console.group('test data logo');
+            console.log(dataLogo)
+            console.groupEnd();
+            handleSave(dataLogo);
             return dataLogo
 
         } catch (e) {
@@ -175,6 +146,7 @@ function GeneralInforWebCpn() {
         if (f.checkValidity() === false) {
             e.stopPropagation();
         } else {
+            checkExpirationToken()
             console.log('uploading')
             handleUploadImage();
         }
@@ -199,12 +171,10 @@ function GeneralInforWebCpn() {
                             />
                         </Col>
                         <Form.Control
-                            required
                             type="file"
                             accept="image/*"
                             name='logoHeader'
                             ref={fileLogoHeaderRef}
-                            // onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedLogoHeader(e.target.files?.[0] || null)}
                             onChange={
                                 (e: ChangeEvent<HTMLInputElement>) => setFormData(pre => ({ ...formData, logoHeader: e.target.files?.[0] || null }))}
                             style={{ display: 'none' }}
@@ -224,7 +194,6 @@ function GeneralInforWebCpn() {
                             />
                         </Col>
                         <Form.Control
-                            required
                             type="file"
                             accept="image/*"
                             name='logoFooter'

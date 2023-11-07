@@ -18,9 +18,8 @@ function MainContent() {
                             <Route
                                 key={idx}
                                 path={route.path}
-                                element={<route.element />}
+                                element={auth ? <route.element /> : <LoginPage />}
                             ></Route>
-
                         ))
                     })}
                     <Route

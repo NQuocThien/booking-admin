@@ -90,8 +90,8 @@ export type GeneralInforUpdateInput = {
   hotline: Scalars['String']['input'];
   liscenceBusiness: Scalars['String']['input'];
   liscenceOparating: Scalars['String']['input'];
-  logoFooter: LinkImageInput;
-  logoHeader: LinkImageInput;
+  logoFooter?: InputMaybe<LinkImageInput>;
+  logoHeader?: InputMaybe<LinkImageInput>;
 };
 
 export type LinkImage = {

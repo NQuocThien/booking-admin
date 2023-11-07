@@ -5,7 +5,7 @@ import s from 'src/assets/scss/layout/MainLayout.module.scss';
 import { useAuth } from "src/context/AuthContext";
 function MainHeader({ setNav }: { setNav: () => void }) {
     const { userInfor, logout, isLoginIn } = useAuth()
-    console.log('header', isLoginIn)
+    // console.log('header', isLoginIn)
     return (
         <Row className={s.header__top}>
             <Col

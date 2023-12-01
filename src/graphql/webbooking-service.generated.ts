@@ -33,6 +33,33 @@ export type CertificateInput = {
   state?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type CreateCustomerInput = {
+  fullname: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+export type CreateDoctorInput = {
+  avatar: LinkImageInput;
+  degree: Scalars['String']['input'];
+  evaluate: Scalars['Float']['input'];
+  idSpecialist: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+export type CreateMedicalFacilitiesInput = {
+  adress: Scalars['String']['input'];
+  companyName: Scalars['String']['input'];
+  discription: Scalars['String']['input'];
+  image: LinkImageInput;
+  userId: Scalars['String']['input'];
+};
+
+export type CreateMedicalSpecialtiesInput = {
+  discription: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type CreateProfileInput = {
   certificate?: InputMaybe<CertificateInput>;
   education?: InputMaybe<EducationInput>;
@@ -48,6 +75,25 @@ export type CreateUserInput = {
   fullname: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+export type Customer = {
+  __typename?: 'Customer';
+  fullname: Scalars['String']['output'];
+  userId: Scalars['String']['output'];
+};
+
+export type Doctor = {
+  __typename?: 'Doctor';
+  avatar: LinkImage;
+  degree: Scalars['String']['output'];
+  evaluate: Scalars['Float']['output'];
+  facilitiesId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  idSpecialist: Scalars['String']['output'];
+  medicalSpecialties?: Maybe<MedicalSpecialties>;
+  name: Scalars['String']['output'];
+  userId: Scalars['String']['output'];
 };
 
 export type EducationInput = {
@@ -123,9 +169,31 @@ export type LogoutUser = {
   logout: Scalars['Boolean']['output'];
 };
 
+export type MedicalFacilities = {
+  __typename?: 'MedicalFacilities';
+  adress: Scalars['String']['output'];
+  companyName: Scalars['String']['output'];
+  discription: Scalars['String']['output'];
+  doctors?: Maybe<Doctor>;
+  id: Scalars['ID']['output'];
+  image: LinkImage;
+};
+
+export type MedicalSpecialties = {
+  __typename?: 'MedicalSpecialties';
+  discription: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  activeUser: User;
+  createDoctor: Doctor;
+  createMecialSpecialties: MedicalSpecialties;
+  createMedicalFacilities: MedicalFacilities;
   createProfile: Profile;
+  createcustomer: Customer;
   deleteUser: User;
   login: LoginRespone;
   logout: LogoutUser;
@@ -133,14 +201,40 @@ export type Mutation = {
   signup: User;
   updateGeneralInfor: GeneralInfor;
   updateProfile: Profile;
+  updateRoles: User;
   updateSetting: Setting;
   updateUser: User;
   updateUserWithPass: User;
 };
 
 
+export type MutationActiveUserArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationCreateDoctorArgs = {
+  createDoctorInput: CreateDoctorInput;
+};
+
+
+export type MutationCreateMecialSpecialtiesArgs = {
+  mecicalSpecialtiesInput: CreateMedicalSpecialtiesInput;
+};
+
+
+export type MutationCreateMedicalFacilitiesArgs = {
+  createMedicalFacilitiesInput: CreateMedicalFacilitiesInput;
+};
+
+
 export type MutationCreateProfileArgs = {
   createProfileInput: CreateProfileInput;
+};
+
+
+export type MutationCreatecustomerArgs = {
+  createCustomerInput: CreateCustomerInput;
 };
 
 
@@ -171,6 +265,11 @@ export type MutationUpdateGeneralInforArgs = {
 
 export type MutationUpdateProfileArgs = {
   updateProfileInput: UpdateProfileInput;
+};
+
+
+export type MutationUpdateRolesArgs = {
+  updateRolesInput: UpdateRolesInput;
 };
 
 
@@ -212,6 +311,8 @@ export type Query = {
   getGeneralInfor: GeneralInfor;
   getSetting: Setting;
   getUser: User;
+  getcustomers: Array<Customer>;
+  medicalfacilities: Array<MedicalFacilities>;
   users: Array<User>;
 };
 
@@ -236,6 +337,11 @@ export type UpdateProfileInput = {
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateRolesInput = {
+  id: Scalars['String']['input'];
+  roles: Array<Scalars['String']['input']>;
+};
+
 export type UpdateSettingInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']['input']>;
@@ -243,35 +349,37 @@ export type UpdateSettingInput = {
 };
 
 export type UpdateUserInput = {
-  email: Scalars['String']['input'];
-  fullname: Scalars['String']['input'];
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  fullname?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   linkImage?: InputMaybe<LinkImageInput>;
-  type: Scalars['Float']['input'];
-  username: Scalars['String']['input'];
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserWithPassInput = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
   email: Scalars['String']['input'];
   fullname: Scalars['String']['input'];
   id: Scalars['String']['input'];
   linkImage?: InputMaybe<LinkImageInput>;
   password: Scalars['String']['input'];
   passwordNew: Scalars['String']['input'];
-  type: Scalars['Float']['input'];
   username: Scalars['String']['input'];
 };
 
 export type User = {
   __typename?: 'User';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  customer?: Maybe<Customer>;
+  doctor?: Maybe<Doctor>;
   email: Scalars['String']['output'];
   fullname: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   linkImage?: Maybe<LinkImage>;
+  medicalFacilities?: Maybe<MedicalFacilities>;
   password: Scalars['String']['output'];
-  profile?: Maybe<Profile>;
   roles?: Maybe<Array<Scalars['String']['output']>>;
-  type: Scalars['Float']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -280,7 +388,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginRespone', access_token: string, user: { __typename?: 'User', fullname: string, email: string, type: number, username: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginRespone', access_token: string, user: { __typename?: 'User', fullname: string, email: string, username: string } } };
 
 export type UdateUserByIdMutationVariables = Exact<{
   input: UpdateUserInput;
@@ -303,10 +411,24 @@ export type UpdateGeneralInforMutationVariables = Exact<{
 
 export type UpdateGeneralInforMutation = { __typename?: 'Mutation', updateGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string, type: string } } };
 
+export type ActiveUserMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type ActiveUserMutation = { __typename?: 'Mutation', activeUser: { __typename?: 'User', username: string, active?: boolean | null } };
+
+export type UpdateRolesMutationVariables = Exact<{
+  input: UpdateRolesInput;
+}>;
+
+
+export type UpdateRolesMutation = { __typename?: 'Mutation', updateRoles: { __typename?: 'User', roles?: Array<string> | null } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, type: number, roles?: Array<string> | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
+export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, roles?: Array<string> | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
 
 export type GetSettingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -316,7 +438,12 @@ export type GetSettingQuery = { __typename?: 'Query', getSetting: { __typename?:
 export type GetGeneralInforQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGeneralInforQuery = { __typename?: 'Query', getGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string, type: string } } };
+export type GetGeneralInforQuery = { __typename?: 'Query', getGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string } } };
+
+export type GetAllUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllUserQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, roles?: Array<string> | null, active?: boolean | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, customer?: { __typename?: 'Customer', fullname: string, userId: string } | null }> };
 
 
 export const LoginDocument = gql`
@@ -326,7 +453,6 @@ export const LoginDocument = gql`
     user {
       fullname
       email
-      type
       username
     }
   }
@@ -474,6 +600,73 @@ export function useUpdateGeneralInforMutation(baseOptions?: Apollo.MutationHookO
 export type UpdateGeneralInforMutationHookResult = ReturnType<typeof useUpdateGeneralInforMutation>;
 export type UpdateGeneralInforMutationResult = Apollo.MutationResult<UpdateGeneralInforMutation>;
 export type UpdateGeneralInforMutationOptions = Apollo.BaseMutationOptions<UpdateGeneralInforMutation, UpdateGeneralInforMutationVariables>;
+export const ActiveUserDocument = gql`
+    mutation ActiveUser($input: String!) {
+  activeUser(id: $input) {
+    username
+    active
+  }
+}
+    `;
+export type ActiveUserMutationFn = Apollo.MutationFunction<ActiveUserMutation, ActiveUserMutationVariables>;
+
+/**
+ * __useActiveUserMutation__
+ *
+ * To run a mutation, you first call `useActiveUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActiveUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activeUserMutation, { data, loading, error }] = useActiveUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActiveUserMutation(baseOptions?: Apollo.MutationHookOptions<ActiveUserMutation, ActiveUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActiveUserMutation, ActiveUserMutationVariables>(ActiveUserDocument, options);
+      }
+export type ActiveUserMutationHookResult = ReturnType<typeof useActiveUserMutation>;
+export type ActiveUserMutationResult = Apollo.MutationResult<ActiveUserMutation>;
+export type ActiveUserMutationOptions = Apollo.BaseMutationOptions<ActiveUserMutation, ActiveUserMutationVariables>;
+export const UpdateRolesDocument = gql`
+    mutation UpdateRoles($input: UpdateRolesInput!) {
+  updateRoles(updateRolesInput: $input) {
+    roles
+  }
+}
+    `;
+export type UpdateRolesMutationFn = Apollo.MutationFunction<UpdateRolesMutation, UpdateRolesMutationVariables>;
+
+/**
+ * __useUpdateRolesMutation__
+ *
+ * To run a mutation, you first call `useUpdateRolesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRolesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRolesMutation, { data, loading, error }] = useUpdateRolesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRolesMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRolesMutation, UpdateRolesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRolesMutation, UpdateRolesMutationVariables>(UpdateRolesDocument, options);
+      }
+export type UpdateRolesMutationHookResult = ReturnType<typeof useUpdateRolesMutation>;
+export type UpdateRolesMutationResult = Apollo.MutationResult<UpdateRolesMutation>;
+export type UpdateRolesMutationOptions = Apollo.BaseMutationOptions<UpdateRolesMutation, UpdateRolesMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -487,7 +680,6 @@ export const CheckLoginQueryDocument = gql`
     email
     username
     password
-    type
     roles
   }
 }
@@ -572,7 +764,6 @@ export const GetGeneralInforDocument = gql`
     logoHeader {
       filename
       url
-      type
     }
   }
 }
@@ -604,3 +795,52 @@ export function useGetGeneralInforLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetGeneralInforQueryHookResult = ReturnType<typeof useGetGeneralInforQuery>;
 export type GetGeneralInforLazyQueryHookResult = ReturnType<typeof useGetGeneralInforLazyQuery>;
 export type GetGeneralInforQueryResult = Apollo.QueryResult<GetGeneralInforQuery, GetGeneralInforQueryVariables>;
+export const GetAllUserDocument = gql`
+    query GetAllUser {
+  users {
+    id
+    fullname
+    email
+    username
+    password
+    linkImage {
+      filename
+      type
+      url
+    }
+    roles
+    customer {
+      fullname
+      userId
+    }
+    active
+  }
+}
+    `;
+
+/**
+ * __useGetAllUserQuery__
+ *
+ * To run a query within a React component, call `useGetAllUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllUserQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUserQuery, GetAllUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUserQuery, GetAllUserQueryVariables>(GetAllUserDocument, options);
+      }
+export function useGetAllUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUserQuery, GetAllUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUserQuery, GetAllUserQueryVariables>(GetAllUserDocument, options);
+        }
+export type GetAllUserQueryHookResult = ReturnType<typeof useGetAllUserQuery>;
+export type GetAllUserLazyQueryHookResult = ReturnType<typeof useGetAllUserLazyQuery>;
+export type GetAllUserQueryResult = Apollo.QueryResult<GetAllUserQuery, GetAllUserQueryVariables>;

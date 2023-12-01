@@ -51,7 +51,12 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                         handleChangeUserInfor(newUser)
                         setDisabled(true)
                     })
-                    .catch(() => showToast('🤐 Có lỗi xảy ra ! ', 'error'))
+                    .catch((e) =>{
+                        e.message === 'Password Error' ?
+                        showToast('🤐 Mật củ sai! ', 'error') :
+                        showToast('😢 Có lổi xảy ra! ', 'error')
+                        handleUpdate();
+                    })
             }
         } else { // ko đổi pass 
             var dataUserUpdate: UpdateUserInput
@@ -71,20 +76,20 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                     email: formData.email,
                 }
             }
-            console.log('Inpurt request: ', dataUserUpdate)
+            // console.log('Inpurt request: ', dataUserUpdate)
             // lấy header
             const token = getLocalStorage(process.env.ACCESS_TOKEN ? process.env.ACCESS_TOKEN : 'access_token')
             if (token) {
                 // console.log('\t-> Data Udate: ', dataUserUpdate)
                 update(token, dataUserUpdate)
                     .then((res) => {
-                        console.log('res: ', res)
+                        // console.log('res: ', res)
                         showToast('😘 Đã lưu thay đổi thành công', 'success')
-                        const newUserUpdated: User = {
-                            ...dataUserUpdate,
-                            password: userInfor.password
-                        }
-                        handleChangeUserInfor(newUserUpdated)
+                        // const newUserUpdated: User = {
+                        //     ...dataUserUpdate,
+                        //     password: userInfor.password
+                        // }
+                        // handleChangeUserInfor(newUserUpdated)
                         setStateUpdatePass(false)
                         setDisabled(true)
                     })
@@ -137,7 +142,6 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             type: ''
         },
         id: '',
-        type: 1,
     });// trạng thái dữ liệu chung
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -157,14 +161,10 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             setDisabled(false)
         }
         else {
-
             // load lại dữ liệu gốc
             const currentUser = { ...userInfor, password: '', passwordNew: '' }
             setFormData(currentUser)
-            // setSelectedFile(null)
-            // Đống form update password
             setStateUpdatePass(false)
-            // disable form 
             setDisabled(true)
         }
     } // xữ lý hành động update hủy update

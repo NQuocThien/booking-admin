@@ -27,7 +27,7 @@ function MainLayout() {
                 className='no-gutters'
             >
                 {/* // navigation */}
-                {showed && (
+                {( showed &&
                     <Col
                         xl={2} lg={2} md={2}
                         className={s.nav}
@@ -36,9 +36,9 @@ function MainLayout() {
                     </Col>
                 )}
                 {/* // content */}
-                {showed && (
+                { (
                     <Col
-                        xl={10} lg={10} md={10}
+                        xl={showed? 10 : 12}  lg={showed? 10 : 12} md={showed? 10 : 12}
                         className={s.body}
                     >
                         {/* // header */}
@@ -59,33 +59,7 @@ function MainLayout() {
                         </Row>
                     </Col>
                 )}
-                {!showed && (
-
-                    <Col
-                        xl={12} lg={12} md={12}
-                        className={s.body}
-                    >
-                        {/* // header */}
-                        <Row className={s.header}>
-                            <MainHeader
-                                setNav={changedShowed}
-                            />
-                        </Row>
-                        {/* // main */}
-                        <Row className={s.main}>
-                            <MainContent />
-                        </Row>
-                        {/* //footer */}
-                        <Row className={s.footer}>
-                            <footer>
-                                <div className={s.footer__conent}> &copy; Nguyễn Quốc Thiện - DTH205987 - DH21TH2</div>
-                            </footer>
-                        </Row>
-                    </Col>
-                )}
-
             </Row>
-
         </Container>);
 }
 

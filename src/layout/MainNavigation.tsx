@@ -4,7 +4,6 @@ import { _navAdmin, _navClinic } from 'src/assets/nav/_nav';
 import SideBarNav from 'src/components/layout/SideBarNav';
 import { useAuth } from 'src/context/AuthContext';
 function MainNavigation() {
-
     const { isLoginIn, userInfor } = useAuth()
     var items: any;
     if (isLoginIn)
@@ -25,10 +24,7 @@ function MainNavigation() {
                 </Nav>
             </Row>
         </div>
-
     )
-
-
 }
 
 export default MainNavigation;

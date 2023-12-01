@@ -1,4 +1,4 @@
-import { UpdateUserInput, UpdateUserWithPassInput, useUdateUserByIdMutation, useUpdateUserByIdWithPassMutation } from "src/graphql/webbooking-service.generated";
+import { UpdateUserInput, UpdateUserWithPassInput, User, useUdateUserByIdMutation, useUpdateUserByIdWithPassMutation } from "src/graphql/webbooking-service.generated";
 import InforUserCpn from "./Account";
 
 function CurrentUserDetailPage() {
@@ -18,7 +18,6 @@ function CurrentUserDetailPage() {
                     fullname: dataUser.fullname,
                     // password: dataUser.password,
                     // passwordNew: dataUser.passwordNew,
-                    type: dataUser.type,
                     username: dataUser.username,
                     linkImage: {
                         filename: dataUser.linkImage?.filename,
@@ -32,7 +31,6 @@ function CurrentUserDetailPage() {
                     fullname: dataUser.fullname,
                     // password: dataUser.password,
                     // passwordNew: dataUser.passwordNew,
-                    type: dataUser.type,
                     username: dataUser.username,
                 }
             udateUserByIdMutation({
@@ -50,7 +48,7 @@ function CurrentUserDetailPage() {
             throw e
         }
     }
-    const updateUserWithPass = async (token: string, dataUser: UpdateUserWithPassInput): Promise<void> => {
+    const updateUserWithPass = async (token: string, dataUser: UpdateUserWithPassInput): Promise<any> => {
         try {
             const input: UpdateUserWithPassInput = dataUser.linkImage ?
                 {
@@ -59,7 +57,6 @@ function CurrentUserDetailPage() {
                     fullname: dataUser.fullname,
                     password: dataUser.password,
                     passwordNew: dataUser.passwordNew,
-                    type: dataUser.type,
                     username: dataUser.username,
                     linkImage: {
                         filename: dataUser.linkImage?.filename,
@@ -73,10 +70,9 @@ function CurrentUserDetailPage() {
                     fullname: dataUser.fullname,
                     password: dataUser.password,
                     passwordNew: dataUser.passwordNew,
-                    type: dataUser.type,
                     username: dataUser.username,
                 }
-            updateUserByIdWithPassMutation({
+            return await updateUserByIdWithPassMutation({
                 variables: {
                     input: input
                 },
@@ -86,6 +82,7 @@ function CurrentUserDetailPage() {
                     }
                 }
             })
+
         } catch (e) {
             console.log('test error: ', e)
             throw e

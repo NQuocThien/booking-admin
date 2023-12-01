@@ -1,51 +1,72 @@
-
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 export const CheckLoginQuery = gql`
-  query CheckLoginQuery 
-{
-  checklogin{
-    id
-    linkImage{
-      filename
-      type
-      url
+  query CheckLoginQuery {
+    checklogin {
+      id
+      linkImage {
+        filename
+        type
+        url
+      }
+      fullname
+      email
+      username
+      password
+      roles
     }
-    fullname
-    email
-    username
-    password
-    type
-    roles
   }
-}
-`
+`;
 const getSettingQuery = gql`
-query getSetting {
-  getSetting {
-    defaultLang
+  query getSetting {
+    getSetting {
+      defaultLang
+    }
   }
-}`;
+`;
 
 const GetGeneralInfor = gql`
-query GetGeneralInfor{
-  getGeneralInfor{
- 		company 
-    address
-    copyrigth
-    email
-    hotline
-    liscenceBusiness
-    liscenceOparating
-    ID
-    logoFooter{
+  query GetGeneralInfor {
+    getGeneralInfor {
+      company
+      address
+      copyrigth
+      email
+      hotline
+      liscenceBusiness
+      liscenceOparating
+      ID
+      logoFooter {
         filename
         url
         type
       }
-     	logoHeader{
+      logoHeader {
         filename
         url
-        type
       }
+    }
   }
-}`;
+`;
+
+const GetAllUser = gql`
+  query GetAllUser {
+    users {
+      id
+      fullname
+      email
+      username
+      password
+      linkImage {
+        filename
+        type
+        url
+      }
+      roles
+      customer {
+        fullname
+        userId
+      }
+      active
+    }
+  }
+`;

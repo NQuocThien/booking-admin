@@ -72,9 +72,6 @@ function GeneralInforWebCpn() {
             liscenceBusiness: formData.liscenceBusiness,
             liscenceOparating: formData.liscenceOparating,
         }
-        console.group('test data input');
-        console.log(input)
-        console.groupEnd();
         updateGeneralInfor({
             variables: {
                 input: input
@@ -122,16 +119,11 @@ function GeneralInforWebCpn() {
                     .then((result) => {
                         dataLogo = { logoHeader: result as ILinkImage };
                     })
-
             }
             if (formData.logoFooter) {
                 const footerResult = await uploadFilePromise(typeFile, formData.logoFooter, 'Footer');
                 dataLogo = { ...dataLogo, logoFooter: footerResult as ILinkImage };
             }
-
-            console.group('test data logo');
-            console.log(dataLogo)
-            console.groupEnd();
             handleSave(dataLogo);
             return dataLogo
 

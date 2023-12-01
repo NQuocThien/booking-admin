@@ -2,8 +2,11 @@ import NavItem from "./NavItem";
 import NavTitle from "./NavTitle";
 import NavGroup from "./NavGroup";
 import { Item } from "@src/assets/nav/_nav";
+import { useLocation } from "react-router-dom";
 
 function SideBarNav({ items }: { items: Item[] }) {
+    const location = useLocation();
+    // console.log('path: ', location.pathname)
     return (
         <>
             {items?.map((item, index) => {
@@ -12,6 +15,7 @@ function SideBarNav({ items }: { items: Item[] }) {
                         <NavItem
                             key={index}
                             item={item}
+                            
                         />)
                 if (item.component === 'NavTitle')
                     return (

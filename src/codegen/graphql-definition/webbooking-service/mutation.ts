@@ -1,38 +1,34 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 export const Login = gql`
-  mutation login($input: LoginUserInput!)
-{
-  login(loginUserInput: $input){
-    access_token
-    user{
-      fullname
-      email
-      type
-      username
+  mutation login($input: LoginUserInput!) {
+    login(loginUserInput: $input) {
+      access_token
+      user {
+        fullname
+        email
+        username
+      }
     }
   }
-}
-`
+`;
 export const UpdateUserById = gql`
-  mutation UdateUserByID($input: UpdateUserInput!)
-  {
-    updateUser(updateUserInput: $input){
+  mutation UdateUserByID($input: UpdateUserInput!) {
+    updateUser(updateUserInput: $input) {
       id
     }
   }
-`
+`;
 export const UpdateUserByIdWithPass = gql`
-  mutation UpdateUserByIdWithPass($input: UpdateUserWithPassInput!)
-{
-  updateUserWithPass(updateUserInput: $input){
-    id
+  mutation UpdateUserByIdWithPass($input: UpdateUserWithPassInput!) {
+    updateUserWithPass(updateUserInput: $input) {
+      id
+    }
   }
-}
-`
+`;
 export const UpdateGeneralInfor = gql`
- mutation UpdateGeneralInfor($input: GeneralInforUpdateInput!){
-	updateGeneralInfor(updateGeneralInforInput: $input){
-      company 
+  mutation UpdateGeneralInfor($input: GeneralInforUpdateInput!) {
+    updateGeneralInfor(updateGeneralInforInput: $input) {
+      company
       address
       copyrigth
       email
@@ -40,16 +36,31 @@ export const UpdateGeneralInfor = gql`
       liscenceBusiness
       liscenceOparating
       ID
-      logoFooter{
+      logoFooter {
         filename
         url
         type
       }
-     	logoHeader{
+      logoHeader {
         filename
         url
         type
       }
-	}
-}
-`
+    }
+  }
+`;
+export const ActiveUser = gql`
+  mutation ActiveUser($input: String!) {
+    activeUser(id: $input) {
+      username
+      active
+    }
+  }
+`;
+export const UpdateRoles = gql`
+  mutation UpdateRoles($input: UpdateRolesInput!) {
+    updateRoles(updateRolesInput: $input) {
+      roles
+    }
+  }
+`;

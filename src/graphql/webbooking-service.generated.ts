@@ -41,9 +41,10 @@ export type CreateCustomerInput = {
 export type CreateDoctorInput = {
   avatar: LinkImageInput;
   degree: Scalars['String']['input'];
-  evaluate: Scalars['Float']['input'];
+  email: Scalars['String']['input'];
   idSpecialist: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  numberPhone: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -79,20 +80,22 @@ export type CreateUserInput = {
 
 export type Customer = {
   __typename?: 'Customer';
-  fullname: Scalars['String']['output'];
+  fullname?: Maybe<Scalars['String']['output']>;
   userId: Scalars['String']['output'];
 };
 
 export type Doctor = {
   __typename?: 'Doctor';
-  avatar: LinkImage;
-  degree: Scalars['String']['output'];
-  evaluate: Scalars['Float']['output'];
-  facilitiesId: Scalars['String']['output'];
+  avatar?: Maybe<LinkImage>;
+  degree?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  evaluate?: Maybe<Scalars['Float']['output']>;
+  facilitiesId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  idSpecialist: Scalars['String']['output'];
+  idSpecialist?: Maybe<Scalars['String']['output']>;
   medicalSpecialties?: Maybe<MedicalSpecialties>;
   name: Scalars['String']['output'];
+  numberPhone?: Maybe<Scalars['String']['output']>;
   userId: Scalars['String']['output'];
 };
 
@@ -308,11 +311,12 @@ export type Query = {
   __typename?: 'Query';
   checklogin: User;
   getAllProfile: Array<Profile>;
+  getDoctors: Array<Doctor>;
   getGeneralInfor: GeneralInfor;
+  getMedicalfacilities: Array<MedicalFacilities>;
   getSetting: Setting;
   getUser: User;
   getcustomers: Array<Customer>;
-  medicalfacilities: Array<MedicalFacilities>;
   users: Array<User>;
 };
 
@@ -351,7 +355,6 @@ export type UpdateSettingInput = {
 export type UpdateUserInput = {
   active?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
-  fullname?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   linkImage?: InputMaybe<LinkImageInput>;
   username?: InputMaybe<Scalars['String']['input']>;
@@ -360,7 +363,6 @@ export type UpdateUserInput = {
 export type UpdateUserWithPassInput = {
   active?: InputMaybe<Scalars['Boolean']['input']>;
   email: Scalars['String']['input'];
-  fullname: Scalars['String']['input'];
   id: Scalars['String']['input'];
   linkImage?: InputMaybe<LinkImageInput>;
   password: Scalars['String']['input'];
@@ -374,7 +376,6 @@ export type User = {
   customer?: Maybe<Customer>;
   doctor?: Maybe<Doctor>;
   email: Scalars['String']['output'];
-  fullname: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   linkImage?: Maybe<LinkImage>;
   medicalFacilities?: Maybe<MedicalFacilities>;
@@ -388,7 +389,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginRespone', access_token: string, user: { __typename?: 'User', fullname: string, email: string, username: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginRespone', access_token: string, user: { __typename?: 'User', email: string, username: string } } };
 
 export type UdateUserByIdMutationVariables = Exact<{
   input: UpdateUserInput;
@@ -428,7 +429,7 @@ export type UpdateRolesMutation = { __typename?: 'Mutation', updateRoles: { __ty
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, roles?: Array<string> | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
+export type CheckLoginQueryQuery = { __typename?: 'Query', checklogin: { __typename?: 'User', id: string, email: string, username: string, password: string, roles?: Array<string> | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } };
 
 export type GetSettingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -443,7 +444,22 @@ export type GetGeneralInforQuery = { __typename?: 'Query', getGeneralInfor: { __
 export type GetAllUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUserQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, fullname: string, email: string, username: string, password: string, roles?: Array<string> | null, active?: boolean | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, customer?: { __typename?: 'Customer', fullname: string, userId: string } | null }> };
+export type GetAllUserQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, username: string, password: string, roles?: Array<string> | null, active?: boolean | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, customer?: { __typename?: 'Customer', userId: string } | null }> };
+
+export type GetCustomerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCustomerQuery = { __typename?: 'Query', getcustomers: Array<{ __typename?: 'Customer', fullname?: string | null, userId: string }> };
+
+export type GetDoctorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDoctorsQuery = { __typename?: 'Query', getDoctors: Array<{ __typename?: 'Doctor', id: string, name: string, email?: string | null, numberPhone?: string | null, facilitiesId?: string | null, userId: string, degree?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, medicalSpecialties?: { __typename?: 'MedicalSpecialties', id: string, name: string, discription: string } | null }> };
+
+export type GetMedicalfacilitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMedicalfacilitiesQuery = { __typename?: 'Query', getMedicalfacilities: Array<{ __typename?: 'MedicalFacilities', id: string, companyName: string, discription: string, adress: string, doctors?: { __typename?: 'Doctor', id: string, userId: string, name: string, degree?: string | null, email?: string | null, evaluate?: number | null, numberPhone?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } | null, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
 
 
 export const LoginDocument = gql`
@@ -451,7 +467,6 @@ export const LoginDocument = gql`
   login(loginUserInput: $input) {
     access_token
     user {
-      fullname
       email
       username
     }
@@ -676,7 +691,6 @@ export const CheckLoginQueryDocument = gql`
       type
       url
     }
-    fullname
     email
     username
     password
@@ -799,7 +813,6 @@ export const GetAllUserDocument = gql`
     query GetAllUser {
   users {
     id
-    fullname
     email
     username
     password
@@ -810,7 +823,6 @@ export const GetAllUserDocument = gql`
     }
     roles
     customer {
-      fullname
       userId
     }
     active
@@ -844,3 +856,144 @@ export function useGetAllUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllUserQueryHookResult = ReturnType<typeof useGetAllUserQuery>;
 export type GetAllUserLazyQueryHookResult = ReturnType<typeof useGetAllUserLazyQuery>;
 export type GetAllUserQueryResult = Apollo.QueryResult<GetAllUserQuery, GetAllUserQueryVariables>;
+export const GetCustomerDocument = gql`
+    query GetCustomer {
+  getcustomers {
+    fullname
+    userId
+  }
+}
+    `;
+
+/**
+ * __useGetCustomerQuery__
+ *
+ * To run a query within a React component, call `useGetCustomerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCustomerQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCustomerQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomerQuery, GetCustomerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCustomerQuery, GetCustomerQueryVariables>(GetCustomerDocument, options);
+      }
+export function useGetCustomerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomerQuery, GetCustomerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCustomerQuery, GetCustomerQueryVariables>(GetCustomerDocument, options);
+        }
+export type GetCustomerQueryHookResult = ReturnType<typeof useGetCustomerQuery>;
+export type GetCustomerLazyQueryHookResult = ReturnType<typeof useGetCustomerLazyQuery>;
+export type GetCustomerQueryResult = Apollo.QueryResult<GetCustomerQuery, GetCustomerQueryVariables>;
+export const GetDoctorsDocument = gql`
+    query GetDoctors {
+  getDoctors {
+    id
+    name
+    email
+    numberPhone
+    avatar {
+      filename
+      type
+      url
+    }
+    facilitiesId
+    medicalSpecialties {
+      id
+      name
+      discription
+    }
+    userId
+    degree
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorsQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDoctorsQuery(baseOptions?: Apollo.QueryHookOptions<GetDoctorsQuery, GetDoctorsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorsQuery, GetDoctorsQueryVariables>(GetDoctorsDocument, options);
+      }
+export function useGetDoctorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorsQuery, GetDoctorsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorsQuery, GetDoctorsQueryVariables>(GetDoctorsDocument, options);
+        }
+export type GetDoctorsQueryHookResult = ReturnType<typeof useGetDoctorsQuery>;
+export type GetDoctorsLazyQueryHookResult = ReturnType<typeof useGetDoctorsLazyQuery>;
+export type GetDoctorsQueryResult = Apollo.QueryResult<GetDoctorsQuery, GetDoctorsQueryVariables>;
+export const GetMedicalfacilitiesDocument = gql`
+    query getMedicalfacilities {
+  getMedicalfacilities {
+    id
+    companyName
+    discription
+    adress
+    doctors {
+      id
+      userId
+      name
+      avatar {
+        filename
+        type
+        url
+      }
+      degree
+      email
+      evaluate
+      numberPhone
+    }
+    image {
+      filename
+      type
+      url
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMedicalfacilitiesQuery__
+ *
+ * To run a query within a React component, call `useGetMedicalfacilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMedicalfacilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMedicalfacilitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMedicalfacilitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>(GetMedicalfacilitiesDocument, options);
+      }
+export function useGetMedicalfacilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>(GetMedicalfacilitiesDocument, options);
+        }
+export type GetMedicalfacilitiesQueryHookResult = ReturnType<typeof useGetMedicalfacilitiesQuery>;
+export type GetMedicalfacilitiesLazyQueryHookResult = ReturnType<typeof useGetMedicalfacilitiesLazyQuery>;
+export type GetMedicalfacilitiesQueryResult = Apollo.QueryResult<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>;

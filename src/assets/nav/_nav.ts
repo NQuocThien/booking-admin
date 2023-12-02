@@ -54,7 +54,7 @@ const _navAdmin: Item[] = [
         component: "NavItem",
         name: "Quản lý Bác sĩ",
         to: "/general/doctors",
-        iconName: "GiDjembe",
+        iconName: "GiDoctorFace",
       },
       {
         component: "NavItem",

@@ -22,6 +22,20 @@ export const getLocalStorage = (key: string) => {
   }
 };
 
+export const getToken = () => {
+  try {
+    const storedValue = localStorage.getItem(
+      process.env.REACT_APP_ACCESS_TOKEN || "access_token"
+    );
+    // console.log('get item ' + key + ', ' + storedValue)
+    return storedValue;
+  } catch (error) {
+    // Xử lý lỗi nếu có
+    console.error("Lỗi khi truy xuất từ localStorage:", error);
+    return null;
+  }
+};
+
 export function getIcon(iconName: string | undefined) {
   const iconTemp: any = ICON;
   const iconTemp2: any = ICON2;

@@ -1,5 +1,5 @@
-import { getLocalStorage } from "src/utils/contain";
-import { Form, Spinner, Table } from "react-bootstrap";
+import { getToken } from "src/utils/contain";
+import { Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import {
   User,
   useActiveUserMutation,
@@ -13,10 +13,14 @@ import { FcSupport } from "react-icons/fc";
 import ShowAlert from "src/components/toasts/alerts";
 import { ICheckRoles } from "src/assets/contains/item-interface";
 import { ERoles } from "src/assets/contains/component-enum";
-const token = getLocalStorage(
-  process.env.REACT_APP_ACCESS_TOKEN || "access_token"
-);
+import { useAuth } from "src/context/AuthContext";
+// const token = getLocalStorage(
+//   process.env.REACT_APP_ACCESS_TOKEN || "access_token"
+// );
 function ListUserPage() {
+  const token = getToken();
+  // console.log("test token: ", token);
+  const { checkExpirationToken } = useAuth();
   const { refetch, data, loading, error } = useGetAllUserQuery({
     fetchPolicy: "no-cache",
     context: {
@@ -51,6 +55,7 @@ function ListUserPage() {
     fetchPolicy: "no-cache",
   });
   const hanldeActiveUser = (id: string) => {
+    checkExpirationToken();
     activeUser({
       variables: {
         input: id,
@@ -75,6 +80,7 @@ function ListUserPage() {
     setOpenModal(false);
   }, []);
   const handleShowModal = (user: User) => {
+    checkExpirationToken();
     setUserClicked(user);
     setStateRoles({
       admin: false,
@@ -192,51 +198,60 @@ function ListUserPage() {
         </tbody>
       </Table>
       <ModalCpn
-        headerText={`Chỉnh sửa quyền user ${userClicked?.id}`}
+        headerText={`Chỉnh sửa quyền user "${userClicked?.username}"`}
         openRequest={openModal}
         handleSave={handleActionFormChangeRoles}
         handleClose={handleCloseModal}>
-        <Form onSubmit={handleActionFormChangeRoles}>
-          <Form.Check
-            type="switch"
-            id="custom-admin"
-            label="Admin"
-            name="check-admin"
-            checked={stateRoles.admin}
-            onChange={() =>
-              setStateRoles((pre) => ({ ...pre, admin: !pre.admin }))
-            }
-          />
-          <Form.Check
-            type="switch"
-            id="custom-clinic"
-            label="Clinic"
-            name="check-clinic"
-            checked={stateRoles.clinic}
-            onChange={() =>
-              setStateRoles((pre) => ({ ...pre, clinic: !pre.clinic }))
-            }
-          />
-          <Form.Check
-            type="switch"
-            id="custom-doctor"
-            label="Doctor"
-            name="check-doctor"
-            checked={stateRoles.doctor}
-            onChange={() =>
-              setStateRoles((pre) => ({ ...pre, doctor: !pre.doctor }))
-            }
-          />
-          <Form.Check
-            type="switch"
-            id="custom-customer"
-            label="Customer"
-            name="check-customer"
-            checked={stateRoles.customer}
-            onChange={() =>
-              setStateRoles((pre) => ({ ...pre, customer: !pre.customer }))
-            }
-          />
+        <Form
+          onSubmit={handleActionFormChangeRoles}
+          className="d-flex flex-column align-items-center">
+          <Row>
+            <Col>
+              <Form.Check
+                type="switch"
+                id="custom-admin"
+                label="Admin"
+                name="check-admin"
+                checked={stateRoles.admin}
+                onChange={() =>
+                  setStateRoles((pre) => ({ ...pre, admin: !pre.admin }))
+                }
+              />
+
+              <Form.Check
+                type="switch"
+                id="custom-clinic"
+                label="Clinic"
+                name="check-clinic"
+                checked={stateRoles.clinic}
+                onChange={() =>
+                  setStateRoles((pre) => ({ ...pre, clinic: !pre.clinic }))
+                }
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                type="switch"
+                id="custom-doctor"
+                label="Doctor"
+                name="check-doctor"
+                checked={stateRoles.doctor}
+                onChange={() =>
+                  setStateRoles((pre) => ({ ...pre, doctor: !pre.doctor }))
+                }
+              />
+              <Form.Check
+                type="switch"
+                id="custom-customer"
+                label="Customer"
+                name="check-customer"
+                checked={stateRoles.customer}
+                onChange={() =>
+                  setStateRoles((pre) => ({ ...pre, customer: !pre.customer }))
+                }
+              />
+            </Col>
+          </Row>
         </Form>
       </ModalCpn>
     </div>

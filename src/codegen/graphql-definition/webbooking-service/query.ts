@@ -8,7 +8,6 @@ export const CheckLoginQuery = gql`
         type
         url
       }
-      fullname
       email
       username
       password
@@ -52,7 +51,6 @@ const GetAllUser = gql`
   query GetAllUser {
     users {
       id
-      fullname
       email
       username
       password
@@ -63,10 +61,70 @@ const GetAllUser = gql`
       }
       roles
       customer {
-        fullname
         userId
       }
       active
+    }
+  }
+`;
+const GetAllCustomer = gql`
+  query GetCustomer {
+    getcustomers {
+      fullname
+      userId
+    }
+  }
+`;
+
+const GetAllDoctor = gql`
+  query GetDoctors {
+    getDoctors {
+      id
+      name
+      email
+      numberPhone
+      avatar {
+        filename
+        type
+        url
+      }
+      facilitiesId
+      medicalSpecialties {
+        id
+        name
+        discription
+      }
+      userId
+      degree
+    }
+  }
+`;
+const GetAllMedicalFacilities = gql`
+  query getMedicalfacilities {
+    getMedicalfacilities {
+      id
+      companyName
+      discription
+      adress
+      doctors {
+        id
+        userId
+        name
+        avatar {
+          filename
+          type
+          url
+        }
+        degree
+        email
+        evaluate
+        numberPhone
+      }
+      image {
+        filename
+        type
+        url
+      }
     }
   }
 `;

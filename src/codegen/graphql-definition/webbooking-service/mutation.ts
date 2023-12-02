@@ -4,7 +4,6 @@ export const Login = gql`
     login(loginUserInput: $input) {
       access_token
       user {
-        fullname
         email
         username
       }

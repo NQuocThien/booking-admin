@@ -5,6 +5,7 @@ import ListUserPage from "src/pages/ListUser/ListUserPage";
 import ListCustomerPage from "src/pages/ListCustomer/ListCustomer";
 import ListDoctorPage from "src/pages/ListDoctor/ListDoctor";
 import ListMedicalFacilitiesPage from "src/pages/ListMedicalFacilities/ListMedicalFacilities";
+import ListClinicPage from "src/pages/ListMedicalFacilities/ListClinic";
 interface IRoute {
   path: string;
   name: string;

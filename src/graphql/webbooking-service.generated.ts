@@ -52,7 +52,11 @@ export type CreateMedicalFacilitiesInput = {
   adress: Scalars['String']['input'];
   companyName: Scalars['String']['input'];
   discription: Scalars['String']['input'];
+  email: Scalars['String']['input'];
   image: LinkImageInput;
+  lat?: InputMaybe<Scalars['Float']['input']>;
+  lng?: InputMaybe<Scalars['Float']['input']>;
+  numberPhone: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -178,8 +182,12 @@ export type MedicalFacilities = {
   companyName: Scalars['String']['output'];
   discription: Scalars['String']['output'];
   doctors?: Maybe<Doctor>;
+  email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   image: LinkImage;
+  lat?: Maybe<Scalars['Float']['output']>;
+  lng?: Maybe<Scalars['Float']['output']>;
+  numberPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type MedicalSpecialties = {
@@ -316,6 +324,7 @@ export type Query = {
   getMedicalfacilities: Array<MedicalFacilities>;
   getSetting: Setting;
   getUser: User;
+  getUserMedicalNon: Array<User>;
   getcustomers: Array<Customer>;
   users: Array<User>;
 };
@@ -426,6 +435,13 @@ export type UpdateRolesMutationVariables = Exact<{
 
 export type UpdateRolesMutation = { __typename?: 'Mutation', updateRoles: { __typename?: 'User', roles?: Array<string> | null } };
 
+export type CreateMedicalFacilitiesMutationVariables = Exact<{
+  input: CreateMedicalFacilitiesInput;
+}>;
+
+
+export type CreateMedicalFacilitiesMutation = { __typename?: 'Mutation', createMedicalFacilities: { __typename?: 'MedicalFacilities', id: string } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -460,6 +476,11 @@ export type GetMedicalfacilitiesQueryVariables = Exact<{ [key: string]: never; }
 
 
 export type GetMedicalfacilitiesQuery = { __typename?: 'Query', getMedicalfacilities: Array<{ __typename?: 'MedicalFacilities', id: string, companyName: string, discription: string, adress: string, doctors?: { __typename?: 'Doctor', id: string, userId: string, name: string, degree?: string | null, email?: string | null, evaluate?: number | null, numberPhone?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null } | null, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
+
+export type GetUserMedicalNonQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserMedicalNonQuery = { __typename?: 'Query', getUserMedicalNon: Array<{ __typename?: 'User', id: string, username: string }> };
 
 
 export const LoginDocument = gql`
@@ -682,6 +703,39 @@ export function useUpdateRolesMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateRolesMutationHookResult = ReturnType<typeof useUpdateRolesMutation>;
 export type UpdateRolesMutationResult = Apollo.MutationResult<UpdateRolesMutation>;
 export type UpdateRolesMutationOptions = Apollo.BaseMutationOptions<UpdateRolesMutation, UpdateRolesMutationVariables>;
+export const CreateMedicalFacilitiesDocument = gql`
+    mutation createMedicalFacilities($input: CreateMedicalFacilitiesInput!) {
+  createMedicalFacilities(createMedicalFacilitiesInput: $input) {
+    id
+  }
+}
+    `;
+export type CreateMedicalFacilitiesMutationFn = Apollo.MutationFunction<CreateMedicalFacilitiesMutation, CreateMedicalFacilitiesMutationVariables>;
+
+/**
+ * __useCreateMedicalFacilitiesMutation__
+ *
+ * To run a mutation, you first call `useCreateMedicalFacilitiesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMedicalFacilitiesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMedicalFacilitiesMutation, { data, loading, error }] = useCreateMedicalFacilitiesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMedicalFacilitiesMutation(baseOptions?: Apollo.MutationHookOptions<CreateMedicalFacilitiesMutation, CreateMedicalFacilitiesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMedicalFacilitiesMutation, CreateMedicalFacilitiesMutationVariables>(CreateMedicalFacilitiesDocument, options);
+      }
+export type CreateMedicalFacilitiesMutationHookResult = ReturnType<typeof useCreateMedicalFacilitiesMutation>;
+export type CreateMedicalFacilitiesMutationResult = Apollo.MutationResult<CreateMedicalFacilitiesMutation>;
+export type CreateMedicalFacilitiesMutationOptions = Apollo.BaseMutationOptions<CreateMedicalFacilitiesMutation, CreateMedicalFacilitiesMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -997,3 +1051,38 @@ export function useGetMedicalfacilitiesLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetMedicalfacilitiesQueryHookResult = ReturnType<typeof useGetMedicalfacilitiesQuery>;
 export type GetMedicalfacilitiesLazyQueryHookResult = ReturnType<typeof useGetMedicalfacilitiesLazyQuery>;
 export type GetMedicalfacilitiesQueryResult = Apollo.QueryResult<GetMedicalfacilitiesQuery, GetMedicalfacilitiesQueryVariables>;
+export const GetUserMedicalNonDocument = gql`
+    query getUserMedicalNon {
+  getUserMedicalNon {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetUserMedicalNonQuery__
+ *
+ * To run a query within a React component, call `useGetUserMedicalNonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserMedicalNonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserMedicalNonQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserMedicalNonQuery(baseOptions?: Apollo.QueryHookOptions<GetUserMedicalNonQuery, GetUserMedicalNonQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserMedicalNonQuery, GetUserMedicalNonQueryVariables>(GetUserMedicalNonDocument, options);
+      }
+export function useGetUserMedicalNonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserMedicalNonQuery, GetUserMedicalNonQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserMedicalNonQuery, GetUserMedicalNonQueryVariables>(GetUserMedicalNonDocument, options);
+        }
+export type GetUserMedicalNonQueryHookResult = ReturnType<typeof useGetUserMedicalNonQuery>;
+export type GetUserMedicalNonLazyQueryHookResult = ReturnType<typeof useGetUserMedicalNonLazyQuery>;
+export type GetUserMedicalNonQueryResult = Apollo.QueryResult<GetUserMedicalNonQuery, GetUserMedicalNonQueryVariables>;

@@ -128,3 +128,11 @@ const GetAllMedicalFacilities = gql`
     }
   }
 `;
+const GetUserNotHasClinic = gql`
+  query getUserMedicalNon {
+    getUserMedicalNon {
+      id
+      username
+    }
+  }
+`;

@@ -63,3 +63,10 @@ export const UpdateRoles = gql`
     }
   }
 `;
+export const CreateMedicalFacilities = gql`
+  mutation createMedicalFacilities($input: CreateMedicalFacilitiesInput!) {
+    createMedicalFacilities(createMedicalFacilitiesInput: $input) {
+      id
+    }
+  }
+`;

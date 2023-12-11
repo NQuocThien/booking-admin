@@ -8,6 +8,7 @@ interface Iprops {
   handleSave: () => void;
   handleClose: () => void;
   headerText: string;
+  fullscreen?: string | true | undefined;
 }
 function ModalCpn({
   children,
@@ -16,6 +17,7 @@ function ModalCpn({
   handleSave,
   headerText,
   handleClose,
+  fullscreen = undefined,
 }: Iprops) {
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -23,7 +25,7 @@ function ModalCpn({
   }, [openRequest]);
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} fullscreen={fullscreen}>
         <Modal.Header closeButton={closeButton}>
           <Modal.Title>{headerText}</Modal.Title>
         </Modal.Header>

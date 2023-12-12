@@ -29,7 +29,6 @@ function ListClinicPage() {
       },
     },
   });
-  // console.log("test token: ", token);
   const { checkExpirationToken } = useAuth();
   const { refetch, data, loading, error } = useGetAllUserQuery({
     fetchPolicy: "no-cache",

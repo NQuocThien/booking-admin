@@ -1,5 +1,6 @@
 import { ILinkImage } from "src/assets/contains/item-interface";
 import axios from "axios";
+import { promises } from "dns";
 
 export type TypeFile = "image" | "video" | "document";
 export enum ETypeFile {
@@ -70,7 +71,7 @@ export const uploadFilePromise = (
   typeFile: TypeFile,
   logo: Blob | null,
   messageName?: string
-) => {
+): Promise<ILinkImage> => {
   return new Promise((resolve, reject) => {
     uploadFile(typeFile, [logo], (error: any, result: any) => {
       if (error) {

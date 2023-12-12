@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject, useRef, useState } from "react";
+import { ChangeEvent, useRef } from "react";
 import { FormControl, Image } from "react-bootstrap";
 interface IProp {
   required?: boolean;
@@ -23,7 +23,7 @@ function ImageUpload({
 }: IProp) {
   const ref = useRef<HTMLInputElement | null>(null);
   return (
-    <div>
+    <>
       <Image
         // className={s.image_header}
         style={{ height: height, width: width }}
@@ -42,7 +42,12 @@ function ImageUpload({
         onChange={onChange}
         style={{ display: "none" }}
       />
-    </div>
+      {required && (
+        <FormControl.Feedback type="invalid">
+          Vui lòng chọn ảnh
+        </FormControl.Feedback>
+      )}
+    </>
   );
 }
 export default ImageUpload;

@@ -70,3 +70,10 @@ export const CreateMedicalFacilities = gql`
     }
   }
 `;
+export const CreateDoctor = gql`
+  mutation createDoctor($input: CreateDoctorInput!) {
+    createDoctor(createDoctorInput: $input) {
+      id
+    }
+  }
+`;

@@ -14,3 +14,23 @@ export interface ILinkImage {
   type: string;
   url: string;
 }
+export interface IAction {
+  type: string;
+  payload: any;
+}
+export interface ISelecUser {
+  id: string;
+  username: string;
+}
+export interface ISelectClinic {
+  id: string;
+  companyName: string;
+}
+export interface ISelectDegree {
+  id: string;
+  name: string;
+}
+export interface ISelectSpecial {
+  id: string;
+  name: string;
+}

@@ -1,23 +1,13 @@
 import ShowAlert from "src/components/toasts/alerts";
 import {
   CreateMedicalFacilitiesInput,
-  GetMedicalfacilitiesQuery,
-  GetUserMedicalNonQueryVariables,
   MedicalFacilities,
-  User,
   useGetMedicalfacilitiesQuery,
   useGetUserMedicalNonQuery,
   useCreateMedicalFacilitiesMutation,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import {
   Button,
   Container,
@@ -40,8 +30,6 @@ import ImageUpload from "src/components/toasts/ImageUpload";
 import { ILinkImage, ILocation } from "src/assets/contains/item-interface";
 import MapComponent from "src/components/toasts/MapCpn";
 import Select from "react-select";
-import { geocodeByAddress } from "react-google-places-autocomplete";
-import { setFlagsFromString } from "v8";
 import { ETypeFile, uploadFilePromise } from "src/utils/upload";
 import { showToast } from "src/components/toasts/toasts";
 // import MapComponent from "src/components/toasts/GoogleMap";
@@ -457,7 +445,10 @@ function ListMedicalFacilitiesPage() {
               }
             />
           </Form.Group>
-          <Button type="submit" ref={refForm}></Button>
+          <Button
+            type="submit"
+            style={{ display: "none" }}
+            ref={refForm}></Button>
         </Form>
       </ModalCpn>
     </Container>

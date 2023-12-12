@@ -95,7 +95,11 @@ const GetAllDoctor = gql`
         discription
       }
       userId
-      degree
+      degree {
+        id
+        name
+        abbreviations
+      }
     }
   }
 `;
@@ -115,7 +119,11 @@ const GetAllMedicalFacilities = gql`
           type
           url
         }
-        degree
+        degree {
+          id
+          name
+          abbreviations
+        }
         email
         evaluate
         numberPhone
@@ -131,6 +139,40 @@ const GetAllMedicalFacilities = gql`
 const GetUserNotHasClinic = gql`
   query getUserMedicalNon {
     getUserMedicalNon {
+      id
+      username
+    }
+  }
+`;
+const GetAllDegreeSelect = gql`
+  query degreesSellect {
+    getAllDegree {
+      id
+      name
+    }
+  }
+`;
+
+const GetAllClinicSelect = gql`
+  query getClinicsSelect {
+    getMedicalfacilities {
+      id
+      companyName
+    }
+  }
+`;
+const GetAllSpecialSelect = gql`
+  query getSpecicalsSelect {
+    getAllMecialSpecialties {
+      id
+      name
+      discription
+    }
+  }
+`;
+const GetUserSelect = gql`
+  query getUserSelect($input: UserSelectInput!) {
+    getUserSelect(roleInput: $input) {
       id
       username
     }

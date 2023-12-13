@@ -35,8 +35,8 @@ const _navAdmin: Item[] = [
   },
   {
     component: "NavGroup",
-    name: "Chung",
-    iconName: "MdDisplaySettings",
+    name: "Quản lý",
+    iconName: "MdOutlineAdminPanelSettings",
     items: [
       {
         component: "NavItem",
@@ -62,11 +62,30 @@ const _navAdmin: Item[] = [
         to: "/general/customers",
         iconName: "MdOutlinePersonPin",
       },
+    ],
+  },
+  {
+    component: "NavGroup",
+    name: "Chung",
+    iconName: "MdDisplaySettings",
+    items: [
       {
         component: "NavItem",
         name: "Thông tin Website",
         to: "/general/client",
         iconName: "MdWebhook",
+      },
+      {
+        component: "NavItem",
+        name: "Chuyên Khoa",
+        to: "/general/special",
+        iconName: "MdOutlineMedicalServices",
+      },
+      {
+        component: "NavItem",
+        name: "Học vị",
+        to: "/general/degree",
+        iconName: "MdOutlineRotate90DegreesCw",
       },
     ],
   },
@@ -108,4 +127,40 @@ const _navClinic: Item[] = [
     ],
   },
 ];
-export { _navAdmin, _navClinic };
+// NAV DOCTOR
+const _navDoctor: Item[] = [
+  {
+    component: "NavItem",
+    name: "Trang chủ",
+    to: "/home",
+    iconName: "MdHomeFilled",
+    badge: {
+      nameBadge: "Mới",
+      color: "info",
+    },
+  },
+  {
+    component: "NavTitle",
+    name: "Doctor",
+  },
+  {
+    component: "NavGroup",
+    name: "Bệnh Nhân",
+    iconName: "MdOutlineManageAccounts",
+    items: [
+      {
+        component: "NavItem",
+        name: "Lịch làm việc",
+        to: "/",
+        iconName: "MdSupervisedUserCircle",
+      },
+      {
+        component: "NavItem",
+        name: "",
+        to: "/infor",
+        iconName: "MdWebhook",
+      },
+    ],
+  },
+];
+export { _navAdmin, _navClinic, _navDoctor };

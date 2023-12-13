@@ -77,3 +77,67 @@ export const CreateDoctor = gql`
     }
   }
 `;
+export const UpdateDoctor = gql`
+  mutation updateDoctor($input: UpdateDoctorInput!) {
+    updateDoctor(updateDoctorInput: $input) {
+      id
+    }
+  }
+`;
+export const DeleteDoctor = gql`
+  mutation deleteDoctor($input: String!) {
+    deleteDoctor(id: $input) {
+      id
+    }
+  }
+`;
+export const CreateDegree = gql`
+  mutation createDegree($input: CreateDegreeInput!) {
+    createDegree(input: $input) {
+      id
+      name
+      abbreviations
+    }
+  }
+`;
+export const UpdateDegree = gql`
+  mutation updateDegree($input: UpdateDegreeInput!) {
+    updateDegree(input: $input) {
+      id
+      name
+      abbreviations
+    }
+  }
+`;
+export const CreateMedicalSpecial = gql`
+  mutation createSpecial($input: CreateMedicalSpecialtiesInput!) {
+    createMecialSpecialties(mecicalSpecialtiesInput: $input) {
+      id
+      name
+      discription
+    }
+  }
+`;
+export const UpdateMedicalSpecial = gql`
+  mutation updateSpcial($input: UpdateMedicalSpecialtiesInput!) {
+    updateMecialSpecialties(updateSpecialtiesInput: $input) {
+      id
+    }
+  }
+`;
+export const DeleteMedicalSpecial = gql`
+  mutation deleteSpecial($input: String!) {
+    deleteMecialSpecialties(id: $input) {
+      id
+      name
+      discription
+    }
+  }
+`;
+export const DeleteDegree = gql`
+  mutation deleteDegree($input: String!) {
+    deleteDegree(input: $input) {
+      id
+    }
+  }
+`;

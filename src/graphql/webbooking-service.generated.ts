@@ -45,13 +45,13 @@ export type CreateDegreeInput = {
 
 export type CreateDoctorInput = {
   avatar?: InputMaybe<LinkImageInput>;
-  degreeId: Scalars['String']['input'];
+  degreeId?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   facilitiesId?: InputMaybe<Scalars['String']['input']>;
-  idSpecialist: Scalars['String']['input'];
+  idSpecialist?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateMedicalFacilitiesInput = {
@@ -96,10 +96,10 @@ export type Customer = {
 
 export type Degree = {
   __typename?: 'Degree';
-  abbreviations?: Maybe<Scalars['String']['output']>;
+  abbreviations: Scalars['String']['output'];
   doctor?: Maybe<Doctor>;
   id: Scalars['ID']['output'];
-  name?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
 };
 
 export type Doctor = {
@@ -107,14 +107,14 @@ export type Doctor = {
   avatar?: Maybe<LinkImage>;
   degree?: Maybe<Degree>;
   degreeId?: Maybe<Scalars['String']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
   evaluate?: Maybe<Scalars['Float']['output']>;
   facilitiesId?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['ID']['output']>;
+  id: Scalars['ID']['output'];
   idSpecialist?: Maybe<Scalars['String']['output']>;
   medicalSpecialties?: Maybe<MedicalSpecialties>;
-  name?: Maybe<Scalars['String']['output']>;
-  numberPhone?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  numberPhone: Scalars['String']['output'];
   userId?: Maybe<Scalars['String']['output']>;
 };
 
@@ -196,7 +196,7 @@ export type MedicalFacilities = {
   adress: Scalars['String']['output'];
   companyName: Scalars['String']['output'];
   discription: Scalars['String']['output'];
-  doctors?: Maybe<Doctor>;
+  doctors?: Maybe<Array<Doctor>>;
   email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   image: LinkImage;
@@ -221,13 +221,18 @@ export type Mutation = {
   createMedicalFacilities: MedicalFacilities;
   createProfile: Profile;
   createcustomer: Customer;
+  deleteDegree: Degree;
+  deleteDoctor: Doctor;
+  deleteMecialSpecialties: MedicalSpecialties;
   deleteUser: User;
   login: LoginRespone;
   logout: LogoutUser;
   removeProfile: Profile;
   signup: User;
   updateDegree: Degree;
+  updateDoctor: Doctor;
   updateGeneralInfor: GeneralInfor;
+  updateMecialSpecialties: MedicalSpecialties;
   updateProfile: Profile;
   updateRoles: User;
   updateSetting: Setting;
@@ -271,6 +276,21 @@ export type MutationCreatecustomerArgs = {
 };
 
 
+export type MutationDeleteDegreeArgs = {
+  input: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteDoctorArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteMecialSpecialtiesArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteUserArgs = {
   id: Scalars['String']['input'];
 };
@@ -296,8 +316,18 @@ export type MutationUpdateDegreeArgs = {
 };
 
 
+export type MutationUpdateDoctorArgs = {
+  updateDoctorInput: UpdateDoctorInput;
+};
+
+
 export type MutationUpdateGeneralInforArgs = {
   updateGeneralInforInput: GeneralInforUpdateInput;
+};
+
+
+export type MutationUpdateMecialSpecialtiesArgs = {
+  updateSpecialtiesInput: UpdateMedicalSpecialtiesInput;
 };
 
 
@@ -376,6 +406,24 @@ export type Setting = {
 
 export type UpdateDegreeInput = {
   abbreviations: Scalars['String']['input'];
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type UpdateDoctorInput = {
+  avatar?: InputMaybe<LinkImageInput>;
+  degreeId?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  facilitiesId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  idSpecialist?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  numberPhone?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateMedicalSpecialtiesInput = {
+  discription: Scalars['String']['input'];
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
@@ -492,7 +540,63 @@ export type CreateDoctorMutationVariables = Exact<{
 }>;
 
 
-export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'Doctor', id?: string | null } };
+export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'Doctor', id: string } };
+
+export type UpdateDoctorMutationVariables = Exact<{
+  input: UpdateDoctorInput;
+}>;
+
+
+export type UpdateDoctorMutation = { __typename?: 'Mutation', updateDoctor: { __typename?: 'Doctor', id: string } };
+
+export type DeleteDoctorMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteDoctorMutation = { __typename?: 'Mutation', deleteDoctor: { __typename?: 'Doctor', id: string } };
+
+export type CreateDegreeMutationVariables = Exact<{
+  input: CreateDegreeInput;
+}>;
+
+
+export type CreateDegreeMutation = { __typename?: 'Mutation', createDegree: { __typename?: 'Degree', id: string, name: string, abbreviations: string } };
+
+export type UpdateDegreeMutationVariables = Exact<{
+  input: UpdateDegreeInput;
+}>;
+
+
+export type UpdateDegreeMutation = { __typename?: 'Mutation', updateDegree: { __typename?: 'Degree', id: string, name: string, abbreviations: string } };
+
+export type CreateSpecialMutationVariables = Exact<{
+  input: CreateMedicalSpecialtiesInput;
+}>;
+
+
+export type CreateSpecialMutation = { __typename?: 'Mutation', createMecialSpecialties: { __typename?: 'MedicalSpecialties', id: string, name: string, discription: string } };
+
+export type UpdateSpcialMutationVariables = Exact<{
+  input: UpdateMedicalSpecialtiesInput;
+}>;
+
+
+export type UpdateSpcialMutation = { __typename?: 'Mutation', updateMecialSpecialties: { __typename?: 'MedicalSpecialties', id: string } };
+
+export type DeleteSpecialMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteSpecialMutation = { __typename?: 'Mutation', deleteMecialSpecialties: { __typename?: 'MedicalSpecialties', id: string, name: string, discription: string } };
+
+export type DeleteDegreeMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteDegreeMutation = { __typename?: 'Mutation', deleteDegree: { __typename?: 'Degree', id: string } };
 
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -522,12 +626,12 @@ export type GetCustomerQuery = { __typename?: 'Query', getcustomers: Array<{ __t
 export type GetDoctorsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDoctorsQuery = { __typename?: 'Query', getDoctors: Array<{ __typename?: 'Doctor', id?: string | null, name?: string | null, email?: string | null, numberPhone?: string | null, facilitiesId?: string | null, userId?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, medicalSpecialties?: { __typename?: 'MedicalSpecialties', id: string, name: string, discription: string } | null, degree?: { __typename?: 'Degree', id: string, name?: string | null, abbreviations?: string | null } | null }> };
+export type GetDoctorsQuery = { __typename?: 'Query', getDoctors: Array<{ __typename?: 'Doctor', id: string, name: string, email: string, numberPhone: string, facilitiesId?: string | null, userId?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, medicalSpecialties?: { __typename?: 'MedicalSpecialties', id: string, name: string, discription: string } | null, degree?: { __typename?: 'Degree', id: string, name: string, abbreviations: string } | null }> };
 
 export type GetMedicalfacilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMedicalfacilitiesQuery = { __typename?: 'Query', getMedicalfacilities: Array<{ __typename?: 'MedicalFacilities', id: string, companyName: string, discription: string, adress: string, doctors?: { __typename?: 'Doctor', id?: string | null, userId?: string | null, name?: string | null, email?: string | null, evaluate?: number | null, numberPhone?: string | null, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, degree?: { __typename?: 'Degree', id: string, name?: string | null, abbreviations?: string | null } | null } | null, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
+export type GetMedicalfacilitiesQuery = { __typename?: 'Query', getMedicalfacilities: Array<{ __typename?: 'MedicalFacilities', id: string, companyName: string, discription: string, adress: string, doctors?: Array<{ __typename?: 'Doctor', id: string, userId?: string | null, name: string, email: string, evaluate?: number | null, numberPhone: string, avatar?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null, degree?: { __typename?: 'Degree', id: string, name: string, abbreviations: string } | null }> | null, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
 
 export type GetUserMedicalNonQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -537,7 +641,7 @@ export type GetUserMedicalNonQuery = { __typename?: 'Query', getUserMedicalNon: 
 export type DegreesSellectQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DegreesSellectQuery = { __typename?: 'Query', getAllDegree: Array<{ __typename?: 'Degree', id: string, name?: string | null }> };
+export type DegreesSellectQuery = { __typename?: 'Query', getAllDegree: Array<{ __typename?: 'Degree', id: string, name: string }> };
 
 export type GetClinicsSelectQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -555,6 +659,16 @@ export type GetUserSelectQueryVariables = Exact<{
 
 
 export type GetUserSelectQuery = { __typename?: 'Query', getUserSelect: Array<{ __typename?: 'User', id: string, username: string }> };
+
+export type GetAllDregreeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllDregreeQuery = { __typename?: 'Query', getAllDegree: Array<{ __typename?: 'Degree', id: string, name: string, abbreviations: string }> };
+
+export type GetAllSpecialQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllSpecialQuery = { __typename?: 'Query', getAllMecialSpecialties: Array<{ __typename?: 'MedicalSpecialties', id: string, name: string, discription: string }> };
 
 
 export const LoginDocument = gql`
@@ -843,6 +957,278 @@ export function useCreateDoctorMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateDoctorMutationHookResult = ReturnType<typeof useCreateDoctorMutation>;
 export type CreateDoctorMutationResult = Apollo.MutationResult<CreateDoctorMutation>;
 export type CreateDoctorMutationOptions = Apollo.BaseMutationOptions<CreateDoctorMutation, CreateDoctorMutationVariables>;
+export const UpdateDoctorDocument = gql`
+    mutation updateDoctor($input: UpdateDoctorInput!) {
+  updateDoctor(updateDoctorInput: $input) {
+    id
+  }
+}
+    `;
+export type UpdateDoctorMutationFn = Apollo.MutationFunction<UpdateDoctorMutation, UpdateDoctorMutationVariables>;
+
+/**
+ * __useUpdateDoctorMutation__
+ *
+ * To run a mutation, you first call `useUpdateDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDoctorMutation, { data, loading, error }] = useUpdateDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDoctorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDoctorMutation, UpdateDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDoctorMutation, UpdateDoctorMutationVariables>(UpdateDoctorDocument, options);
+      }
+export type UpdateDoctorMutationHookResult = ReturnType<typeof useUpdateDoctorMutation>;
+export type UpdateDoctorMutationResult = Apollo.MutationResult<UpdateDoctorMutation>;
+export type UpdateDoctorMutationOptions = Apollo.BaseMutationOptions<UpdateDoctorMutation, UpdateDoctorMutationVariables>;
+export const DeleteDoctorDocument = gql`
+    mutation deleteDoctor($input: String!) {
+  deleteDoctor(id: $input) {
+    id
+  }
+}
+    `;
+export type DeleteDoctorMutationFn = Apollo.MutationFunction<DeleteDoctorMutation, DeleteDoctorMutationVariables>;
+
+/**
+ * __useDeleteDoctorMutation__
+ *
+ * To run a mutation, you first call `useDeleteDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDoctorMutation, { data, loading, error }] = useDeleteDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDoctorMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDoctorMutation, DeleteDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDoctorMutation, DeleteDoctorMutationVariables>(DeleteDoctorDocument, options);
+      }
+export type DeleteDoctorMutationHookResult = ReturnType<typeof useDeleteDoctorMutation>;
+export type DeleteDoctorMutationResult = Apollo.MutationResult<DeleteDoctorMutation>;
+export type DeleteDoctorMutationOptions = Apollo.BaseMutationOptions<DeleteDoctorMutation, DeleteDoctorMutationVariables>;
+export const CreateDegreeDocument = gql`
+    mutation createDegree($input: CreateDegreeInput!) {
+  createDegree(input: $input) {
+    id
+    name
+    abbreviations
+  }
+}
+    `;
+export type CreateDegreeMutationFn = Apollo.MutationFunction<CreateDegreeMutation, CreateDegreeMutationVariables>;
+
+/**
+ * __useCreateDegreeMutation__
+ *
+ * To run a mutation, you first call `useCreateDegreeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDegreeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDegreeMutation, { data, loading, error }] = useCreateDegreeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDegreeMutation(baseOptions?: Apollo.MutationHookOptions<CreateDegreeMutation, CreateDegreeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDegreeMutation, CreateDegreeMutationVariables>(CreateDegreeDocument, options);
+      }
+export type CreateDegreeMutationHookResult = ReturnType<typeof useCreateDegreeMutation>;
+export type CreateDegreeMutationResult = Apollo.MutationResult<CreateDegreeMutation>;
+export type CreateDegreeMutationOptions = Apollo.BaseMutationOptions<CreateDegreeMutation, CreateDegreeMutationVariables>;
+export const UpdateDegreeDocument = gql`
+    mutation updateDegree($input: UpdateDegreeInput!) {
+  updateDegree(input: $input) {
+    id
+    name
+    abbreviations
+  }
+}
+    `;
+export type UpdateDegreeMutationFn = Apollo.MutationFunction<UpdateDegreeMutation, UpdateDegreeMutationVariables>;
+
+/**
+ * __useUpdateDegreeMutation__
+ *
+ * To run a mutation, you first call `useUpdateDegreeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDegreeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDegreeMutation, { data, loading, error }] = useUpdateDegreeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDegreeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDegreeMutation, UpdateDegreeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDegreeMutation, UpdateDegreeMutationVariables>(UpdateDegreeDocument, options);
+      }
+export type UpdateDegreeMutationHookResult = ReturnType<typeof useUpdateDegreeMutation>;
+export type UpdateDegreeMutationResult = Apollo.MutationResult<UpdateDegreeMutation>;
+export type UpdateDegreeMutationOptions = Apollo.BaseMutationOptions<UpdateDegreeMutation, UpdateDegreeMutationVariables>;
+export const CreateSpecialDocument = gql`
+    mutation createSpecial($input: CreateMedicalSpecialtiesInput!) {
+  createMecialSpecialties(mecicalSpecialtiesInput: $input) {
+    id
+    name
+    discription
+  }
+}
+    `;
+export type CreateSpecialMutationFn = Apollo.MutationFunction<CreateSpecialMutation, CreateSpecialMutationVariables>;
+
+/**
+ * __useCreateSpecialMutation__
+ *
+ * To run a mutation, you first call `useCreateSpecialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSpecialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSpecialMutation, { data, loading, error }] = useCreateSpecialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSpecialMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpecialMutation, CreateSpecialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSpecialMutation, CreateSpecialMutationVariables>(CreateSpecialDocument, options);
+      }
+export type CreateSpecialMutationHookResult = ReturnType<typeof useCreateSpecialMutation>;
+export type CreateSpecialMutationResult = Apollo.MutationResult<CreateSpecialMutation>;
+export type CreateSpecialMutationOptions = Apollo.BaseMutationOptions<CreateSpecialMutation, CreateSpecialMutationVariables>;
+export const UpdateSpcialDocument = gql`
+    mutation updateSpcial($input: UpdateMedicalSpecialtiesInput!) {
+  updateMecialSpecialties(updateSpecialtiesInput: $input) {
+    id
+  }
+}
+    `;
+export type UpdateSpcialMutationFn = Apollo.MutationFunction<UpdateSpcialMutation, UpdateSpcialMutationVariables>;
+
+/**
+ * __useUpdateSpcialMutation__
+ *
+ * To run a mutation, you first call `useUpdateSpcialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSpcialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSpcialMutation, { data, loading, error }] = useUpdateSpcialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateSpcialMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSpcialMutation, UpdateSpcialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSpcialMutation, UpdateSpcialMutationVariables>(UpdateSpcialDocument, options);
+      }
+export type UpdateSpcialMutationHookResult = ReturnType<typeof useUpdateSpcialMutation>;
+export type UpdateSpcialMutationResult = Apollo.MutationResult<UpdateSpcialMutation>;
+export type UpdateSpcialMutationOptions = Apollo.BaseMutationOptions<UpdateSpcialMutation, UpdateSpcialMutationVariables>;
+export const DeleteSpecialDocument = gql`
+    mutation deleteSpecial($input: String!) {
+  deleteMecialSpecialties(id: $input) {
+    id
+    name
+    discription
+  }
+}
+    `;
+export type DeleteSpecialMutationFn = Apollo.MutationFunction<DeleteSpecialMutation, DeleteSpecialMutationVariables>;
+
+/**
+ * __useDeleteSpecialMutation__
+ *
+ * To run a mutation, you first call `useDeleteSpecialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSpecialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSpecialMutation, { data, loading, error }] = useDeleteSpecialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteSpecialMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSpecialMutation, DeleteSpecialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSpecialMutation, DeleteSpecialMutationVariables>(DeleteSpecialDocument, options);
+      }
+export type DeleteSpecialMutationHookResult = ReturnType<typeof useDeleteSpecialMutation>;
+export type DeleteSpecialMutationResult = Apollo.MutationResult<DeleteSpecialMutation>;
+export type DeleteSpecialMutationOptions = Apollo.BaseMutationOptions<DeleteSpecialMutation, DeleteSpecialMutationVariables>;
+export const DeleteDegreeDocument = gql`
+    mutation deleteDegree($input: String!) {
+  deleteDegree(input: $input) {
+    id
+  }
+}
+    `;
+export type DeleteDegreeMutationFn = Apollo.MutationFunction<DeleteDegreeMutation, DeleteDegreeMutationVariables>;
+
+/**
+ * __useDeleteDegreeMutation__
+ *
+ * To run a mutation, you first call `useDeleteDegreeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDegreeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDegreeMutation, { data, loading, error }] = useDeleteDegreeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDegreeMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDegreeMutation, DeleteDegreeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDegreeMutation, DeleteDegreeMutationVariables>(DeleteDegreeDocument, options);
+      }
+export type DeleteDegreeMutationHookResult = ReturnType<typeof useDeleteDegreeMutation>;
+export type DeleteDegreeMutationResult = Apollo.MutationResult<DeleteDegreeMutation>;
+export type DeleteDegreeMutationOptions = Apollo.BaseMutationOptions<DeleteDegreeMutation, DeleteDegreeMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -1343,3 +1729,75 @@ export function useGetUserSelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetUserSelectQueryHookResult = ReturnType<typeof useGetUserSelectQuery>;
 export type GetUserSelectLazyQueryHookResult = ReturnType<typeof useGetUserSelectLazyQuery>;
 export type GetUserSelectQueryResult = Apollo.QueryResult<GetUserSelectQuery, GetUserSelectQueryVariables>;
+export const GetAllDregreeDocument = gql`
+    query getAllDregree {
+  getAllDegree {
+    id
+    name
+    abbreviations
+  }
+}
+    `;
+
+/**
+ * __useGetAllDregreeQuery__
+ *
+ * To run a query within a React component, call `useGetAllDregreeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllDregreeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllDregreeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllDregreeQuery(baseOptions?: Apollo.QueryHookOptions<GetAllDregreeQuery, GetAllDregreeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllDregreeQuery, GetAllDregreeQueryVariables>(GetAllDregreeDocument, options);
+      }
+export function useGetAllDregreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllDregreeQuery, GetAllDregreeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllDregreeQuery, GetAllDregreeQueryVariables>(GetAllDregreeDocument, options);
+        }
+export type GetAllDregreeQueryHookResult = ReturnType<typeof useGetAllDregreeQuery>;
+export type GetAllDregreeLazyQueryHookResult = ReturnType<typeof useGetAllDregreeLazyQuery>;
+export type GetAllDregreeQueryResult = Apollo.QueryResult<GetAllDregreeQuery, GetAllDregreeQueryVariables>;
+export const GetAllSpecialDocument = gql`
+    query getAllSpecial {
+  getAllMecialSpecialties {
+    id
+    name
+    discription
+  }
+}
+    `;
+
+/**
+ * __useGetAllSpecialQuery__
+ *
+ * To run a query within a React component, call `useGetAllSpecialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllSpecialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllSpecialQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllSpecialQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSpecialQuery, GetAllSpecialQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllSpecialQuery, GetAllSpecialQueryVariables>(GetAllSpecialDocument, options);
+      }
+export function useGetAllSpecialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSpecialQuery, GetAllSpecialQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllSpecialQuery, GetAllSpecialQueryVariables>(GetAllSpecialDocument, options);
+        }
+export type GetAllSpecialQueryHookResult = ReturnType<typeof useGetAllSpecialQuery>;
+export type GetAllSpecialLazyQueryHookResult = ReturnType<typeof useGetAllSpecialLazyQuery>;
+export type GetAllSpecialQueryResult = Apollo.QueryResult<GetAllSpecialQuery, GetAllSpecialQueryVariables>;

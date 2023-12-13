@@ -6,6 +6,8 @@ import ListCustomerPage from "src/pages/ListCustomer/ListCustomer";
 import ListDoctorPage from "src/pages/ListDoctor/ListDoctor";
 import ListMedicalFacilitiesPage from "src/pages/ListMedicalFacilities/ListMedicalFacilities";
 import ListClinicPage from "src/pages/ListMedicalFacilities/ListClinic";
+import ListDegreePage from "src/pages/ListDegree/ListDegreePage";
+import ListMedicalSpecialPage from "src/pages/ListMedicalSpecial/ListMedicalSpecial";
 interface IRoute {
   path: string;
   name: string;
@@ -20,6 +22,12 @@ const routes: IRoute[] = [
   { path: "/general/customers", name: "Dashboard", element: ListCustomerPage },
   { path: "/general/doctors", name: "Dashboard", element: ListDoctorPage },
   { path: "/general/client", name: "Dashboard", element: GeneralInforWebPage },
+  { path: "/general/degree", name: "Dashboard", element: ListDegreePage },
+  {
+    path: "/general/special",
+    name: "Dashboard",
+    element: ListMedicalSpecialPage,
+  },
   {
     path: "/general/clinics",
     name: "Dashboard",

@@ -5,16 +5,21 @@ import {
   ISelectDegree,
   ISelectSpecial,
 } from "src/assets/contains/item-interface";
-import { CreateDoctorInput } from "src/graphql/webbooking-service.generated";
+import {
+  CreateDoctorInput,
+  UpdateDoctorInput,
+} from "src/graphql/webbooking-service.generated";
 
 interface IFormAddDoctor {
   createDoctor: CreateDoctorInput | undefined;
+  // updateDoctor: UpdateDoctorInput | undefined;
   listUser: ISelecUser[] | undefined;
   listDegree: ISelectDegree[] | undefined;
   listClinic: ISelectClinic[] | undefined;
   listSpecial: ISelectSpecial[] | undefined;
   showModal: boolean;
   imageFile: Blob | null;
+  update: string | undefined;
 }
 export enum EKeyDoctor {
   avatar = "avatar",
@@ -61,6 +66,7 @@ export const initState: IFormAddDoctor = {
   listUser: undefined,
   showModal: false,
   imageFile: null,
+  update: undefined,
 };
 function isIKeyDoctor(value: any): value is IKeyDoctor {
   return [
@@ -78,12 +84,17 @@ function isIKeyDoctor(value: any): value is IKeyDoctor {
 const SET_NAME = "set-name";
 const RESEST = "reset";
 const SET_SHOW_MODAL = "set-show-modal";
+const SET_UPDATE_ID = "set-update-id";
+const SET_CREATE = "set-create";
 const HANDLE_CHANGE_FORM = "handles-change-form";
 const HC_LIST_DEGREE = "hc-list-degree";
 const HC_LIST_CLINIC = "hc-list-clinic";
 const HC_LIST_SPECIAL = "hc-list-special";
 const HC_LIST_USER = "hc-list-user";
 const hC_IMAGE_FILE = "hc-image-file";
+
+// const hC_CREATE_DOCTOR = "hc-create-doctor";
+const SET_UPDATE_DOCTOR = "hc-update-doctor";
 
 // action callback
 export const setName = (payload: string) => ({
@@ -110,6 +121,11 @@ export const hcListUser = (payload: any) => ({
   type: HC_LIST_USER,
   payload,
 });
+export const setUpdate = (payload: string | undefined) => ({
+  type: SET_UPDATE_ID,
+  payload,
+});
+// export const hCCreateDoctor =
 export const handleChangeForm = (name: string, value: any): IActionDoctor => {
   console.log("name: ", name, ":", value);
   return {
@@ -125,6 +141,11 @@ export const hcImageFile = (payload: any) => ({
 export const handleReset = () => ({
   type: RESEST,
   payload: initState,
+});
+
+export const setCreateDoctor = (payload: CreateDoctorInput) => ({
+  type: SET_CREATE,
+  payload,
 });
 
 // REDUCER ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -189,6 +210,16 @@ export const reducer = (
       };
     case RESEST:
       return initState;
+    case SET_UPDATE_ID:
+      return {
+        ...state,
+        update: action.payload,
+      };
+    case SET_CREATE:
+      return {
+        ...state,
+        createDoctor: action.payload,
+      };
     default:
       return state;
   }

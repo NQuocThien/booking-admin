@@ -178,3 +178,21 @@ const GetUserSelect = gql`
     }
   }
 `;
+const GetAllDegree = gql`
+  query getAllDregree {
+    getAllDegree {
+      id
+      name
+      abbreviations
+    }
+  }
+`;
+const GetAllMedicalSpecial = gql`
+  query getAllSpecial {
+    getAllMecialSpecialties {
+      id
+      name
+      discription
+    }
+  }
+`;

@@ -3,24 +3,19 @@ import {
   CreateDoctorInput,
   Doctor,
   LinkImage,
+  UpdateDoctorInput,
   useCreateDoctorMutation,
   useDegreesSellectQuery,
+  useDeleteDoctorMutation,
   useGetClinicsSelectQuery,
   useGetDoctorsQuery,
   useGetSpecicalsSelectQuery,
   useGetUserMedicalNonQuery,
   useGetUserSelectQuery,
+  useUpdateDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
-import {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useReducer, useRef, useState } from "react";
 import {
   Button,
   Container,
@@ -45,7 +40,9 @@ import {
   hcListUser,
   initState,
   reducer,
+  setCreateDoctor,
   setShowModal,
+  setUpdate,
 } from "./type";
 import Select from "react-select";
 import { ERoles } from "src/assets/contains/component-enum";
@@ -107,6 +104,22 @@ function ListDoctorPage() {
       },
     },
   });
+  const [deleteDoctor] = useDeleteDoctorMutation({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  const [updateDoctor] = useUpdateDoctorMutation({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
   useEffect(() => {
     dispatch(hCListDegree(dataDegree?.getAllDegree));
     dispatch(hCListClinic(dataClinics?.getMedicalfacilities));
@@ -124,8 +137,6 @@ function ListDoctorPage() {
   console.log("===> state: ", state);
 
   const [formValid, setFormValid] = useState<boolean>(false);
-  const [imageFile, setImageFile] = useState<Blob | null>(null);
-
   // function main
   const handleSearch = () => {
     setFiltered(() =>
@@ -143,7 +154,18 @@ function ListDoctorPage() {
 
   // function modal
   const hanldeClose = () => {
-    dispatch(setShowModal(false));
+    setFormValid(false);
+    dispatch(handleReset());
+  };
+  const handleDeleteDoctor = async (id: string) => {
+    await deleteDoctor({
+      variables: {
+        input: id,
+      },
+    }).then(() => {
+      showToast("Xóa thành công 👍");
+      refetch();
+    });
   };
   const handleSave = () => {
     setFormValid(true);
@@ -151,20 +173,50 @@ function ListDoctorPage() {
     // dispatch(setShowModal(false));
   };
   const handleSaveDoctor = async (linkImage: LinkImage) => {
-    var doctorInput: CreateDoctorInput;
-    if (state.createDoctor) {
-      doctorInput = {
-        ...state.createDoctor,
-        avatar: linkImage,
-      };
-      await createDoctor({
-        variables: {
-          input: doctorInput,
-        },
-      }).then(() => {
-        showToast("Thêm bác sĩ thành công 🤑", "success", 2000);
-        dispatch(handleReset());
-      });
+    if (!state.update) {
+      var doctorInput: CreateDoctorInput;
+      if (state.createDoctor) {
+        doctorInput = {
+          ...state.createDoctor,
+          avatar: linkImage,
+        };
+        await createDoctor({
+          variables: {
+            input: doctorInput,
+          },
+        }).then(() => {
+          showToast("Thêm bác sĩ thành công 🤑", "success", 2000);
+          setFormValid(false);
+          dispatch(handleReset());
+          refetch();
+        });
+      }
+    } else if (state.update) {
+      // var updateDoctorInput: UpdateDoctorInput;
+      if (state.createDoctor) {
+        const updateDoctorInput: UpdateDoctorInput = {
+          id: state.update,
+          name: state.createDoctor.name,
+          avatar: linkImage,
+          degreeId: state.createDoctor.degreeId,
+          email: state.createDoctor.email,
+          facilitiesId: state.createDoctor.facilitiesId,
+          idSpecialist: state.createDoctor.idSpecialist,
+          numberPhone: state.createDoctor.numberPhone,
+          userId: state.createDoctor.userId,
+        };
+        console.log("test Input", updateDoctorInput);
+        await updateDoctor({
+          variables: {
+            input: updateDoctorInput,
+          },
+        }).then(() => {
+          showToast("Sửa bác sĩ thành công 🤑", "success", 2000);
+          dispatch(handleReset());
+          setFormValid(false);
+          refetch();
+        });
+      }
     }
   };
   const hanldeSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -216,6 +268,7 @@ function ListDoctorPage() {
             <th>Email</th>
             <th>Học vị</th>
             <th>Chuyên khoa</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -228,6 +281,28 @@ function ListDoctorPage() {
                 <td>{c.email}</td>
                 <td>{c.degree?.name}</td>
                 <td>{c.medicalSpecialties?.name}</td>
+                <td>
+                  <Button
+                    variant="outline-primary"
+                    onClick={(e) => {
+                      var { id, ...doctor } = c;
+
+                      dispatch(setCreateDoctor(doctor));
+                      dispatch(setShowModal(true));
+                      // dispatch
+                      dispatch(setUpdate(id));
+                    }}
+                    size="sm">
+                    Sửa
+                  </Button>
+                  <Button
+                    className="mx-1"
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDeleteDoctor(c.id)}>
+                    Xóa
+                  </Button>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -237,7 +312,10 @@ function ListDoctorPage() {
         handleClose={hanldeClose}
         fullscreen={true}
         handleSave={handleSave}
-        headerText="Thêm bác sĩ">
+        headerText={
+          (!state.update && "Thêm bác sĩ") ||
+          'Sửa bác sĩ "' + state.createDoctor?.name + '"'
+        }>
         <Form validated={formValid} onSubmit={hanldeSubmit}>
           <Form.Group className="mb-3" controlId="">
             <Form.Label>Họ tên: </Form.Label>
@@ -300,7 +378,10 @@ function ListDoctorPage() {
                   dispatch(hcImageFile(e.target.files?.[0]));
               }}
               imageFile={state.imageFile}
-              src={"/default.jpg"}
+              src={
+                (state.update && state.createDoctor?.avatar?.url) ||
+                "/default.jpg"
+              }
             />
           </Form.Group>
 
@@ -309,6 +390,7 @@ function ListDoctorPage() {
             <Select
               // defaultValue={'test'}
               required
+              // value={state.update && ({label: '', value: state.createDoctor?.userId})}
               placeholder="Chọn tài khoản"
               onChange={(e) => {
                 dispatch(handleChangeForm(EKeyDoctor.degreeId, e?.value));
@@ -383,6 +465,6 @@ function ListDoctorPage() {
         </Form>
       </ModalCpn>
     </Container>
-  );
-}
+  ); //return
+} // end
 export default ListDoctorPage;

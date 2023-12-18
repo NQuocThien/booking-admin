@@ -87,6 +87,12 @@ const _navAdmin: Item[] = [
         to: "/general/degree",
         iconName: "MdOutlineRotate90DegreesCw",
       },
+      {
+        component: "NavItem",
+        name: "Gói khám",
+        to: "/general/carepackage",
+        iconName: "MdMedication",
+      },
     ],
   },
 ];
@@ -108,21 +114,25 @@ const _navClinic: Item[] = [
     name: "Clinic",
   },
   {
+    component: "NavItem",
+    name: "CSYT",
+    to: "/home/myclinic",
+    iconName: "MdMedicalServices",
+    badge: {
+      nameBadge: "+",
+      color: "info",
+    },
+  },
+  {
     component: "NavGroup",
-    name: "Bệnh Nhân",
+    name: "Quản lý",
     iconName: "MdOutlineManageAccounts",
     items: [
       {
         component: "NavItem",
-        name: "Danh sách đăng ký",
-        to: "/",
+        name: "Gói khám",
+        to: "/clinic/manager/carepackage",
         iconName: "MdSupervisedUserCircle",
-      },
-      {
-        component: "NavItem",
-        name: "",
-        to: "/infor",
-        iconName: "MdWebhook",
       },
     ],
   },
@@ -142,6 +152,16 @@ const _navDoctor: Item[] = [
   {
     component: "NavTitle",
     name: "Doctor",
+  },
+  {
+    component: "NavItem",
+    name: "Thông tin BS",
+    to: "/home/mydoctor",
+    iconName: "GiDoctorFace",
+    badge: {
+      nameBadge: "Mới",
+      color: "info",
+    },
   },
   {
     component: "NavGroup",

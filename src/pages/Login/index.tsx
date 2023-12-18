@@ -28,7 +28,6 @@ function LoginPage() {
     fetchPolicy: "no-cache",
     onCompleted: async (data) => {
       showToast("👍Đăng nhập thành công 👌👌", "success", 2000);
-      // console.log('Lo gin thành cộng')
       const newToken = data?.login?.access_token;
       sigin(newToken);
     },

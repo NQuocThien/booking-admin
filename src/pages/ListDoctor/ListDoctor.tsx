@@ -10,7 +10,6 @@ import {
   useGetClinicsSelectQuery,
   useGetDoctorsQuery,
   useGetSpecicalsSelectQuery,
-  useGetUserMedicalNonQuery,
   useGetUserSelectQuery,
   useUpdateDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
@@ -40,14 +39,13 @@ import {
   hcListUser,
   initState,
   reducer,
-  setCreateDoctor,
   setShowModal,
-  setUpdate,
 } from "./type";
 import Select from "react-select";
 import { ERoles } from "src/assets/contains/component-enum";
 import { uploadFilePromise } from "src/utils/upload";
 import { showToast } from "src/components/toasts/toasts";
+import { Link } from "react-router-dom";
 function ListDoctorPage() {
   const token = getToken();
   const { refetch, data, loading, error } = useGetDoctorsQuery({
@@ -134,7 +132,7 @@ function ListDoctorPage() {
 
   // sate modal
   const [state, dispatch] = useReducer(reducer, initState);
-  console.log("===> state: ", state);
+  // console.log("===> state: ", state);
 
   const [formValid, setFormValid] = useState<boolean>(false);
   // function main
@@ -165,6 +163,7 @@ function ListDoctorPage() {
     }).then(() => {
       showToast("Xóa thành công 👍");
       refetch();
+      refetchUser();
     });
   };
   const handleSave = () => {
@@ -189,6 +188,7 @@ function ListDoctorPage() {
           setFormValid(false);
           dispatch(handleReset());
           refetch();
+          refetchUser();
         });
       }
     } else if (state.update) {
@@ -205,7 +205,7 @@ function ListDoctorPage() {
           numberPhone: state.createDoctor.numberPhone,
           userId: state.createDoctor.userId,
         };
-        console.log("test Input", updateDoctorInput);
+        // console.log("test Input", updateDoctorInput);
         await updateDoctor({
           variables: {
             input: updateDoctorInput,
@@ -226,13 +226,21 @@ function ListDoctorPage() {
       if (state.imageFile) {
         uploadFilePromise("image", state.imageFile).then((res) => {
           showToast("Lưu ảnh thành công ✌️", undefined, 1500);
-          console.log("link image: ", res);
+          // console.log("link image: ", res);
           handleSaveDoctor(res);
         });
       }
     }
     console.log("Not Valid");
   };
+  const options =
+    state.listUser &&
+    state.listUser
+      .filter((i) => !i.doctor?.id)
+      .map((i) => ({
+        value: i.id,
+        label: i.username,
+      }));
   // return
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) {
@@ -282,23 +290,14 @@ function ListDoctorPage() {
                 <td>{c.degree?.name}</td>
                 <td>{c.medicalSpecialties?.name}</td>
                 <td>
-                  <Button
-                    variant="outline-primary"
-                    onClick={(e) => {
-                      var { id, ...doctor } = c;
-
-                      dispatch(setCreateDoctor(doctor));
-                      dispatch(setShowModal(true));
-                      // dispatch
-                      dispatch(setUpdate(id));
-                    }}
-                    size="sm">
+                  <Link
+                    className="btn btn-outline-warning"
+                    to={`/update/doctor/${c.id}`}>
                     Sửa
-                  </Button>
+                  </Link>
                   <Button
                     className="mx-1"
                     variant="outline-danger"
-                    size="sm"
                     onClick={() => handleDeleteDoctor(c.id)}>
                     Xóa
                   </Button>
@@ -448,13 +447,7 @@ function ListDoctorPage() {
                 onChange={(e) => {
                   dispatch(handleChangeForm(EKeyDoctor.userId, e?.value));
                 }}
-                options={
-                  state.listUser &&
-                  state.listUser.map((i) => ({
-                    value: i.id,
-                    label: i.username,
-                  }))
-                }
+                options={options}
               />
             </Form.Group>
           </Form.Group>

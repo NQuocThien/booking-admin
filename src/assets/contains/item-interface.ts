@@ -21,6 +21,9 @@ export interface IAction {
 export interface ISelecUser {
   id: string;
   username: string;
+  doctor: {
+    id: string;
+  };
 }
 export interface ISelectClinic {
   id: string;

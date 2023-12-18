@@ -4,11 +4,12 @@ import {
   useGetCustomerQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { Button, Form, InputGroup, Spinner, Table } from "react-bootstrap";
+import { useLayoutEffect, useState } from "react";
+import { Button, Spinner, Table } from "react-bootstrap";
 import SearchInputCpn from "src/components/toasts/InputSearch";
 import { ImProfile } from "react-icons/im";
 import { FaHistory } from "react-icons/fa";
+
 function ListCustomerPage() {
   const token = getToken();
   const { refetch, data, loading, error } = useGetCustomerQuery({
@@ -21,8 +22,6 @@ function ListCustomerPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filtered, setFiltered] = useState<Customer[]>();
   const handleSearch = () => {
-    // console.log("search", searchTerm, listCustomer);
-
     setFiltered(() =>
       searchTerm
         ? listCustomer?.filter((c) =>
@@ -32,7 +31,7 @@ function ListCustomerPage() {
     );
   };
   useLayoutEffect(() => {
-    setListCustomer(data?.getcustomers);
+    if (data?.getcustomers) setListCustomer(data?.getcustomers);
     // console.log("test re", data);
     handleSearch();
   }, [data, listCustomer]);
@@ -63,11 +62,7 @@ function ListCustomerPage() {
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{c.fullname}</td>
-                <td>
-                  <Button variant="outline-info">
-                    <FaHistory />
-                  </Button>
-                </td>
+                <td>{c.profile?.length} hồ sơ</td>
                 <td>
                   <Button variant="outline-info">
                     <ImProfile />

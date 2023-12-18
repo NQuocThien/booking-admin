@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-export const Login = gql`
+const Login = gql`
   mutation login($input: LoginUserInput!) {
     login(loginUserInput: $input) {
       access_token
@@ -10,21 +10,28 @@ export const Login = gql`
     }
   }
 `;
-export const UpdateUserById = gql`
+const UpdateUserById = gql`
   mutation UdateUserByID($input: UpdateUserInput!) {
     updateUser(updateUserInput: $input) {
       id
     }
   }
 `;
-export const UpdateUserByIdWithPass = gql`
+const CreateUserByAdmin = gql`
+  mutation singupByAdmin($input: CreateUserByAdminInput!) {
+    signupUser(createUserInput: $input) {
+      id
+    }
+  }
+`;
+const UpdateUserByIdWithPass = gql`
   mutation UpdateUserByIdWithPass($input: UpdateUserWithPassInput!) {
     updateUserWithPass(updateUserInput: $input) {
       id
     }
   }
 `;
-export const UpdateGeneralInfor = gql`
+const UpdateGeneralInfor = gql`
   mutation UpdateGeneralInfor($input: GeneralInforUpdateInput!) {
     updateGeneralInfor(updateGeneralInforInput: $input) {
       company
@@ -48,7 +55,7 @@ export const UpdateGeneralInfor = gql`
     }
   }
 `;
-export const ActiveUser = gql`
+const ActiveUser = gql`
   mutation ActiveUser($input: String!) {
     activeUser(id: $input) {
       username
@@ -56,42 +63,42 @@ export const ActiveUser = gql`
     }
   }
 `;
-export const UpdateRoles = gql`
+const UpdateRoles = gql`
   mutation UpdateRoles($input: UpdateRolesInput!) {
     updateRoles(updateRolesInput: $input) {
       roles
     }
   }
 `;
-export const CreateMedicalFacilities = gql`
+const CreateMedicalFacilities = gql`
   mutation createMedicalFacilities($input: CreateMedicalFacilitiesInput!) {
     createMedicalFacilities(createMedicalFacilitiesInput: $input) {
       id
     }
   }
 `;
-export const CreateDoctor = gql`
+const CreateDoctor = gql`
   mutation createDoctor($input: CreateDoctorInput!) {
     createDoctor(createDoctorInput: $input) {
       id
     }
   }
 `;
-export const UpdateDoctor = gql`
+const UpdateDoctor = gql`
   mutation updateDoctor($input: UpdateDoctorInput!) {
     updateDoctor(updateDoctorInput: $input) {
       id
     }
   }
 `;
-export const DeleteDoctor = gql`
+const DeleteDoctor = gql`
   mutation deleteDoctor($input: String!) {
     deleteDoctor(id: $input) {
       id
     }
   }
 `;
-export const CreateDegree = gql`
+const CreateDegree = gql`
   mutation createDegree($input: CreateDegreeInput!) {
     createDegree(input: $input) {
       id
@@ -100,7 +107,7 @@ export const CreateDegree = gql`
     }
   }
 `;
-export const UpdateDegree = gql`
+const UpdateDegree = gql`
   mutation updateDegree($input: UpdateDegreeInput!) {
     updateDegree(input: $input) {
       id
@@ -109,7 +116,7 @@ export const UpdateDegree = gql`
     }
   }
 `;
-export const CreateMedicalSpecial = gql`
+const CreateMedicalSpecial = gql`
   mutation createSpecial($input: CreateMedicalSpecialtiesInput!) {
     createMecialSpecialties(mecicalSpecialtiesInput: $input) {
       id
@@ -118,14 +125,14 @@ export const CreateMedicalSpecial = gql`
     }
   }
 `;
-export const UpdateMedicalSpecial = gql`
+const UpdateMedicalSpecial = gql`
   mutation updateSpcial($input: UpdateMedicalSpecialtiesInput!) {
     updateMecialSpecialties(updateSpecialtiesInput: $input) {
       id
     }
   }
 `;
-export const DeleteMedicalSpecial = gql`
+const DeleteMedicalSpecial = gql`
   mutation deleteSpecial($input: String!) {
     deleteMecialSpecialties(id: $input) {
       id
@@ -134,10 +141,67 @@ export const DeleteMedicalSpecial = gql`
     }
   }
 `;
-export const DeleteDegree = gql`
+const DeleteDegree = gql`
   mutation deleteDegree($input: String!) {
     deleteDegree(input: $input) {
       id
+    }
+  }
+`;
+const UpdateClinic = gql`
+  mutation updateClinic($input: UpdateMedicalFacilitiesInput!) {
+    updateMedicalFacilities(createMedicalFacilitiesInput: $input) {
+      id
+    }
+  }
+`;
+const UpdateTypePackageInput = gql`
+  mutation UpdateTypePackageById($input: UpdateTypePackageInput!) {
+    updateTypePackage(input: $input) {
+      id
+    }
+  }
+`;
+const DeleteTypePackageInput = gql`
+  mutation DeleteTypePackageById($input: String!) {
+    deleteTypePackage(id: $input) {
+      id
+    }
+  }
+`;
+const CreateTypePackageInput = gql`
+  mutation CreateTypePackage($input: CreateTypePackageInput!) {
+    createTypePackage(input: $input) {
+      id
+    }
+  }
+`;
+const DeleteCarePackageInput = gql`
+  mutation deletePackageById($input: String!) {
+    deleteCarePackage(input: $input) {
+      id
+    }
+  }
+`;
+const UpdateCarePackageInput = gql`
+  mutation updatePackageById($input: UpdateCarePackageInput!) {
+    updateCarePackage(input: $input) {
+      id
+    }
+  }
+`;
+const CreateCarePackageInput = gql`
+  mutation CreatePackageById($input: createCarePackageInput!) {
+    createCarePackage(input: $input) {
+      id
+    }
+  }
+`;
+const UpdateRegisterInput = gql`
+  mutation updateRegister($input: UpdateRegisterInput!) {
+    updateRegister(input: $input) {
+      id
+      state
     }
   }
 `;

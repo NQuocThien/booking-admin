@@ -230,6 +230,7 @@ function ListMedicalFacilitiesPage() {
           <Button
             variant="outline-success"
             onClick={() => {
+              checkExpirationToken();
               setOpenModals((pre) => ({ ...pre, modalAdd: true }));
             }}>
             <FiPlus />
@@ -241,8 +242,8 @@ function ListMedicalFacilitiesPage() {
           <tr>
             <th>#</th>
             <th>Tên cơ sở y tế</th>
-            <th>Danh sách bác sĩ</th>
-            <th>Thông </th>
+            <th>Số lượng bác sĩ</th>
+            <th>Số lượng gói khám</th>
           </tr>
         </thead>
         <tbody>
@@ -252,14 +253,10 @@ function ListMedicalFacilitiesPage() {
                 <td>{i + 1}</td>
                 <td>{c.companyName}</td>
                 <td>
-                  <Button variant="outline-info">
-                    <FaHistory />
-                  </Button>
+                  <td>{c.doctors?.length}</td>
                 </td>
                 <td>
-                  <Button variant="outline-info">
-                    <ImProfile />
-                  </Button>
+                  <td>{c.carePackage?.length}</td>
                 </td>
               </tr>
             ))}

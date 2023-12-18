@@ -4,20 +4,18 @@ import {
   ISelectDegree,
   ISelectSpecial,
 } from "src/assets/contains/item-interface";
-import { CreateDoctorInput } from "src/graphql/webbooking-service.generated";
+import { UpdateDoctorInput } from "src/graphql/webbooking-service.generated";
 
 interface IFormAddDoctor {
-  createDoctor: CreateDoctorInput | undefined;
-  // updateDoctor: UpdateDoctorInput | undefined;
+  updateDocter: UpdateDoctorInput;
   listUser: ISelecUser[] | undefined;
   listDegree: ISelectDegree[] | undefined;
   listClinic: ISelectClinic[] | undefined;
   listSpecial: ISelectSpecial[] | undefined;
-  showModal: boolean;
   imageFile: Blob | null;
-  update: string | undefined;
 }
 export enum EKeyDoctor {
+  id = "id",
   avatar = "avatar",
   degreeId = "degreeId",
   email = "email",
@@ -28,6 +26,7 @@ export enum EKeyDoctor {
   facilitiesId = "facilitiesId",
 }
 type IKeyDoctor =
+  | "id"
   | "avatar"
   | "degreeId"
   | "email"
@@ -42,28 +41,27 @@ interface IActionDoctor {
   key?: string | undefined;
   payload: any;
 }
-const initalDoctor: CreateDoctorInput = {
-  name: "",
-  avatar: {
-    filename: "",
-    type: "",
-    url: "/default.jpg",
-  },
-  degreeId: "",
-  email: "",
-  idSpecialist: "",
-  numberPhone: "",
-  userId: "",
-};
 export const initState: IFormAddDoctor = {
-  createDoctor: initalDoctor,
+  updateDocter: {
+    id: "",
+    email: "",
+    name: "",
+    numberPhone: "",
+    avatar: {
+      filename: "",
+      type: "",
+      url: "",
+    },
+    degreeId: "",
+    facilitiesId: "",
+    idSpecialist: "",
+    userId: "",
+  },
   listClinic: undefined,
   listDegree: undefined,
   listSpecial: undefined,
   listUser: undefined,
-  showModal: false,
   imageFile: null,
-  update: undefined,
 };
 function isIKeyDoctor(value: any): value is IKeyDoctor {
   return [
@@ -80,9 +78,8 @@ function isIKeyDoctor(value: any): value is IKeyDoctor {
 //action key
 const SET_NAME = "set-name";
 const RESEST = "reset";
-const SET_SHOW_MODAL = "set-show-modal";
 const SET_UPDATE_ID = "set-update-id";
-const SET_CREATE = "set-create";
+const SET_UPDATE = "set-create";
 const HANDLE_CHANGE_FORM = "handles-change-form";
 const HC_LIST_DEGREE = "hc-list-degree";
 const HC_LIST_CLINIC = "hc-list-clinic";
@@ -91,17 +88,13 @@ const HC_LIST_USER = "hc-list-user";
 const hC_IMAGE_FILE = "hc-image-file";
 
 // const hC_CREATE_DOCTOR = "hc-create-doctor";
-const SET_UPDATE_DOCTOR = "hc-update-doctor";
 
 // action callback
 export const setName = (payload: string) => ({
   type: SET_NAME,
   payload,
 });
-export const setShowModal = (payload: boolean): IActionDoctor => ({
-  type: SET_SHOW_MODAL,
-  payload,
-});
+
 export const hCListDegree = (payload: any) => ({
   type: HC_LIST_DEGREE,
   payload,
@@ -114,18 +107,17 @@ export const hcListSpecial = (payload: any) => ({
   type: HC_LIST_SPECIAL,
   payload,
 });
-export const hcListUser = (payload: any) => {
-  return {
-    type: HC_LIST_USER,
-    payload,
-  };
-};
+export const hcListUser = (payload: any) => ({
+  type: HC_LIST_USER,
+  payload,
+});
 export const setUpdate = (payload: string | undefined) => ({
   type: SET_UPDATE_ID,
   payload,
 });
 // export const hCCreateDoctor =
 export const handleChangeForm = (name: string, value: any): IActionDoctor => {
+  console.log("name: ", name, ":", value);
   return {
     type: HANDLE_CHANGE_FORM,
     key: name,
@@ -138,11 +130,11 @@ export const hcImageFile = (payload: any) => ({
 });
 export const handleReset = () => ({
   type: RESEST,
-  payload: initalDoctor,
+  payload: initState,
 });
 
-export const setCreateDoctor = (payload: CreateDoctorInput) => ({
-  type: SET_CREATE,
+export const setUpdateDoctor = (payload: UpdateDoctorInput) => ({
+  type: SET_UPDATE,
   payload,
 });
 
@@ -151,28 +143,26 @@ export const reducer = (
   state: IFormAddDoctor,
   action: IActionDoctor
 ): IFormAddDoctor => {
+  // console.log("Action: ", action);
+  // console.log("Previous state:", state);
+
   switch (action.type) {
     case SET_NAME:
-      if (state.createDoctor)
+      if (state.updateDocter)
         return {
           ...state,
-          createDoctor: {
-            ...state.createDoctor,
+          updateDocter: {
+            ...state.updateDocter,
             name: action.payload,
           },
         };
       return state;
-    case SET_SHOW_MODAL:
-      return {
-        ...state,
-        showModal: action.payload,
-      };
     case HANDLE_CHANGE_FORM:
-      if (action.key && state.createDoctor && isIKeyDoctor(action.key)) {
+      if (action.key && state.updateDocter && isIKeyDoctor(action.key)) {
         return {
           ...state,
-          createDoctor: {
-            ...state.createDoctor,
+          updateDocter: {
+            ...state.updateDocter,
             [action.key]: action.payload,
           },
         };
@@ -204,23 +194,13 @@ export const reducer = (
         imageFile: action.payload,
       };
     case RESEST:
+      return initState;
+    case SET_UPDATE:
       return {
         ...state,
-        createDoctor: initalDoctor,
-        showModal: false,
-      };
-    case SET_UPDATE_ID:
-      return {
-        ...state,
-        update: action.payload,
-      };
-    case SET_CREATE:
-      return {
-        ...state,
-        createDoctor: action.payload,
+        updateDocter: action.payload,
       };
     default:
       return state;
   }
 };
-// export const [state, dispatch] = useReducer(reducer, initState);

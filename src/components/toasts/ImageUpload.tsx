@@ -26,6 +26,7 @@ function ImageUpload({
     <>
       <Image
         // className={s.image_header}
+        className="border border-dark"
         style={{ height: height, width: width }}
         src={(imageFile && URL.createObjectURL(imageFile)) || src}
         rounded={shape === "rounded"}

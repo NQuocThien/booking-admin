@@ -65,7 +65,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     setLocalStorage(tokenKey, "");
     // refetchData()
   };
-  const handleChangeUserInfor = (dataUser: any) => {
+  const handleChangeUserInfor = (dataUser: User) => {
     setUserInfor(dataUser);
   };
   const checkExpirationToken = () => {
@@ -76,9 +76,6 @@ function AuthContextProvider({ children }: AuthProviderProps) {
       // console.log('Token đã hết hạn.');
       logout();
     }
-    //  else {
-    //     // console.log('Token còn hiệu lực.');
-    // }
   };
   return (
     <AuthContext.Provider

@@ -1,9 +1,12 @@
 import { getToken } from "src/utils/contain";
-import { Col, Form, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
 import {
+  CreateUserByAdminInput,
+  CreateUserInput,
   User,
   useActiveUserMutation,
   useGetAllUserQuery,
+  useSingupByAdminMutation,
   useUpdateRolesMutation,
 } from "src/graphql/webbooking-service.generated";
 import { memo, useCallback, useEffect, useState } from "react";
@@ -14,12 +17,14 @@ import ShowAlert from "src/components/toasts/alerts";
 import { ICheckRoles } from "src/assets/contains/item-interface";
 import { ERoles } from "src/assets/contains/component-enum";
 import { useAuth } from "src/context/AuthContext";
-// const token = getLocalStorage(
-//   process.env.REACT_APP_ACCESS_TOKEN || "access_token"
-// );
+import { setShowModal } from "../ListDoctor/type";
+import SearchInputCpn from "src/components/toasts/InputSearch";
+interface IShowModal {
+  roles: boolean;
+  add: boolean;
+}
 function ListUserPage() {
   const token = getToken();
-  // console.log("test token: ", token);
   const { checkExpirationToken } = useAuth();
   const { refetch, data, loading, error } = useGetAllUserQuery({
     fetchPolicy: "no-cache",
@@ -37,6 +42,20 @@ function ListUserPage() {
       },
     },
   });
+  const [activeUser] = useActiveUserMutation({
+    fetchPolicy: "no-cache",
+  });
+  const [createNewUser] = useSingupByAdminMutation({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filtered, setFiltered] = useState<User[]>();
 
   const [listUser, setListUser] = useState<User[] | undefined>(data?.users);
   const [stateRoles, setStateRoles] = useState<ICheckRoles>({
@@ -46,14 +65,13 @@ function ListUserPage() {
     doctor: false,
   });
   useEffect(() => {
-    // console.log("test user: ", data?.users);
     setListUser(data?.users);
   }, [data]);
+  useEffect(() => {
+    handleSearch();
+  }, [listUser]);
   const [userClicked, setUserClicked] = useState<User | undefined>();
 
-  const [activeUser] = useActiveUserMutation({
-    fetchPolicy: "no-cache",
-  });
   const hanldeActiveUser = (id: string) => {
     checkExpirationToken();
     activeUser({
@@ -75,9 +93,21 @@ function ListUserPage() {
         showToast("Lỗi", "error");
       });
   };
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<IShowModal>({
+    add: false,
+    roles: false,
+  });
+  const handleSearch = () => {
+    setFiltered(() =>
+      searchTerm
+        ? listUser?.filter((c) =>
+            c.username?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : listUser
+    );
+  };
   const handleCloseModal = useCallback(() => {
-    setOpenModal(false);
+    setOpenModal({ add: false, roles: false });
   }, []);
   const handleShowModal = (user: User) => {
     checkExpirationToken();
@@ -108,7 +138,7 @@ function ListUserPage() {
         }
       });
     }
-    setOpenModal(true);
+    setOpenModal((pre) => ({ ...pre, roles: true }));
   };
   const handleActionFormChangeRoles = () => {
     var roles: string[] = [];
@@ -136,11 +166,21 @@ function ListUserPage() {
 
         showToast("Đã cập nhật 👍", "success", 1000);
       });
-    setOpenModal(false);
-
-    // refetch();
-
-    console.log("new roles: ", roles);
+    setOpenModal((pre) => ({ ...pre, roles: false }));
+    // console.log("new roles: ", roles);
+  };
+  const [createUser, setCreateUser] = useState<CreateUserByAdminInput>({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const handelCreateUser = async () => {
+    await createNewUser({ variables: { input: createUser } }).then(() => {
+      showToast("Đã tạo mới tài khoản", undefined, 2000);
+      setOpenModal({ add: false, roles: false });
+      setCreateUser({ email: "", password: "", username: "" });
+      refetch();
+    });
   };
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) {
@@ -149,6 +189,21 @@ function ListUserPage() {
   }
   return (
     <div className="overflow-x-auto">
+      <Button
+        variant="outline-success"
+        className="mb-1"
+        size="sm"
+        onClick={() => {
+          setOpenModal((pre) => ({ ...pre, add: true }));
+          // console.log("test open", openModal);
+        }}>
+        Tạo tài khoản
+      </Button>
+      <SearchInputCpn
+        onChange={(s: string) => setSearchTerm(s)}
+        onSearch={handleSearch}
+        value={searchTerm}
+      />
       <Table hover>
         <thead>
           <tr>
@@ -162,8 +217,8 @@ function ListUserPage() {
           </tr>
         </thead>
         <tbody>
-          {listUser &&
-            listUser.map((user, i) => (
+          {filtered &&
+            filtered.map((user, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 {/* <td>{user.fullname}</td> */}
@@ -199,7 +254,7 @@ function ListUserPage() {
       </Table>
       <ModalCpn
         headerText={`Chỉnh sửa quyền user "${userClicked?.username}"`}
-        openRequest={openModal}
+        openRequest={openModal.roles}
         handleSave={handleActionFormChangeRoles}
         handleClose={handleCloseModal}>
         <Form
@@ -252,6 +307,52 @@ function ListUserPage() {
               />
             </Col>
           </Row>
+        </Form>
+      </ModalCpn>
+      <ModalCpn
+        handleClose={() => {
+          handleCloseModal();
+        }}
+        handleSave={() => {
+          handelCreateUser();
+        }}
+        headerText="Tạo tài khoản"
+        openRequest={openModal.add}>
+        <Form>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter username"
+              onChange={(e) => {
+                setCreateUser((pre) => ({ ...pre, username: e.target.value }));
+              }}
+              value={createUser.username}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              onChange={(e) => {
+                setCreateUser((pre) => ({ ...pre, email: e.target.value }));
+              }}
+              value={createUser.email}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={(e) => {
+                setCreateUser((pre) => ({ ...pre, password: e.target.value }));
+              }}
+              value={createUser.password}
+            />
+          </Form.Group>
         </Form>
       </ModalCpn>
     </div>

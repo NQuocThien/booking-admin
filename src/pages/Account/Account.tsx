@@ -95,6 +95,16 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
               showToast("😘 Đã lưu thay đổi thành công", "success");
               setStateUpdatePass(false);
               setDisabled(true);
+              const newUser: User = {
+                ...userInfor,
+                email: dataUserUpdate.email
+                  ? dataUserUpdate.email
+                  : userInfor.email,
+                linkImage: dataUserUpdate.linkImage
+                  ? dataUserUpdate.linkImage
+                  : userInfor.linkImage,
+              };
+              handleChangeUserInfor(newUser);
             })
             .catch((e) =>
               showToast("🤐 Có lỗi xảy ra không thể lưu" + e, "error")
@@ -123,7 +133,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
             type: typeFile,
             url: ulrImage,
           };
-          console.log("linkImage res:", linkImage);
+          // console.log("linkImage res:", linkImage);
           // thực hiện submit
           handleUpdateInforUser(linkImage);
         }
@@ -131,8 +141,6 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     } else {
       handleUpdateInforUser();
     }
-
-    // console.log('Submited')
   }; // xữa lý khi submit
   const [formData, setFormData] = useState<UpdateUserWithPassInput>({
     email: "",

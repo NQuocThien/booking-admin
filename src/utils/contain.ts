@@ -1,5 +1,7 @@
-import * as ICON from "react-icons/md";
-import * as ICON2 from "react-icons/gi";
+import * as MaterialDesignIcon from "react-icons/md";
+import * as GameIcon from "react-icons/gi";
+import * as IconS8 from "react-icons/lia";
+
 import React from "react";
 
 export const setLocalStorage = (key: string, value: string | object | []) => {
@@ -37,26 +39,16 @@ export const getToken = () => {
 };
 
 export function getIcon(iconName: string | undefined) {
-  const iconTemp: any = ICON;
-  const iconTemp2: any = ICON2;
-  if (iconName)
-    if (iconTemp[iconName]) {
-      return React.createElement(iconTemp[iconName]);
-    } else {
-      if (iconTemp2[iconName]) return React.createElement(iconTemp[iconName]);
-      else return null;
-    }
-  else return null;
-}
-
-export function getIcon2(iconName: string | undefined) {
-  const iconTemp: any = ICON;
-  const iconTemp2: any = ICON2;
+  const iconTemp: any = MaterialDesignIcon;
+  const iconTemp2: any = GameIcon;
+  const iconTemp3: any = IconS8;
   if (iconName)
     if (iconTemp[iconName]) {
       return React.createElement(iconTemp[iconName]);
     } else {
       if (iconTemp2[iconName]) return React.createElement(iconTemp2[iconName]);
+      else if (iconTemp3[iconName])
+        return React.createElement(iconTemp3[iconName]);
       else return null;
     }
   else return null;

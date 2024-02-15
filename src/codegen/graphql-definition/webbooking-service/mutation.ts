@@ -70,138 +70,28 @@ const UpdateRoles = gql`
     }
   }
 `;
-const CreateMedicalFacilities = gql`
-  mutation createMedicalFacilities($input: CreateMedicalFacilitiesInput!) {
-    createMedicalFacilities(createMedicalFacilitiesInput: $input) {
+const createMedicalFacility = gql`
+  mutation createMedicalFacility($input: CreateMedicalFacilityInput!) {
+    createMedicalFacility(input: $input) {
       id
-    }
-  }
-`;
-const CreateDoctor = gql`
-  mutation createDoctor($input: CreateDoctorInput!) {
-    createDoctor(createDoctorInput: $input) {
-      id
-    }
-  }
-`;
-const UpdateDoctor = gql`
-  mutation updateDoctor($input: UpdateDoctorInput!) {
-    updateDoctor(updateDoctorInput: $input) {
-      id
-    }
-  }
-`;
-const DeleteDoctor = gql`
-  mutation deleteDoctor($input: String!) {
-    deleteDoctor(id: $input) {
-      id
-    }
-  }
-`;
-const CreateDegree = gql`
-  mutation createDegree($input: CreateDegreeInput!) {
-    createDegree(input: $input) {
-      id
-      name
-      abbreviations
-    }
-  }
-`;
-const UpdateDegree = gql`
-  mutation updateDegree($input: UpdateDegreeInput!) {
-    updateDegree(input: $input) {
-      id
-      name
-      abbreviations
-    }
-  }
-`;
-const CreateMedicalSpecial = gql`
-  mutation createSpecial($input: CreateMedicalSpecialtiesInput!) {
-    createMecialSpecialties(mecicalSpecialtiesInput: $input) {
-      id
-      name
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
       discription
-    }
-  }
-`;
-const UpdateMedicalSpecial = gql`
-  mutation updateSpcial($input: UpdateMedicalSpecialtiesInput!) {
-    updateMecialSpecialties(updateSpecialtiesInput: $input) {
-      id
-    }
-  }
-`;
-const DeleteMedicalSpecial = gql`
-  mutation deleteSpecial($input: String!) {
-    deleteMecialSpecialties(id: $input) {
-      id
-      name
-      discription
-    }
-  }
-`;
-const DeleteDegree = gql`
-  mutation deleteDegree($input: String!) {
-    deleteDegree(input: $input) {
-      id
-    }
-  }
-`;
-const UpdateClinic = gql`
-  mutation updateClinic($input: UpdateMedicalFacilitiesInput!) {
-    updateMedicalFacilities(createMedicalFacilitiesInput: $input) {
-      id
-    }
-  }
-`;
-const UpdateTypePackageInput = gql`
-  mutation UpdateTypePackageById($input: UpdateTypePackageInput!) {
-    updateTypePackage(input: $input) {
-      id
-    }
-  }
-`;
-const DeleteTypePackageInput = gql`
-  mutation DeleteTypePackageById($input: String!) {
-    deleteTypePackage(id: $input) {
-      id
-    }
-  }
-`;
-const CreateTypePackageInput = gql`
-  mutation CreateTypePackage($input: CreateTypePackageInput!) {
-    createTypePackage(input: $input) {
-      id
-    }
-  }
-`;
-const DeleteCarePackageInput = gql`
-  mutation deletePackageById($input: String!) {
-    deleteCarePackage(input: $input) {
-      id
-    }
-  }
-`;
-const UpdateCarePackageInput = gql`
-  mutation updatePackageById($input: UpdateCarePackageInput!) {
-    updateCarePackage(input: $input) {
-      id
-    }
-  }
-`;
-const CreateCarePackageInput = gql`
-  mutation CreatePackageById($input: createCarePackageInput!) {
-    createCarePackage(input: $input) {
-      id
-    }
-  }
-`;
-const UpdateRegisterInput = gql`
-  mutation updateRegister($input: UpdateRegisterInput!) {
-    updateRegister(input: $input) {
-      id
-      state
+      introduce
+      operatingStatus
+      legalRepresentation
+      taxCode
+      workSchedule
     }
   }
 `;

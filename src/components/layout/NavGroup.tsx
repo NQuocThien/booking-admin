@@ -38,9 +38,6 @@ function NavGroup({ items }: { items: Item }) {
               {items.items?.map((item, index) => {
                 return <NavItem key={index} item={item} />;
               })}
-              {/* <NavItem
-                                item={items.items[0]}
-                            /> */}
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>

@@ -16,17 +16,23 @@ function MainHeader({ setNav }: { setNav: () => void }) {
         lg={{ span: 2, offset: 8 }}
         md={{ span: 2, offset: 8 }}
         className={s.header__top_infor}>
+        {/* // thông tin user */}
         <Dropdown>
-          <Dropdown.Toggle variant="infor">
+          <Dropdown.Toggle variant="infor" className={s.dropdown}>
             <Image
               src={userInfor?.linkImage?.url ? userInfor.linkImage.url : ""}
               className={s.avatar}
               roundedCircle
             />
+            <div className={s.infor}>
+              <h6>{userInfor?.username}</h6>
+              <p>{userInfor?.roles}</p>
+            </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item>
-              <h4>{userInfor?.username}</h4>
+              <h5>{userInfor?.username}</h5>
+              {/* <p>{userInfor?.email}</p> */}
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item>

@@ -17,7 +17,7 @@ function MainNavigation() {
   return (
     <div>
       <Row className={s.nav__top}>
-        <Image src={"/logo.png"} height={64} />
+        <Image className={s.nav__top_logo} src={"/imgs/logo/Logo.png"} />
       </Row>
       <Row className={s.nav__content}>
         <Nav variant="pills">

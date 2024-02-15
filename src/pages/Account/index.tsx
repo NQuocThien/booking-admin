@@ -1,17 +1,17 @@
 import {
   UpdateUserInput,
   UpdateUserWithPassInput,
-  User,
   useUdateUserByIdMutation,
   useUpdateUserByIdWithPassMutation,
 } from "src/graphql/webbooking-service.generated";
 import InforUserCpn from "./Account";
+import s from "src/assets/scss/layout/MainLayout.module.scss";
 
 function CurrentUserDetailPage() {
   const [udateUserByIdMutation] = useUdateUserByIdMutation({
     fetchPolicy: "no-cache",
   });
-  // console.log('test env: ', process.env.REACT_APP_BACKEND_URI_IMAGE)
+
   const [updateUserByIdWithPassMutation] = useUpdateUserByIdWithPassMutation({
     fetchPolicy: "no-cache",
   });
@@ -21,8 +21,6 @@ function CurrentUserDetailPage() {
         ? {
             email: dataUser.email,
             id: dataUser.id,
-            // password: dataUser.password,
-            // passwordNew: dataUser.passwordNew,
             username: dataUser.username,
             linkImage: {
               filename: dataUser.linkImage?.filename,
@@ -33,8 +31,6 @@ function CurrentUserDetailPage() {
         : {
             email: dataUser.email,
             id: dataUser.id,
-            // password: dataUser.password,
-            // passwordNew: dataUser.passwordNew,
             username: dataUser.username,
           };
       udateUserByIdMutation({
@@ -94,7 +90,9 @@ function CurrentUserDetailPage() {
   };
 
   return (
-    <InforUserCpn update={updateUser} updateWithPass={updateUserWithPass} />
+    <div className={s.component}>
+      <InforUserCpn update={updateUser} updateWithPass={updateUserWithPass} />
+    </div>
   );
 }
 

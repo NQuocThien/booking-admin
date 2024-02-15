@@ -17,7 +17,6 @@ import ShowAlert from "src/components/toasts/alerts";
 import { ICheckRoles } from "src/assets/contains/item-interface";
 import { ERoles } from "src/assets/contains/component-enum";
 import { useAuth } from "src/context/AuthContext";
-import { setShowModal } from "../ListDoctor/type";
 import SearchInputCpn from "src/components/toasts/InputSearch";
 interface IShowModal {
   roles: boolean;

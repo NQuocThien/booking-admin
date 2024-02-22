@@ -45,6 +45,7 @@ export type CreateDoctorInput = {
   medicalFactilitiesId: Scalars['String']['input'];
   name: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
   specialistId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
   workSchedule: WorkScheduleInput;
@@ -59,6 +60,7 @@ export type CreateEvaluateInput = {
 
 export type CreateMedicalFacilityInput = {
   address: Scalars['String']['input'];
+  dateOff?: InputMaybe<Array<Scalars['DateTime']['input']>>;
   discription: Scalars['String']['input'];
   email: Scalars['String']['input'];
   image: LinkImageInput;
@@ -66,12 +68,14 @@ export type CreateMedicalFacilityInput = {
   lat?: InputMaybe<Scalars['Float']['input']>;
   legalRepresentation: Scalars['String']['input'];
   lng?: InputMaybe<Scalars['Float']['input']>;
+  logo: LinkImageInput;
   medicalFacilityName: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
   operatingStatus: Scalars['String']['input'];
+  schedule: Scalars['String']['input'];
+  status: Scalars['String']['input'];
   taxCode: Scalars['String']['input'];
   userId: Scalars['String']['input'];
-  workSchedule: Scalars['String']['input'];
 };
 
 export type CreateMedicalSpecialtyInput = {
@@ -88,6 +92,7 @@ export type CreateMedicalStaffInput = {
   medicalFacilityId: Scalars['String']['input'];
   name: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
+  permissions: Array<EPermission>;
   userId: Scalars['String']['input'];
 };
 
@@ -198,17 +203,20 @@ export type Customer = {
 
 export type Doctor = {
   __typename?: 'Doctor';
-  academicTitle?: Maybe<EAcademicTitle>;
+  academicTitle?: Maybe<Scalars['String']['output']>;
   avatar: LinkImage;
-  degree: EDegree;
+  degree: Scalars['String']['output'];
   discription: Scalars['String']['output'];
   email: Scalars['String']['output'];
-  gender: EGender;
+  gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   medicalFactilitiesId: Scalars['String']['output'];
+  medicalSpecialties: MedicalSpecialties;
   name: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
   specialistId: Scalars['String']['output'];
+  specialty?: Maybe<MedicalSpecialties>;
   userId: Scalars['String']['output'];
   workSchedule: WorkSchedule;
 };
@@ -216,6 +224,16 @@ export type Doctor = {
 export enum EAcademicTitle {
   AssociateProfesso = 'AssociateProfesso',
   Professor = 'Professor'
+}
+
+export enum EDayOfWeed {
+  Friday = 'Friday',
+  Monday = 'Monday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday',
+  Thursday = 'Thursday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday'
 }
 
 export enum EDegree {
@@ -229,6 +247,14 @@ export enum EDegree {
 export enum EGender {
   Female = 'Female',
   Male = 'Male'
+}
+
+export enum EPermission {
+  Magager = 'Magager',
+  MagagerBlog = 'MagagerBlog',
+  MagagerPackage = 'MagagerPackage',
+  MagagerVaccine = 'MagagerVaccine',
+  ManagerSpecialty = 'ManagerSpecialty'
 }
 
 export enum EStateRegister {
@@ -327,6 +353,7 @@ export type LogoutUser = {
 export type MedicalFacilities = {
   __typename?: 'MedicalFacilities';
   address: Scalars['String']['output'];
+  dateOff?: Maybe<Array<Scalars['DateTime']['output']>>;
   discription: Scalars['String']['output'];
   doctors?: Maybe<Array<Doctor>>;
   email: Scalars['String']['output'];
@@ -336,12 +363,18 @@ export type MedicalFacilities = {
   lat?: Maybe<Scalars['Float']['output']>;
   legalRepresentation: Scalars['String']['output'];
   lng?: Maybe<Scalars['Float']['output']>;
+  logo: LinkImage;
   medicalFacilityName: Scalars['String']['output'];
+  medicalSpecialties?: Maybe<Array<MedicalSpecialties>>;
+  medicalStaffs?: Maybe<Array<MedicalStaff>>;
   numberPhone: Scalars['String']['output'];
   operatingStatus: Scalars['String']['output'];
+  packages?: Maybe<Array<Package>>;
+  schedule: Scalars['String']['output'];
+  status: Scalars['String']['output'];
   taxCode: Scalars['String']['output'];
   userId: Scalars['String']['output'];
-  workSchedule: Scalars['String']['output'];
+  vaccinations?: Maybe<Array<Vaccination>>;
 };
 
 export type MedicalSpecialties = {
@@ -357,11 +390,12 @@ export type MedicalSpecialties = {
 export type MedicalStaff = {
   __typename?: 'MedicalStaff';
   email: Scalars['String']['output'];
-  gender: EGender;
+  gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   medicalFacilityId: Scalars['String']['output'];
   name: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
+  permissions: Array<Scalars['String']['output']>;
   userId: Scalars['String']['output'];
 };
 
@@ -385,6 +419,7 @@ export type Mutation = {
   deleteDoctor: Doctor;
   deleteEvaluate: Evaluate;
   deleteMecialSpecialty: MedicalSpecialties;
+  deleteMedicalFacility: MedicalFacilities;
   deleteMedicalStaff: MedicalStaff;
   deleteNotification: Notification;
   deletePackage: Package;
@@ -399,7 +434,7 @@ export type Mutation = {
   updateDoctor: Doctor;
   updateEvaluate: Evaluate;
   updateGeneralInfor: GeneralInfor;
-  updateMedicalFacilities: MedicalFacilities;
+  updateMedicalFacility: MedicalFacilities;
   updateMedicalSpecialty: MedicalSpecialties;
   updateMedicalStaff: MedicalStaff;
   updateNotification: Notification;
@@ -504,6 +539,11 @@ export type MutationDeleteMecialSpecialtyArgs = {
 };
 
 
+export type MutationDeleteMedicalFacilityArgs = {
+  input: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteMedicalStaffArgs = {
   input: Scalars['String']['input'];
 };
@@ -569,8 +609,8 @@ export type MutationUpdateGeneralInforArgs = {
 };
 
 
-export type MutationUpdateMedicalFacilitiesArgs = {
-  createMedicalFacilitiesInput: UpdateMedicalFacilityInput;
+export type MutationUpdateMedicalFacilityArgs = {
+  input: UpdateMedicalFacilityInput;
 };
 
 
@@ -640,7 +680,7 @@ export type Notification = {
 export type Package = {
   __typename?: 'Package';
   examinationDetails: Scalars['String']['output'];
-  gender: EGender;
+  gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   medicalFactilitiesId: Scalars['String']['output'];
   packageName: Scalars['String']['output'];
@@ -682,13 +722,16 @@ export type Query = {
   getDoctorbyUserId: Doctor;
   getEvaluateById: Evaluate;
   getGeneralInfor: GeneralInfor;
+  getMecialSpecialtiesByMedicalFacilityId: Array<MedicalSpecialties>;
   getMedicalFacilityById: MedicalFacilities;
   getMedicalFacilityByUserId: MedicalFacilities;
   getProfileByCustomerId: Array<Profile>;
   getSetting: Setting;
   getUser: User;
+  getUserDoctorPending: Array<User>;
   getUserMedicalNon: Array<User>;
   getUserSelect: Array<User>;
+  getUserSelected: User;
   users: Array<User>;
 };
 
@@ -704,6 +747,11 @@ export type QueryGetDoctorbyUserIdArgs = {
 
 
 export type QueryGetEvaluateByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryGetMecialSpecialtiesByMedicalFacilityIdArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -732,6 +780,11 @@ export type QueryGetUserSelectArgs = {
   roleInput: UserSelectInput;
 };
 
+
+export type QueryGetUserSelectedArgs = {
+  id: Scalars['String']['input'];
+};
+
 export type Register = {
   __typename?: 'Register';
   customerId: Scalars['String']['output'];
@@ -750,12 +803,12 @@ export type Register = {
 
 export type Schedule = {
   __typename?: 'Schedule';
-  dayOfWeed: Scalars['String']['output'];
+  dayOfWeek: Scalars['String']['output'];
   sessions: Array<Session>;
 };
 
 export type ScheduleInput = {
-  dayOfWeed: Scalars['String']['input'];
+  dayOfWeek: EDayOfWeed;
   sessions: Array<SessionInput>;
 };
 
@@ -797,6 +850,7 @@ export type UpdateDoctorInput = {
   medicalFactilitiesId: Scalars['String']['input'];
   name: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
   specialistId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
   workSchedule: WorkScheduleInput;
@@ -812,6 +866,7 @@ export type UpdateEvaluateInput = {
 
 export type UpdateMedicalFacilityInput = {
   address: Scalars['String']['input'];
+  dateOff?: InputMaybe<Array<Scalars['DateTime']['input']>>;
   discription: Scalars['String']['input'];
   email: Scalars['String']['input'];
   id: Scalars['String']['input'];
@@ -820,12 +875,14 @@ export type UpdateMedicalFacilityInput = {
   lat?: InputMaybe<Scalars['Float']['input']>;
   legalRepresentation: Scalars['String']['input'];
   lng?: InputMaybe<Scalars['Float']['input']>;
+  logo: LinkImageInput;
   medicalFacilityName: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
   operatingStatus: Scalars['String']['input'];
+  schedule: Scalars['String']['input'];
+  status: Scalars['String']['input'];
   taxCode: Scalars['String']['input'];
   userId: Scalars['String']['input'];
-  workSchedule: Scalars['String']['input'];
 };
 
 export type UpdateMedicalSpecialtyInput = {
@@ -844,6 +901,7 @@ export type UpdateMedicalStaffInput = {
   medicalFacilityId: Scalars['String']['input'];
   name: EGender;
   numberPhone: Scalars['String']['input'];
+  permissions: Array<EPermission>;
   userId: Scalars['String']['input'];
 };
 
@@ -960,14 +1018,16 @@ export type Vaccination = {
 export type WorkSchedule = {
   __typename?: 'WorkSchedule';
   dayOff: Array<Scalars['DateTime']['output']>;
+  numberSlot: Scalars['Float']['output'];
   schedule: Array<Schedule>;
-  status: EStatusService;
+  status: Scalars['String']['output'];
 };
 
 export type WorkScheduleInput = {
   dayOff: Array<Scalars['DateTime']['input']>;
+  numberSlot: Scalars['Float']['input'];
   schedule: Array<ScheduleInput>;
-  status: Scalars['String']['input'];
+  status: EStatusService;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -1024,7 +1084,35 @@ export type CreateMedicalFacilityMutationVariables = Exact<{
 }>;
 
 
-export type CreateMedicalFacilityMutation = { __typename?: 'Mutation', createMedicalFacility: { __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, workSchedule: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } } };
+export type CreateMedicalFacilityMutation = { __typename?: 'Mutation', createMedicalFacility: { __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, dateOff?: Array<any> | null, status: string, schedule: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } } };
+
+export type UpdateMedicalFacilityMutationVariables = Exact<{
+  input: UpdateMedicalFacilityInput;
+}>;
+
+
+export type UpdateMedicalFacilityMutation = { __typename?: 'Mutation', updateMedicalFacility: { __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, dateOff?: Array<any> | null, status: string, schedule: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } } };
+
+export type DeleteMedicalFacilityMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteMedicalFacilityMutation = { __typename?: 'Mutation', deleteMedicalFacility: { __typename?: 'MedicalFacilities', id: string } };
+
+export type CreateDoctorMutationVariables = Exact<{
+  input: CreateDoctorInput;
+}>;
+
+
+export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } } };
+
+export type DeleteDoctorMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteDoctorMutation = { __typename?: 'Mutation', deleteDoctor: { __typename?: 'Doctor', id: string } };
 
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1046,17 +1134,55 @@ export type GetAllUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllUserQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, username: string, password: string, roles?: Array<string> | null, active?: boolean | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null }> };
 
+export type GetUserClinicPendingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserClinicPendingQuery = { __typename?: 'Query', getUserMedicalNon: Array<{ __typename?: 'User', id: string, username: string }> };
+
+export type GetUserDoctorPendingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserDoctorPendingQuery = { __typename?: 'Query', getUserDoctorPending: Array<{ __typename?: 'User', id: string, username: string }> };
+
 export type GetAllMedicalFacilityQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMedicalFacilityQuery = { __typename?: 'Query', getAllMedicalFacility: Array<{ __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, workSchedule: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
+export type GetAllMedicalFacilityQuery = { __typename?: 'Query', getAllMedicalFacility: Array<{ __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, status: string, dateOff?: Array<any> | null, schedule: string, logo: { __typename?: 'LinkImage', filename: string, type: string, url: string }, image: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
 
 export type GetMedicalFacilityByIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
 }>;
 
 
-export type GetMedicalFacilityByIdQuery = { __typename?: 'Query', getMedicalFacilityById: { __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, workSchedule: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, doctors?: Array<{ __typename?: 'Doctor', id: string, medicalFactilitiesId: string, name: string, gender: EGender, numberPhone: string, email: string, academicTitle?: EAcademicTitle | null, degree: EDegree, discription: string, userId: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, schedule: Array<{ __typename?: 'Schedule', dayOfWeed: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null } };
+export type GetMedicalFacilityByIdQuery = { __typename?: 'Query', getMedicalFacilityById: { __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, status: string, dateOff?: Array<any> | null, schedule: string, logo: { __typename?: 'LinkImage', filename: string, type: string, url: string }, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, doctors?: Array<{ __typename?: 'Doctor', id: string, name: string, academicTitle?: string | null, discription: string, price: number, degree: string, email: string, numberPhone: string, gender: string, userId: string, specialistId: string, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string }> }> } }> | null, medicalSpecialties?: Array<{ __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, vaccinations?: Array<{ __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, countryOfOrigin: string, indication: string, note: string, prophylactic: string, price: number, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, packages?: Array<{ __typename?: 'Package', id: string, packageName: string, medicalFactilitiesId: string, gender: string, examinationDetails: string, price: number, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, medicalStaffs?: Array<{ __typename?: 'MedicalStaff', id: string, name: string, email: string, numberPhone: string, gender: string, medicalFacilityId: string, permissions: Array<string> }> | null } };
+
+export type GetMedicalFacilityNameByIdQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetMedicalFacilityNameByIdQuery = { __typename?: 'Query', getMedicalFacilityById: { __typename?: 'MedicalFacilities', id: string, medicalFacilityName: string } };
+
+export type GetUserSelectedQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetUserSelectedQuery = { __typename?: 'Query', getUserSelected: { __typename?: 'User', id: string, username: string } };
+
+export type GetMedicalSpecialtiesSelectQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetMedicalSpecialtiesSelectQuery = { __typename?: 'Query', getMecialSpecialtiesByMedicalFacilityId: Array<{ __typename?: 'MedicalSpecialties', id: string, name: string }> };
+
+export type GetDoctorbyIdQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetDoctorbyIdQuery = { __typename?: 'Query', getDoctorbyId: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> }, specialty?: { __typename?: 'MedicalSpecialties', id: string, name: string } | null } };
 
 export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1338,7 +1464,9 @@ export const CreateMedicalFacilityDocument = gql`
     operatingStatus
     legalRepresentation
     taxCode
-    workSchedule
+    dateOff
+    status
+    schedule
   }
 }
     `;
@@ -1368,6 +1496,184 @@ export function useCreateMedicalFacilityMutation(baseOptions?: Apollo.MutationHo
 export type CreateMedicalFacilityMutationHookResult = ReturnType<typeof useCreateMedicalFacilityMutation>;
 export type CreateMedicalFacilityMutationResult = Apollo.MutationResult<CreateMedicalFacilityMutation>;
 export type CreateMedicalFacilityMutationOptions = Apollo.BaseMutationOptions<CreateMedicalFacilityMutation, CreateMedicalFacilityMutationVariables>;
+export const UpdateMedicalFacilityDocument = gql`
+    mutation updateMedicalFacility($input: UpdateMedicalFacilityInput!) {
+  updateMedicalFacility(input: $input) {
+    id
+    userId
+    medicalFacilityName
+    address
+    numberPhone
+    email
+    image {
+      filename
+      type
+      url
+    }
+    lat
+    lng
+    discription
+    introduce
+    operatingStatus
+    legalRepresentation
+    taxCode
+    dateOff
+    status
+    schedule
+  }
+}
+    `;
+export type UpdateMedicalFacilityMutationFn = Apollo.MutationFunction<UpdateMedicalFacilityMutation, UpdateMedicalFacilityMutationVariables>;
+
+/**
+ * __useUpdateMedicalFacilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateMedicalFacilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMedicalFacilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMedicalFacilityMutation, { data, loading, error }] = useUpdateMedicalFacilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMedicalFacilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMedicalFacilityMutation, UpdateMedicalFacilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMedicalFacilityMutation, UpdateMedicalFacilityMutationVariables>(UpdateMedicalFacilityDocument, options);
+      }
+export type UpdateMedicalFacilityMutationHookResult = ReturnType<typeof useUpdateMedicalFacilityMutation>;
+export type UpdateMedicalFacilityMutationResult = Apollo.MutationResult<UpdateMedicalFacilityMutation>;
+export type UpdateMedicalFacilityMutationOptions = Apollo.BaseMutationOptions<UpdateMedicalFacilityMutation, UpdateMedicalFacilityMutationVariables>;
+export const DeleteMedicalFacilityDocument = gql`
+    mutation deleteMedicalFacility($input: String!) {
+  deleteMedicalFacility(input: $input) {
+    id
+  }
+}
+    `;
+export type DeleteMedicalFacilityMutationFn = Apollo.MutationFunction<DeleteMedicalFacilityMutation, DeleteMedicalFacilityMutationVariables>;
+
+/**
+ * __useDeleteMedicalFacilityMutation__
+ *
+ * To run a mutation, you first call `useDeleteMedicalFacilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMedicalFacilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMedicalFacilityMutation, { data, loading, error }] = useDeleteMedicalFacilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteMedicalFacilityMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMedicalFacilityMutation, DeleteMedicalFacilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMedicalFacilityMutation, DeleteMedicalFacilityMutationVariables>(DeleteMedicalFacilityDocument, options);
+      }
+export type DeleteMedicalFacilityMutationHookResult = ReturnType<typeof useDeleteMedicalFacilityMutation>;
+export type DeleteMedicalFacilityMutationResult = Apollo.MutationResult<DeleteMedicalFacilityMutation>;
+export type DeleteMedicalFacilityMutationOptions = Apollo.BaseMutationOptions<DeleteMedicalFacilityMutation, DeleteMedicalFacilityMutationVariables>;
+export const CreateDoctorDocument = gql`
+    mutation createDoctor($input: CreateDoctorInput!) {
+  createDoctor(createDoctorInput: $input) {
+    id
+    userId
+    medicalFactilitiesId
+    name
+    gender
+    numberPhone
+    email
+    academicTitle
+    degree
+    specialistId
+    avatar {
+      filename
+      type
+      url
+    }
+    discription
+    workSchedule {
+      dayOff
+      status
+      schedule {
+        dayOfWeek
+        sessions {
+          startTime
+          endTime
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateDoctorMutationFn = Apollo.MutationFunction<CreateDoctorMutation, CreateDoctorMutationVariables>;
+
+/**
+ * __useCreateDoctorMutation__
+ *
+ * To run a mutation, you first call `useCreateDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDoctorMutation, { data, loading, error }] = useCreateDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDoctorMutation(baseOptions?: Apollo.MutationHookOptions<CreateDoctorMutation, CreateDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDoctorMutation, CreateDoctorMutationVariables>(CreateDoctorDocument, options);
+      }
+export type CreateDoctorMutationHookResult = ReturnType<typeof useCreateDoctorMutation>;
+export type CreateDoctorMutationResult = Apollo.MutationResult<CreateDoctorMutation>;
+export type CreateDoctorMutationOptions = Apollo.BaseMutationOptions<CreateDoctorMutation, CreateDoctorMutationVariables>;
+export const DeleteDoctorDocument = gql`
+    mutation deleteDoctor($input: String!) {
+  deleteDoctor(id: $input) {
+    id
+  }
+}
+    `;
+export type DeleteDoctorMutationFn = Apollo.MutationFunction<DeleteDoctorMutation, DeleteDoctorMutationVariables>;
+
+/**
+ * __useDeleteDoctorMutation__
+ *
+ * To run a mutation, you first call `useDeleteDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDoctorMutation, { data, loading, error }] = useDeleteDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDoctorMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDoctorMutation, DeleteDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDoctorMutation, DeleteDoctorMutationVariables>(DeleteDoctorDocument, options);
+      }
+export type DeleteDoctorMutationHookResult = ReturnType<typeof useDeleteDoctorMutation>;
+export type DeleteDoctorMutationResult = Apollo.MutationResult<DeleteDoctorMutation>;
+export type DeleteDoctorMutationOptions = Apollo.BaseMutationOptions<DeleteDoctorMutation, DeleteDoctorMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -1539,6 +1845,76 @@ export function useGetAllUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllUserQueryHookResult = ReturnType<typeof useGetAllUserQuery>;
 export type GetAllUserLazyQueryHookResult = ReturnType<typeof useGetAllUserLazyQuery>;
 export type GetAllUserQueryResult = Apollo.QueryResult<GetAllUserQuery, GetAllUserQueryVariables>;
+export const GetUserClinicPendingDocument = gql`
+    query getUserClinicPending {
+  getUserMedicalNon {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetUserClinicPendingQuery__
+ *
+ * To run a query within a React component, call `useGetUserClinicPendingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserClinicPendingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserClinicPendingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserClinicPendingQuery(baseOptions?: Apollo.QueryHookOptions<GetUserClinicPendingQuery, GetUserClinicPendingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserClinicPendingQuery, GetUserClinicPendingQueryVariables>(GetUserClinicPendingDocument, options);
+      }
+export function useGetUserClinicPendingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserClinicPendingQuery, GetUserClinicPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserClinicPendingQuery, GetUserClinicPendingQueryVariables>(GetUserClinicPendingDocument, options);
+        }
+export type GetUserClinicPendingQueryHookResult = ReturnType<typeof useGetUserClinicPendingQuery>;
+export type GetUserClinicPendingLazyQueryHookResult = ReturnType<typeof useGetUserClinicPendingLazyQuery>;
+export type GetUserClinicPendingQueryResult = Apollo.QueryResult<GetUserClinicPendingQuery, GetUserClinicPendingQueryVariables>;
+export const GetUserDoctorPendingDocument = gql`
+    query getUserDoctorPending {
+  getUserDoctorPending {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetUserDoctorPendingQuery__
+ *
+ * To run a query within a React component, call `useGetUserDoctorPendingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserDoctorPendingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserDoctorPendingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserDoctorPendingQuery(baseOptions?: Apollo.QueryHookOptions<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>(GetUserDoctorPendingDocument, options);
+      }
+export function useGetUserDoctorPendingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>(GetUserDoctorPendingDocument, options);
+        }
+export type GetUserDoctorPendingQueryHookResult = ReturnType<typeof useGetUserDoctorPendingQuery>;
+export type GetUserDoctorPendingLazyQueryHookResult = ReturnType<typeof useGetUserDoctorPendingLazyQuery>;
+export type GetUserDoctorPendingQueryResult = Apollo.QueryResult<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>;
 export const GetAllMedicalFacilityDocument = gql`
     query getAllMedicalFacility {
   getAllMedicalFacility {
@@ -1548,6 +1924,11 @@ export const GetAllMedicalFacilityDocument = gql`
     address
     numberPhone
     email
+    logo {
+      filename
+      type
+      url
+    }
     image {
       filename
       type
@@ -1560,7 +1941,9 @@ export const GetAllMedicalFacilityDocument = gql`
     operatingStatus
     legalRepresentation
     taxCode
-    workSchedule
+    status
+    dateOff
+    schedule
   }
 }
     `;
@@ -1600,6 +1983,11 @@ export const GetMedicalFacilityByIdDocument = gql`
     address
     numberPhone
     email
+    logo {
+      filename
+      type
+      url
+    }
     image {
       filename
       type
@@ -1612,28 +2000,103 @@ export const GetMedicalFacilityByIdDocument = gql`
     operatingStatus
     legalRepresentation
     taxCode
-    workSchedule
+    status
+    dateOff
+    schedule
     doctors {
       id
-      medicalFactilitiesId
       name
-      gender
-      numberPhone
-      email
       academicTitle
-      degree
+      avatar {
+        filename
+        type
+        url
+      }
       discription
+      price
+      degree
+      email
+      numberPhone
+      gender
       userId
+      specialistId
       workSchedule {
         dayOff
         schedule {
-          dayOfWeed
+          dayOfWeek
+          sessions {
+            startTime
+            startTime
+          }
+        }
+        status
+      }
+    }
+    medicalSpecialties {
+      id
+      medicalFactilityId
+      name
+      price
+      workSchedule {
+        dayOff
+        schedule {
+          dayOfWeek
           sessions {
             startTime
             endTime
           }
         }
+        status
       }
+    }
+    vaccinations {
+      id
+      medicalFactilitiesId
+      vaccineName
+      countryOfOrigin
+      indication
+      note
+      prophylactic
+      price
+      workSchedule {
+        dayOff
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+    packages {
+      id
+      packageName
+      medicalFactilitiesId
+      gender
+      examinationDetails
+      price
+      workSchedule {
+        dayOff
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+    medicalStaffs {
+      id
+      name
+      email
+      numberPhone
+      gender
+      medicalFacilityId
+      permissions
     }
   }
 }
@@ -1666,6 +2129,180 @@ export function useGetMedicalFacilityByIdLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetMedicalFacilityByIdQueryHookResult = ReturnType<typeof useGetMedicalFacilityByIdQuery>;
 export type GetMedicalFacilityByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityByIdLazyQuery>;
 export type GetMedicalFacilityByIdQueryResult = Apollo.QueryResult<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>;
+export const GetMedicalFacilityNameByIdDocument = gql`
+    query getMedicalFacilityNameById($input: String!) {
+  getMedicalFacilityById(id: $input) {
+    id
+    medicalFacilityName
+  }
+}
+    `;
+
+/**
+ * __useGetMedicalFacilityNameByIdQuery__
+ *
+ * To run a query within a React component, call `useGetMedicalFacilityNameByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMedicalFacilityNameByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMedicalFacilityNameByIdQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetMedicalFacilityNameByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>(GetMedicalFacilityNameByIdDocument, options);
+      }
+export function useGetMedicalFacilityNameByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>(GetMedicalFacilityNameByIdDocument, options);
+        }
+export type GetMedicalFacilityNameByIdQueryHookResult = ReturnType<typeof useGetMedicalFacilityNameByIdQuery>;
+export type GetMedicalFacilityNameByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityNameByIdLazyQuery>;
+export type GetMedicalFacilityNameByIdQueryResult = Apollo.QueryResult<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>;
+export const GetUserSelectedDocument = gql`
+    query getUserSelected($input: String!) {
+  getUserSelected(id: $input) {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetUserSelectedQuery__
+ *
+ * To run a query within a React component, call `useGetUserSelectedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserSelectedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserSelectedQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetUserSelectedQuery(baseOptions: Apollo.QueryHookOptions<GetUserSelectedQuery, GetUserSelectedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserSelectedQuery, GetUserSelectedQueryVariables>(GetUserSelectedDocument, options);
+      }
+export function useGetUserSelectedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserSelectedQuery, GetUserSelectedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserSelectedQuery, GetUserSelectedQueryVariables>(GetUserSelectedDocument, options);
+        }
+export type GetUserSelectedQueryHookResult = ReturnType<typeof useGetUserSelectedQuery>;
+export type GetUserSelectedLazyQueryHookResult = ReturnType<typeof useGetUserSelectedLazyQuery>;
+export type GetUserSelectedQueryResult = Apollo.QueryResult<GetUserSelectedQuery, GetUserSelectedQueryVariables>;
+export const GetMedicalSpecialtiesSelectDocument = gql`
+    query getMedicalSpecialtiesSelect($input: String!) {
+  getMecialSpecialtiesByMedicalFacilityId(id: $input) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetMedicalSpecialtiesSelectQuery__
+ *
+ * To run a query within a React component, call `useGetMedicalSpecialtiesSelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMedicalSpecialtiesSelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMedicalSpecialtiesSelectQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetMedicalSpecialtiesSelectQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>(GetMedicalSpecialtiesSelectDocument, options);
+      }
+export function useGetMedicalSpecialtiesSelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>(GetMedicalSpecialtiesSelectDocument, options);
+        }
+export type GetMedicalSpecialtiesSelectQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesSelectQuery>;
+export type GetMedicalSpecialtiesSelectLazyQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesSelectLazyQuery>;
+export type GetMedicalSpecialtiesSelectQueryResult = Apollo.QueryResult<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>;
+export const GetDoctorbyIdDocument = gql`
+    query getDoctorbyId($input: String!) {
+  getDoctorbyId(id: $input) {
+    id
+    userId
+    medicalFactilitiesId
+    name
+    gender
+    numberPhone
+    email
+    academicTitle
+    degree
+    specialistId
+    discription
+    price
+    avatar {
+      filename
+      type
+      url
+    }
+    workSchedule {
+      dayOff
+      status
+      schedule {
+        dayOfWeek
+        sessions {
+          startTime
+          endTime
+        }
+      }
+    }
+    specialty {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorbyIdQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorbyIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorbyIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorbyIdQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDoctorbyIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>(GetDoctorbyIdDocument, options);
+      }
+export function useGetDoctorbyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>(GetDoctorbyIdDocument, options);
+        }
+export type GetDoctorbyIdQueryHookResult = ReturnType<typeof useGetDoctorbyIdQuery>;
+export type GetDoctorbyIdLazyQueryHookResult = ReturnType<typeof useGetDoctorbyIdLazyQuery>;
+export type GetDoctorbyIdQueryResult = Apollo.QueryResult<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>;
 export const GetGeneralInfor3Document = gql`
     query GetGeneralInfor3 {
   getGeneralInfor {

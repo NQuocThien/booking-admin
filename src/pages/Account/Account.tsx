@@ -2,7 +2,7 @@ import { useAuth } from "src/context/AuthContext";
 import { Button, Container, Form, Row, Col, Image } from "react-bootstrap";
 import s from "src/assets/scss/pages/InforUser.module.scss";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { showToast } from "src/components/toasts/toasts";
+import { showToast } from "src/components/sub/toasts";
 import { getLocalStorage, getToken } from "src/utils/contain";
 import { uploadFile, ETypeFile } from "src/utils/upload";
 import {

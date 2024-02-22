@@ -6,7 +6,7 @@ import MainHeader from "./MainHeader";
 import MainNavigation from "./MainNavigation";
 import MainContent from "./MainContent";
 import { useGetSettingQuery } from "src/graphql/webbooking-service.generated";
-import ToastsPcn from "src/components/toasts/toasts";
+import ToastsPcn from "src/components/sub/toasts";
 
 function MainLayout() {
   const [showed, setShowed] = useState<boolean>(true);

@@ -22,7 +22,7 @@ const _navAdmin: Item[] = [
   {
     component: "NavItem",
     name: "Dashboard",
-    to: "/dashboard",
+    to: "/admin-page/dashboard",
     iconName: "MdOutlineDashboardCustomize",
     badge: {
       nameBadge: "Mới",
@@ -41,25 +41,25 @@ const _navAdmin: Item[] = [
       {
         component: "NavItem",
         name: "Quản lý User",
-        to: "/general/users",
+        to: "/admin-page/users",
         iconName: "MdOutlinePersonOutline",
       },
       {
         component: "NavItem",
         name: "Quản lý CSYT",
-        to: "/general/clinics",
+        to: "/admin-page/medical-facility",
         iconName: "MdOutlineMedicalServices",
       },
       {
         component: "NavItem",
         name: "Quản lý Bác sĩ",
-        to: "/general/doctors",
+        to: "/admin-page/doctors",
         iconName: "LiaUserNurseSolid",
       },
       {
         component: "NavItem",
         name: "Quản lý Khách hàng",
-        to: "/general/customers",
+        to: "/admin-page/customers",
         iconName: "MdPeopleOutline",
       },
     ],
@@ -72,7 +72,7 @@ const _navAdmin: Item[] = [
       {
         component: "NavItem",
         name: "Thông tin Website",
-        to: "/general/client",
+        to: "/admin-page/client",
         iconName: "MdWebhook",
       },
       {

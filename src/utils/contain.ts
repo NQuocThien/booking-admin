@@ -1,8 +1,9 @@
 import * as MaterialDesignIcon from "react-icons/md";
 import * as GameIcon from "react-icons/gi";
 import * as IconS8 from "react-icons/lia";
-
+import momnet from "moment";
 import React from "react";
+import { SessionInput } from "src/graphql/webbooking-service.generated";
 
 export const setLocalStorage = (key: string, value: string | object | []) => {
   if (typeof value === "string") {
@@ -72,4 +73,63 @@ export function shallowEqual<T extends Record<string, any>>(
   }
 
   return true;
+}
+
+export const formatter = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+  currencyDisplay: "code",
+});
+
+export function isValidDate(dateString: string) {
+  // Sử dụng biểu thức chính quy để kiểm tra định dạng ngày tháng năm (YYYY-MM-DD)
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+  // Kiểm tra xem chuỗi có khớp với định dạng không
+  return regex.test(dateString);
+}
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Thêm 1 vì tháng bắt đầu từ 0
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+export function checkSessionExist(
+  newObject: SessionInput,
+  arrayOfObjects: SessionInput[]
+): boolean {
+  const start_time_new: momnet.Moment = momnet(newObject.startTime, "HH:mm");
+  const end_time_new: momnet.Moment = momnet(newObject.endTime, "HH:mm");
+  // kiểm tra xem thời gian bắt đầu có bé hơn thời gian kết thúc:
+  if (start_time_new.add(14, "minute").isSameOrAfter(end_time_new)) {
+    alert("Phiên làm việc phải từ 15 ");
+    return true;
+  }
+
+  for (const obj of arrayOfObjects) {
+    const start_time_obj: momnet.Moment = momnet(obj.startTime, "HH:mm");
+    const end_time_obj: momnet.Moment = momnet(obj.endTime, "HH:mm");
+
+    // Kiểm tra xem khoảng thời gian mới bắt đầu ngay sau khi kết thúc khoảng thời gian hiện tại không
+    if (
+      start_time_new.isSameOrAfter(end_time_obj) &&
+      start_time_new.isBefore(end_time_obj.add(-1, "minute"))
+    ) {
+      alert("Phiên làm việc bị trùng lặp ");
+      return true;
+    }
+
+    // Kiểm tra xem khoảng thời gian mới kết thúc ngay trước khi bắt đầu khoảng thời gian hiện tại không
+    if (
+      end_time_new.isSameOrBefore(start_time_obj) &&
+      end_time_new.isAfter(start_time_obj.subtract(1, "minute"))
+    ) {
+      alert("Phiên làm việc bị trùng lặp ");
+      return true; // Có trùng lặp thời gian
+    }
+  }
+  return false;
 }

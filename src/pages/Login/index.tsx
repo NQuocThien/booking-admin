@@ -5,7 +5,7 @@ import {
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import s from "src/assets/scss/pages/Login.module.scss";
-import { showToast } from "src/components/toasts/toasts";
+import { showToast } from "src/components/sub/toasts";
 import { useAuth } from "src/context/AuthContext";
 
 function LoginPage() {

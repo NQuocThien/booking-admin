@@ -91,7 +91,85 @@ const createMedicalFacility = gql`
       operatingStatus
       legalRepresentation
       taxCode
-      workSchedule
+      dateOff
+      status
+      schedule
+    }
+  }
+`;
+
+const updateMedicalFacility = gql`
+  mutation updateMedicalFacility($input: UpdateMedicalFacilityInput!) {
+    updateMedicalFacility(input: $input) {
+      id
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
+      discription
+      introduce
+      operatingStatus
+      legalRepresentation
+      taxCode
+      dateOff
+      status
+      schedule
+    }
+  }
+`;
+const deleteMedicalFacility = gql`
+  mutation deleteMedicalFacility($input: String!) {
+    deleteMedicalFacility(input: $input) {
+      id
+    }
+  }
+`;
+
+const createDoctor = gql`
+  mutation createDoctor($input: CreateDoctorInput!) {
+    createDoctor(createDoctorInput: $input) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      avatar {
+        filename
+        type
+        url
+      }
+      discription
+      workSchedule {
+        dayOff
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
+const deleteDoctor = gql`
+  mutation deleteDoctor($input: String!) {
+    deleteDoctor(id: $input) {
+      id
     }
   }
 `;

@@ -6,14 +6,14 @@ import { ILocation } from "src/assets/contains/item-interface";
 import { geocodeByAddress } from "react-google-places-autocomplete";
 
 interface IMapProp {
-  marker?: ILocation | undefined;
+  marker: ILocation;
   setMarker: (pos: ILocation) => void;
   address: string | undefined;
 }
-const MapContainer: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
+const MapComponent: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
   const [center, setCenter] = useState<ILocation>({
-    lat: 10.376941,
-    lng: 105.441729,
+    lat: marker.lat,
+    lng: marker.lng,
   });
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const { map, setMap } = useGoogleMap();
@@ -82,4 +82,4 @@ const MapContainer: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
   );
 };
 
-export default MapContainer;
+export default MapComponent;

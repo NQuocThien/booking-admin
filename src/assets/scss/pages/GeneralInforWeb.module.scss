@@ -1,33 +1,32 @@
-@mixin item()
-{
-    border: 1px solid #333;
-    border-radius: 15px ;
-    margin-bottom: 4px;
-    padding: 5px;
+@mixin item() {
+  border: 1px solid #333;
+  border-radius: 15px;
+  margin-bottom: 4px;
+  padding: 5px;
 }
-.content{
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    &__logo{
-        @include item();
-        .image_header{
-            height: 150px;
-            width: 150px;
-            cursor: pointer;
-            border: 1px solid #333;
-        }
-        .image_footer{
-            height: 190px;
-            width: 380px;
-            cursor: pointer;
-            border: 1px solid #333;
-        }
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  &__logo {
+    @include item();
+    .image_header {
+      height: 150px;
+      width: 150px;
+      cursor: pointer;
+      border: 1px solid #333;
     }
-    &__liscene{
-        @include item();
+    .image_footer {
+      height: 190px;
+      width: 360px;
+      cursor: pointer;
+      border: 1px solid #333;
     }
-    &__contact{
-        @include item();
-    }
+  }
+  &__liscene {
+    @include item();
+  }
+  &__contact {
+    @include item();
+  }
 }

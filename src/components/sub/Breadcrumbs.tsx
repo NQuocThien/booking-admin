@@ -2,16 +2,16 @@ import React from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { Link, useLocation } from "react-router-dom";
 
-interface BreadcrumbItem {
+export interface IBreadcrumbItem {
   label: string;
   url: string;
 }
 
-interface CustomBreadcrumbsProps {
-  paths: BreadcrumbItem[];
+export interface ICustomBreadcrumbsProps {
+  paths: IBreadcrumbItem[];
 }
 
-const CustomBreadcrumbs: React.FC<CustomBreadcrumbsProps> = ({ paths }) => {
+const CustomBreadcrumbs: React.FC<ICustomBreadcrumbsProps> = ({ paths }) => {
   const location = useLocation();
 
   return (

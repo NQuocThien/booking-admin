@@ -64,6 +64,23 @@ const GetAllUser = gql`
     }
   }
 `;
+const getUserClinicPending = gql`
+  query getUserClinicPending {
+    getUserMedicalNon {
+      id
+      username
+    }
+  }
+`;
+const getUserDoctorPending = gql`
+  query getUserDoctorPending {
+    getUserDoctorPending {
+      id
+      username
+    }
+  }
+`;
+
 const getAllMedicalFacility = gql`
   query getAllMedicalFacility {
     getAllMedicalFacility {
@@ -73,6 +90,11 @@ const getAllMedicalFacility = gql`
       address
       numberPhone
       email
+      logo {
+        filename
+        type
+        url
+      }
       image {
         filename
         type
@@ -85,7 +107,9 @@ const getAllMedicalFacility = gql`
       operatingStatus
       legalRepresentation
       taxCode
-      workSchedule
+      status
+      dateOff
+      schedule
     }
   }
 `;
@@ -98,6 +122,12 @@ const getMedicalFacilityById = gql`
       address
       numberPhone
       email
+      logo {
+        filename
+        type
+        url
+      }
+
       image {
         filename
         type
@@ -110,28 +140,165 @@ const getMedicalFacilityById = gql`
       operatingStatus
       legalRepresentation
       taxCode
-      workSchedule
+      status
+      dateOff
+      schedule
       doctors {
         id
-        medicalFactilitiesId
         name
-        gender
-        numberPhone
-        email
         academicTitle
-        degree
+        avatar {
+          filename
+          type
+          url
+        }
         discription
+        price
+        degree
+        email
+        numberPhone
+        gender
         userId
+        specialistId
         workSchedule {
           dayOff
           schedule {
-            dayOfWeed
+            dayOfWeek
+            sessions {
+              startTime
+              startTime
+            }
+          }
+          status
+        }
+      }
+      medicalSpecialties {
+        id
+        medicalFactilityId
+        name
+        price
+        workSchedule {
+          dayOff
+          schedule {
+            dayOfWeek
             sessions {
               startTime
               endTime
             }
           }
+          status
         }
+      }
+      vaccinations {
+        id
+        medicalFactilitiesId
+        vaccineName
+        countryOfOrigin
+        indication
+        note
+        prophylactic
+        price
+        workSchedule {
+          dayOff
+          schedule {
+            dayOfWeek
+            sessions {
+              startTime
+              endTime
+            }
+          }
+          status
+        }
+      }
+      packages {
+        id
+        packageName
+        medicalFactilitiesId
+        gender
+        examinationDetails
+        price
+        workSchedule {
+          dayOff
+          schedule {
+            dayOfWeek
+            sessions {
+              startTime
+              endTime
+            }
+          }
+          status
+        }
+      }
+      medicalStaffs {
+        id
+        name
+        email
+        numberPhone
+        gender
+        medicalFacilityId
+        permissions
+      }
+    }
+  }
+`;
+const getMedicalFacilityNameById = gql`
+  query getMedicalFacilityNameById($input: String!) {
+    getMedicalFacilityById(id: $input) {
+      id
+      medicalFacilityName
+    }
+  }
+`;
+const getUserSelected = gql`
+  query getUserSelected($input: String!) {
+    getUserSelected(id: $input) {
+      id
+      username
+    }
+  }
+`;
+const getMedicalSpecialtiesSelect = gql`
+  query getMedicalSpecialtiesSelect($input: String!) {
+    getMecialSpecialtiesByMedicalFacilityId(id: $input) {
+      id
+      name
+    }
+  }
+`;
+const getDoctorById = gql`
+  query getDoctorbyId($input: String!) {
+    getDoctorbyId(id: $input) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      discription
+      price
+      avatar {
+        filename
+        type
+        url
+      }
+      workSchedule {
+        dayOff
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+      specialty {
+        id
+        name
       }
     }
   }
@@ -236,14 +403,7 @@ const getMedicalFacilityById = gql`
 //     }
 //   }
 // `;
-// const GetUserNotHasClinic = gql`
-//   query getUserMedicalNon {
-//     getUserMedicalNon {
-//       id
-//       username
-//     }
-//   }
-// `;
+
 // const GetAllDegreeSelect = gql`
 //   query degreesSellect {
 //     getAllDegree {

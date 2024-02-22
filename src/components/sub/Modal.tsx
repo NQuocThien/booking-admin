@@ -10,6 +10,8 @@ interface Iprops {
   headerText: string;
   fullscreen?: string | true | undefined;
   onlySclose?: boolean;
+  textButtonClose?: string;
+  textButtonSave?: string;
 }
 function ModalCpn({
   children,
@@ -20,6 +22,8 @@ function ModalCpn({
   handleClose,
   onlySclose = false,
   fullscreen = undefined,
+  textButtonSave = undefined,
+  textButtonClose = undefined,
 }: Iprops) {
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -34,11 +38,11 @@ function ModalCpn({
         <Modal.Body>{children}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Đống
+            {(textButtonClose && textButtonClose) || "Đống"}
           </Button>
           {!onlySclose && (
             <Button variant="primary" onClick={handleSave}>
-              Lưu thay đổi
+              {(textButtonSave && textButtonSave) || "Lưu thay đổi"}
             </Button>
           )}
         </Modal.Footer>

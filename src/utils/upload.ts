@@ -67,19 +67,34 @@ export function getUrlImage(linkImage: any) {
   return url;
 }
 
+export const uploadImagePromise = (
+  imageFile: Blob | null
+): Promise<ILinkImage> => {
+  return new Promise((resolve, reject) => {
+    uploadFile("image", [imageFile], (error: any, result: any) => {
+      if (error) {
+        reject(error);
+      } else {
+        const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
+        const linkImage: ILinkImage = {
+          filename: result[0]?.filename + "",
+          type: "image",
+          url: ulrImage,
+        };
+        resolve(linkImage);
+      }
+    });
+  });
+};
 export const uploadFilePromise = (
   typeFile: TypeFile,
-  logo: Blob | null,
-  messageName?: string
+  logo: Blob | null
 ): Promise<ILinkImage> => {
   return new Promise((resolve, reject) => {
     uploadFile(typeFile, [logo], (error: any, result: any) => {
       if (error) {
-        // console.error('Upload error:', error);
-        // showToast(`😥 Lỗi upload logo ${messageName}`, 'error')
         reject(error);
       } else {
-        // showToast(`👍 Đã lưu logo ${messageName}`, 'success')
         const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
         const linkImage: ILinkImage = {
           filename: result[0]?.filename + "",

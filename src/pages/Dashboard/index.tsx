@@ -1,7 +1,7 @@
 // import MapComponent from "src/components/toasts/GoogleMap";
 import { ILocation } from "src/assets/contains/item-interface";
 import { useState } from "react";
-import MapComponent from "src/components/toasts/MapCpn";
+import MapComponent from "src/components/sub/MapCpn";
 function DashboardPage() {
   const [maker, setMarker] = useState<ILocation>();
   const handleSetMarker = (croods: ILocation) => {

@@ -54,9 +54,6 @@ function AuthContextProvider({ children }: AuthProviderProps) {
   }, [data]);
   //check login
   const login = (token: string) => {
-    // check login
-    // save token in local storage
-    console.log("login =====");
     setLocalStorage(tokenKey, token);
     setIsLoginIn(true);
   };

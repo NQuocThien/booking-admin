@@ -1,6 +1,7 @@
 import {
   Doctor,
   GetMedicalFacilityByIdQuery,
+  MedicalFacilities,
   useDeleteDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
 import { Row, Col, Table, Dropdown } from "react-bootstrap";
@@ -13,7 +14,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { showToast } from "src/components/sub/toasts";
 import { EtypeService } from "src/utils/enum";
 interface IProp {
-  data: GetMedicalFacilityByIdQuery | undefined;
+  data: MedicalFacilities | undefined;
   hanldeDeleteRefetch: (typeService: EtypeService, id: string) => void;
 }
 function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
@@ -59,10 +60,11 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.getMedicalFacilityById.doctors?.map((doctor, i) => (
+                  {data.doctors?.map((doctor, i) => (
                     <tr key={i}>
                       <td>
-                        {doctor.academicTitle}.{doctor.degree} {doctor.name}
+                        {doctor.academicTitle ? doctor.academicTitle + "." : ""}
+                        .{doctor.degree} {doctor.name}
                       </td>
                       <td>{doctor.gender}</td>
                       <td>
@@ -70,7 +72,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         {doctor.workSchedule.schedule.map((s, i) => (
                           <span>
                             {s.dayOfWeek}{" "}
-                            {i === doctor.workSchedule.schedule.length
+                            {i !== doctor.workSchedule.schedule.length - 1
                               ? ", "
                               : ""}
                           </span>
@@ -91,7 +93,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                             <Dropdown.Item>
                               <Link
                                 className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/update/${doctor.id}`}>
+                                to={`doctor/update/${doctor.id}`}>
                                 Chỉnh sửa
                               </Link>
                             </Dropdown.Item>
@@ -131,7 +133,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.getMedicalFacilityById.packages?.map((p, i) => (
+                  {data.packages?.map((p, i) => (
                     <tr key={i}>
                       <td>{p.packageName}</td>
                       <td>{p.gender}</td>
@@ -140,7 +142,9 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         {p.workSchedule.schedule.map((s, i) => (
                           <span>
                             {s.dayOfWeek}{" "}
-                            {i === p.workSchedule.schedule.length ? ", " : ""}
+                            {i !== p.workSchedule.schedule.length - 1
+                              ? ", "
+                              : ""}
                           </span>
                         ))}
                       </td>
@@ -196,55 +200,51 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.getMedicalFacilityById.medicalSpecialties?.map(
-                    (ms, i) => (
-                      <tr key={i}>
-                        <td>{ms.name}</td>
-                        <td>
-                          Thứ:{" "}
-                          {ms.workSchedule.schedule.map((s, i) => (
-                            <span>
-                              {s.dayOfWeek}{" "}
-                              {i === ms.workSchedule.schedule.length
-                                ? ", "
-                                : ""}
-                            </span>
-                          ))}
-                        </td>
-                        <td>{formatter.format(ms.price)}</td>
-                        <td className="fs-6">
-                          <Dropdown drop="down">
-                            <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              <Dropdown.Item>
-                                <Link
-                                  className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  to={`/admin-page/medical-facility/${ms.id}`}>
-                                  Chi tiết
-                                </Link>
-                              </Dropdown.Item>
-                              <Dropdown.Item>
-                                <Link
-                                  className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  to={`/admin-page/medical-facility/update/${ms.id}`}>
-                                  Chỉnh sửa
-                                </Link>
-                              </Dropdown.Item>
-                              <Dropdown.Item>
-                                {" "}
-                                <p
-                                  className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  // onClick={async () => await hanldeDelete(c.id)}
-                                >
-                                  Xóa cơ sở y tế
-                                </p>
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                    )
-                  )}
+                  {data.medicalSpecialties?.map((ms, i) => (
+                    <tr key={i}>
+                      <td>{ms.name}</td>
+                      <td>
+                        Thứ:{" "}
+                        {ms.workSchedule.schedule.map((s, i) => (
+                          <span>
+                            {s.dayOfWeek}{" "}
+                            {i === ms.workSchedule.schedule.length ? ", " : ""}
+                          </span>
+                        ))}
+                      </td>
+                      <td>{formatter.format(ms.price)}</td>
+                      <td className="fs-6">
+                        <Dropdown drop="down">
+                          <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item>
+                              <Link
+                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                to={`/admin-page/medical-facility/${ms.id}`}>
+                                Chi tiết
+                              </Link>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                              <Link
+                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                to={`/admin-page/medical-facility/update/${ms.id}`}>
+                                Chỉnh sửa
+                              </Link>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                              {" "}
+                              <p
+                                className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                // onClick={async () => await hanldeDelete(c.id)}
+                              >
+                                Xóa cơ sở y tế
+                              </p>
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </div>
@@ -265,7 +265,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.getMedicalFacilityById.vaccinations?.map((vc, i) => (
+                  {data.vaccinations?.map((vc, i) => (
                     <tr key={i}>
                       <td>{vc.vaccineName}</td>
                       <td>{vc.countryOfOrigin}</td>

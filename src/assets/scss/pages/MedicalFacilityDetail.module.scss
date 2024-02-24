@@ -47,6 +47,9 @@
         height: 400px;
       }
     }
+    &__map {
+      height: 300px;
+    }
   }
   .service {
     &__info {
@@ -55,6 +58,10 @@
   }
   .about {
     margin-top: 10px;
+    &__map {
+      margin-top: 10px;
+      height: 300px;
+    }
   }
 }
 .title {

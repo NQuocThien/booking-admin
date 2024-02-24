@@ -9,10 +9,12 @@ interface IMapProp {
 const MapAddressCpn: React.FC<IMapProp> = ({ lat, lng }) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const { map, setMap } = useGoogleMap();
+  const [marker, setMarker] = useState({ lat: lat, lng: lng });
   useEffect(() => {
     if (window.google && window.google.maps) {
       setScriptLoaded(true);
     }
+    setMarker({ lat: lat, lng: lng });
   }, [lat, lng]);
 
   const onMountMap = (map: google.maps.Map) => {
@@ -30,10 +32,10 @@ const MapAddressCpn: React.FC<IMapProp> = ({ lat, lng }) => {
         <GoogleMap
           mapContainerStyle={{ height: "100%", width: "100%" }}
           zoom={9}
-          center={{ lat: lat, lng: lng }}
+          center={marker}
           onLoad={onMountMap}
           onUnmount={onUnmountMap}>
-          {<Marker position={{ lat: lat, lng: lng }} />}
+          {<Marker position={marker} />}
         </GoogleMap>
       )}
     </>

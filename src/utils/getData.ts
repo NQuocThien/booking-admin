@@ -1,20 +1,40 @@
 import {
+  EAcademicTitle,
   EDayOfWeed,
+  EDegree,
+  EGender,
+  EStatusService,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
 import { EQuickAddSessions } from "./enum";
 import moment from "moment";
-import { Session } from "inspector";
+
+interface AnyObject {
+  [key: string]: any;
+}
+
+export function removeTypename(obj: AnyObject): AnyObject {
+  const newObj: AnyObject = {};
+
+  for (const key in obj) {
+    if (key !== "__typename") {
+      newObj[key] =
+        typeof obj[key] === "object" ? removeTypename(obj[key]) : obj[key];
+    }
+  }
+
+  return newObj;
+}
 
 export const getDayOfWeek = (day: string | undefined) => {
   switch (day) {
     case "Monday":
       return "Thứ 2";
-    case "Thursday":
+    case "Tuesday":
       return "Thứ 3";
     case "Wednesday":
       return "Thứ 4";
-    case "Tuesday":
+    case "Thursday":
       return "Thứ 5";
     case "Friday":
       return "Thứ 6";
@@ -37,6 +57,7 @@ export const getAcademicTitle = (at: string) => {
       return "";
   }
 };
+
 export const getDegree = (de: string | undefined) => {
   switch (de) {
     case "BS":
@@ -100,4 +121,73 @@ export const getQuickSessions = (
     } else break;
   }
   return sessions;
+};
+
+export const getEnumValueDegree = (input: string): EDegree => {
+  switch (input) {
+    case "TS BS":
+      return EDegree.Doctorate;
+    case "ThS BS":
+      return EDegree.MasterDoctor;
+    case "BS":
+      return EDegree.Doctor;
+    case "BS CKI":
+      return EDegree.DoctorS1;
+    case "BS CKII":
+      return EDegree.DoctorS2;
+    default:
+      return EDegree.Doctor;
+  }
+};
+export const getEnumValueAcademicTitle = (
+  input: string
+): EAcademicTitle | undefined => {
+  switch (input) {
+    case "GS":
+      return EAcademicTitle.Professor;
+    case "PGS":
+      return EAcademicTitle.AssociateProfesso;
+    default:
+      return undefined;
+  }
+};
+export const getEnumValueGender = (input: string): EGender => {
+  switch (input) {
+    case "Nam":
+      return EGender.Male;
+    case "Nữ":
+      return EGender.Female;
+    default:
+      return EGender.Male;
+  }
+};
+export const getEnumValueDayOfWeek = (input: string): EDayOfWeed => {
+  switch (input) {
+    case "2":
+      return EDayOfWeed.Monday;
+    case "3":
+      return EDayOfWeed.Tuesday;
+    case "4":
+      return EDayOfWeed.Wednesday;
+    case "5":
+      return EDayOfWeed.Thursday;
+    case "6":
+      return EDayOfWeed.Friday;
+    case "7":
+      return EDayOfWeed.Saturday;
+    case "Chủ nhật":
+      return EDayOfWeed.Sunday;
+    default:
+      return EDayOfWeed.Sunday;
+  }
+};
+export const getEnumValueStateService = (input: string): EStatusService => {
+  switch (input) {
+    case "Mở":
+      return EStatusService.Open;
+    case "Đống":
+      return EStatusService.Close;
+    default:
+      return EStatusService.Open;
+  }
 };

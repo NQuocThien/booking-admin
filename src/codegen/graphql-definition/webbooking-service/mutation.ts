@@ -166,6 +166,39 @@ const createDoctor = gql`
     }
   }
 `;
+const updateDoctor = gql`
+  mutation updateDoctor($input: UpdateDoctorInput!) {
+    updateDoctor(input: $input) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      avatar {
+        filename
+        type
+        url
+      }
+      discription
+      workSchedule {
+        dayOff
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
 const deleteDoctor = gql`
   mutation deleteDoctor($input: String!) {
     deleteDoctor(id: $input) {

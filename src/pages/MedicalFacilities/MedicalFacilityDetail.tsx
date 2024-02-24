@@ -1,7 +1,11 @@
 import { Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
-import { useGetMedicalFacilityByIdQuery } from "src/graphql/webbooking-service.generated";
+import {
+  Doctor,
+  MedicalFacilities,
+  useGetMedicalFacilityByIdQuery,
+} from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -14,18 +18,22 @@ import { useAuth } from "src/context/AuthContext";
 import MedicalFacilityListService from "../../components/Pages/MedicalFacility/MedicalFacilitytService";
 import MedicalFacilityListStaff from "src/components/Pages/MedicalFacility/MedicalFacilityStaff";
 import { EtypeService } from "src/utils/enum";
+import MapAddressCpn from "src/components/sub/MapAddressCpn";
 function MedicalFacilityDetailPage() {
   const { id } = useParams();
   const { checkExpirationToken } = useAuth();
+  const [medicalFacility, setMedicalFacility] = useState<MedicalFacilities>();
   const { data, loading, error } = useGetMedicalFacilityByIdQuery({
     fetchPolicy: "no-cache",
     variables: {
       input: id ? id : "",
     },
   });
+  useEffect(() => {
+    setMedicalFacility(data?.getMedicalFacilityById);
+  }, [data]);
   const location = useLocation();
   useEffect(() => checkExpirationToken(), []);
-  // console.log("test", location.pathname.search("/admin-page/medical-facility"));
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
@@ -39,13 +47,13 @@ function MedicalFacilityDetailPage() {
     }
   }, [location, data]);
   const hanldeDeleteRefetch = (typeService: EtypeService, id: string) => {
-    if (EtypeService.Doctor === typeService) {
-      const findIndex = data?.getMedicalFacilityById.doctors?.findIndex(
+    if (EtypeService.Doctor === typeService && medicalFacility?.doctors) {
+      const findIndex: number = medicalFacility?.doctors.findIndex(
         (doctor) => doctor.id === id
       );
       if (findIndex != -1) {
-        console.log("findIndex", findIndex);
-        data?.getMedicalFacilityById.doctors?.slice(findIndex, 1);
+        const tmpDoctors: Doctor[] = medicalFacility.doctors;
+        tmpDoctors.splice(findIndex, 1);
       }
     }
   };
@@ -65,12 +73,12 @@ function MedicalFacilityDetailPage() {
               className={`${style.top__info_logo}`}
               height={200}
               width={200}
-              src={data?.getMedicalFacilityById.logo.url || "/default.jpg"}
+              src={medicalFacility?.logo.url || "/default.jpg"}
               alt="Logo"
               roundedCircle
             />
             <p className={`${style.top__info_name}`}>
-              {data?.getMedicalFacilityById.medicalFacilityName}
+              {medicalFacility?.medicalFacilityName}
             </p>
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
@@ -97,7 +105,7 @@ function MedicalFacilityDetailPage() {
         </Col>
       </Row>
       <MedicalFacilityListService
-        data={data}
+        data={medicalFacility}
         hanldeDeleteRefetch={hanldeDeleteRefetch}
       />
       <MedicalFacilityListStaff data={data} />
@@ -105,6 +113,17 @@ function MedicalFacilityDetailPage() {
         <Col className={`col-4`}>
           <div className={`${style.about__discription} ${s.component}`}>
             <p className={``}>{data?.getMedicalFacilityById.discription}</p>
+          </div>
+          <div className={`${style.about__map}`}>
+            {medicalFacility?.lat && medicalFacility.lng && (
+              <MapAddressCpn
+                lat={medicalFacility.lat}
+                lng={medicalFacility.lng}
+              />
+            )}
+            {/* {medicalFacility?.lat && medicalFacility.lng && (
+              <GoogleMap lat={medicalFacility.lat} lng={medicalFacility.lng} />
+            )} */}
           </div>
         </Col>
         <Col className={`col-8 `}>

@@ -80,6 +80,14 @@ const getUserDoctorPending = gql`
     }
   }
 `;
+const getUserDoctorPendingUpdate = gql`
+  query getUserDoctorPendingUpdate($input: String!) {
+    getUserDoctorPendingUpdate(input: $input) {
+      id
+      username
+    }
+  }
+`;
 
 const getAllMedicalFacility = gql`
   query getAllMedicalFacility {
@@ -145,6 +153,8 @@ const getMedicalFacilityById = gql`
       schedule
       doctors {
         id
+        userId
+        medicalFactilitiesId
         name
         academicTitle
         avatar {
@@ -162,11 +172,12 @@ const getMedicalFacilityById = gql`
         specialistId
         workSchedule {
           dayOff
+          numberSlot
           schedule {
             dayOfWeek
             sessions {
               startTime
-              startTime
+              endTime
             }
           }
           status
@@ -179,6 +190,7 @@ const getMedicalFacilityById = gql`
         price
         workSchedule {
           dayOff
+          numberSlot
           schedule {
             dayOfWeek
             sessions {
@@ -188,6 +200,7 @@ const getMedicalFacilityById = gql`
           }
           status
         }
+        discription
       }
       vaccinations {
         id
@@ -200,6 +213,7 @@ const getMedicalFacilityById = gql`
         price
         workSchedule {
           dayOff
+          numberSlot
           schedule {
             dayOfWeek
             sessions {
@@ -219,6 +233,7 @@ const getMedicalFacilityById = gql`
         price
         workSchedule {
           dayOff
+          numberSlot
           schedule {
             dayOfWeek
             sessions {
@@ -231,6 +246,7 @@ const getMedicalFacilityById = gql`
       }
       medicalStaffs {
         id
+        userId
         name
         email
         numberPhone
@@ -241,6 +257,7 @@ const getMedicalFacilityById = gql`
     }
   }
 `;
+
 const getMedicalFacilityNameById = gql`
   query getMedicalFacilityNameById($input: String!) {
     getMedicalFacilityById(id: $input) {
@@ -299,6 +316,41 @@ const getDoctorById = gql`
       specialty {
         id
         name
+      }
+    }
+  }
+`;
+const getDoctorToUpdateById = gql`
+  query getDoctorToUpdateById($input: String!) {
+    getDoctorbyId(id: $input) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      discription
+      price
+      avatar {
+        filename
+        type
+        url
+      }
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
       }
     }
   }

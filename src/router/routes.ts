@@ -8,6 +8,7 @@ import FormAddMedicalFacility from "src/pages/MedicalFacilities/FormAdd";
 import FormUpdateMedicalFacility from "src/pages/MedicalFacilities/FormUpdate";
 import FormAddDoctor from "src/pages/Doctor/FormAddDoctor";
 import DoctorDetailPage from "src/pages/Doctor/DoctorDetail";
+import FormUpdateDoctor from "src/pages/Doctor/FormUpdateDoctor";
 export interface IRoute {
   path: string;
   name: string;
@@ -53,6 +54,11 @@ const routes: IRoute[] = [
     path: "/admin-page/medical-facility/:id/doctor/:idDoctor",
     name: "Dashboard",
     element: DoctorDetailPage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/doctor/update/:idDoctor",
+    name: "Dashboard",
+    element: FormUpdateDoctor,
   },
   {
     path: "/admin-page/doctor/form-add",

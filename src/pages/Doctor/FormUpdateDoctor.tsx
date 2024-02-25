@@ -50,8 +50,10 @@ import {
 } from "src/utils/getData";
 import WorkScheduleUpdateCpn from "src/components/WorkSchedule/WorkScheduleUpdate";
 import StatusCpn from "src/components/sub/Status";
+import { useAuth } from "src/context/AuthContext";
 function FormUpdateDoctor() {
   const [state, dispatch] = useReducer(reducer, initState);
+  const { checkExpirationToken } = useAuth();
   const navigate = useNavigate();
   const logoRef = useRef<HTMLInputElement>(null);
   const { id: idMedical, idDoctor } = useParams();
@@ -170,6 +172,7 @@ function FormUpdateDoctor() {
     }
   }, [dataSpecialtiesSelect]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    checkExpirationToken();
     const form = e.currentTarget;
     e.preventDefault();
     dispatch(handleSetValidate(true));

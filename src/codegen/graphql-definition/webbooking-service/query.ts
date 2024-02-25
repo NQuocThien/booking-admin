@@ -231,6 +231,11 @@ const getMedicalFacilityById = gql`
         gender
         examinationDetails
         price
+        image {
+          filename
+          type
+          url
+        }
         workSchedule {
           dayOff
           numberSlot
@@ -305,6 +310,7 @@ const getDoctorById = gql`
       workSchedule {
         dayOff
         status
+        numberSlot
         schedule {
           dayOfWeek
           sessions {
@@ -355,6 +361,59 @@ const getDoctorToUpdateById = gql`
     }
   }
 `;
+const getPackageById = gql`
+  query getPackageById($input: String!) {
+    getPackageById(input: $input) {
+      id
+      medicalFactilitiesId
+      packageName
+      gender
+      price
+      image {
+        filename
+        type
+        url
+      }
+      examinationDetails
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getMedicalSpecialtyByid = gql`
+  query getMedicalSpecialtyById($input: String!) {
+    getMedicalSpecialtyById(input: $input) {
+      id
+      medicalFactilityId
+      name
+      price
+      discription
+      workSchedule {
+        dayOff
+        numberSlot
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+      }
+    }
+  }
+`;
+
 // const GetAllCustomer = gql`
 //   query GetCustomer {
 //     getcustomers {

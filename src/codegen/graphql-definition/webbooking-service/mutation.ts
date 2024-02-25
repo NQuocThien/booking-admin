@@ -206,3 +206,82 @@ const deleteDoctor = gql`
     }
   }
 `;
+const createPackage = gql`
+  mutation createPackage($input: CreatePackageInput!) {
+    createPackage(input: $input) {
+      id
+      medicalFactilitiesId
+      packageName
+      gender
+      price
+      examinationDetails
+      workSchedule {
+        dayOff
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+      image {
+        filename
+        type
+        url
+      }
+    }
+  }
+`;
+const deletePackage = gql`
+  mutation deletePackage($input: String!) {
+    deletePackage(input: $input) {
+      id
+    }
+  }
+`;
+const updatePackage = gql`
+  mutation updatePackage($input: UpdatePackageInput!) {
+    updatePackage(input: $input) {
+      id
+    }
+  }
+`;
+const deleteMedicalSpecialty = gql`
+  mutation deleteMecialSpecialty($input: String!) {
+    deleteMecialSpecialty(id: $input) {
+      id
+    }
+  }
+`;
+const createMedicalSpecialty = gql`
+  mutation createMedicalSpecialty($input: CreateMedicalSpecialtyInput!) {
+    createMedicalSpecialty(input: $input) {
+      id
+      medicalFactilityId
+      name
+      price
+      discription
+      workSchedule {
+        dayOff
+        numberSlot
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+      }
+    }
+  }
+`;
+const updateMedicalSpecialty = gql`
+  mutation updateMedicalSpecialty($input: UpdateMedicalSpecialtyInput!) {
+    updateMedicalSpecialty(input: $input) {
+      id
+    }
+  }
+`;

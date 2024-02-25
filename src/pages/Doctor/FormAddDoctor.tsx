@@ -2,21 +2,14 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import {
   handleChangAvatar,
   handleChangeForm,
+  handleChangeFormWorkSchedule,
   handleChangeOptSpecialties,
   handleChangeStateForm,
   handleSetValidate,
   initState,
   reducer,
 } from "./reducer";
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  Image,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
@@ -26,6 +19,7 @@ import {
   EGender,
   EStatusService,
   LinkImageInput,
+  WorkScheduleInput,
   useCreateDoctorMutation,
   useGetMedicalSpecialtiesSelectQuery,
   useGetUserDoctorPendingQuery,
@@ -34,10 +28,11 @@ import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { getToken } from "src/utils/contain";
-import { uploadFilePromise, uploadImagePromise } from "src/utils/upload";
+import { uploadFilePromise } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import { IOption } from "./reducer";
 import WorkSchedule from "src/components/WorkSchedule/WorkSchedule";
+import StatusCpn from "src/components/sub/Status";
 function FormAddDoctor() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -56,8 +51,8 @@ function FormAddDoctor() {
   });
   const {
     data: dataUsers,
-    loading,
-    error,
+    loading: loadingUsers,
+    error: errorUsers,
   } = useGetUserDoctorPendingQuery({
     fetchPolicy: "no-cache",
     context: {
@@ -131,7 +126,7 @@ function FormAddDoctor() {
             input: input,
           },
         }).then((res) => {
-          showToast("Đã thêm CSYT 👌👌");
+          showToast("Đã thêm Bác Sĩ 👌👌");
           navigate(-1);
         });
         console.log("input: ", input);
@@ -142,7 +137,9 @@ function FormAddDoctor() {
       }
     }
   };
-
+  const hanldeSetWorkSchedule = (workSchedule: WorkScheduleInput) => {
+    dispatch(handleChangeFormWorkSchedule(workSchedule));
+  };
   return (
     <Container className={`${s.component}`}>
       <Button
@@ -351,7 +348,13 @@ function FormAddDoctor() {
             {state.formMedical && (
               <Col>
                 <Form.Group className="mb-3" controlId="formGroupStatus">
-                  <Form.Label>Chuyên khoa</Form.Label>
+                  <Form.Label>
+                    Chuyên khoa{" "}
+                    <StatusCpn
+                      loading={loadingSpecialtiesSelect}
+                      error={!!errorSpecialtiesSelect}
+                    />
+                  </Form.Label>
                   <Select
                     required
                     onChange={(e) => {
@@ -359,40 +362,6 @@ function FormAddDoctor() {
                     }}
                     options={state.optionsSpecialties}
                   />
-                  {/* <Form.Select
-                    onChange={(e) => {
-                      dispatch(handleChangeForm("degree", e.target.value));
-                    }}
-                    defaultValue={EDegree.Doctor}>
-                    <option
-                      selected={state.createDoctor.degree === EDegree.Doctor}
-                      value={EDegree.Doctor}>
-                      Bác sĩ
-                    </option>
-                    <option
-                      selected={state.createDoctor.degree === EDegree.DoctorS1}
-                      value={EDegree.DoctorS1}>
-                      Bác sĩ chuyên khoa 1
-                    </option>
-
-                    <option
-                      selected={state.createDoctor.degree === EDegree.DoctorS2}
-                      value={EDegree.DoctorS2}>
-                      Bác sĩ chuyên khoa 2
-                    </option>
-                    <option
-                      selected={state.createDoctor.degree === EDegree.Doctorate}
-                      value={EDegree.Doctorate}>
-                      Thạc sĩ bác sĩ
-                    </option>
-                    <option
-                      selected={
-                        state.createDoctor.degree === EDegree.MasterDoctor
-                      }
-                      value={EDegree.MasterDoctor}>
-                      Tiến sĩ bác sĩ
-                    </option>
-                  </Form.Select> */}
                 </Form.Group>
               </Col>
             )}
@@ -422,9 +391,7 @@ function FormAddDoctor() {
               <Form.Group className="mb-3" controlId="formGroupUser">
                 <Form.Label>
                   Chọn tài khoản:{" "}
-                  {loading && (
-                    <Spinner animation="border" variant="primary" size="sm" />
-                  )}
+                  <StatusCpn loading={loadingUsers} error={!!errorUsers} />
                 </Form.Label>
                 <Select
                   required
@@ -438,7 +405,10 @@ function FormAddDoctor() {
             </Col>
           </Row>
           <Row>
-            <WorkSchedule state={state} dispatch={dispatch} />
+            <WorkSchedule
+              workSchedule={state.createDoctor.workSchedule}
+              setWorkSchedule={hanldeSetWorkSchedule}
+            />
           </Row>
 
           <Row className="mt-3">

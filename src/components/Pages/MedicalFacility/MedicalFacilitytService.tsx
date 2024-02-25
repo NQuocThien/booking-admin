@@ -1,10 +1,10 @@
 import {
-  Doctor,
-  GetMedicalFacilityByIdQuery,
   MedicalFacilities,
   useDeleteDoctorMutation,
+  useDeleteMecialSpecialtyMutation,
+  useDeletePackageMutation,
 } from "src/graphql/webbooking-service.generated";
-import { Row, Col, Table, Dropdown } from "react-bootstrap";
+import { Row, Col, Table, Dropdown, Spinner } from "react-bootstrap";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { formatter } from "src/utils/contain";
 import { Link } from "react-router-dom";
@@ -18,22 +18,75 @@ interface IProp {
   hanldeDeleteRefetch: (typeService: EtypeService, id: string) => void;
 }
 function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
-  const [deleteDoctor, { loading: loadingDelete }] = useDeleteDoctorMutation({
-    fetchPolicy: "no-cache",
-  });
-  const handleDeleteDoctor = async (id: string, name: string) => {
-    const confirm = window.confirm(`Bạn có chắc xóa bác sĩ "${name}"`);
-    if (confirm) {
-      await deleteDoctor({
-        variables: {
-          input: id,
-        },
-      }).then(() => {
-        showToast("Đã xóa bác sĩ 👌");
-        hanldeDeleteRefetch(EtypeService.Doctor, id);
-      });
+  const [deleteDoctor, { loading: loadingDeleteDoctor }] =
+    useDeleteDoctorMutation({
+      fetchPolicy: "no-cache",
+    });
+  const [deletePackage, { loading: loadingDeletePackage }] =
+    useDeletePackageMutation({
+      fetchPolicy: "no-cache",
+    });
+  const [deleteMedicalSpcialty, { loading: loadingDeleteSpecialty }] =
+    useDeleteMecialSpecialtyMutation({
+      fetchPolicy: "no-cache",
+    });
+  const handleDelete = async (id: string, name: string, type: EtypeService) => {
+    const confirm = window.confirm(`Bạn có chắc xóa ${type} "${name}"`);
+    switch (type) {
+      case EtypeService.Doctor:
+        if (confirm) {
+          await deleteDoctor({
+            variables: {
+              input: id,
+            },
+          })
+            .then(() => {
+              showToast("Đã xóa bác sĩ 👌");
+              hanldeDeleteRefetch(type, id);
+            })
+            .catch((e) => {
+              showToast(`Đã lỗi khi xóa ${type}`, "error");
+            });
+        }
+        break;
+      case EtypeService.Package:
+        if (confirm) {
+          await deletePackage({
+            variables: {
+              input: id,
+            },
+          })
+            .then(() => {
+              showToast("Đã xóa gói khám 👌");
+              hanldeDeleteRefetch(type, id);
+            })
+            .catch((e) => {
+              showToast(`Đã lỗi khi xóa ${type}`, "error");
+            });
+        }
+        break;
+      case EtypeService.Specialty:
+        if (confirm) {
+          await deleteMedicalSpcialty({
+            variables: {
+              input: id,
+            },
+          })
+            .then(() => {
+              showToast("Đã xóa chuyên khoa khám 👌");
+              hanldeDeleteRefetch(type, id);
+            })
+            .catch((e) => {
+              showToast(`Đã lỗi khi xóa ${type}`, "error");
+            });
+        }
+        break;
+
+      default:
+        break;
     }
   };
+
   if (!data) return <div></div>;
   else
     return (
@@ -43,6 +96,13 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
             <div className={`${style.service__info} ${s.component}`}>
               <div className="d-flex">
                 <p className={`${style.title} `}>Danh sách bác sĩ</p>
+                {loadingDeleteDoctor && (
+                  <Spinner
+                    className="mx-2"
+                    variant="success"
+                    animation="border"
+                  />
+                )}
                 <Link
                   className="btn btn-outline-primary btn-sm mx-5 "
                   to="doctor/form-add">
@@ -70,7 +130,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                       <td>
                         Thứ:{" "}
                         {doctor.workSchedule.schedule.map((s, i) => (
-                          <span>
+                          <span key={i}>
                             {s.dayOfWeek}{" "}
                             {i !== doctor.workSchedule.schedule.length - 1
                               ? ", "
@@ -83,23 +143,25 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         <Dropdown drop="down">
                           <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`doctor/${doctor.id}`}>
-                                Chi tiết
-                              </Link>
+                            <Dropdown.Item
+                              className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              as={Link}
+                              to={`doctor/${doctor.id}`}>
+                              Chi tiết
                             </Dropdown.Item>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`doctor/update/${doctor.id}`}>
-                                Chỉnh sửa
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              to={`doctor/update/${doctor.id}`}>
+                              Chỉnh sửa
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() =>
-                                handleDeleteDoctor(doctor.id, doctor.name)
+                                handleDelete(
+                                  doctor.id,
+                                  doctor.name,
+                                  EtypeService.Doctor
+                                )
                               }>
                               <p
                                 className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
@@ -121,7 +183,21 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
         <Row className={`${style.service}`}>
           <Col className={``}>
             <div className={`${style.service__info} ${s.component}`}>
-              <p className={`${style.title} `}>Gói khám</p>
+              <div className="d-flex">
+                <p className={`${style.title} `}>Gói khám</p>
+                {loadingDeletePackage && (
+                  <Spinner
+                    className="mx-2"
+                    variant="success"
+                    animation="border"
+                  />
+                )}
+                <Link
+                  className="btn btn-outline-primary btn-sm mx-5 "
+                  to="package/form-add">
+                  <AiOutlinePlus />
+                </Link>
+              </div>
               <Table hover>
                 <thead>
                   <tr>
@@ -140,7 +216,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                       <td>
                         Thứ:{" "}
                         {p.workSchedule.schedule.map((s, i) => (
-                          <span>
+                          <span key={i}>
                             {s.dayOfWeek}{" "}
                             {i !== p.workSchedule.schedule.length - 1
                               ? ", "
@@ -153,27 +229,29 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         <Dropdown drop="down">
                           <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/${p.id}`}>
-                                Chi tiết
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              to={`package/${p.id}`}
+                              className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                              Chi tiết
                             </Dropdown.Item>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/update/${p.id}`}>
-                                Chỉnh sửa
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              to={`package/update/${p.id}`}
+                              className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                              Chỉnh sửa gói
                             </Dropdown.Item>
-                            <Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDelete(
+                                  p.id,
+                                  p.packageName,
+                                  EtypeService.Package
+                                )
+                              }>
                               {" "}
-                              <p
-                                className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                // onClick={async () => await hanldeDelete(c.id)}
-                              >
-                                Xóa cơ sở y tế
+                              <p className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                Xóa cơ gói khám
                               </p>
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -189,7 +267,21 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
         <Row className={`${style.service}`}>
           <Col className={``}>
             <div className={`${style.service__info} ${s.component}`}>
-              <p className={`${style.title} `}>Chuyên khoa khám</p>
+              <div className="d-flex">
+                <p className={`${style.title} `}>Chuyên khoa khám</p>
+                {loadingDeleteSpecialty && (
+                  <Spinner
+                    className="mx-2"
+                    variant="success"
+                    animation="border"
+                  />
+                )}
+                <Link
+                  className="btn btn-outline-primary btn-sm mx-5 "
+                  to="specialty/form-add">
+                  <AiOutlinePlus />
+                </Link>
+              </div>
               <Table hover>
                 <thead>
                   <tr>
@@ -206,7 +298,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                       <td>
                         Thứ:{" "}
                         {ms.workSchedule.schedule.map((s, i) => (
-                          <span>
+                          <span key={i}>
                             {s.dayOfWeek}{" "}
                             {i === ms.workSchedule.schedule.length ? ", " : ""}
                           </span>
@@ -217,27 +309,30 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         <Dropdown drop="down">
                           <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/${ms.id}`}>
-                                Chi tiết
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              to={`specialty/${ms.id}`}>
+                              Chi tiết chuyên khoa
                             </Dropdown.Item>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/update/${ms.id}`}>
-                                Chỉnh sửa
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              to={`specialty/update/${ms.id}`}>
+                              Chỉnh sửa chuyên khoa
                             </Dropdown.Item>
                             <Dropdown.Item>
                               {" "}
                               <p
                                 className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                // onClick={async () => await hanldeDelete(c.id)}
-                              >
-                                Xóa cơ sở y tế
+                                onClick={async () =>
+                                  handleDelete(
+                                    ms.id,
+                                    ms.name,
+                                    EtypeService.Specialty
+                                  )
+                                }>
+                                Xóa chuyên khoa
                               </p>
                             </Dropdown.Item>
                           </Dropdown.Menu>
@@ -272,7 +367,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                       <td>
                         Thứ:{" "}
                         {vc.workSchedule.schedule.map((s, i) => (
-                          <span>
+                          <span key={i}>
                             {s.dayOfWeek}{" "}
                             {i === vc.workSchedule.schedule.length ? ", " : ""}
                           </span>

@@ -22,7 +22,6 @@ import { IoArrowBack } from "react-icons/io5";
 import {
   CreateMedicalFacilityInput,
   EStatusService,
-  GetUserClinicPendingQuery,
   LinkImageInput,
   useCreateMedicalFacilityMutation,
   useGetUserClinicPendingQuery,
@@ -35,7 +34,7 @@ import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
 import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
-import { uploadFilePromise, uploadImagePromise } from "src/utils/upload";
+import { uploadImagePromise } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 function FormAddMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
@@ -43,11 +42,7 @@ function FormAddMedicalFacility() {
   const logoRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
   const token = getToken();
-  const {
-    data: dataUsers,
-    loading,
-    error,
-  } = useGetUserClinicPendingQuery({
+  const { data: dataUsers, loading } = useGetUserClinicPendingQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {

@@ -1,7 +1,6 @@
 import { GetMedicalFacilityByIdQuery } from "src/graphql/webbooking-service.generated";
-import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
+import { Row, Col, Table, Dropdown } from "react-bootstrap";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
-import { formatter } from "src/utils/contain";
 import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -39,7 +38,7 @@ function MedicalFacilityListStaff({ data }: IProp) {
                         <td>{staff.email}</td>
                         <td>
                           {staff.permissions.map((per, i) => (
-                            <span>
+                            <span key={i}>
                               {per}
                               {i < staff.permissions.length - 1 ? ", " : ""}
                             </span>

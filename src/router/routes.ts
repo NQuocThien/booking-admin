@@ -9,6 +9,12 @@ import FormUpdateMedicalFacility from "src/pages/MedicalFacilities/FormUpdate";
 import FormAddDoctor from "src/pages/Doctor/FormAddDoctor";
 import DoctorDetailPage from "src/pages/Doctor/DoctorDetail";
 import FormUpdateDoctor from "src/pages/Doctor/FormUpdateDoctor";
+import PackageDetailPage from "src/pages/Package/PackageDetail";
+import FormAddPackage from "src/pages/Package/FormAddPackage";
+import FormUpdatePackage from "src/pages/Package/FormUpdatePackage";
+import FormAddSpecialty from "src/pages/Specialty/FormAddSpecialty";
+import FormUpdateSpecialty from "src/pages/Specialty/FormUpdateSpecialty";
+import SpecialtyDetailPage from "src/pages/Specialty/PackageDetail";
 export interface IRoute {
   path: string;
   name: string;
@@ -59,6 +65,36 @@ const routes: IRoute[] = [
     path: "/admin-page/medical-facility/:id/doctor/update/:idDoctor",
     name: "Dashboard",
     element: FormUpdateDoctor,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/package/:idPackage",
+    name: "Dashboard",
+    element: PackageDetailPage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/package/form-add",
+    name: "Dashboard",
+    element: FormAddPackage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/package/update/:idPackage",
+    name: "Dashboard",
+    element: FormUpdatePackage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/specialty/form-add",
+    name: "Dashboard",
+    element: FormAddSpecialty,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/specialty/:idSpecialty",
+    name: "Dashboard",
+    element: SpecialtyDetailPage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/specialty/update/:idSpecialty",
+    name: "Dashboard",
+    element: FormUpdateSpecialty,
   },
   {
     path: "/admin-page/doctor/form-add",

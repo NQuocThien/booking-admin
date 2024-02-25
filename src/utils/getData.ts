@@ -3,6 +3,7 @@ import {
   EDayOfWeed,
   EDegree,
   EGender,
+  EGenderPackage,
   EStatusService,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
@@ -182,12 +183,28 @@ export const getEnumValueDayOfWeek = (input: string): EDayOfWeed => {
   }
 };
 export const getEnumValueStateService = (input: string): EStatusService => {
+  console.log("input ", input);
+
   switch (input) {
     case "Mở":
+      console.log("return ", EStatusService.Open);
       return EStatusService.Open;
     case "Đống":
+      console.log("return ", EStatusService.Close);
       return EStatusService.Close;
     default:
       return EStatusService.Open;
+  }
+};
+export const getEnumValueGenderPackage = (input: string): EGenderPackage => {
+  switch (input) {
+    case "Nam":
+      return EGenderPackage.Male;
+    case "Nữ":
+      return EGenderPackage.Female;
+    case "Nam và nữ":
+      return EGenderPackage.Both;
+    default:
+      return EGenderPackage.Both;
   }
 };

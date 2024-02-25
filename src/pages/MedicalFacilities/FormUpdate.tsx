@@ -1,5 +1,4 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import { omit } from "lodash";
 import {
   handleChangImage,
   handleChangLogo,
@@ -24,7 +23,6 @@ import { IoArrowBack } from "react-icons/io5";
 import {
   EStatusService,
   LinkImageInput,
-  UpdateMedicalFacilityInput,
   useGetMedicalFacilityByIdQuery,
   useGetUserClinicPendingQuery,
   useGetUserSelectedQuery,
@@ -40,6 +38,7 @@ import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
 import { uploadImagePromise } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
+import ShowAlert from "src/components/sub/alerts";
 function FormUpdateMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -140,11 +139,6 @@ function FormUpdateMedicalFacility() {
           logo = state.updateMedicalFacility.logo;
           image = state.updateMedicalFacility.image;
         }
-        // const input: UpdateMedicalFacilityInput = {
-        //   ...state.updateMedicalFacility,
-        //   logo: logo,
-        //   image: image,
-        // };
         const sanitizedInput = {
           id: state.updateMedicalFacility.id,
           userId: state.updateMedicalFacility.userId,
@@ -182,7 +176,11 @@ function FormUpdateMedicalFacility() {
       }
     }
   };
-
+  if (loadingMedical) return <Spinner animation="border" variant="primary" />;
+  if (errorMedical || !id) {
+    console.log(error);
+    return <ShowAlert />;
+  }
   return (
     <Container className={`${s.component}`}>
       <Button
@@ -500,7 +498,7 @@ function FormUpdateMedicalFacility() {
                 </Form.Label>
                 <Select
                   required
-                  // value={selectedOption}
+                  value={optUsersSelected}
                   onChange={(e) => {
                     if (e?.label && e.value) {
                       dispatch(handleChangeForm("userId", e?.value));

@@ -4,6 +4,8 @@ import ShowAlert from "src/components/sub/alerts";
 import {
   Doctor,
   MedicalFacilities,
+  MedicalSpecialties,
+  Package,
   useGetMedicalFacilityByIdQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -47,14 +49,64 @@ function MedicalFacilityDetailPage() {
     }
   }, [location, data]);
   const hanldeDeleteRefetch = (typeService: EtypeService, id: string) => {
-    if (EtypeService.Doctor === typeService && medicalFacility?.doctors) {
-      const findIndex: number = medicalFacility?.doctors.findIndex(
-        (doctor) => doctor.id === id
-      );
-      if (findIndex != -1) {
-        const tmpDoctors: Doctor[] = medicalFacility.doctors;
-        tmpDoctors.splice(findIndex, 1);
-      }
+    switch (typeService) {
+      case EtypeService.Doctor:
+        setMedicalFacility((pre) => {
+          if (pre && pre.doctors) {
+            const findIndex = pre.doctors.findIndex(
+              (doctor) => doctor.id === id
+            );
+            if (findIndex !== -1) {
+              const tmpDoctors: Doctor[] = pre.doctors;
+              tmpDoctors.splice(findIndex, 1);
+              return {
+                ...pre,
+                doctors: tmpDoctors,
+              };
+            }
+            return pre;
+          }
+          return pre;
+        });
+        break;
+      case EtypeService.Package:
+        setMedicalFacility((pre) => {
+          if (pre && pre.packages) {
+            const findIndex = pre.packages.findIndex((item) => item.id === id);
+            if (findIndex !== -1) {
+              const tmpArr: Package[] = pre.packages;
+              tmpArr.splice(findIndex, 1);
+              return {
+                ...pre,
+                packages: tmpArr,
+              };
+            }
+            return pre;
+          }
+          return pre;
+        });
+        break;
+      case EtypeService.Specialty:
+        setMedicalFacility((pre) => {
+          if (pre && pre.medicalSpecialties) {
+            const findIndex = pre.medicalSpecialties.findIndex(
+              (item) => item.id === id
+            );
+            if (findIndex !== -1) {
+              const tmpArr: MedicalSpecialties[] = pre.medicalSpecialties;
+              tmpArr.splice(findIndex, 1);
+              return {
+                ...pre,
+                medicalSpecialties: tmpArr,
+              };
+            }
+            return pre;
+          }
+          return pre;
+        });
+        break;
+      default:
+        break;
     }
   };
   // const navigate = useNavigate();

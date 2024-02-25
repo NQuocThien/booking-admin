@@ -1,5 +1,5 @@
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import s from "src/assets/scss/pages/GeneralInforWeb.module.scss";
 import { ETypeFile, uploadFile, getUrlImage, TypeFile } from "src/utils/upload";
 import { showToast } from "../sub/toasts";

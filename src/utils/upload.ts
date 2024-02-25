@@ -1,6 +1,5 @@
 import { ILinkImage } from "src/assets/contains/item-interface";
 import axios from "axios";
-import { promises } from "dns";
 
 export type TypeFile = "image" | "video" | "document";
 export enum ETypeFile {

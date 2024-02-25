@@ -3,6 +3,7 @@ import {
   EStatusService,
   ScheduleInput,
   SessionInput,
+  WorkScheduleInput,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/components/WorkSchedule.module.scss";
 import { Button, Dropdown, Form, Table } from "react-bootstrap";
@@ -17,15 +18,18 @@ import {
   handleChangeFormWorkSchedule,
 } from "src/pages/Doctor/reducer";
 import { FaSort } from "react-icons/fa";
-import { getDayOfWeek, getQuickSessions } from "src/utils/getData";
-import { checkSessionExist } from "src/utils/contain";
+import {
+  getDayOfWeek,
+  getEnumValueStateService,
+  getQuickSessions,
+} from "src/utils/getData";
+import { checkSessionExist, formatDate } from "src/utils/contain";
 import { EQuickAddSessions } from "src/utils/enum";
 import moment from "moment";
-import { IStateFormUpdateDoctor } from "src/pages/Doctor/reducer-update";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 interface IProp {
-  dispatch: React.Dispatch<IActionFormAddDoctor>;
-  state: IStateFormAddDoctor;
+  workSchedule: WorkScheduleInput;
+  setWorkSchedule: (workSchedule: WorkScheduleInput) => void;
 }
 enum ISessiongDuringDay {
   Morning = "Morning",
@@ -33,7 +37,7 @@ enum ISessiongDuringDay {
   Partial = "Partial",
 }
 
-function WorkScheduleCpn({ state, dispatch }: IProp) {
+function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
   const inputDateRef = useRef<HTMLInputElement>(null);
   const selectDayRef = useRef<HTMLSelectElement>(null);
   const inputTimeStartRef = useRef<HTMLInputElement>(null);
@@ -45,19 +49,12 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
     if (inputDateRef.current && inputDateRef.current.value !== "") {
       if (
         inputDateRef.current.value &&
-        !state.createDoctor.workSchedule.dayOff.find(
-          (day) => day === inputDateRef.current?.value
-        )
+        !workSchedule.dayOff.find((day) => day === inputDateRef.current?.value)
       ) {
-        dispatch(
-          handleChangeFormWorkSchedule({
-            ...state.createDoctor.workSchedule,
-            dayOff: [
-              ...state.createDoctor.workSchedule.dayOff,
-              inputDateRef.current.value,
-            ],
-          })
-        );
+        setWorkSchedule({
+          ...workSchedule,
+          dayOff: [...workSchedule.dayOff, inputDateRef.current.value],
+        });
       } else {
         alert("Ngày trùng lập chọn ngày khác !!");
       }
@@ -68,37 +65,33 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
     }
   };
   const handleRemoveDayOff = (day: Date) => {
-    const tpmDayOffs = state.createDoctor.workSchedule.dayOff;
+    const tpmDayOffs = workSchedule.dayOff;
     const indexDayOffRomve = tpmDayOffs.findIndex((day) => day === day);
     if (indexDayOffRomve !== -1) {
       tpmDayOffs.splice(indexDayOffRomve, 1);
-      dispatch(
-        handleChangeFormWorkSchedule({
-          ...state.createDoctor.workSchedule,
-          dayOff: tpmDayOffs,
-        })
-      );
+      setWorkSchedule({
+        ...workSchedule,
+        dayOff: tpmDayOffs,
+      });
     }
   };
   const hanldeAddSchedule = () => {
     if (selectDayRef.current) {
       if (selectDayRef.current && selectDayRef.current.value !== "") {
         if (
-          !state.createDoctor.workSchedule.schedule.some(
+          !workSchedule.schedule.some(
             (sc) => sc.dayOfWeek === selectDayRef.current?.value
           )
         ) {
           const selectedDay: EDayOfWeed = selectDayRef.current
             .value as EDayOfWeed;
-          dispatch(
-            handleChangeFormWorkSchedule({
-              ...state.createDoctor.workSchedule,
-              schedule: [
-                ...state.createDoctor.workSchedule.schedule,
-                { dayOfWeek: selectedDay, sessions: [] },
-              ],
-            })
-          );
+          setWorkSchedule({
+            ...workSchedule,
+            schedule: [
+              ...workSchedule.schedule,
+              { dayOfWeek: selectedDay, sessions: [] },
+            ],
+          });
         } else {
           alert("Ngày đã có !!!");
         }
@@ -109,10 +102,9 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
   };
   const currentDate = new Date().toISOString().split("T")[0];
   const hanldeAddSessions = (schedule: ScheduleInput) => {
-    const editSchedules: ScheduleInput | undefined =
-      state.createDoctor.workSchedule.schedule.find(
-        (s) => s.dayOfWeek === schedule.dayOfWeek
-      );
+    const editSchedules: ScheduleInput | undefined = workSchedule.schedule.find(
+      (s) => s.dayOfWeek === schedule.dayOfWeek
+    );
     // console.log("input schedule: ", s, " --- editSchedules: ", editSchedules);
     setSchedule(editSchedules);
     setModal(true);
@@ -177,26 +169,6 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
       }
     }
   };
-  const handleSaveSchedule = () => {
-    const tmpSchedule: ScheduleInput[] =
-      state.createDoctor.workSchedule.schedule;
-    const currentScheduleIndex: number = tmpSchedule.findIndex(
-      (item) => item.dayOfWeek === schedule?.dayOfWeek
-    );
-    if (currentScheduleIndex !== -1 && schedule) {
-      tmpSchedule[currentScheduleIndex] = {
-        dayOfWeek: tmpSchedule[currentScheduleIndex].dayOfWeek,
-        sessions: schedule.sessions,
-      };
-      dispatch(
-        handleChangeFormWorkSchedule({
-          ...state.createDoctor.workSchedule,
-          schedule: tmpSchedule,
-        })
-      );
-    }
-    setModal(false);
-  };
   const quickAddSessions = (type: EQuickAddSessions) => {
     if (
       inputTimeStartRef.current &&
@@ -241,20 +213,34 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
       return pre;
     });
   };
+  const handleSaveSchedule = () => {
+    const tmpSchedule: ScheduleInput[] = workSchedule.schedule;
+    const currentScheduleIndex: number = tmpSchedule.findIndex(
+      (item) => item.dayOfWeek === schedule?.dayOfWeek
+    );
+    if (currentScheduleIndex !== -1 && schedule) {
+      tmpSchedule[currentScheduleIndex] = {
+        dayOfWeek: tmpSchedule[currentScheduleIndex].dayOfWeek,
+        sessions: schedule.sessions,
+      };
+      setWorkSchedule({
+        ...workSchedule,
+        schedule: tmpSchedule,
+      });
+    }
+    setModal(false);
+  };
   const handleRemoveSchedule = (scheduleRemove: ScheduleInput) => {
-    const indexRemove = state.createDoctor.workSchedule.schedule.findIndex(
+    const indexRemove = workSchedule.schedule.findIndex(
       (currSchedule) => currSchedule.dayOfWeek === scheduleRemove.dayOfWeek
     );
     if (indexRemove !== -1) {
-      const tmpSchedule: ScheduleInput[] =
-        state.createDoctor.workSchedule.schedule;
+      const tmpSchedule: ScheduleInput[] = workSchedule.schedule;
       tmpSchedule.splice(indexRemove, 1);
-      dispatch(
-        handleChangeFormWorkSchedule({
-          ...state.createDoctor.workSchedule,
-          schedule: tmpSchedule,
-        })
-      );
+      setWorkSchedule({
+        ...workSchedule,
+        schedule: tmpSchedule,
+      });
     }
   };
   return (
@@ -266,26 +252,23 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
           onChange={(e) => {
             const statusValue: EStatusService = e.target
               .value as EStatusService;
-            dispatch(
-              handleChangeFormWorkSchedule({
-                ...state.createDoctor.workSchedule,
-                status: statusValue,
-              })
-            );
+            // console.log("test status:", statusValue);
+            setWorkSchedule({
+              ...workSchedule,
+              status: statusValue,
+            });
           }}
-          defaultValue={EStatusService.Open}>
+          value={workSchedule.status}>
           <option
-            selected={
-              state.createDoctor.workSchedule.status === EStatusService.Open
-            }
-            value={EStatusService.Open}>
+            value={EStatusService.Open}
+            // selected={workSchedule.status === EStatusService.Open}
+          >
             Mở
           </option>
           <option
-            selected={
-              state.createDoctor.workSchedule.status === EStatusService.Close
-            }
-            value={EStatusService.Close}>
+            value={EStatusService.Close}
+            // selected={workSchedule.status === EStatusService.Close}
+          >
             Đống
           </option>
         </Form.Select>
@@ -296,25 +279,23 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
           type="number"
           onChange={(e) => {
             const slot: number = +e.target.value;
-            dispatch(
-              handleChangeFormWorkSchedule({
-                ...state.createDoctor.workSchedule,
-                numberSlot: slot,
-              })
-            );
+            setWorkSchedule({
+              ...workSchedule,
+              numberSlot: slot,
+            });
           }}
           max={20}
           min={2}
-          value={state.createDoctor.workSchedule.numberSlot}
+          value={workSchedule.numberSlot}
           placeholder="5"
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formGroupEmail">
         <Form.Label>Ngày nghỉ:</Form.Label>
         <div className={s.main__dayOff}>
-          {state.createDoctor.workSchedule.dayOff.map((day, i) => (
+          {workSchedule.dayOff.map((day, i) => (
             <div key={i} className={s.main__dayOff_item}>
-              <span>{day}</span>
+              <span>{formatDate(day)}</span>
               <div className={`${s.close}`}>
                 <FaRegTrashCan
                   onClick={() => {
@@ -353,7 +334,7 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
             </tr>
           </thead>
           <tbody>
-            {state.createDoctor.workSchedule.schedule.map((s, i) => (
+            {workSchedule.schedule.map((s, i) => (
               <tr key={i}>
                 <td> {getDayOfWeek(s.dayOfWeek)}</td>
                 <td
@@ -390,49 +371,49 @@ function WorkScheduleCpn({ state, dispatch }: IProp) {
           <Form.Select defaultValue={undefined} ref={selectDayRef}>
             <option
               value={EDayOfWeed.Monday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Monday
               )}>
               Thứ 2
             </option>
             <option
               value={EDayOfWeed.Tuesday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Tuesday
               )}>
               Thứ 3
             </option>
             <option
               value={EDayOfWeed.Wednesday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Wednesday
               )}>
               Thứ 4
             </option>
             <option
-              value={EDayOfWeed.Tuesday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              value={EDayOfWeed.Thursday}
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Thursday
               )}>
               Thứ 5
             </option>
             <option
               value={EDayOfWeed.Friday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Friday
               )}>
               Thứ 6
             </option>
             <option
               value={EDayOfWeed.Saturday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Saturday
               )}>
               Thứ 7
             </option>
             <option
               value={EDayOfWeed.Sunday}
-              disabled={state.createDoctor.workSchedule.schedule.some(
+              disabled={workSchedule.schedule.some(
                 (s) => s.dayOfWeek === EDayOfWeed.Sunday
               )}>
               Chủ nhật

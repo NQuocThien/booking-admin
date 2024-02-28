@@ -285,3 +285,31 @@ const updateMedicalSpecialty = gql`
     }
   }
 `;
+const createVaccination = gql`
+  mutation createVaccination($input: CreateVaccineInput!) {
+    createVaccination(input: $input) {
+      id
+    }
+  }
+`;
+const updateVaccine = gql`
+  mutation updateVaccination($input: UpdateVaccineInput!) {
+    updateVaccination(input: $input) {
+      id
+    }
+  }
+`;
+const deleteVaccine = gql`
+  mutation deleteVaccination($input: String!) {
+    deleteVaccination(input: $input) {
+      id
+    }
+  }
+`;
+const createMedicalStaff = gql`
+  mutation createMedicalStaff($input: CreateMedicalStaffInput!) {
+    createMedicalStaff(input: $input) {
+      id
+    }
+  }
+`;

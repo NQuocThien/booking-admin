@@ -13,4 +13,5 @@ export enum ERoles {
   clinic = "clinic",
   customer = "customer",
   doctor = "doctor",
+  staff = "staff",
 }

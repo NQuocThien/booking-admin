@@ -3,6 +3,7 @@ export interface ICheckRoles {
   customer: boolean;
   clinic: boolean;
   doctor: boolean;
+  staff: boolean;
 }
 export interface ILocation {
   lat: number;

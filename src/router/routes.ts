@@ -15,6 +15,10 @@ import FormUpdatePackage from "src/pages/Package/FormUpdatePackage";
 import FormAddSpecialty from "src/pages/Specialty/FormAddSpecialty";
 import FormUpdateSpecialty from "src/pages/Specialty/FormUpdateSpecialty";
 import SpecialtyDetailPage from "src/pages/Specialty/PackageDetail";
+import FormAddVaccination from "src/pages/Vaccination/FormAddVacinnation";
+import VaccinationDetailPage from "src/pages/Vaccination/VaccinationDetail";
+import FormUpdateVaccination from "src/pages/Vaccination/FormUpdateVacinnation";
+import FormAddMedicalStaff from "src/pages/MedicalStaff/FormAddStaff";
 export interface IRoute {
   path: string;
   name: string;
@@ -97,9 +101,29 @@ const routes: IRoute[] = [
     element: FormUpdateSpecialty,
   },
   {
+    path: "/admin-page/medical-facility/:id/vaccination/form-add",
+    name: "Dashboard",
+    element: FormAddVaccination,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/vaccination/:idVaccine",
+    name: "Dashboard",
+    element: VaccinationDetailPage,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/vaccination/update/:idVaccine",
+    name: "Dashboard",
+    element: FormUpdateVaccination,
+  },
+  {
     path: "/admin-page/doctor/form-add",
     name: "Dashboard",
     element: FormAddDoctor,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/staff/form-add",
+    name: "Dashboard",
+    element: FormAddMedicalStaff,
   },
 ];
 

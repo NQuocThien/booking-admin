@@ -6,6 +6,7 @@ import {
   MedicalFacilities,
   MedicalSpecialties,
   Package,
+  Vaccination,
   useGetMedicalFacilityByIdQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -105,6 +106,25 @@ function MedicalFacilityDetailPage() {
           return pre;
         });
         break;
+      case EtypeService.Vaccine:
+        setMedicalFacility((pre) => {
+          if (pre && pre.vaccinations) {
+            const findIndex = pre.vaccinations.findIndex(
+              (item) => item.id === id
+            );
+            if (findIndex !== -1) {
+              const tmpArr: Vaccination[] = pre.vaccinations;
+              tmpArr.splice(findIndex, 1);
+              return {
+                ...pre,
+                vaccinations: tmpArr,
+              };
+            }
+            return pre;
+          }
+          return pre;
+        });
+        break;
       default:
         break;
     }
@@ -173,9 +193,6 @@ function MedicalFacilityDetailPage() {
                 lng={medicalFacility.lng}
               />
             )}
-            {/* {medicalFacility?.lat && medicalFacility.lng && (
-              <GoogleMap lat={medicalFacility.lat} lng={medicalFacility.lng} />
-            )} */}
           </div>
         </Col>
         <Col className={`col-8 `}>

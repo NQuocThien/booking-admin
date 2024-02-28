@@ -88,6 +88,14 @@ const getUserDoctorPendingUpdate = gql`
     }
   }
 `;
+const getUserStaffSelect = gql`
+  query getAllUserStaffSelect($input: String!) {
+    getUserStaffSelect(input: $input) {
+      id
+      username
+    }
+  }
+`;
 
 const getAllMedicalFacility = gql`
   query getAllMedicalFacility {
@@ -410,6 +418,56 @@ const getMedicalSpecialtyByid = gql`
           }
         }
       }
+    }
+  }
+`;
+const getVaccineById = gql`
+  query getVaccineById($input: String!) {
+    getVaccineById(input: $input) {
+      id
+      medicalFactilitiesId
+      vaccineName
+      price
+      countryOfOrigin
+      prophylactic
+      indication
+      note
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+  }
+`;
+const getMedicalSpecialtySelect = gql`
+  query getSpecialtySelect($input: String!) {
+    getMedicalSpecialtySelect(input: $input) {
+      id
+      name
+    }
+  }
+`;
+const getAllPackageSelect = gql`
+  query getAllPackageSelect($input: String!) {
+    getAllPackageSelect(input: $input) {
+      id
+      packageName
+    }
+  }
+`;
+const getAllVaccinationSelect = gql`
+  query getAllVaccinationSelect($input: String!) {
+    getAllVaccinationSelect(input: $input) {
+      id
+      vaccineName
     }
   }
 `;

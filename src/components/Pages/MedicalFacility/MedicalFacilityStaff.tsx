@@ -4,6 +4,7 @@ import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
+import { AiOutlinePlus } from "react-icons/ai";
 
 interface IProp {
   data: GetMedicalFacilityByIdQuery | undefined;
@@ -16,7 +17,21 @@ function MedicalFacilityListStaff({ data }: IProp) {
         <Row className={`${style.service}`}>
           <Col className={``}>
             <div className={`${style.service__info} ${s.component}`}>
-              <p className={`${style.title} `}>Nhân viên của CSYT:</p>
+              <div className="d-flex">
+                <p className={`${style.title} `}>Nhân viên của CSYT:</p>
+                {/* {loadingDeleteVaccination && (
+                  <Spinner
+                    className="mx-2"
+                    variant="success"
+                    animation="border"
+                  />
+                )} */}
+                <Link
+                  className="btn btn-outline-primary btn-sm mx-5 "
+                  to="staff/form-add">
+                  <AiOutlinePlus />
+                </Link>
+              </div>
               <Table hover>
                 <thead>
                   <tr>
@@ -48,26 +63,20 @@ function MedicalFacilityListStaff({ data }: IProp) {
                           <Dropdown drop="down">
                             <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
                             <Dropdown.Menu>
-                              <Dropdown.Item>
-                                <Link
-                                  className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  to={`/admin-page/medical-facility/${staff.id}`}>
-                                  Chi tiết
-                                </Link>
+                              <Dropdown.Item
+                                as={Link}
+                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                to={`staff/${staff.id}`}>
+                                Chi tiết
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as={Link}
+                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                to={`/admin-page/medical-facility/update/${staff.id}`}>
+                                Chỉnh sửa
                               </Dropdown.Item>
                               <Dropdown.Item>
-                                <Link
-                                  className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  to={`/admin-page/medical-facility/update/${staff.id}`}>
-                                  Chỉnh sửa
-                                </Link>
-                              </Dropdown.Item>
-                              <Dropdown.Item>
-                                {" "}
-                                <p
-                                  className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                  // onClick={async () => await hanldeDelete(c.id)}
-                                >
+                                <p className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                                   Xóa cơ sở y tế
                                 </p>
                               </Dropdown.Item>

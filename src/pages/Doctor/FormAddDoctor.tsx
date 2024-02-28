@@ -110,7 +110,7 @@ function FormAddDoctor() {
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
       try {
-        console.log("test input ");
+        // console.log("test input ");
 
         const avatar: LinkImageInput = await uploadFilePromise(
           "image",
@@ -120,7 +120,7 @@ function FormAddDoctor() {
           ...state.createDoctor,
           avatar: avatar,
         };
-        console.log("test input: ", input);
+        // console.log("test input: ", input);
         await createDoctor({
           variables: {
             input: input,
@@ -352,7 +352,7 @@ function FormAddDoctor() {
                     Chuyên khoa{" "}
                     <StatusCpn
                       loading={loadingSpecialtiesSelect}
-                      error={!!errorSpecialtiesSelect}
+                      error={errorSpecialtiesSelect}
                     />
                   </Form.Label>
                   <Select
@@ -391,7 +391,7 @@ function FormAddDoctor() {
               <Form.Group className="mb-3" controlId="formGroupUser">
                 <Form.Label>
                   Chọn tài khoản:{" "}
-                  <StatusCpn loading={loadingUsers} error={!!errorUsers} />
+                  <StatusCpn loading={loadingUsers} error={errorUsers} />
                 </Form.Label>
                 <Select
                   required

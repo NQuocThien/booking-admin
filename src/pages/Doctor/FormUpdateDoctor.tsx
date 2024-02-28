@@ -456,7 +456,7 @@ function FormUpdateDoctor() {
                     Chuyên khoa{" "}
                     <StatusCpn
                       loading={loadingSpecialtiesSelect}
-                      error={!!errorSpecialtiesSelect}
+                      error={errorSpecialtiesSelect}
                     />
                   </Form.Label>
                   <Select

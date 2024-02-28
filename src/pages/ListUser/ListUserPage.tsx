@@ -62,6 +62,7 @@ function ListUserPage() {
     clinic: false,
     customer: false,
     doctor: false,
+    staff: false,
   });
   useEffect(() => {
     setListUser(data?.users);
@@ -116,6 +117,7 @@ function ListUserPage() {
       clinic: false,
       customer: false,
       doctor: false,
+      staff: false,
     }); // reset roles
     if (user.roles) {
       user.roles.map((role) => {
@@ -145,6 +147,7 @@ function ListUserPage() {
     if (stateRoles.clinic) roles.push(ERoles.clinic);
     if (stateRoles.doctor) roles.push(ERoles.doctor);
     if (stateRoles.customer) roles.push(ERoles.customer);
+    if (stateRoles.staff) roles.push(ERoles.staff);
     if (userClicked?.id)
       updateRolesMutation({
         variables: {
@@ -302,6 +305,16 @@ function ListUserPage() {
                 checked={stateRoles.customer}
                 onChange={() =>
                   setStateRoles((pre) => ({ ...pre, customer: !pre.customer }))
+                }
+              />
+              <Form.Check
+                type="switch"
+                id="custom-customer"
+                label="Staff"
+                name="check-customer"
+                checked={stateRoles.staff}
+                onChange={() =>
+                  setStateRoles((pre) => ({ ...pre, staff: !pre.staff }))
                 }
               />
             </Col>

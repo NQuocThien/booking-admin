@@ -93,6 +93,7 @@ export type CreateMedicalStaffInput = {
   name: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
   permissions: Array<EPermission>;
+  specialtyId?: InputMaybe<Array<Scalars['String']['input']>>;
   userId: Scalars['String']['input'];
 };
 
@@ -402,6 +403,7 @@ export type MedicalStaff = {
   name: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
   permissions: Array<Scalars['String']['output']>;
+  specialtyId?: Maybe<Array<Scalars['String']['output']>>;
   userId: Scalars['String']['output'];
 };
 
@@ -724,7 +726,9 @@ export type Query = {
   getAllMedicalStaff: Array<MedicalStaff>;
   getAllNotification: Array<Notification>;
   getAllPackage: Array<Package>;
+  getAllPackageSelect: Array<Package>;
   getAllVacation: Array<Vaccination>;
+  getAllVaccinationSelect: Array<Vaccination>;
   getDoctorbyId: Doctor;
   getDoctorbyUserId: Doctor;
   getEvaluateById: Evaluate;
@@ -733,6 +737,7 @@ export type Query = {
   getMedicalFacilityById: MedicalFacilities;
   getMedicalFacilityByUserId: MedicalFacilities;
   getMedicalSpecialtyById: MedicalSpecialties;
+  getMedicalSpecialtySelect: Array<MedicalSpecialties>;
   getPackageById: Package;
   getProfileByCustomerId: Array<Profile>;
   getSetting: Setting;
@@ -742,7 +747,19 @@ export type Query = {
   getUserMedicalNon: Array<User>;
   getUserSelect: Array<User>;
   getUserSelected: User;
+  getUserStaffSelect: Array<User>;
+  getVaccineById: Vaccination;
   users: Array<User>;
+};
+
+
+export type QueryGetAllPackageSelectArgs = {
+  input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllVaccinationSelectArgs = {
+  input: Scalars['String']['input'];
 };
 
 
@@ -781,6 +798,11 @@ export type QueryGetMedicalSpecialtyByIdArgs = {
 };
 
 
+export type QueryGetMedicalSpecialtySelectArgs = {
+  input: Scalars['String']['input'];
+};
+
+
 export type QueryGetPackageByIdArgs = {
   input: Scalars['String']['input'];
 };
@@ -808,6 +830,16 @@ export type QueryGetUserSelectArgs = {
 
 export type QueryGetUserSelectedArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryGetUserStaffSelectArgs = {
+  input: Scalars['String']['input'];
+};
+
+
+export type QueryGetVaccineByIdArgs = {
+  input: Scalars['String']['input'];
 };
 
 export type Register = {
@@ -927,6 +959,7 @@ export type UpdateMedicalStaffInput = {
   name: EGender;
   numberPhone: Scalars['String']['input'];
   permissions: Array<EPermission>;
+  specialtyId?: InputMaybe<Array<Scalars['String']['input']>>;
   userId: Scalars['String']['input'];
 };
 
@@ -1189,6 +1222,34 @@ export type UpdateMedicalSpecialtyMutationVariables = Exact<{
 
 export type UpdateMedicalSpecialtyMutation = { __typename?: 'Mutation', updateMedicalSpecialty: { __typename?: 'MedicalSpecialties', id: string } };
 
+export type CreateVaccinationMutationVariables = Exact<{
+  input: CreateVaccineInput;
+}>;
+
+
+export type CreateVaccinationMutation = { __typename?: 'Mutation', createVaccination: { __typename?: 'Vaccination', id: string } };
+
+export type UpdateVaccinationMutationVariables = Exact<{
+  input: UpdateVaccineInput;
+}>;
+
+
+export type UpdateVaccinationMutation = { __typename?: 'Mutation', updateVaccination: { __typename?: 'Vaccination', id: string } };
+
+export type DeleteVaccinationMutationVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type DeleteVaccinationMutation = { __typename?: 'Mutation', deleteVaccination: { __typename?: 'Vaccination', id: string } };
+
+export type CreateMedicalStaffMutationVariables = Exact<{
+  input: CreateMedicalStaffInput;
+}>;
+
+
+export type CreateMedicalStaffMutation = { __typename?: 'Mutation', createMedicalStaff: { __typename?: 'MedicalStaff', id: string } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1225,6 +1286,13 @@ export type GetUserDoctorPendingUpdateQueryVariables = Exact<{
 
 
 export type GetUserDoctorPendingUpdateQuery = { __typename?: 'Query', getUserDoctorPendingUpdate: Array<{ __typename?: 'User', id: string, username: string }> };
+
+export type GetAllUserStaffSelectQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetAllUserStaffSelectQuery = { __typename?: 'Query', getUserStaffSelect: Array<{ __typename?: 'User', id: string, username: string }> };
 
 export type GetAllMedicalFacilityQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1286,6 +1354,34 @@ export type GetMedicalSpecialtyByIdQueryVariables = Exact<{
 
 
 export type GetMedicalSpecialtyByIdQuery = { __typename?: 'Query', getMedicalSpecialtyById: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } } };
+
+export type GetVaccineByIdQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetVaccineByIdQuery = { __typename?: 'Query', getVaccineById: { __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, price: number, countryOfOrigin: string, prophylactic: string, indication: string, note: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } } };
+
+export type GetSpecialtySelectQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetSpecialtySelectQuery = { __typename?: 'Query', getMedicalSpecialtySelect: Array<{ __typename?: 'MedicalSpecialties', id: string, name: string }> };
+
+export type GetAllPackageSelectQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetAllPackageSelectQuery = { __typename?: 'Query', getAllPackageSelect: Array<{ __typename?: 'Package', id: string, packageName: string }> };
+
+export type GetAllVaccinationSelectQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetAllVaccinationSelectQuery = { __typename?: 'Query', getAllVaccinationSelect: Array<{ __typename?: 'Vaccination', id: string, vaccineName: string }> };
 
 export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2071,6 +2167,138 @@ export function useUpdateMedicalSpecialtyMutation(baseOptions?: Apollo.MutationH
 export type UpdateMedicalSpecialtyMutationHookResult = ReturnType<typeof useUpdateMedicalSpecialtyMutation>;
 export type UpdateMedicalSpecialtyMutationResult = Apollo.MutationResult<UpdateMedicalSpecialtyMutation>;
 export type UpdateMedicalSpecialtyMutationOptions = Apollo.BaseMutationOptions<UpdateMedicalSpecialtyMutation, UpdateMedicalSpecialtyMutationVariables>;
+export const CreateVaccinationDocument = gql`
+    mutation createVaccination($input: CreateVaccineInput!) {
+  createVaccination(input: $input) {
+    id
+  }
+}
+    `;
+export type CreateVaccinationMutationFn = Apollo.MutationFunction<CreateVaccinationMutation, CreateVaccinationMutationVariables>;
+
+/**
+ * __useCreateVaccinationMutation__
+ *
+ * To run a mutation, you first call `useCreateVaccinationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateVaccinationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createVaccinationMutation, { data, loading, error }] = useCreateVaccinationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateVaccinationMutation(baseOptions?: Apollo.MutationHookOptions<CreateVaccinationMutation, CreateVaccinationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateVaccinationMutation, CreateVaccinationMutationVariables>(CreateVaccinationDocument, options);
+      }
+export type CreateVaccinationMutationHookResult = ReturnType<typeof useCreateVaccinationMutation>;
+export type CreateVaccinationMutationResult = Apollo.MutationResult<CreateVaccinationMutation>;
+export type CreateVaccinationMutationOptions = Apollo.BaseMutationOptions<CreateVaccinationMutation, CreateVaccinationMutationVariables>;
+export const UpdateVaccinationDocument = gql`
+    mutation updateVaccination($input: UpdateVaccineInput!) {
+  updateVaccination(input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateVaccinationMutationFn = Apollo.MutationFunction<UpdateVaccinationMutation, UpdateVaccinationMutationVariables>;
+
+/**
+ * __useUpdateVaccinationMutation__
+ *
+ * To run a mutation, you first call `useUpdateVaccinationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVaccinationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVaccinationMutation, { data, loading, error }] = useUpdateVaccinationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateVaccinationMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVaccinationMutation, UpdateVaccinationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVaccinationMutation, UpdateVaccinationMutationVariables>(UpdateVaccinationDocument, options);
+      }
+export type UpdateVaccinationMutationHookResult = ReturnType<typeof useUpdateVaccinationMutation>;
+export type UpdateVaccinationMutationResult = Apollo.MutationResult<UpdateVaccinationMutation>;
+export type UpdateVaccinationMutationOptions = Apollo.BaseMutationOptions<UpdateVaccinationMutation, UpdateVaccinationMutationVariables>;
+export const DeleteVaccinationDocument = gql`
+    mutation deleteVaccination($input: String!) {
+  deleteVaccination(input: $input) {
+    id
+  }
+}
+    `;
+export type DeleteVaccinationMutationFn = Apollo.MutationFunction<DeleteVaccinationMutation, DeleteVaccinationMutationVariables>;
+
+/**
+ * __useDeleteVaccinationMutation__
+ *
+ * To run a mutation, you first call `useDeleteVaccinationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVaccinationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVaccinationMutation, { data, loading, error }] = useDeleteVaccinationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteVaccinationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteVaccinationMutation, DeleteVaccinationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteVaccinationMutation, DeleteVaccinationMutationVariables>(DeleteVaccinationDocument, options);
+      }
+export type DeleteVaccinationMutationHookResult = ReturnType<typeof useDeleteVaccinationMutation>;
+export type DeleteVaccinationMutationResult = Apollo.MutationResult<DeleteVaccinationMutation>;
+export type DeleteVaccinationMutationOptions = Apollo.BaseMutationOptions<DeleteVaccinationMutation, DeleteVaccinationMutationVariables>;
+export const CreateMedicalStaffDocument = gql`
+    mutation createMedicalStaff($input: CreateMedicalStaffInput!) {
+  createMedicalStaff(input: $input) {
+    id
+  }
+}
+    `;
+export type CreateMedicalStaffMutationFn = Apollo.MutationFunction<CreateMedicalStaffMutation, CreateMedicalStaffMutationVariables>;
+
+/**
+ * __useCreateMedicalStaffMutation__
+ *
+ * To run a mutation, you first call `useCreateMedicalStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMedicalStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMedicalStaffMutation, { data, loading, error }] = useCreateMedicalStaffMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMedicalStaffMutation(baseOptions?: Apollo.MutationHookOptions<CreateMedicalStaffMutation, CreateMedicalStaffMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMedicalStaffMutation, CreateMedicalStaffMutationVariables>(CreateMedicalStaffDocument, options);
+      }
+export type CreateMedicalStaffMutationHookResult = ReturnType<typeof useCreateMedicalStaffMutation>;
+export type CreateMedicalStaffMutationResult = Apollo.MutationResult<CreateMedicalStaffMutation>;
+export type CreateMedicalStaffMutationOptions = Apollo.BaseMutationOptions<CreateMedicalStaffMutation, CreateMedicalStaffMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -2348,6 +2576,42 @@ export function useGetUserDoctorPendingUpdateLazyQuery(baseOptions?: Apollo.Lazy
 export type GetUserDoctorPendingUpdateQueryHookResult = ReturnType<typeof useGetUserDoctorPendingUpdateQuery>;
 export type GetUserDoctorPendingUpdateLazyQueryHookResult = ReturnType<typeof useGetUserDoctorPendingUpdateLazyQuery>;
 export type GetUserDoctorPendingUpdateQueryResult = Apollo.QueryResult<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>;
+export const GetAllUserStaffSelectDocument = gql`
+    query getAllUserStaffSelect($input: String!) {
+  getUserStaffSelect(input: $input) {
+    id
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetAllUserStaffSelectQuery__
+ *
+ * To run a query within a React component, call `useGetAllUserStaffSelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUserStaffSelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUserStaffSelectQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllUserStaffSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>(GetAllUserStaffSelectDocument, options);
+      }
+export function useGetAllUserStaffSelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>(GetAllUserStaffSelectDocument, options);
+        }
+export type GetAllUserStaffSelectQueryHookResult = ReturnType<typeof useGetAllUserStaffSelectQuery>;
+export type GetAllUserStaffSelectLazyQueryHookResult = ReturnType<typeof useGetAllUserStaffSelectLazyQuery>;
+export type GetAllUserStaffSelectQueryResult = Apollo.QueryResult<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>;
 export const GetAllMedicalFacilityDocument = gql`
     query getAllMedicalFacility {
   getAllMedicalFacility {
@@ -2921,6 +3185,168 @@ export function useGetMedicalSpecialtyByIdLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetMedicalSpecialtyByIdQueryHookResult = ReturnType<typeof useGetMedicalSpecialtyByIdQuery>;
 export type GetMedicalSpecialtyByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalSpecialtyByIdLazyQuery>;
 export type GetMedicalSpecialtyByIdQueryResult = Apollo.QueryResult<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>;
+export const GetVaccineByIdDocument = gql`
+    query getVaccineById($input: String!) {
+  getVaccineById(input: $input) {
+    id
+    medicalFactilitiesId
+    vaccineName
+    price
+    countryOfOrigin
+    prophylactic
+    indication
+    note
+    workSchedule {
+      dayOff
+      numberSlot
+      schedule {
+        dayOfWeek
+        sessions {
+          startTime
+          endTime
+        }
+      }
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetVaccineByIdQuery__
+ *
+ * To run a query within a React component, call `useGetVaccineByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVaccineByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVaccineByIdQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetVaccineByIdQuery(baseOptions: Apollo.QueryHookOptions<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>(GetVaccineByIdDocument, options);
+      }
+export function useGetVaccineByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>(GetVaccineByIdDocument, options);
+        }
+export type GetVaccineByIdQueryHookResult = ReturnType<typeof useGetVaccineByIdQuery>;
+export type GetVaccineByIdLazyQueryHookResult = ReturnType<typeof useGetVaccineByIdLazyQuery>;
+export type GetVaccineByIdQueryResult = Apollo.QueryResult<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>;
+export const GetSpecialtySelectDocument = gql`
+    query getSpecialtySelect($input: String!) {
+  getMedicalSpecialtySelect(input: $input) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetSpecialtySelectQuery__
+ *
+ * To run a query within a React component, call `useGetSpecialtySelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSpecialtySelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSpecialtySelectQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetSpecialtySelectQuery(baseOptions: Apollo.QueryHookOptions<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>(GetSpecialtySelectDocument, options);
+      }
+export function useGetSpecialtySelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>(GetSpecialtySelectDocument, options);
+        }
+export type GetSpecialtySelectQueryHookResult = ReturnType<typeof useGetSpecialtySelectQuery>;
+export type GetSpecialtySelectLazyQueryHookResult = ReturnType<typeof useGetSpecialtySelectLazyQuery>;
+export type GetSpecialtySelectQueryResult = Apollo.QueryResult<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>;
+export const GetAllPackageSelectDocument = gql`
+    query getAllPackageSelect($input: String!) {
+  getAllPackageSelect(input: $input) {
+    id
+    packageName
+  }
+}
+    `;
+
+/**
+ * __useGetAllPackageSelectQuery__
+ *
+ * To run a query within a React component, call `useGetAllPackageSelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPackageSelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPackageSelectQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllPackageSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>(GetAllPackageSelectDocument, options);
+      }
+export function useGetAllPackageSelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>(GetAllPackageSelectDocument, options);
+        }
+export type GetAllPackageSelectQueryHookResult = ReturnType<typeof useGetAllPackageSelectQuery>;
+export type GetAllPackageSelectLazyQueryHookResult = ReturnType<typeof useGetAllPackageSelectLazyQuery>;
+export type GetAllPackageSelectQueryResult = Apollo.QueryResult<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>;
+export const GetAllVaccinationSelectDocument = gql`
+    query getAllVaccinationSelect($input: String!) {
+  getAllVaccinationSelect(input: $input) {
+    id
+    vaccineName
+  }
+}
+    `;
+
+/**
+ * __useGetAllVaccinationSelectQuery__
+ *
+ * To run a query within a React component, call `useGetAllVaccinationSelectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllVaccinationSelectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllVaccinationSelectQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllVaccinationSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>(GetAllVaccinationSelectDocument, options);
+      }
+export function useGetAllVaccinationSelectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>(GetAllVaccinationSelectDocument, options);
+        }
+export type GetAllVaccinationSelectQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectQuery>;
+export type GetAllVaccinationSelectLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectLazyQuery>;
+export type GetAllVaccinationSelectQueryResult = Apollo.QueryResult<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>;
 export const GetGeneralInfor3Document = gql`
     query GetGeneralInfor3 {
   getGeneralInfor {

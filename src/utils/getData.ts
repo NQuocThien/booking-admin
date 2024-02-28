@@ -183,14 +183,14 @@ export const getEnumValueDayOfWeek = (input: string): EDayOfWeed => {
   }
 };
 export const getEnumValueStateService = (input: string): EStatusService => {
-  console.log("input ", input);
+  // console.log("input ", input);
 
   switch (input) {
     case "Mở":
-      console.log("return ", EStatusService.Open);
+      // console.log("return ", EStatusService.Open);
       return EStatusService.Open;
     case "Đống":
-      console.log("return ", EStatusService.Close);
+      // console.log("return ", EStatusService.Close);
       return EStatusService.Close;
     default:
       return EStatusService.Open;

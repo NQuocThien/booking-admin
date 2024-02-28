@@ -3,6 +3,7 @@ import {
   useDeleteDoctorMutation,
   useDeleteMecialSpecialtyMutation,
   useDeletePackageMutation,
+  useDeleteVaccinationMutation,
 } from "src/graphql/webbooking-service.generated";
 import { Row, Col, Table, Dropdown, Spinner } from "react-bootstrap";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
@@ -28,6 +29,10 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
     });
   const [deleteMedicalSpcialty, { loading: loadingDeleteSpecialty }] =
     useDeleteMecialSpecialtyMutation({
+      fetchPolicy: "no-cache",
+    });
+  const [deleteVacination, { loading: loadingDeleteVaccination }] =
+    useDeleteVaccinationMutation({
       fetchPolicy: "no-cache",
     });
   const handleDelete = async (id: string, name: string, type: EtypeService) => {
@@ -81,6 +86,22 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
             });
         }
         break;
+      case EtypeService.Vaccine:
+        if (confirm) {
+          await deleteVacination({
+            variables: {
+              input: id,
+            },
+          })
+            .then(() => {
+              showToast("Đã xóa vaccine👌");
+              hanldeDeleteRefetch(type, id);
+            })
+            .catch((e) => {
+              showToast(`Đã lỗi khi xóa ${type}`, "error");
+            });
+        }
+        break;
 
       default:
         break;
@@ -124,7 +145,7 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                     <tr key={i}>
                       <td>
                         {doctor.academicTitle ? doctor.academicTitle + "." : ""}
-                        .{doctor.degree} {doctor.name}
+                        {doctor.degree} {doctor.name}
                       </td>
                       <td>{doctor.gender}</td>
                       <td>
@@ -348,7 +369,21 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
         <Row className={`${style.service}`}>
           <Col className={``}>
             <div className={`${style.service__info} ${s.component}`}>
-              <p className={`${style.title} `}>Tiểm chủng</p>
+              <div className="d-flex">
+                <p className={`${style.title} `}>Tiểm chủng</p>
+                {loadingDeleteVaccination && (
+                  <Spinner
+                    className="mx-2"
+                    variant="success"
+                    animation="border"
+                  />
+                )}
+                <Link
+                  className="btn btn-outline-primary btn-sm mx-5 "
+                  to="vaccination/form-add">
+                  <AiOutlinePlus />
+                </Link>
+              </div>
               <Table hover>
                 <thead>
                   <tr>
@@ -368,8 +403,10 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         Thứ:{" "}
                         {vc.workSchedule.schedule.map((s, i) => (
                           <span key={i}>
-                            {s.dayOfWeek}{" "}
-                            {i === vc.workSchedule.schedule.length ? ", " : ""}
+                            {s.dayOfWeek}
+                            {i !== vc.workSchedule.schedule.length - 1
+                              ? ", "
+                              : ""}
                           </span>
                         ))}
                       </td>
@@ -378,27 +415,30 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
                         <Dropdown drop="down">
                           <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/${vc.id}`}>
-                                Chi tiết
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              to={`vaccination/${vc.id}`}>
+                              Chi tiết Vaccine
                             </Dropdown.Item>
-                            <Dropdown.Item>
-                              <Link
-                                className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                to={`/admin-page/medical-facility/update/${vc.id}`}>
-                                Chỉnh sửa
-                              </Link>
+                            <Dropdown.Item
+                              as={Link}
+                              className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                              to={`vaccination/update/${vc.id}`}>
+                              Chỉnh sửa Vaccine
                             </Dropdown.Item>
                             <Dropdown.Item>
                               {" "}
                               <p
                                 className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                // onClick={async () => await hanldeDelete(c.id)}
-                              >
-                                Xóa cơ sở y tế
+                                onClick={() => {
+                                  handleDelete(
+                                    vc.id,
+                                    vc.vaccineName,
+                                    EtypeService.Vaccine
+                                  );
+                                }}>
+                                Xóa Vaccine
                               </p>
                             </Dropdown.Item>
                           </Dropdown.Menu>

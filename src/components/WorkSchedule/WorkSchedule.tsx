@@ -12,17 +12,8 @@ import { FaPlus } from "react-icons/fa";
 import { useRef, useState } from "react";
 import ModalCpn from "../sub/Modal";
 import { SiSessionize } from "react-icons/si";
-import {
-  IActionFormAddDoctor,
-  IStateFormAddDoctor,
-  handleChangeFormWorkSchedule,
-} from "src/pages/Doctor/reducer";
 import { FaSort } from "react-icons/fa";
-import {
-  getDayOfWeek,
-  getEnumValueStateService,
-  getQuickSessions,
-} from "src/utils/getData";
+import { getDayOfWeek, getQuickSessions } from "src/utils/getData";
 import { checkSessionExist, formatDate } from "src/utils/contain";
 import { EQuickAddSessions } from "src/utils/enum";
 import moment from "moment";

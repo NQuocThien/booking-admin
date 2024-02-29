@@ -1,5 +1,5 @@
 // MapContainer.tsx
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useGoogleMap } from "src/context/GoogleMapContext";
 import { ILocation } from "src/assets/contains/item-interface";
@@ -17,12 +17,6 @@ const MapComponent: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
   });
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const { map, setMap } = useGoogleMap();
-  useEffect(() => {
-    if (window.google && window.google.maps) {
-      setScriptLoaded(true);
-      handleFindLocation();
-    }
-  }, [address]);
 
   const onMountMap = (map: google.maps.Map) => {
     setMap(map);
@@ -33,20 +27,23 @@ const MapComponent: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
     setScriptLoaded(false);
   };
 
-  const handleSetMarkerCenter = (pos: ILocation) => {
-    if (pos.lat && pos.lng) {
-      setMarker({
-        lat: pos.lat,
-        lng: pos.lng,
-      });
-      setCenter({
-        lat: pos.lat,
-        lng: pos.lng,
-      });
-    }
-  };
+  const handleSetMarkerCenter = useCallback(
+    (pos: ILocation) => {
+      if (pos.lat && pos.lng) {
+        setMarker({
+          lat: pos.lat,
+          lng: pos.lng,
+        });
+        setCenter({
+          lat: pos.lat,
+          lng: pos.lng,
+        });
+      }
+    },
+    [setMarker]
+  );
 
-  const handleFindLocation = () => {
+  const handleFindLocation = useCallback(() => {
     address &&
       geocodeByAddress(address)
         .then((res) => {
@@ -61,7 +58,13 @@ const MapComponent: React.FC<IMapProp> = ({ marker, setMarker, address }) => {
           }
         })
         .catch((error) => console.error(error));
-  };
+  }, [address, handleSetMarkerCenter]);
+  useEffect(() => {
+    if (window.google && window.google.maps) {
+      setScriptLoaded(true);
+      handleFindLocation();
+    }
+  }, [address, handleFindLocation]);
   return (
     <>
       {scriptLoaded && (

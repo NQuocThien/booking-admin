@@ -3,13 +3,20 @@ import { Badge, Spinner } from "react-bootstrap";
 interface IProp {
   loading: boolean;
   error: ApolloError | undefined;
+  variant?: "primary" | "succes" | "danger";
+  size?: "sm" | undefined;
 }
 
-function StatusCpn({ loading, error }: IProp) {
+function StatusCpn({
+  loading,
+  error,
+  size = undefined,
+  variant = "primary",
+}: IProp) {
   if (error) console.error(error);
   return (
     <span>
-      {loading && <Spinner size="sm" animation="border" />}
+      {loading && <Spinner size={size} variant={variant} animation="border" />}
       {error && (
         <Badge pill bg="danger">
           {" "}

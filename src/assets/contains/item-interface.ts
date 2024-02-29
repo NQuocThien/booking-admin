@@ -38,3 +38,10 @@ export interface ISelectSpecial {
   id: string;
   name: string;
 }
+export type Sort = "asc" | "desc";
+
+export interface IPagination {
+  total: number;
+  current: number;
+  sort: Sort;
+}

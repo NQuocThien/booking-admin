@@ -1,36 +1,71 @@
 import { getToken } from "src/utils/contain";
-import { Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import {
-  CreateUserByAdminInput,
-  CreateUserInput,
   User,
   useActiveUserMutation,
-  useGetAllUserQuery,
+  useGetAllUsersPaginationQuery,
+  useGetTotalUsersCountQuery,
   useSingupByAdminMutation,
   useUpdateRolesMutation,
 } from "src/graphql/webbooking-service.generated";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useReducer } from "react";
 import { showToast } from "src/components/sub/toasts";
 import ModalCpn from "src/components/sub/Modal";
 import { FcSupport } from "react-icons/fc";
-import ShowAlert from "src/components/sub/alerts";
-import { ICheckRoles } from "src/assets/contains/item-interface";
 import { ERoles } from "src/assets/contains/component-enum";
 import { useAuth } from "src/context/AuthContext";
 import SearchInputCpn from "src/components/sub/InputSearch";
-interface IShowModal {
-  roles: boolean;
-  add: boolean;
-}
+
+import {
+  handleChangShowModal,
+  handleChangUserClicked,
+  handleChangeCreateUser,
+  handleChangeFiltered,
+  handleChangePagination,
+  handleChangeSearchTerm,
+  handleChangeStateRoles,
+  handleSetListUser,
+  initState,
+  reducer,
+} from "./reducer";
+import PaginationCpn from "src/components/sub/Pagination";
+import StatusCpn from "src/components/sub/Status";
+
 function ListUserPage() {
   const token = getToken();
   const { checkExpirationToken } = useAuth();
-  const { refetch, data, loading, error } = useGetAllUserQuery({
+  const [state, dispatch] = useReducer(reducer, initState);
+  const {
+    data: dataUser,
+    loading: loadUser,
+    error: errUser,
+  } = useGetAllUsersPaginationQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    },
+    variables: {
+      search: state.searchTerm,
+      limit: 10,
+      page: state.pagination.current,
+      sortOrder: state.pagination.sort,
+    },
+  });
+  const {
+    data: dataUserTotal,
+    loading: loadUserTotal,
+    error: errUserTotal,
+  } = useGetTotalUsersCountQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: {
+      search: state.searchTerm,
     },
   });
   const [updateRolesMutation] = useUpdateRolesMutation({
@@ -53,24 +88,15 @@ function ListUserPage() {
     },
   });
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filtered, setFiltered] = useState<User[]>();
+  // const [stateRoles, setStateRoles] = useState<ICheckRoles>({
+  //   admin: false,
+  //   clinic: false,
+  //   customer: false,
+  //   doctor: false,
+  //   staff: false,
+  // });
 
-  const [listUser, setListUser] = useState<User[] | undefined>(data?.users);
-  const [stateRoles, setStateRoles] = useState<ICheckRoles>({
-    admin: false,
-    clinic: false,
-    customer: false,
-    doctor: false,
-    staff: false,
-  });
-  useEffect(() => {
-    setListUser(data?.users);
-  }, [data]);
-  useEffect(() => {
-    handleSearch();
-  }, [listUser]);
-  const [userClicked, setUserClicked] = useState<User | undefined>();
+  // const [userClicked, setUserClicked] = useState<User | undefined>();
 
   const hanldeActiveUser = (id: string) => {
     checkExpirationToken();
@@ -86,109 +112,187 @@ function ListUserPage() {
       },
     })
       .then(() => {
-        refetch();
+        // refetch();
         showToast("👍 Đã lưu thay đổi", undefined, 1000);
+        const listUsersUpdated: User[] = state.listUser.map((user) => {
+          if (user.id === id) {
+            const userUpdated: User = {
+              ...user,
+              active: !user.active,
+            };
+            return userUpdated;
+          }
+          return user;
+        });
+        dispatch(handleSetListUser(listUsersUpdated));
       })
       .catch(() => {
         showToast("Lỗi", "error");
       });
   };
-  const [openModal, setOpenModal] = useState<IShowModal>({
-    add: false,
-    roles: false,
-  });
-  const handleSearch = () => {
-    setFiltered(() =>
-      searchTerm
-        ? listUser?.filter((c) =>
-            c.username?.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        : listUser
-    );
-  };
+  const handleSearch = useCallback(() => {
+    if (Array.isArray(state.listUser))
+      dispatch(
+        handleChangeFiltered(
+          state.searchTerm
+            ? state.listUser?.filter((c) =>
+                c.username
+                  ?.toLowerCase()
+                  .includes(state.searchTerm.toLowerCase())
+              )
+            : state.listUser
+        )
+      );
+  }, [state.listUser, state.searchTerm]);
+
   const handleCloseModal = useCallback(() => {
-    setOpenModal({ add: false, roles: false });
+    dispatch(handleChangShowModal({ add: false, roles: false }));
   }, []);
   const handleShowModal = (user: User) => {
     checkExpirationToken();
-    setUserClicked(user);
-    setStateRoles({
-      admin: false,
-      clinic: false,
-      customer: false,
-      doctor: false,
-      staff: false,
-    }); // reset roles
+    dispatch(handleChangUserClicked(user));
+
+    dispatch(
+      handleChangeStateRoles({
+        admin: false,
+        clinic: false,
+        customer: false,
+        doctor: false,
+        staff: false,
+      })
+    ); // reset role
     if (user.roles) {
-      user.roles.map((role) => {
+      user.roles.forEach((role) => {
         switch (role) {
           case ERoles.admin:
-            setStateRoles((pre) => ({ ...pre, admin: true }));
+            dispatch(
+              handleChangeStateRoles({
+                ...state.stateRoles,
+                admin: true,
+              })
+            );
             break;
           case ERoles.clinic:
-            setStateRoles((pre) => ({ ...pre, clinic: true }));
+            dispatch(
+              handleChangeStateRoles({
+                ...state.stateRoles,
+                clinic: true,
+              })
+            );
             break;
           case ERoles.customer:
-            setStateRoles((pre) => ({ ...pre, customer: true }));
+            dispatch(
+              handleChangeStateRoles({
+                ...state.stateRoles,
+                customer: true,
+              })
+            );
             break;
+          // case ERoles.doctor:
+          //   dispatch(
+          //     handleChangeStateRoles({
+          //       ...state.stateRoles,
+          //       doctor: true,
+          //     })
+          //   );
           case ERoles.doctor:
-            setStateRoles((pre) => ({ ...pre, doctor: true }));
+            dispatch(
+              handleChangeStateRoles({
+                ...state.stateRoles,
+                doctor: true,
+              })
+            );
+            break;
+          case ERoles.staff:
+            dispatch(
+              handleChangeStateRoles({
+                ...state.stateRoles,
+                staff: true,
+              })
+            );
             break;
           default:
             break;
         }
       });
     }
-    setOpenModal((pre) => ({ ...pre, roles: true }));
+    // setOpenModal((pre) => ({ ...pre, roles: true }));
+    dispatch(handleChangShowModal({ ...state.showModals, roles: true }));
   };
   const handleActionFormChangeRoles = () => {
     var roles: string[] = [];
-    if (stateRoles.admin) roles.push(ERoles.admin);
-    if (stateRoles.clinic) roles.push(ERoles.clinic);
-    if (stateRoles.doctor) roles.push(ERoles.doctor);
-    if (stateRoles.customer) roles.push(ERoles.customer);
-    if (stateRoles.staff) roles.push(ERoles.staff);
-    if (userClicked?.id)
+    if (state.stateRoles.admin) roles.push(ERoles.admin);
+    if (state.stateRoles.clinic) roles.push(ERoles.clinic);
+    if (state.stateRoles.doctor) roles.push(ERoles.doctor);
+    if (state.stateRoles.customer) roles.push(ERoles.customer);
+    if (state.stateRoles.staff) roles.push(ERoles.staff);
+    if (state.userClicked?.id)
       updateRolesMutation({
         variables: {
           input: {
-            id: userClicked.id,
+            id: state.userClicked.id,
             roles: roles,
           },
         },
       }).then(() => {
-        setListUser((pre) => {
-          var s = pre?.map((user, i) => {
-            if (user.id === userClicked.id) {
-              return (user = { ...user, roles: roles });
-            } else return user;
-          });
-          return s;
+        const updateUser = state.listUser.map((user, i) => {
+          if (state.userClicked && user.id === state.userClicked.id) {
+            return {
+              ...user,
+              roles: roles,
+            };
+          }
+          return user;
         });
+        dispatch(handleSetListUser(updateUser));
 
         showToast("Đã cập nhật 👍", "success", 1000);
       });
-    setOpenModal((pre) => ({ ...pre, roles: false }));
-    // console.log("new roles: ", roles);
+    dispatch(handleChangShowModal({ ...state.showModals, roles: false }));
   };
-  const [createUser, setCreateUser] = useState<CreateUserByAdminInput>({
-    username: "",
-    email: "",
-    password: "",
-  });
+  // const [createUser, setCreateUser] = useState<CreateUserByAdminInput>({
+  //   username: "",
+  //   email: "",
+  //   password: "",
+  // });
   const handelCreateUser = async () => {
-    await createNewUser({ variables: { input: createUser } }).then(() => {
+    await createNewUser({ variables: { input: state.createUser } }).then(() => {
       showToast("Đã tạo mới tài khoản", undefined, 2000);
-      setOpenModal({ add: false, roles: false });
-      setCreateUser({ email: "", password: "", username: "" });
-      refetch();
+      dispatch(handleChangShowModal({ add: false, roles: false }));
+      dispatch(
+        handleChangeCreateUser({
+          ...state.createUser,
+          email: "",
+          password: "",
+          username: "",
+        })
+      );
+      // refetch();
     });
   };
-  if (loading) return <Spinner animation="border" variant="primary" />;
-  if (error) {
-    console.log(error);
-    return <ShowAlert />;
-  }
+
+  useEffect(() => {
+    if (dataUser?.getAllUsersPagination) {
+      dispatch(handleSetListUser(dataUser.getAllUsersPagination));
+    }
+  }, [dataUser]);
+
+  useEffect(() => {
+    dispatch(handleChangePagination({ ...state.pagination, current: 1 }));
+  }, [state.searchTerm, state.pagination]);
+  useEffect(() => {
+    if (dataUserTotal?.totalUsersCount) {
+      dispatch(
+        handleChangePagination({
+          ...state.pagination,
+          total: dataUserTotal.totalUsersCount,
+        })
+      );
+    }
+  }, [dataUserTotal, state.pagination]);
+  useEffect(() => {
+    handleSearch();
+  }, [state.listUser, handleSearch]);
   return (
     <div className="overflow-x-auto">
       <Button
@@ -196,16 +300,27 @@ function ListUserPage() {
         className="mb-1"
         size="sm"
         onClick={() => {
-          setOpenModal((pre) => ({ ...pre, add: true }));
-          // console.log("test open", openModal);
+          dispatch(handleChangShowModal({ ...state.showModals, add: true }));
         }}>
         Tạo tài khoản
       </Button>
       <SearchInputCpn
-        onChange={(s: string) => setSearchTerm(s)}
-        onSearch={handleSearch}
-        value={searchTerm}
+        onSearch={(s: string) => {
+          dispatch(handleChangeSearchTerm(s));
+          // handleSearch();
+        }}
+        onSort={(sort) => {
+          dispatch(
+            handleChangePagination({
+              ...state.pagination,
+              sort: sort,
+            })
+          );
+        }}
       />
+      <StatusCpn loading={loadUserTotal} error={errUserTotal} />
+      {!loadUserTotal && <StatusCpn loading={loadUser} error={errUser} />}
+
       <Table hover>
         <thead>
           <tr>
@@ -219,8 +334,8 @@ function ListUserPage() {
           </tr>
         </thead>
         <tbody>
-          {filtered &&
-            filtered.map((user, i) => (
+          {state.filtered &&
+            state.filtered.map((user, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 {/* <td>{user.fullname}</td> */}
@@ -255,8 +370,8 @@ function ListUserPage() {
         </tbody>
       </Table>
       <ModalCpn
-        headerText={`Chỉnh sửa quyền user "${userClicked?.username}"`}
-        openRequest={openModal.roles}
+        headerText={`Chỉnh sửa quyền user "${state.userClicked?.username}"`}
+        openRequest={state.showModals.roles}
         handleSave={handleActionFormChangeRoles}
         handleClose={handleCloseModal}>
         <Form
@@ -269,9 +384,15 @@ function ListUserPage() {
                 id="custom-admin"
                 label="Admin"
                 name="check-admin"
-                checked={stateRoles.admin}
+                checked={state.stateRoles.admin}
                 onChange={() =>
-                  setStateRoles((pre) => ({ ...pre, admin: !pre.admin }))
+                  // setStateRoles((pre) => ({ ...pre, admin: !pre.admin }))
+                  dispatch(
+                    handleChangeStateRoles({
+                      ...state.stateRoles,
+                      admin: !state.stateRoles.admin,
+                    })
+                  )
                 }
               />
 
@@ -280,9 +401,14 @@ function ListUserPage() {
                 id="custom-clinic"
                 label="Clinic"
                 name="check-clinic"
-                checked={stateRoles.clinic}
+                checked={state.stateRoles.clinic}
                 onChange={() =>
-                  setStateRoles((pre) => ({ ...pre, clinic: !pre.clinic }))
+                  dispatch(
+                    handleChangeStateRoles({
+                      ...state.stateRoles,
+                      clinic: !state.stateRoles.clinic,
+                    })
+                  )
                 }
               />
             </Col>
@@ -292,9 +418,15 @@ function ListUserPage() {
                 id="custom-doctor"
                 label="Doctor"
                 name="check-doctor"
-                checked={stateRoles.doctor}
+                checked={state.stateRoles.doctor}
                 onChange={() =>
-                  setStateRoles((pre) => ({ ...pre, doctor: !pre.doctor }))
+                  // setStateRoles((pre) => ({ ...pre, doctor: !pre.doctor }))
+                  dispatch(
+                    handleChangeStateRoles({
+                      ...state.stateRoles,
+                      doctor: !state.stateRoles.doctor,
+                    })
+                  )
                 }
               />
               <Form.Check
@@ -302,9 +434,15 @@ function ListUserPage() {
                 id="custom-customer"
                 label="Customer"
                 name="check-customer"
-                checked={stateRoles.customer}
+                checked={state.stateRoles.customer}
                 onChange={() =>
-                  setStateRoles((pre) => ({ ...pre, customer: !pre.customer }))
+                  // setStateRoles((pre) => ({ ...pre, customer: !pre.customer }))
+                  dispatch(
+                    handleChangeStateRoles({
+                      ...state.stateRoles,
+                      customer: state.stateRoles.customer,
+                    })
+                  )
                 }
               />
               <Form.Check
@@ -312,9 +450,14 @@ function ListUserPage() {
                 id="custom-customer"
                 label="Staff"
                 name="check-customer"
-                checked={stateRoles.staff}
+                checked={state.stateRoles.staff}
                 onChange={() =>
-                  setStateRoles((pre) => ({ ...pre, staff: !pre.staff }))
+                  dispatch(
+                    handleChangeStateRoles({
+                      ...state.stateRoles,
+                      staff: state.stateRoles.staff,
+                    })
+                  )
                 }
               />
             </Col>
@@ -322,14 +465,10 @@ function ListUserPage() {
         </Form>
       </ModalCpn>
       <ModalCpn
-        handleClose={() => {
-          handleCloseModal();
-        }}
-        handleSave={() => {
-          handelCreateUser();
-        }}
+        handleClose={handleCloseModal}
+        handleSave={handelCreateUser}
         headerText="Tạo tài khoản"
-        openRequest={openModal.add}>
+        openRequest={state.showModals.add}>
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Username</Form.Label>
@@ -337,9 +476,14 @@ function ListUserPage() {
               type="text"
               placeholder="Enter username"
               onChange={(e) => {
-                setCreateUser((pre) => ({ ...pre, username: e.target.value }));
+                dispatch(
+                  handleChangeCreateUser({
+                    ...state.createUser,
+                    email: e.target.value,
+                  })
+                );
               }}
-              value={createUser.username}
+              value={state.createUser.username}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -348,9 +492,15 @@ function ListUserPage() {
               type="email"
               placeholder="Enter email"
               onChange={(e) => {
-                setCreateUser((pre) => ({ ...pre, email: e.target.value }));
+                // setCreateUser((pre) => ({ ...pre, email: e.target.value }));
+                dispatch(
+                  handleChangeCreateUser({
+                    ...state.createUser,
+                    email: e.target.value,
+                  })
+                );
               }}
-              value={createUser.email}
+              value={state.createUser.email}
             />
           </Form.Group>
 
@@ -360,13 +510,31 @@ function ListUserPage() {
               type="password"
               placeholder="Password"
               onChange={(e) => {
-                setCreateUser((pre) => ({ ...pre, password: e.target.value }));
+                dispatch(
+                  handleChangeCreateUser({
+                    ...state.createUser,
+                    password: e.target.value,
+                  })
+                );
               }}
-              value={createUser.password}
+              value={state.createUser.password}
             />
           </Form.Group>
         </Form>
       </ModalCpn>
+      <div className="d-flex justify-content-center">
+        <PaginationCpn
+          setPageActive={(currPage) => {
+            dispatch(
+              handleChangePagination({
+                ...state.pagination,
+                current: currPage,
+              })
+            );
+          }}
+          totalPage={Math.ceil(state.pagination.total / 10)}
+        />
+      </div>
     </div>
   );
 }

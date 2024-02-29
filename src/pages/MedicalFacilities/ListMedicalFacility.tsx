@@ -77,11 +77,11 @@ function ListMedicalFacilityPage() {
     <Container fluid className={` ${s.component}`}>
       <Row>
         <Col xl={10} lg={10}>
-          <SearchInputCpn
+          {/* <SearchInputCpn
             onChange={(s: string) => setSearchTerm(s)}
             onSearch={handleSearch}
             value={searchTerm}
-          />
+          /> */}
         </Col>
         <Col>
           <Link

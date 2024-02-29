@@ -471,6 +471,40 @@ const getAllVaccinationSelect = gql`
     }
   }
 `;
+const getAllUserPagination = gql`
+  query getAllUsersPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+  ) {
+    getAllUsersPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      id
+      email
+      username
+      password
+      linkImage {
+        filename
+        type
+        url
+      }
+      roles
+      active
+    }
+  }
+`;
+const getTotalUsersCount = gql`
+  query getTotalUsersCount($search: String) {
+    totalUsersCount(search: $search)
+  }
+`;
 
 // const GetAllCustomer = gql`
 //   query GetCustomer {

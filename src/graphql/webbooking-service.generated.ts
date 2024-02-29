@@ -727,6 +727,7 @@ export type Query = {
   getAllNotification: Array<Notification>;
   getAllPackage: Array<Package>;
   getAllPackageSelect: Array<Package>;
+  getAllUsersPagination: Array<User>;
   getAllVacation: Array<Vaccination>;
   getAllVaccinationSelect: Array<Vaccination>;
   getDoctorbyId: Doctor;
@@ -749,12 +750,22 @@ export type Query = {
   getUserSelected: User;
   getUserStaffSelect: Array<User>;
   getVaccineById: Vaccination;
+  totalUsersCount: Scalars['Float']['output'];
   users: Array<User>;
 };
 
 
 export type QueryGetAllPackageSelectArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllUsersPaginationArgs = {
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -840,6 +851,11 @@ export type QueryGetUserStaffSelectArgs = {
 
 export type QueryGetVaccineByIdArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryTotalUsersCountArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Register = {
@@ -1382,6 +1398,24 @@ export type GetAllVaccinationSelectQueryVariables = Exact<{
 
 
 export type GetAllVaccinationSelectQuery = { __typename?: 'Query', getAllVaccinationSelect: Array<{ __typename?: 'Vaccination', id: string, vaccineName: string }> };
+
+export type GetAllUsersPaginationQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAllUsersPaginationQuery = { __typename?: 'Query', getAllUsersPagination: Array<{ __typename?: 'User', id: string, email: string, username: string, password: string, roles?: Array<string> | null, active?: boolean | null, linkImage?: { __typename?: 'LinkImage', filename: string, type: string, url: string } | null }> };
+
+export type GetTotalUsersCountQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetTotalUsersCountQuery = { __typename?: 'Query', totalUsersCount: number };
 
 export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3347,6 +3381,94 @@ export function useGetAllVaccinationSelectLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetAllVaccinationSelectQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectQuery>;
 export type GetAllVaccinationSelectLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectLazyQuery>;
 export type GetAllVaccinationSelectQueryResult = Apollo.QueryResult<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>;
+export const GetAllUsersPaginationDocument = gql`
+    query getAllUsersPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
+  getAllUsersPagination(
+    search: $search
+    page: $page
+    limit: $limit
+    sortField: $sortField
+    sortOrder: $sortOrder
+  ) {
+    id
+    email
+    username
+    password
+    linkImage {
+      filename
+      type
+      url
+    }
+    roles
+    active
+  }
+}
+    `;
+
+/**
+ * __useGetAllUsersPaginationQuery__
+ *
+ * To run a query within a React component, call `useGetAllUsersPaginationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUsersPaginationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUsersPaginationQuery({
+ *   variables: {
+ *      search: // value for 'search'
+ *      page: // value for 'page'
+ *      limit: // value for 'limit'
+ *      sortField: // value for 'sortField'
+ *      sortOrder: // value for 'sortOrder'
+ *   },
+ * });
+ */
+export function useGetAllUsersPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>(GetAllUsersPaginationDocument, options);
+      }
+export function useGetAllUsersPaginationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>(GetAllUsersPaginationDocument, options);
+        }
+export type GetAllUsersPaginationQueryHookResult = ReturnType<typeof useGetAllUsersPaginationQuery>;
+export type GetAllUsersPaginationLazyQueryHookResult = ReturnType<typeof useGetAllUsersPaginationLazyQuery>;
+export type GetAllUsersPaginationQueryResult = Apollo.QueryResult<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>;
+export const GetTotalUsersCountDocument = gql`
+    query getTotalUsersCount($search: String) {
+  totalUsersCount(search: $search)
+}
+    `;
+
+/**
+ * __useGetTotalUsersCountQuery__
+ *
+ * To run a query within a React component, call `useGetTotalUsersCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTotalUsersCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTotalUsersCountQuery({
+ *   variables: {
+ *      search: // value for 'search'
+ *   },
+ * });
+ */
+export function useGetTotalUsersCountQuery(baseOptions?: Apollo.QueryHookOptions<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>(GetTotalUsersCountDocument, options);
+      }
+export function useGetTotalUsersCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>(GetTotalUsersCountDocument, options);
+        }
+export type GetTotalUsersCountQueryHookResult = ReturnType<typeof useGetTotalUsersCountQuery>;
+export type GetTotalUsersCountLazyQueryHookResult = ReturnType<typeof useGetTotalUsersCountLazyQuery>;
+export type GetTotalUsersCountQueryResult = Apollo.QueryResult<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>;
 export const GetGeneralInfor3Document = gql`
     query GetGeneralInfor3 {
   getGeneralInfor {

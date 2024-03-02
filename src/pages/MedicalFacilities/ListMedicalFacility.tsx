@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Col, Container, Dropdown, Row, Table } from "react-bootstrap";
+import { Col, Container, Dropdown, Row, Spinner, Table } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
-import SearchInputCpn from "src/components/sub/InputSearch";
 import { useAuth } from "src/context/AuthContext";
 import {
   MedicalFacilities,
@@ -13,9 +12,11 @@ import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
 import { showToast } from "src/components/sub/toasts";
+import ShowAlert from "src/components/sub/alerts";
 function ListMedicalFacilityPage() {
   const token = getToken();
   const { checkExpirationToken } = useAuth();
+  checkExpirationToken();
   const { refetch, data, loading, error } = useGetAllMedicalFacilityQuery({
     fetchPolicy: "no-cache",
     context: {
@@ -73,6 +74,11 @@ function ListMedicalFacilityPage() {
       console.log("Hủy bỏ xóa");
     }
   };
+  if (loading) return <Spinner animation="border" variant="primary" />;
+  if (error) {
+    console.log(error);
+    return <ShowAlert />;
+  }
   return (
     <Container fluid className={` ${s.component}`}>
       <Row>

@@ -24,13 +24,18 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type ConfirmRegisterInput = {
+  registerId: Scalars['String']['input'];
+  state: EStateRegister;
+};
+
 export type CreateCustomerInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   dateOfBirth?: InputMaybe<Scalars['DateTime']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  ethnic?: InputMaybe<Scalars['String']['input']>;
   gender?: InputMaybe<EGender>;
   name: Scalars['String']['input'];
-  nation?: InputMaybe<Scalars['String']['input']>;
   numberPhone?: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
 };
@@ -121,7 +126,7 @@ export type CreateProfileInput = {
   email: Scalars['String']['input'];
   ethnic: Scalars['String']['input'];
   fullname: Scalars['String']['input'];
-  gender: Scalars['String']['input'];
+  gender: EGender;
   identity: Scalars['String']['input'];
   job: Scalars['String']['input'];
   medicalInsurance: Scalars['String']['input'];
@@ -130,16 +135,14 @@ export type CreateProfileInput = {
 };
 
 export type CreateRegisterDoctorInput = {
-  customerId: Scalars['String']['input'];
   date: Scalars['DateTime']['input'];
   doctorId: Scalars['String']['input'];
   isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
-  sessionId: Scalars['String']['input'];
+  session: SessionInput;
 };
 
 export type CreateRegisterPackageInput = {
-  customerId: Scalars['String']['input'];
   date: Scalars['DateTime']['input'];
   isHealthInsurance: Scalars['Boolean']['input'];
   packageId: Scalars['String']['input'];
@@ -148,7 +151,6 @@ export type CreateRegisterPackageInput = {
 };
 
 export type CreateRegisterSpecialtyInput = {
-  customerId: Scalars['String']['input'];
   date: Scalars['DateTime']['input'];
   isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
@@ -157,7 +159,6 @@ export type CreateRegisterSpecialtyInput = {
 };
 
 export type CreateRegisterVaccineInput = {
-  customerId: Scalars['String']['input'];
   date: Scalars['DateTime']['input'];
   isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
@@ -194,12 +195,11 @@ export type Customer = {
   address: Scalars['String']['output'];
   dateOfBirth: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
-  gender: EGender;
+  ethnic: Scalars['String']['output'];
+  gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  nation: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
-  profile?: Maybe<Array<Profile>>;
   userId: Scalars['String']['output'];
 };
 
@@ -279,13 +279,6 @@ export enum ETypeOfNotification {
   Seen = 'Seen'
 }
 
-export enum ETypeOfService {
-  Doctor = 'Doctor',
-  Package = 'Package',
-  Specialty = 'Specialty',
-  Vaccine = 'Vaccine'
-}
-
 export type Evaluate = {
   __typename?: 'Evaluate';
   comment: Scalars['String']['output'];
@@ -319,6 +312,11 @@ export type GeneralInforUpdateInput = {
   liscenceOparating: Scalars['String']['input'];
   logoFooter?: InputMaybe<LinkImageInput>;
   logoHeader?: InputMaybe<LinkImageInput>;
+};
+
+export type GetRegisterDoctorInput = {
+  date: Scalars['DateTime']['input'];
+  doctorId: Scalars['String']['input'];
 };
 
 export enum IRole {
@@ -410,6 +408,7 @@ export type MedicalStaff = {
 export type Mutation = {
   __typename?: 'Mutation';
   activeUser: User;
+  confirmRegister: Register;
   createDoctor: Doctor;
   createEvaluate: Evaluate;
   createMedicalFacility: MedicalFacilities;
@@ -459,6 +458,11 @@ export type Mutation = {
 
 export type MutationActiveUserArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationConfirmRegisterArgs = {
+  input: ConfirmRegisterInput;
 };
 
 
@@ -700,6 +704,7 @@ export type Package = {
 export type Profile = {
   __typename?: 'Profile';
   address: Scalars['String']['output'];
+  customer?: Maybe<Customer>;
   customerId: Scalars['String']['output'];
   dataOfBirth: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
@@ -727,6 +732,7 @@ export type Query = {
   getAllNotification: Array<Notification>;
   getAllPackage: Array<Package>;
   getAllPackageSelect: Array<Package>;
+  getAllRegisterDoctorForDay: Array<Register>;
   getAllUsersPagination: Array<User>;
   getAllVacation: Array<Vaccination>;
   getAllVaccinationSelect: Array<Vaccination>;
@@ -757,6 +763,11 @@ export type Query = {
 
 export type QueryGetAllPackageSelectArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllRegisterDoctorForDayArgs = {
+  input: GetRegisterDoctorInput;
 };
 
 
@@ -860,17 +871,17 @@ export type QueryTotalUsersCountArgs = {
 
 export type Register = {
   __typename?: 'Register';
-  customerId: Scalars['String']['output'];
   date: Scalars['DateTime']['output'];
   doctorId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   isHealthInsurance: Scalars['Boolean']['output'];
   packageId?: Maybe<Scalars['String']['output']>;
+  profile: Profile;
   profileId: Scalars['String']['output'];
-  sessionId: Scalars['String']['output'];
+  session: Session;
   specialtyId?: Maybe<Scalars['String']['output']>;
-  state: EStateRegister;
-  typeOfService: ETypeOfService;
+  state: Scalars['String']['output'];
+  typeOfService: Scalars['String']['output'];
   vaccineId?: Maybe<Scalars['String']['output']>;
 };
 
@@ -905,10 +916,10 @@ export type UpdateCustomerInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   dateOfBirth?: InputMaybe<Scalars['DateTime']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  ethnic?: InputMaybe<Scalars['String']['input']>;
   gender?: InputMaybe<EGender>;
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  nation?: InputMaybe<Scalars['String']['input']>;
   numberPhone?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1004,7 +1015,7 @@ export type UpdateProfileInput = {
   email?: InputMaybe<Scalars['String']['input']>;
   ethnic?: InputMaybe<Scalars['String']['input']>;
   fullname?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
+  gender: EGender;
   id: Scalars['String']['input'];
   identity?: InputMaybe<Scalars['String']['input']>;
   job?: InputMaybe<Scalars['String']['input']>;
@@ -1266,6 +1277,13 @@ export type CreateMedicalStaffMutationVariables = Exact<{
 
 export type CreateMedicalStaffMutation = { __typename?: 'Mutation', createMedicalStaff: { __typename?: 'MedicalStaff', id: string } };
 
+export type ConfirmRegisterMutationVariables = Exact<{
+  input: ConfirmRegisterInput;
+}>;
+
+
+export type ConfirmRegisterMutation = { __typename?: 'Mutation', confirmRegister: { __typename?: 'Register', id: string } };
+
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1416,6 +1434,13 @@ export type GetTotalUsersCountQueryVariables = Exact<{
 
 
 export type GetTotalUsersCountQuery = { __typename?: 'Query', totalUsersCount: number };
+
+export type GetAllRegisterDoctorForDayQueryVariables = Exact<{
+  input: GetRegisterDoctorInput;
+}>;
+
+
+export type GetAllRegisterDoctorForDayQuery = { __typename?: 'Query', getAllRegisterDoctorForDay: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, isHealthInsurance: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, name: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null }, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
 
 export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2333,6 +2358,39 @@ export function useCreateMedicalStaffMutation(baseOptions?: Apollo.MutationHookO
 export type CreateMedicalStaffMutationHookResult = ReturnType<typeof useCreateMedicalStaffMutation>;
 export type CreateMedicalStaffMutationResult = Apollo.MutationResult<CreateMedicalStaffMutation>;
 export type CreateMedicalStaffMutationOptions = Apollo.BaseMutationOptions<CreateMedicalStaffMutation, CreateMedicalStaffMutationVariables>;
+export const ConfirmRegisterDocument = gql`
+    mutation confirmRegister($input: ConfirmRegisterInput!) {
+  confirmRegister(input: $input) {
+    id
+  }
+}
+    `;
+export type ConfirmRegisterMutationFn = Apollo.MutationFunction<ConfirmRegisterMutation, ConfirmRegisterMutationVariables>;
+
+/**
+ * __useConfirmRegisterMutation__
+ *
+ * To run a mutation, you first call `useConfirmRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmRegisterMutation, { data, loading, error }] = useConfirmRegisterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConfirmRegisterMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmRegisterMutation, ConfirmRegisterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmRegisterMutation, ConfirmRegisterMutationVariables>(ConfirmRegisterDocument, options);
+      }
+export type ConfirmRegisterMutationHookResult = ReturnType<typeof useConfirmRegisterMutation>;
+export type ConfirmRegisterMutationResult = Apollo.MutationResult<ConfirmRegisterMutation>;
+export type ConfirmRegisterMutationOptions = Apollo.BaseMutationOptions<ConfirmRegisterMutation, ConfirmRegisterMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -3469,6 +3527,79 @@ export function useGetTotalUsersCountLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetTotalUsersCountQueryHookResult = ReturnType<typeof useGetTotalUsersCountQuery>;
 export type GetTotalUsersCountLazyQueryHookResult = ReturnType<typeof useGetTotalUsersCountLazyQuery>;
 export type GetTotalUsersCountQueryResult = Apollo.QueryResult<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>;
+export const GetAllRegisterDoctorForDayDocument = gql`
+    query getAllRegisterDoctorForDay($input: GetRegisterDoctorInput!) {
+  getAllRegisterDoctorForDay(input: $input) {
+    id
+    date
+    typeOfService
+    isHealthInsurance
+    profile {
+      id
+      customerId
+      email
+      ethnic
+      fullname
+      address
+      gender
+      job
+      dataOfBirth
+      identity
+      medicalInsurance
+      numberPhone
+      relationship
+      customer {
+        id
+        userId
+        name
+        gender
+        numberPhone
+        email
+        address
+        dateOfBirth
+        ethnic
+      }
+    }
+    state
+    packageId
+    profileId
+    specialtyId
+    vaccineId
+    session {
+      startTime
+      endTime
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllRegisterDoctorForDayQuery__
+ *
+ * To run a query within a React component, call `useGetAllRegisterDoctorForDayQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRegisterDoctorForDayQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllRegisterDoctorForDayQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllRegisterDoctorForDayQuery(baseOptions: Apollo.QueryHookOptions<GetAllRegisterDoctorForDayQuery, GetAllRegisterDoctorForDayQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllRegisterDoctorForDayQuery, GetAllRegisterDoctorForDayQueryVariables>(GetAllRegisterDoctorForDayDocument, options);
+      }
+export function useGetAllRegisterDoctorForDayLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRegisterDoctorForDayQuery, GetAllRegisterDoctorForDayQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllRegisterDoctorForDayQuery, GetAllRegisterDoctorForDayQueryVariables>(GetAllRegisterDoctorForDayDocument, options);
+        }
+export type GetAllRegisterDoctorForDayQueryHookResult = ReturnType<typeof useGetAllRegisterDoctorForDayQuery>;
+export type GetAllRegisterDoctorForDayLazyQueryHookResult = ReturnType<typeof useGetAllRegisterDoctorForDayLazyQuery>;
+export type GetAllRegisterDoctorForDayQueryResult = Apollo.QueryResult<GetAllRegisterDoctorForDayQuery, GetAllRegisterDoctorForDayQueryVariables>;
 export const GetGeneralInfor3Document = gql`
     query GetGeneralInfor3 {
   getGeneralInfor {

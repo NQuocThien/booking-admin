@@ -505,6 +505,52 @@ const getTotalUsersCount = gql`
     totalUsersCount(search: $search)
   }
 `;
+const getAllRegisterDoctorPedding = gql`
+  query getAllRegisterDoctorForDay($input: GetRegisterDoctorInput!) {
+    getAllRegisterDoctorForDay(input: $input) {
+      id
+      date
+      typeOfService
+
+      isHealthInsurance
+      profile {
+        id
+        customerId
+        email
+        ethnic
+        fullname
+        address
+        gender
+        job
+        dataOfBirth
+        identity
+        medicalInsurance
+        numberPhone
+        relationship
+        customer {
+          id
+          userId
+          name
+          gender
+          numberPhone
+          email
+          address
+          dateOfBirth
+          ethnic
+        }
+      }
+      state
+      packageId
+      profileId
+      specialtyId
+      vaccineId
+      session {
+        startTime
+        endTime
+      }
+    }
+  }
+`;
 
 // const GetAllCustomer = gql`
 //   query GetCustomer {

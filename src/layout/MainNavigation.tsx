@@ -1,4 +1,4 @@
-import { Row, Col, Image, Nav } from "react-bootstrap";
+import { Row, Image, Nav } from "react-bootstrap";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { Item, _navAdmin, _navClinic, _navDoctor } from "src/assets/nav/_nav";
 import SideBarNav from "src/components/layout/SideBarNav";

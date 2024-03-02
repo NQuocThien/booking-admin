@@ -15,7 +15,7 @@ function LoginPage() {
   });
 
   const [validated, setValidated] = useState<boolean | undefined>(false);
-  const { login: sigin, isLoginIn } = useAuth();
+  const { login: sigin } = useAuth();
   // console.log('con', isLoginIn)
   const hanldeChangForm = (e: any) => {
     const { name, value } = e.target;

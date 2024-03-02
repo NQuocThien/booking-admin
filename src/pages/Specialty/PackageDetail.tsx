@@ -1,10 +1,9 @@
-import { Col, Container, Image, Row, Spinner, Table } from "react-bootstrap";
+import { Col, Container, Row, Spinner, Table } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
   useGetMedicalFacilityNameByIdQuery,
   useGetMedicalSpecialtyByIdQuery,
-  useGetPackageByIdQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
@@ -13,12 +12,9 @@ import CustomBreadcrumbs, {
 } from "src/components/sub/Breadcrumbs";
 import { useEffect, useState } from "react";
 import { useAuth } from "src/context/AuthContext";
-import { MdOutlineMarkEmailRead } from "react-icons/md";
-import { FaPhone } from "react-icons/fa6";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { formatDate, formatter } from "src/utils/contain";
 import { FaDoorOpen } from "react-icons/fa";
-import { FaTransgenderAlt } from "react-icons/fa";
 function SpecialtyDetailPage() {
   const { idSpecialty, id } = useParams();
   const { checkExpirationToken } = useAuth();

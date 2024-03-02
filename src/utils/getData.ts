@@ -4,6 +4,7 @@ import {
   EDegree,
   EGender,
   EGenderPackage,
+  EStateRegister,
   EStatusService,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
@@ -47,7 +48,33 @@ export const getDayOfWeek = (day: string | undefined) => {
       break;
   }
 };
+export const renderDayOfWeek = (day: string | undefined): string => {
+  switch (day) {
+    case "2":
+      return "Thứ 2";
 
+    case "3":
+      return "Thứ 3";
+
+    case "4":
+      return "Thứ 4";
+
+    case "5":
+      return "Thứ 5";
+
+    case "6":
+      return "Thứ 6";
+
+    case "7":
+      return "Thứ 7";
+
+    case "Chủ nhật":
+      return "Chủ nhật";
+
+    default:
+      return "";
+  }
+};
 export const getAcademicTitle = (at: string) => {
   switch (at) {
     case "GS":
@@ -140,6 +167,7 @@ export const getEnumValueDegree = (input: string): EDegree => {
       return EDegree.Doctor;
   }
 };
+
 export const getEnumValueAcademicTitle = (
   input: string
 ): EAcademicTitle | undefined => {
@@ -194,6 +222,16 @@ export const getEnumValueStateService = (input: string): EStatusService => {
       return EStatusService.Close;
     default:
       return EStatusService.Open;
+  }
+};
+export const getEnumValueStateRegis = (input: string): EStateRegister => {
+  switch (input) {
+    case "Đã khám":
+      return EStateRegister.Success;
+    case "Chưa khám":
+      return EStateRegister.Pending;
+    default:
+      return EStateRegister.Pending;
   }
 };
 export const getEnumValueGenderPackage = (input: string): EGenderPackage => {

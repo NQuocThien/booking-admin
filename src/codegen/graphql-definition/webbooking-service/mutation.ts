@@ -313,3 +313,10 @@ const createMedicalStaff = gql`
     }
   }
 `;
+const confirmRegister = gql`
+  mutation confirmRegister($input: ConfirmRegisterInput!) {
+    confirmRegister(input: $input) {
+      id
+    }
+  }
+`;

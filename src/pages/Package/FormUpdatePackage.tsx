@@ -148,8 +148,6 @@ function FormUpdatePackage() {
   };
   const handleChangeWorkSchedule = (workSchedule: WorkScheduleInput) => {
     dispatch(handleChangeFormWorkSchedule(workSchedule));
-    // console.log("test status2:", workSchedule.status);
-    // console.log("test status3:", state.updatePackage.workSchedule.status);
   };
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !idPackage) {
@@ -199,9 +197,10 @@ function FormUpdatePackage() {
                     if (logoRef.current) logoRef.current.click();
                   }}
                   height={180}
-                  width={180}
+                  width={320}
                   src={
                     (state.imageFile && URL.createObjectURL(state.imageFile)) ||
+                    state.updatePackage.image.url ||
                     "/default.jpg"
                   }
                 />

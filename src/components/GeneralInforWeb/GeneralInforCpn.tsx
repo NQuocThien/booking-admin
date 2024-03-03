@@ -1,10 +1,11 @@
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import s from "src/assets/scss/pages/GeneralInforWeb.module.scss";
-import { ETypeFile, uploadFile, getUrlImage, TypeFile } from "src/utils/upload";
+import { getUrlImage, uploadImage } from "src/utils/upload";
 import { showToast } from "../sub/toasts";
 import {
   GeneralInforUpdateInput,
+  LinkImage,
   useGetGeneralInforQuery,
   useUpdateGeneralInforMutation,
 } from "src/graphql/webbooking-service.generated";
@@ -100,50 +101,17 @@ function GeneralInforWebCpn() {
         throw new Error("can not save");
       });
   };
-  const uploadFilePromise = (
-    typeFile: TypeFile,
-    logo: Blob | null,
-    messageName: string
-  ) => {
-    return new Promise((resolve, reject) => {
-      uploadFile(typeFile, [logo], (error: any, result: any) => {
-        if (error) {
-          // console.error('Upload error:', error);
-          showToast(`😥 Lỗi upload logo ${messageName}`, "error");
-          reject(error);
-        } else {
-          showToast(`👍 Đã lưu logo ${messageName}`, "success");
-
-          const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
-          const linkImage: ILinkImage = {
-            filename: result[0]?.filename + "",
-            type: typeFile + "",
-            url: ulrImage,
-          };
-          resolve(linkImage);
-        }
-      });
-    });
-  };
   const handleUploadImage = async () => {
     var dataLogo: ILogoImage = {};
-    const typeFile = ETypeFile.Image;
     // upload logo header
     try {
       if (formData.logoHeader) {
-        await uploadFilePromise(typeFile, formData.logoHeader, "Header").then(
-          (result) => {
-            dataLogo = { logoHeader: result as ILinkImage };
-          }
-        );
+        const linkImage: LinkImage = await uploadImage(formData.logoHeader, "");
+        dataLogo = { logoHeader: linkImage };
       }
       if (formData.logoFooter) {
-        const footerResult = await uploadFilePromise(
-          typeFile,
-          formData.logoFooter,
-          "Footer"
-        );
-        dataLogo = { ...dataLogo, logoFooter: footerResult as ILinkImage };
+        const linkImage: LinkImage = await uploadImage(formData.logoFooter, "");
+        dataLogo = { ...dataLogo, logoFooter: linkImage };
       }
       handleSave(dataLogo);
       return dataLogo;

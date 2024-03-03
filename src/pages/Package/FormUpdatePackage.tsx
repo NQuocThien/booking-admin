@@ -32,7 +32,7 @@ import {
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { getToken } from "src/utils/contain";
-import { uploadFilePromise } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import WorkSchedule from "src/components/WorkSchedule/WorkSchedule";
 import ShowAlert from "src/components/sub/alerts";
@@ -100,10 +100,10 @@ function FormUpdatePackage() {
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
       try {
-        const image: LinkImageInput = await uploadFilePromise(
-          "image",
-          state.imageFile
-        );
+        var image: LinkImageInput = state.updatePackage.image;
+        if (state.imageFile) {
+          image = await uploadImage(state.imageFile, "packages");
+        }
         const input: UpdatePackageInput = {
           id: state.updatePackage.id,
           medicalFactilitiesId: state.updatePackage.medicalFactilitiesId,
@@ -213,7 +213,6 @@ function FormUpdatePackage() {
                       dispatch(handleChangImage(selectedFile));
                     }
                   }}
-                  required
                   type="file"
                   style={{ display: "none" }}
                 />

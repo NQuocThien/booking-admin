@@ -14,13 +14,17 @@ function SessionItem(props: IPorp) {
   return (
     <div className="m-1">
       {(active && (
-        <Button onClick={handleClick} variant="primary">
+        <Button className="text-nowrap" onClick={handleClick} variant="primary">
           {session.startTime}
           {"-"}
           {session.endTime}
         </Button>
       )) || (
-        <Button onClick={handleClick} variant="outline-primary">
+        <Button
+          className="text-nowrap"
+          size="sm"
+          onClick={handleClick}
+          variant="outline-primary">
           {session.startTime}
           {"-"}
           {session.endTime}

@@ -96,58 +96,56 @@ function PackageDetailPage() {
           </div>
         </Col>
         <Col className={`col-8`}>
-          <div className={`${style.about__discription} ${s.component}`}>
+          <Row className={`${style.about__discription} ${s.component}`}>
             <p className="fs-5">
               Chi tiết gói khám"{data?.getPackageById.packageName}"
             </p>
             <div className={``}>{data?.getPackageById.examinationDetails}</div>
-          </div>
-          <div className={`${s.component} my-3`}>
-            <div className="mb-3">
-              <p>Ngày nghỉ:</p>
-              <div className={s.main__dayOff}>
-                {data?.getPackageById.workSchedule.dayOff.map((day, i) => (
-                  <span key={i} className="mx-1 p-2 border border-info">
-                    {formatDate(day)}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p>Lịch làm việc:</p>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Ngày trong tuần</th>
-                    <th>Phiên làm việc</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.getPackageById.workSchedule.schedule.map((s, i) => (
-                    <tr key={i}>
-                      <td> Thứ {s.dayOfWeek}</td>
-                      <td
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}>
-                        {s.sessions.map((session, i) => (
-                          <span
-                            className="m-1 p-2 border border-success"
-                            key={i}>
-                            {session.startTime}
-                            {"-"}
-                            {session.endTime}
-                          </span>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </div>
+          </Row>
         </Col>
+      </Row>
+      <Row className={`${s.component} my-3`}>
+        <Row className="mb-3">
+          <p>Ngày nghỉ:</p>
+          <div className={s.main__dayOff}>
+            {data?.getPackageById.workSchedule.dayOff.map((day, i) => (
+              <span key={i} className="mx-1 p-2 border border-info">
+                {formatDate(day)}
+              </span>
+            ))}
+          </div>
+        </Row>
+        <Row>
+          <p>Lịch làm việc:</p>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Ngày trong tuần</th>
+                <th>Phiên làm việc</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.getPackageById.workSchedule.schedule.map((s, i) => (
+                <tr key={i}>
+                  <td> Thứ {s.dayOfWeek}</td>
+                  <td
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                    }}>
+                    {s.sessions.map((session, i) => (
+                      <span className="m-1 p-2 border border-success" key={i}>
+                        {session.startTime}
+                        {"-"}
+                        {session.endTime}
+                      </span>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Row>
       </Row>
     </Container>
   );

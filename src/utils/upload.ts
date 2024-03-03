@@ -2,6 +2,12 @@ import { ILinkImage } from "src/assets/contains/item-interface";
 import axios from "axios";
 
 export type TypeFile = "image" | "video" | "document";
+export type TypeFileImage =
+  | "doctors"
+  | "packages"
+  | "facilities"
+  | "users"
+  | "";
 export enum ETypeFile {
   Image = "image",
   Video = "video",
@@ -26,7 +32,8 @@ const backendUpload = {
 export async function uploadFile(
   typeFile: TypeFile, // TypeFile
   files: any[],
-  callback: any
+  callback: any,
+  typeFileImage: TypeFileImage = ""
 ) {
   Promise.all(
     files.map(
@@ -38,6 +45,7 @@ export async function uploadFile(
             .post(backendUpload[typeFile], formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
+                imageType: `${typeFileImage}`,
                 // 'access-token': localStorage.getItem('access-token')
               },
             })
@@ -66,42 +74,59 @@ export function getUrlImage(linkImage: any) {
   return url;
 }
 
-export const uploadImagePromise = (
-  imageFile: Blob | null
+export const uploadImage = (
+  imageFile: Blob | null,
+  typeFileImage: TypeFileImage = ""
 ): Promise<ILinkImage> => {
   return new Promise((resolve, reject) => {
-    uploadFile("image", [imageFile], (error: any, result: any) => {
-      if (error) {
-        reject(error);
-      } else {
-        const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
-        const linkImage: ILinkImage = {
-          filename: result[0]?.filename + "",
-          type: "image",
-          url: ulrImage,
-        };
-        resolve(linkImage);
-      }
-    });
+    uploadFile(
+      "image",
+      [imageFile],
+      (error: any, result: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          var ulrImage: string;
+          var linkImage: ILinkImage;
+          if (typeFileImage === "") {
+            ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
+            linkImage = {
+              filename: result[0]?.filename + "",
+              type: "image",
+              url: ulrImage,
+            };
+          } else {
+            ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${typeFileImage}/${result[0]?.filename}`;
+            linkImage = {
+              filename: result[0]?.filename + "",
+              type: "image",
+              url: ulrImage,
+            };
+          }
+          resolve(linkImage);
+        }
+      },
+      typeFileImage
+    );
   });
 };
-export const uploadFilePromise = (
-  typeFile: TypeFile,
-  logo: Blob | null
-): Promise<ILinkImage> => {
-  return new Promise((resolve, reject) => {
-    uploadFile(typeFile, [logo], (error: any, result: any) => {
-      if (error) {
-        reject(error);
-      } else {
-        const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
-        const linkImage: ILinkImage = {
-          filename: result[0]?.filename + "",
-          type: typeFile + "",
-          url: ulrImage,
-        };
-        resolve(linkImage);
-      }
-    });
-  });
-};
+// export const uploadFilePromise = (
+//   typeFile: TypeFile,
+//   logo: Blob | null
+// ): Promise<ILinkImage> => {
+//   return new Promise((resolve, reject) => {
+//     uploadFile(typeFile, [logo], (error: any, result: any) => {
+//       if (error) {
+//         reject(error);
+//       } else {
+//         const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
+//         const linkImage: ILinkImage = {
+//           filename: result[0]?.filename + "",
+//           type: typeFile + "",
+//           url: ulrImage,
+//         };
+//         resolve(linkImage);
+//       }
+//     });
+//   });
+// };

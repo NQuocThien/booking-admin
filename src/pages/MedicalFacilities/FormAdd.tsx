@@ -34,7 +34,7 @@ import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
 import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
-import { uploadImagePromise } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 function FormAddMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
@@ -80,8 +80,14 @@ function FormAddMedicalFacility() {
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
       try {
-        const logo: LinkImageInput = await uploadImagePromise(state.logoFile);
-        const image: LinkImageInput = await uploadImagePromise(state.imageFile);
+        const logo: LinkImageInput = await uploadImage(
+          state.logoFile,
+          "facilities"
+        );
+        const image: LinkImageInput = await uploadImage(
+          state.imageFile,
+          "facilities"
+        );
         const input: CreateMedicalFacilityInput = {
           ...state.createMedicalFacility,
           logo: logo,

@@ -4,7 +4,7 @@ import s from "src/assets/scss/pages/InforUser.module.scss";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { showToast } from "src/components/sub/toasts";
 import { getLocalStorage, getToken } from "src/utils/contain";
-import { uploadFile, ETypeFile } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import {
   LinkImage,
   UpdateUserInput,
@@ -113,31 +113,16 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
       }
     }
   }; // xữ lý đoạn cuối update user
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     checkExpirationToken();
     e.preventDefault();
     if (selectedFile) {
-      // console.log(' upload image')
-      const typeFile = ETypeFile.Image;
-      uploadFile(typeFile, [selectedFile], (error: any, result: any) => {
-        if (error) {
-          console.error("Upload error:", error);
-          showToast("😥 Lỗi upload avatar", "error");
-        } else {
-          // console.log('Upload successful. Result:', result);
-          showToast("👍 Đã lưu ảnh");
-
-          const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
-          const linkImage = {
-            filename: result[0]?.filename,
-            type: typeFile,
-            url: ulrImage,
-          };
-          // console.log("linkImage res:", linkImage);
-          // thực hiện submit
-          handleUpdateInforUser(linkImage);
-        }
-      });
+      try {
+        const linkImage: LinkImage = await uploadImage(selectedFile, "users");
+        handleUpdateInforUser(linkImage);
+      } catch (e) {
+        showToast("Có lỗi khi upload", "error");
+      }
     } else {
       handleUpdateInforUser();
     }

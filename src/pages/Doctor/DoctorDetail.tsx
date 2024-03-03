@@ -180,16 +180,14 @@ function DoctorDetailPage() {
               {listSchedule?.map((s, i) => (
                 <tr key={i}>
                   <td> {renderDayOfWeek(s.dayOfWeek)}</td>
-                  <td>
-                    <div className="d-flex">
-                      {s.sessions.map((session, i) => (
-                        <span className="m-1 p-2 border border-success" key={i}>
-                          {session.startTime}
-                          {"-"}
-                          {session.endTime}
-                        </span>
-                      ))}
-                    </div>
+                  <td className="d-flex flex-wrap">
+                    {s.sessions.map((session, i) => (
+                      <span className="m-1 p-2 border border-success" key={i}>
+                        {session.startTime}
+                        {"-"}
+                        {session.endTime}
+                      </span>
+                    ))}
                   </td>
                   <td>
                     <Button

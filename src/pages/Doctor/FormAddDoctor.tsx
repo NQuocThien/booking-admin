@@ -28,7 +28,7 @@ import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { getToken } from "src/utils/contain";
-import { uploadFilePromise } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import { IOption } from "./reducer";
 import WorkSchedule from "src/components/WorkSchedule/WorkSchedule";
@@ -112,9 +112,9 @@ function FormAddDoctor() {
       try {
         // console.log("test input ");
 
-        const avatar: LinkImageInput = await uploadFilePromise(
-          "image",
-          state.avatarFile
+        const avatar: LinkImageInput = await uploadImage(
+          state.avatarFile,
+          "doctors"
         );
         const input: CreateDoctorInput = {
           ...state.createDoctor,
@@ -157,7 +157,7 @@ function FormAddDoctor() {
             <h3 className="text-center text-primary">Thêm cơ sở y tế</h3>
           </Row>
           <Row>
-            <Form.Group className="mb-3" controlId="formGroupName">
+            <Form.Group className="mb-3" controlId="formGroupNameDoctor">
               <Form.Label>Tên bác sĩ:</Form.Label>
               <Form.Control
                 value={state.createDoctor.name}

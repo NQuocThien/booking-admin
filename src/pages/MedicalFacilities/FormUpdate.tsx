@@ -36,7 +36,7 @@ import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
 import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
-import { uploadImagePromise } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
 function FormUpdateMedicalFacility() {
@@ -133,8 +133,8 @@ function FormUpdateMedicalFacility() {
         var image: LinkImageInput;
 
         if (state.logoFile && state.imageFile) {
-          logo = await uploadImagePromise(state.logoFile);
-          image = await uploadImagePromise(state.imageFile);
+          logo = await uploadImage(state.logoFile, "facilities");
+          image = await uploadImage(state.imageFile, "facilities");
         } else {
           logo = state.updateMedicalFacility.logo;
           image = state.updateMedicalFacility.image;

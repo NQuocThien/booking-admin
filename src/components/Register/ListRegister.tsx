@@ -63,7 +63,7 @@ function ListRegister(props: IProps) {
   });
   useEffect(() => {
     if (doctorId && selectedDate) {
-      console.log("Reload ===", doctorId, selectedDate);
+      // console.log("Reload ===", doctorId, selectedDate);
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
       getRegisters({
         variables: {
@@ -190,19 +190,19 @@ function ListRegister(props: IProps) {
         </Col>
       </Row>
       <Row>
-        <Col className="col-2 text-center">
-          <p>Bộ lọc:</p>
+        <Col className="col-3 text-center">
+          <p className="text-start">Bộ lọc:</p>
           <DatePickerCpn
             onChange={(date) => {
               handleChangeDatePicker(date);
             }}
             filterDate={filterWeekdays}
           />
-          <p className="m-2">
+          <p className="m-2 text-start">
             Chọn phiên khám "{renderDayOfWeek(schedule?.dayOfWeek)}"{" "}
             <StatusCpn loading={loading} error={error} size="sm" />
           </p>
-          <div className="m-1">
+          <div style={{ height: 300, overflow: "scroll" }} className="m-1">
             {schedule?.sessions.map((session, i) => (
               <div className="" key={i}>
                 <SessionItem
@@ -225,6 +225,10 @@ function ListRegister(props: IProps) {
           </div>
         </Col>
         <Col>
+          <p>
+            Danh sách đăng ký khám:{" "}
+            <StatusCpn size="sm" loading={loadConfirm} error={errConfirm} />
+          </p>
           <Table striped hover>
             <thead>
               <tr>

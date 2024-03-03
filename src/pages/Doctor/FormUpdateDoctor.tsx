@@ -29,14 +29,13 @@ import {
   UpdateDoctorInput,
   useGetDoctorToUpdateByIdQuery,
   useGetMedicalSpecialtiesSelectQuery,
-  useGetUserDoctorPendingQuery,
   useGetUserDoctorPendingUpdateQuery,
   useUpdateDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { getToken } from "src/utils/contain";
-import { uploadFilePromise } from "src/utils/upload";
+import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import { IOption, handleSetDataFormUpdate } from "./reducer-update";
 import Select from "react-select";
@@ -68,38 +67,35 @@ function FormUpdateDoctor() {
     },
   });
   useEffect(() => {
-    if (dataUpdate?.getDoctorbyId && dataUpdate.getDoctorbyId.academicTitle) {
-      const valueEnumDegree = getEnumValueDegree(
-        dataUpdate.getDoctorbyId.degree
-      );
-      const valueEnumAcademicTitle = getEnumValueAcademicTitle(
-        dataUpdate.getDoctorbyId.academicTitle
-      );
-      const valueEnumGender = getEnumValueGender(
-        dataUpdate.getDoctorbyId.gender
-      );
-      const shedules: ScheduleInput[] =
-        dataUpdate.getDoctorbyId.workSchedule.schedule.map((sc) => ({
+    if (dataUpdate?.getDoctorbyId) {
+      const data = dataUpdate?.getDoctorbyId;
+      const valueEnumDegree = getEnumValueDegree(data.degree);
+      var valueEnumAcademicTitle: EAcademicTitle | undefined = undefined;
+      if (data.academicTitle) {
+        valueEnumAcademicTitle = getEnumValueAcademicTitle(data.academicTitle);
+      }
+      const valueEnumGender = getEnumValueGender(data.gender);
+      const shedules: ScheduleInput[] = data.workSchedule.schedule.map(
+        (sc) => ({
           ...sc,
           dayOfWeek: getEnumValueDayOfWeek(sc.dayOfWeek),
           sessions: sc.sessions,
-        }));
+        })
+      );
       const dataInput: UpdateDoctorInput = {
-        ...dataUpdate.getDoctorbyId,
+        ...data,
         academicTitle: valueEnumAcademicTitle,
         degree: valueEnumDegree,
         gender: valueEnumGender,
         workSchedule: {
-          ...dataUpdate.getDoctorbyId.workSchedule,
+          ...data.workSchedule,
           schedule: shedules,
-          status: getEnumValueStateService(
-            dataUpdate.getDoctorbyId.workSchedule.status
-          ),
+          status: getEnumValueStateService(data.workSchedule.status),
         },
       };
       dispatch(handleSetDataFormUpdate(dataInput));
     }
-  }, [dataUpdate, idDoctor]);
+  }, [dataUpdate?.getDoctorbyId, idDoctor]);
   const token = getToken();
   const {
     data: dataSpecialtiesSelect,
@@ -181,13 +177,8 @@ function FormUpdateDoctor() {
         // console.log("test input ");
         let avatar: LinkImageInput = state.updateDoctor.avatar;
         if (state.avatarFile) {
-          avatar = await uploadFilePromise("image", state.avatarFile);
+          avatar = await uploadImage(state.avatarFile, "doctors");
         }
-
-        const cloneDate: UpdateDoctorInput = {
-          ...state.updateDoctor,
-          avatar: avatar,
-        };
         const input: UpdateDoctorInput = {
           id: state.updateDoctor.id,
           name: state.updateDoctor.name,
@@ -196,9 +187,9 @@ function FormUpdateDoctor() {
           email: state.updateDoctor.email,
           gender: state.updateDoctor.gender,
           avatar: {
-            filename: state.updateDoctor.avatar.filename,
-            type: state.updateDoctor.avatar.type,
-            url: state.updateDoctor.avatar.url,
+            filename: avatar.filename,
+            type: avatar.type,
+            url: avatar.url,
           },
           medicalFactilitiesId: state.updateDoctor.medicalFactilitiesId,
           numberPhone: state.updateDoctor.numberPhone,

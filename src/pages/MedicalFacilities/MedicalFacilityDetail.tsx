@@ -169,7 +169,7 @@ function MedicalFacilityDetailPage() {
           <div className={`${style.top__image}`}>
             <img
               className={`${style.image}`}
-              src="/imgs/an.png"
+              src={medicalFacility?.image.url || "/default.jpg"}
               alt="Logo"
               // rounded
             />

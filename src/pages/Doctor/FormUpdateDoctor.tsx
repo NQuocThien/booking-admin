@@ -158,7 +158,7 @@ function FormUpdateDoctor() {
   useEffect(() => {
     if (dataSpecialtiesSelect) {
       const optSpecialties: IOption[] =
-        dataSpecialtiesSelect.getMecialSpecialtiesByMedicalFacilityId.map(
+        dataSpecialtiesSelect.getMedicalSpecialtiesByMedicalFacilityId.map(
           (item) => ({
             label: item.name,
             value: item.id,

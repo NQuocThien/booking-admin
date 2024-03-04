@@ -2,6 +2,7 @@ import { Col, Container, Image, Row, Spinner, Table } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
+  Schedule,
   useGetMedicalFacilityNameByIdQuery,
   useGetPackageByIdQuery,
 } from "src/graphql/webbooking-service.generated";
@@ -16,6 +17,7 @@ import { IoPricetagsOutline } from "react-icons/io5";
 import { formatDate, formatter } from "src/utils/contain";
 import { FaDoorOpen } from "react-icons/fa";
 import { FaTransgenderAlt } from "react-icons/fa";
+import ListRegister from "src/components/Register/ListRegister";
 function PackageDetailPage() {
   const { idPackage, id } = useParams();
   const { checkExpirationToken } = useAuth();
@@ -35,6 +37,8 @@ function PackageDetailPage() {
   });
   const location = useLocation();
   useEffect(() => checkExpirationToken(), []);
+
+  const [listSchedule, setListSchedule] = useState<Schedule[]>();
   // console.log("test", location.pathname.search("/admin-page/medical-facility"));
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   useEffect(() => {
@@ -51,6 +55,9 @@ function PackageDetailPage() {
           label: data?.getPackageById.packageName || "",
         },
       ]);
+    }
+    if (data?.getPackageById) {
+      setListSchedule(data?.getPackageById.workSchedule.schedule);
     }
   }, [location, data, dataMedical]);
 
@@ -145,6 +152,12 @@ function PackageDetailPage() {
               ))}
             </tbody>
           </Table>
+        </Row>
+        <Row>
+          <ListRegister
+            listSchedule={listSchedule}
+            packageId={data?.getPackageById.id}
+          />
         </Row>
       </Row>
     </Container>

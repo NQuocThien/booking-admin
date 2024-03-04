@@ -36,6 +36,7 @@ import {
 import { IoPricetagsOutline } from "react-icons/io5";
 import { formatDate, formatter } from "src/utils/contain";
 import ListRegister from "src/components/Register/ListRegister";
+import { EtypeService } from "src/utils/enum";
 function DoctorDetailPage() {
   const { idDoctor, id } = useParams();
   const { checkExpirationToken } = useAuth();
@@ -58,12 +59,7 @@ function DoctorDetailPage() {
   // console.log("test", location.pathname.search("/admin-page/medical-facility"));
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   const [listSchedule, setListSchedule] = useState<Schedule[]>();
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule>();
-  const [selectedSession, setSelectedSession] = useState<Session>();
-
-  const handleClickSchedule = (s: Schedule) => {
-    setSelectedSchedule(s);
-  };
+  const [showService, setShowService] = useState<EtypeService[]>([]);
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
       const urlMedical = "/admin-page/medical-facility/" + id;
@@ -189,14 +185,14 @@ function DoctorDetailPage() {
                       </span>
                     ))}
                   </td>
-                  <td>
+                  {/* <td>
                     <Button
                       size="sm"
                       variant="outline-primary"
                       onClick={() => handleClickSchedule(s)}>
                       <FaEye />
                     </Button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

@@ -159,6 +159,51 @@ const getMedicalFacilityById = gql`
       status
       dateOff
       schedule
+    }
+  }
+`;
+const getAllMedicalFacilityPagination = gql`
+  query getAllMedicalFacilityPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+  ) {
+    getAllMedicalFacilityPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      id
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      logo {
+        filename
+        type
+        url
+      }
+
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
+      discription
+      introduce
+      operatingStatus
+      legalRepresentation
+      taxCode
+      status
+      dateOff
+      schedule
       doctors {
         id
         userId
@@ -270,7 +315,11 @@ const getMedicalFacilityById = gql`
     }
   }
 `;
-
+const getTotalFacilitiesCount = gql`
+  query getTotalFacilitiesCount($search: String) {
+    getTotalFacilitiesCount(search: $search)
+  }
+`;
 const getMedicalFacilityNameById = gql`
   query getMedicalFacilityNameById($input: String!) {
     getMedicalFacilityById(id: $input) {
@@ -289,7 +338,7 @@ const getUserSelected = gql`
 `;
 const getMedicalSpecialtiesSelect = gql`
   query getMedicalSpecialtiesSelect($input: String!) {
-    getMecialSpecialtiesByMedicalFacilityId(id: $input) {
+    getMedicalSpecialtiesByMedicalFacilityId(input: $input) {
       id
       name
     }
@@ -331,6 +380,41 @@ const getDoctorById = gql`
         id
         name
       }
+    }
+  }
+`;
+const getDoctorByFacilityId = gql`
+  query getAllDoctorByFacilityId($input: String!) {
+    getAllDoctorByFacilityId(input: $input) {
+      id
+      name
+      gender
+      academicTitle
+      degree
+      numberPhone
+      email
+      avatar {
+        filename
+        type
+        url
+      }
+      discription
+      price
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+        status
+      }
+      userId
+      medicalFactilitiesId
+      specialistId
     }
   }
 `;
@@ -398,6 +482,35 @@ const getPackageById = gql`
     }
   }
 `;
+const getPackageByFacilityId = gql`
+  query getAllPackageByFacilityId($input: String!) {
+    getAllPackageByFacilityId(input: $input) {
+      id
+      medicalFactilitiesId
+      packageName
+      gender
+      price
+      image {
+        filename
+        type
+        url
+      }
+      examinationDetails
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
 const getMedicalSpecialtyByid = gql`
   query getMedicalSpecialtyById($input: String!) {
     getMedicalSpecialtyById(input: $input) {
@@ -421,9 +534,58 @@ const getMedicalSpecialtyByid = gql`
     }
   }
 `;
+const getAllMedicalSpecialtyByFacilityId = gql`
+  query getMedicalSpecialtiesByMedicalFacilityId($input: String!) {
+    getMedicalSpecialtiesByMedicalFacilityId(input: $input) {
+      id
+      medicalFactilityId
+      name
+      price
+      discription
+      workSchedule {
+        dayOff
+        numberSlot
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+      }
+    }
+  }
+`;
 const getVaccineById = gql`
   query getVaccineById($input: String!) {
     getVaccineById(input: $input) {
+      id
+      medicalFactilitiesId
+      vaccineName
+      price
+      countryOfOrigin
+      prophylactic
+      indication
+      note
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+  }
+`;
+const getVaccineByFacilityId = gql`
+  query getAllVaccinationByFacilityId($input: String!) {
+    getAllVaccinationByFacilityId(input: $input) {
       id
       medicalFactilitiesId
       vaccineName
@@ -505,9 +667,9 @@ const getTotalUsersCount = gql`
     totalUsersCount(search: $search)
   }
 `;
-const getAllRegisterDoctorPedding = gql`
-  query getAllRegisterDoctorForDay($input: GetRegisterDoctorInput!) {
-    getAllRegisterDoctorForDay(input: $input) {
+const getAllRegisterByOption = gql`
+  query getAllRegisterByOption($input: GetRegisterByOptionInput!) {
+    getAllRegisterByOption(input: $input) {
       id
       date
       typeOfService

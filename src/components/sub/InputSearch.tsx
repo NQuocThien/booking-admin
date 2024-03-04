@@ -12,13 +12,22 @@ import { IoSearch } from "react-icons/io5";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { FaSortAlphaDownAlt } from "react-icons/fa";
 import { Sort } from "src/assets/contains/item-interface";
+import { ApolloError } from "@apollo/client";
+import StatusCpn from "./Status";
 
 interface Iprop {
   onSearch: (search: string) => void;
   onSort: (sort: Sort) => void;
+  loading?: boolean;
+  error?: ApolloError | undefined;
 }
 
-const SearchInputCpn = ({ onSearch, onSort }: Iprop) => {
+const SearchInputCpn = ({
+  onSearch,
+  onSort,
+  loading = undefined,
+  error = undefined,
+}: Iprop) => {
   const [value, setValue] = useState<string>("");
   const [sort, setSort] = useState<Sort>("asc");
   return (
@@ -72,6 +81,7 @@ const SearchInputCpn = ({ onSearch, onSort }: Iprop) => {
           <FaSortAlphaDownAlt />
         </ToggleButton>
       </ButtonGroup>
+      {loading && <StatusCpn error={error} loading={loading} />}
     </div>
   );
 };

@@ -180,7 +180,9 @@ function MedicalFacilityDetailPage() {
         data={medicalFacility}
         hanldeDeleteRefetch={hanldeDeleteRefetch}
       />
-      <MedicalFacilityListStaff data={data} />
+      <MedicalFacilityListStaff
+        data={medicalFacility?.medicalStaffs || undefined}
+      />
       <Row className={`${style.about}`}>
         <Col className={`col-4`}>
           <div className={`${style.about__discription} ${s.component}`}>

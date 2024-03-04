@@ -11,6 +11,8 @@ import { DoctorListServiveMemory } from "../Doctor/DoctorListService";
 import { PackageListServiveMemory } from "../Package/PackageListService";
 import { SpecialtyListServiveMemory } from "../Specialty/SpecialtyListService";
 import { VaccinationListServiveMemory } from "../Vaccination/VaccinationListService";
+import { useState } from "react";
+import { ButtonGroup, ToggleButton } from "react-bootstrap";
 interface IProp {
   data: MedicalFacilities | undefined;
   hanldeDeleteRefetch: (typeService: EtypeService, id: string) => void;
@@ -32,6 +34,8 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
     useDeleteVaccinationMutation({
       fetchPolicy: "no-cache",
     });
+  const [showServices, setShowServices] = useState<EtypeService[]>([]);
+
   const handleDelete = async (id: string, name: string, type: EtypeService) => {
     const confirm = window.confirm(`Bạn có chắc xóa ${type} "${name}"`);
     switch (type) {
@@ -104,31 +108,34 @@ function MedicalFacilityListService({ data, hanldeDeleteRefetch }: IProp) {
         break;
     }
   };
-
   if (!data) return <div></div>;
   else
     return (
       <div>
-        <DoctorListServiveMemory
-          doctors={data?.doctors}
-          handleDelete={handleDelete}
-          loadingDeleteDoctor={loadingDeleteDoctor}
-        />
-
-        <PackageListServiveMemory
-          handleDelete={handleDelete}
-          loadingDeletePackage={loadingDeletePackage}
-          packages={data?.packages}
-        />
+        <div>
+          <DoctorListServiveMemory
+            facilityId={data.id}
+            handleDelete={handleDelete}
+            loadingDeleteDoctor={loadingDeleteDoctor}
+          />
+        </div>
+        <div>
+          <PackageListServiveMemory
+            handleDelete={handleDelete}
+            loadingDeletePackage={loadingDeletePackage}
+            facilityId={data?.id}
+          />
+        </div>
         <SpecialtyListServiveMemory
           handleDelete={handleDelete}
           loadingDeleteSpecialty={loadingDeleteSpecialty}
-          medicalSpecialties={data.medicalSpecialties}
+          facilityId={data?.id}
         />
+
         <VaccinationListServiveMemory
           handleDelete={handleDelete}
           loadingDeleteVaccination={loadingDeleteVaccination}
-          vaccinations={data.vaccinations}
+          facilityId={data?.id}
         />
       </div>
     );

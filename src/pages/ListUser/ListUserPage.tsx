@@ -188,13 +188,7 @@ function ListUserPage() {
               })
             );
             break;
-          // case ERoles.doctor:
-          //   dispatch(
-          //     handleChangeStateRoles({
-          //       ...state.stateRoles,
-          //       doctor: true,
-          //     })
-          //   );
+
           case ERoles.doctor:
             dispatch(
               handleChangeStateRoles({
@@ -307,7 +301,6 @@ function ListUserPage() {
       <SearchInputCpn
         onSearch={(s: string) => {
           dispatch(handleChangeSearchTerm(s));
-          // handleSearch();
         }}
         onSort={(sort) => {
           dispatch(

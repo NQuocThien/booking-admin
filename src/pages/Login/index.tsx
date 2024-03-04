@@ -32,7 +32,10 @@ function LoginPage() {
       sigin(newToken);
     },
     onError: async (err) => {
-      showToast("😥 Sai tài khoản hoặc mật khẩu", "error");
+      console.log(err.message);
+      if (err.message === "Unauthorized")
+        showToast("😥 Sai tài khoản hoặc mật khẩu", "error");
+      else showToast(err.message, "error");
     },
   });
   const handleSubmit = async (e: any) => {

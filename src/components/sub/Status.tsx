@@ -3,7 +3,7 @@ import { Badge, Spinner } from "react-bootstrap";
 interface IProp {
   loading: boolean;
   error: ApolloError | undefined;
-  variant?: "primary" | "succes" | "danger";
+  variant?: "primary" | "success" | "danger" | "light" | "info" | "dark";
   size?: "sm" | undefined;
 }
 

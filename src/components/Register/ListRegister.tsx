@@ -7,7 +7,7 @@ import {
   Schedule,
   Session,
   useConfirmRegisterMutation,
-  useGetAllRegisterDoctorForDayLazyQuery,
+  useGetAllRegisterByOptionLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import SessionItem from "../WorkSchedule/Session";
 import { getEnumValueStateRegis, renderDayOfWeek } from "src/utils/getData";
@@ -26,16 +26,25 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { showToast } from "../sub/toasts";
 interface IProps {
   listSchedule: Schedule[] | undefined;
-  doctorId: string | undefined;
+  doctorId?: string;
+  packageId?: string;
+  vaccineId?: string;
+  specialtyId?: string;
 }
 interface IShowModal {
   customer: boolean;
   profile: boolean;
 }
 function ListRegister(props: IProps) {
-  const { listSchedule, doctorId } = props;
+  const {
+    listSchedule,
+    doctorId = undefined,
+    packageId = undefined,
+    specialtyId = undefined,
+    vaccineId = undefined,
+  } = props;
   const [getRegisters, { data, loading, error }] =
-    useGetAllRegisterDoctorForDayLazyQuery({
+    useGetAllRegisterByOptionLazyQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -72,12 +81,48 @@ function ListRegister(props: IProps) {
             date: dateFormat,
           },
         },
-      }); // nếu
+      });
+    }
+    if (packageId && selectedDate) {
+      // console.log("Reload ===", doctorId, selectedDate);
+      const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      getRegisters({
+        variables: {
+          input: {
+            packageId: packageId,
+            date: dateFormat,
+          },
+        },
+      });
+    }
+    if (vaccineId && selectedDate) {
+      // console.log("Reload ===", doctorId, selectedDate);
+      const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      getRegisters({
+        variables: {
+          input: {
+            vaccineId: vaccineId,
+            date: dateFormat,
+          },
+        },
+      });
+    }
+    if (specialtyId && selectedDate) {
+      // console.log("Reload ===", doctorId, selectedDate);
+      const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      getRegisters({
+        variables: {
+          input: {
+            specialtyId: specialtyId,
+            date: dateFormat,
+          },
+        },
+      });
     }
   }, [selectedDate]);
   useEffect(() => {
-    if (data?.getAllRegisterDoctorForDay) {
-      setListRegister(data?.getAllRegisterDoctorForDay);
+    if (data?.getAllRegisterByOption) {
+      setListRegister(data?.getAllRegisterByOption);
     }
   }, [data]);
 

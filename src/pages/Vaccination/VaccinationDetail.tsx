@@ -2,6 +2,7 @@ import { Col, Container, Row, Spinner, Table } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
+  Schedule,
   useGetMedicalFacilityNameByIdQuery,
   useGetVaccineByIdQuery,
 } from "src/graphql/webbooking-service.generated";
@@ -17,6 +18,7 @@ import { IoPricetagsOutline } from "react-icons/io5";
 import { FaViruses } from "react-icons/fa6";
 import { formatDate, formatter } from "src/utils/contain";
 import { FaDoorOpen } from "react-icons/fa";
+import ListRegister from "src/components/Register/ListRegister";
 function VaccinationDetailPage() {
   const { idVaccine, id } = useParams();
   const { checkExpirationToken } = useAuth();
@@ -35,6 +37,7 @@ function VaccinationDetailPage() {
   const location = useLocation();
   checkExpirationToken();
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
+  const [listSchedule, setListSchedule] = useState<Schedule[]>();
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
       const urlMedical = "/admin-page/medical-facility/" + id;
@@ -49,6 +52,9 @@ function VaccinationDetailPage() {
           label: data?.getVaccineById.vaccineName || "",
         },
       ]);
+      if (data?.getVaccineById) {
+        setListSchedule(data?.getVaccineById.workSchedule.schedule);
+      }
     }
   }, [location, data, dataMedical]);
 
@@ -90,7 +96,7 @@ function VaccinationDetailPage() {
           </div>
         </Col>
         <Col className={`col-8`}>
-          <div className={`${style.about__discription} ${s.component}`}>
+          <Row className={`${style.about__discription} ${s.component}`}>
             <p className="fs-5">Chỉ định"{data?.getVaccineById.vaccineName}"</p>
             {data?.getVaccineById.indication && (
               <div
@@ -98,53 +104,57 @@ function VaccinationDetailPage() {
                   __html: data?.getVaccineById.indication,
                 }}></div>
             )}
-          </div>
-          <div className={`${s.component} my-3`}>
-            <div className="mb-3">
-              <p>Ngày nghỉ:</p>
-              <div className={s.main__dayOff}>
-                {data?.getVaccineById.workSchedule.dayOff.map((day, i) => (
-                  <span key={i} className="mx-1 p-2 border border-info">
-                    {formatDate(day)}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p>Lịch làm việc:</p>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Ngày trong tuần</th>
-                    <th>Phiên làm việc</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.getVaccineById.workSchedule.schedule.map((s, i) => (
-                    <tr key={i}>
-                      <td> Thứ {s.dayOfWeek}</td>
-                      <td
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}>
-                        {s.sessions.map((session, i) => (
-                          <span
-                            className="m-1 p-2 border border-success"
-                            key={i}>
-                            {session.startTime}
-                            {"-"}
-                            {session.endTime}
-                          </span>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </div>
+          </Row>
         </Col>
+      </Row>
+      <Row className={`${s.component} my-3`}>
+        <Row className="mb-3">
+          <p>Ngày nghỉ:</p>
+          <div className={s.main__dayOff}>
+            {data?.getVaccineById.workSchedule.dayOff.map((day, i) => (
+              <span key={i} className="mx-1 p-2 border border-info">
+                {formatDate(day)}
+              </span>
+            ))}
+          </div>
+        </Row>
+        <Row>
+          <p>Lịch làm việc:</p>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Ngày trong tuần</th>
+                <th>Phiên làm việc</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.getVaccineById.workSchedule.schedule.map((s, i) => (
+                <tr key={i}>
+                  <td> Thứ {s.dayOfWeek}</td>
+                  <td
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                    }}>
+                    {s.sessions.map((session, i) => (
+                      <span className="m-1 p-2 border border-success" key={i}>
+                        {session.startTime}
+                        {"-"}
+                        {session.endTime}
+                      </span>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Row>
+      </Row>
+      <Row>
+        <ListRegister
+          listSchedule={listSchedule}
+          vaccineId={data?.getVaccineById.id}
+        />
       </Row>
     </Container>
   );

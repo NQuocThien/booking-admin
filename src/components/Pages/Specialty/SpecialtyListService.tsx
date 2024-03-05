@@ -1,30 +1,31 @@
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { Row, Col, Table, Dropdown, Spinner } from "react-bootstrap";
 import {
-  Doctor,
   MedicalSpecialties,
-  useDeleteDoctorMutation,
+  useDeleteMecialSpecialtyMutation,
   useGetMedicalSpecialtiesByMedicalFacilityIdLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { formatter, getToken } from "src/utils/contain";
-import { CiMenuKebab } from "react-icons/ci";
-import { EtypeService } from "src/utils/enum";
 import React, { useEffect, useState } from "react";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import ButtonGroupCheck from "src/components/sub/ButtonShowHide";
+import { showToast } from "src/components/sub/toasts";
+import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 interface IProps {
-  handleDelete: (id: string, name: string, type: EtypeService) => void;
   facilityId: string | undefined;
-  loadingDeleteSpecialty: boolean;
 }
 
 function SpecialtyListServive(props: IProps) {
-  const { facilityId, handleDelete, loadingDeleteSpecialty } = props;
+  const { facilityId } = props;
   const [specialties, setSpecialties] = useState<MedicalSpecialties[]>([]);
   const [show, setShow] = useState<boolean>(false);
 
+  const [deleteMedicalSpcialty, { loading: loadingDeleteSpecialty }] =
+    useDeleteMecialSpecialtyMutation({
+      fetchPolicy: "no-cache",
+    });
   const [getVaccine, { data, loading, error }] =
     useGetMedicalSpecialtiesByMedicalFacilityIdLazyQuery({
       fetchPolicy: "no-cache",
@@ -37,6 +38,20 @@ function SpecialtyListServive(props: IProps) {
         input: facilityId || "",
       },
     });
+  const handleDelete = async (id: string) => {
+    await deleteMedicalSpcialty({
+      variables: {
+        input: id,
+      },
+    })
+      .then(() => {
+        showToast("Đã xóa chuyên khoa 👍");
+        setSpecialties((pre) => {
+          return pre.filter((p) => p.id !== id);
+        });
+      })
+      .catch((e) => console.error(e));
+  };
   useEffect(() => {
     if (facilityId && show)
       getVaccine({
@@ -105,7 +120,8 @@ function SpecialtyListServive(props: IProps) {
                     <td>{formatter.format(ms.price)}</td>
                     <td className="fs-6">
                       <Dropdown drop="down">
-                        <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
+                        <Dropdown.Toggle
+                          as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item
                             as={Link}
@@ -123,13 +139,7 @@ function SpecialtyListServive(props: IProps) {
                             {" "}
                             <p
                               className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                              onClick={async () =>
-                                handleDelete(
-                                  ms.id,
-                                  ms.name,
-                                  EtypeService.Specialty
-                                )
-                              }>
+                              onClick={async () => handleDelete(ms.id)}>
                               Xóa chuyên khoa
                             </p>
                           </Dropdown.Item>

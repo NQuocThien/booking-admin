@@ -266,7 +266,7 @@ function FormAddMedicalFacility() {
                     }
                     value={EStatusService.Close}>
                     {" "}
-                    Đống
+                    Đóng
                   </option>
                 </Form.Select>
               </Form.Group>

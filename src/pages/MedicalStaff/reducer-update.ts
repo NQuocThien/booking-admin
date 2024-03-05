@@ -1,52 +1,62 @@
 import {
-  CreatePackageInput,
-  EGenderPackage,
-  EStatusService,
-  UpdatePackageInput,
-  WorkScheduleInput,
+  EGender,
+  UpdateMedicalStaffInput,
 } from "src/graphql/webbooking-service.generated";
-import { IOption } from "src/utils/enum";
-
-export interface IStateFormUpdatePackage {
-  updatePackage: UpdatePackageInput;
+export interface IOption {
+  value: string;
+  label: string;
+}
+export interface IStateForm {
+  updateStaff: UpdateMedicalStaffInput;
   validate: boolean;
-  imageFile: Blob | null;
   formMedical: boolean;
   optionsSpecialties: [IOption];
+  optionsPackage: [IOption];
+  optionsVaccine: [IOption];
+  optionsUser: [IOption];
 }
-export interface IActionFormUpdateDoctor {
+export interface IActionFormAdd {
   type: string;
-  key?: keyof CreatePackageInput;
+  key?: keyof UpdateMedicalStaffInput;
   payload: any;
 }
 
-const innitState: UpdatePackageInput = {
+const innitState: UpdateMedicalStaffInput = {
   id: "",
-  medicalFactilitiesId: "",
-  examinationDetails: "",
-  gender: EGenderPackage.Both,
-  image: {
-    filename: "",
-    type: "image",
-    url: "",
-  },
-  packageName: "",
-  price: 0,
-  workSchedule: {
-    dayOff: [],
-    numberSlot: 5,
-    schedule: [],
-    status: EStatusService.Open,
-  },
+  name: "",
+  userId: "",
+  email: "",
+  gender: EGender.Male,
+  medicalFacilityId: "",
+  numberPhone: "",
+  permissions: [],
+  specialtyId: [],
 };
 
 // innitState
-export const initState: IStateFormUpdatePackage = {
-  updatePackage: innitState,
+export const initState: IStateForm = {
+  updateStaff: innitState,
   validate: false,
-  imageFile: null,
   formMedical: false,
   optionsSpecialties: [
+    {
+      label: "",
+      value: "",
+    },
+  ],
+  optionsPackage: [
+    {
+      label: "",
+      value: "",
+    },
+  ],
+  optionsVaccine: [
+    {
+      label: "",
+      value: "",
+    },
+  ],
+  optionsUser: [
     {
       label: "",
       value: "",
@@ -56,65 +66,52 @@ export const initState: IStateFormUpdatePackage = {
 
 //actions
 const HANDLE_CHANGE_FORM = "handle-change-form";
+const HANDLE_SET_DATAUPDATED = "handle-set-data-updated";
 const HC_VALIDATE = "hc-validate";
-const HC_FIND_LOCATION = "hc-find-location";
 const HC_IMAGE = "hc-image";
 const HC_STATE_FORM = "hc-change-state-form";
-const HC_WORK_SCHEDULE = "hc-work-schedule";
-const HC_SET_FORM_UPDATE = "hc-set-form-update";
+const HC_OPTION_SPECIALTY = "hc-option-specialty";
+const HC_OPTION_USER = "hc-option-users";
 export const handleChangeForm = (
-  name: keyof CreatePackageInput,
+  name: keyof UpdateMedicalStaffInput,
   value: any
-): IActionFormUpdateDoctor => {
+): IActionFormAdd => {
   return {
     type: HANDLE_CHANGE_FORM,
     key: name,
     payload: value,
   };
 };
-export const handleChangeFormWorkSchedule = (
-  payload: WorkScheduleInput
-): IActionFormUpdateDoctor => {
-  return {
-    type: HC_WORK_SCHEDULE,
-    payload: payload,
-  };
-};
 
-export const handleSetValidate = (
-  payload: boolean
-): IActionFormUpdateDoctor => {
+export const handleSetValidate = (payload: boolean): IActionFormAdd => {
   return {
     type: HC_VALIDATE,
     payload: payload,
   };
 };
-export const handleChangeStateForm = (
-  payload: boolean
-): IActionFormUpdateDoctor => {
+export const handleChangeStateForm = (payload: boolean): IActionFormAdd => {
   return {
     type: HC_STATE_FORM,
     payload: payload,
   };
 };
-export const handleSetDataFormUpdate = (
-  payload: UpdatePackageInput
-): IActionFormUpdateDoctor => {
+
+export const handleChangeOptionUser = (payload: IOption[]): IActionFormAdd => {
   return {
-    type: HC_SET_FORM_UPDATE,
+    type: HC_OPTION_USER,
     payload: payload,
   };
 };
-export const hanldeFindLocation = (
-  payload: string
-): IActionFormUpdateDoctor => {
+export const handleChangeOptionSpecialty = (
+  payload: IOption[]
+): IActionFormAdd => {
   return {
-    type: HC_FIND_LOCATION,
+    type: HC_OPTION_SPECIALTY,
     payload: payload,
   };
 };
 
-export const handleChangImage = (payload: Blob): IActionFormUpdateDoctor => {
+export const handleChangImage = (payload: Blob): IActionFormAdd => {
   return {
     type: HC_IMAGE,
     payload: payload,
@@ -122,18 +119,16 @@ export const handleChangImage = (payload: Blob): IActionFormUpdateDoctor => {
 };
 // reducer
 export const reducer = (
-  state: IStateFormUpdatePackage,
-  action: IActionFormUpdateDoctor
-): IStateFormUpdatePackage => {
-  // console.log("test state: ", state.updatePackage.workSchedule);
+  state: IStateForm,
+  action: IActionFormAdd
+): IStateForm => {
   switch (action.type) {
     case HANDLE_CHANGE_FORM:
-      if (action.key && action.key in state.updatePackage) {
-        // console.log("test state create doctor: ", state.createDoctor);
+      if (action.key && action.key in state.updateStaff) {
         return {
           ...state,
-          updatePackage: {
-            ...state.updatePackage,
+          updateStaff: {
+            ...state.updateStaff,
             [action.key]: action.payload,
           },
         };
@@ -148,24 +143,16 @@ export const reducer = (
         ...state,
         formMedical: action.payload,
       };
-    case HC_IMAGE:
+
+    case HC_OPTION_SPECIALTY:
       return {
         ...state,
-        imageFile: action.payload,
+        optionsSpecialties: action.payload,
       };
-    case HC_WORK_SCHEDULE:
-      // console.log("test payload: ", action.payload);
+    case HC_OPTION_USER:
       return {
         ...state,
-        updatePackage: {
-          ...state.updatePackage,
-          workSchedule: action.payload,
-        },
-      };
-    case HC_SET_FORM_UPDATE:
-      return {
-        ...state,
-        updatePackage: action.payload,
+        optionsUser: action.payload,
       };
     default:
       return state;

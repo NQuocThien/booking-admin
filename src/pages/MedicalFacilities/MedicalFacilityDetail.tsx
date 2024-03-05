@@ -19,9 +19,10 @@ import { useEffect, useState } from "react";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { useAuth } from "src/context/AuthContext";
 import MedicalFacilityListService from "../../components/Pages/MedicalFacility/MedicalFacilitytService";
-import MedicalFacilityListStaff from "src/components/Pages/MedicalFacility/MedicalFacilityStaff";
+import MedicalFacilityListStaff from "src/pages/MedicalStaff/MedicalFacilityStaffList";
 import { EtypeService } from "src/utils/enum";
 import MapAddressCpn from "src/components/sub/MapAddressCpn";
+import ModalCpn from "src/components/sub/Modal";
 function MedicalFacilityDetailPage() {
   const { id } = useParams();
   const { checkExpirationToken } = useAuth();
@@ -36,7 +37,7 @@ function MedicalFacilityDetailPage() {
     setMedicalFacility(data?.getMedicalFacilityById);
   }, [data]);
   const location = useLocation();
-  useEffect(() => checkExpirationToken(), []);
+  checkExpirationToken();
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
@@ -49,87 +50,6 @@ function MedicalFacilityDetailPage() {
       ]);
     }
   }, [location, data]);
-  const hanldeDeleteRefetch = (typeService: EtypeService, id: string) => {
-    switch (typeService) {
-      case EtypeService.Doctor:
-        setMedicalFacility((pre) => {
-          if (pre && pre.doctors) {
-            const findIndex = pre.doctors.findIndex(
-              (doctor) => doctor.id === id
-            );
-            if (findIndex !== -1) {
-              const tmpDoctors: Doctor[] = pre.doctors;
-              tmpDoctors.splice(findIndex, 1);
-              return {
-                ...pre,
-                doctors: tmpDoctors,
-              };
-            }
-            return pre;
-          }
-          return pre;
-        });
-        break;
-      case EtypeService.Package:
-        setMedicalFacility((pre) => {
-          if (pre && pre.packages) {
-            const findIndex = pre.packages.findIndex((item) => item.id === id);
-            if (findIndex !== -1) {
-              const tmpArr: Package[] = pre.packages;
-              tmpArr.splice(findIndex, 1);
-              return {
-                ...pre,
-                packages: tmpArr,
-              };
-            }
-            return pre;
-          }
-          return pre;
-        });
-        break;
-      case EtypeService.Specialty:
-        setMedicalFacility((pre) => {
-          if (pre && pre.medicalSpecialties) {
-            const findIndex = pre.medicalSpecialties.findIndex(
-              (item) => item.id === id
-            );
-            if (findIndex !== -1) {
-              const tmpArr: MedicalSpecialties[] = pre.medicalSpecialties;
-              tmpArr.splice(findIndex, 1);
-              return {
-                ...pre,
-                medicalSpecialties: tmpArr,
-              };
-            }
-            return pre;
-          }
-          return pre;
-        });
-        break;
-      case EtypeService.Vaccine:
-        setMedicalFacility((pre) => {
-          if (pre && pre.vaccinations) {
-            const findIndex = pre.vaccinations.findIndex(
-              (item) => item.id === id
-            );
-            if (findIndex !== -1) {
-              const tmpArr: Vaccination[] = pre.vaccinations;
-              tmpArr.splice(findIndex, 1);
-              return {
-                ...pre,
-                vaccinations: tmpArr,
-              };
-            }
-            return pre;
-          }
-          return pre;
-        });
-        break;
-      default:
-        break;
-    }
-  };
-  // const navigate = useNavigate();
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !id) {
     console.log(error);
@@ -176,13 +96,8 @@ function MedicalFacilityDetailPage() {
           </div>
         </Col>
       </Row>
-      <MedicalFacilityListService
-        data={medicalFacility}
-        hanldeDeleteRefetch={hanldeDeleteRefetch}
-      />
-      <MedicalFacilityListStaff
-        data={medicalFacility?.medicalStaffs || undefined}
-      />
+      <MedicalFacilityListService data={medicalFacility} />
+      <MedicalFacilityListStaff facilityId={data?.getMedicalFacilityById.id} />
       <Row className={`${style.about}`}>
         <Col className={`col-4`}>
           <div className={`${style.about__discription} ${s.component}`}>

@@ -2,28 +2,24 @@ import { useEffect, useReducer } from "react";
 import {
   IOption,
   handleChangeForm,
-  handleChangeOptionPackage,
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
-  handleChangeOptionVaccine,
   handleChangeStateForm,
   handleSetValidate,
   initState,
   reducer,
-} from "./reducer";
+} from "./reducer-update";
 import Select from "react-select";
 import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
-  CreateMedicalStaffInput,
   EGenderPackage,
   EPermission,
-  useCreateMedicalStaffMutation,
-  useGetAllPackageSelectQuery,
+  UpdateMedicalStaffInput,
   useGetAllUserStaffSelectQuery,
-  useGetAllVaccinationSelectQuery,
   useGetSpecialtySelectQuery,
+  useUpdateMedicalStaffMutation,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
@@ -32,20 +28,22 @@ import ShowAlert from "src/components/sub/alerts";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { showToast } from "src/components/sub/toasts";
 import StatusCpn from "src/components/sub/Status";
-function FormAddMedicalStaff() {
+import { getEnumValueGender } from "src/utils/getData";
+function FormUpdateMedicalStaff() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
   const { id: idMedical } = useParams();
   const token = getToken();
-  const [createMedicalStaff] = useCreateMedicalStaffMutation({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
 
+  const [updateStaff, { loading: loadUpdate, error: errUpdate }] =
+    useUpdateMedicalStaffMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
   const {
     data: dataSpecialty,
     loading: loadSpecialty,
@@ -107,10 +105,21 @@ function FormAddMedicalStaff() {
     e.preventDefault();
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
-      console.log("test input: ", state.createMedicalStaff);
-      createMedicalStaff({
+      console.log("test input: ", state.updateStaff);
+      const input: UpdateMedicalStaffInput = {
+        id: state.updateStaff.id,
+        email: state.updateStaff.email,
+        gender: getEnumValueGender(state.updateStaff.gender),
+        medicalFacilityId: state.updateStaff.medicalFacilityId,
+        name: state.updateStaff.name,
+        numberPhone: state.updateStaff.numberPhone,
+        permissions: state.updateStaff.permissions,
+        userId: state.updateStaff.userId,
+        specialtyId: state.updateStaff.specialtyId,
+      };
+      updateStaff({
         variables: {
-          input: state.createMedicalStaff,
+          input: input,
         },
       }).then(() => {
         showToast("Đã thêm nhân viên 👌👌");
@@ -119,10 +128,10 @@ function FormAddMedicalStaff() {
     }
   };
   const handleRemoveItemService = (
-    name: keyof CreateMedicalStaffInput,
+    name: keyof UpdateMedicalStaffInput,
     value: string
   ) => {
-    const tpmData = state.createMedicalStaff[name];
+    const tpmData = state.updateStaff[name];
     if (Array.isArray(tpmData)) {
       const index = tpmData.findIndex((item) => item === value);
       tpmData.splice(index, 1);
@@ -152,7 +161,7 @@ function FormAddMedicalStaff() {
             <Form.Group className="mb-3" controlId="formGroupNameNV">
               <Form.Label>Tên nhân viên:</Form.Label>
               <Form.Control
-                value={state.createMedicalStaff.name}
+                value={state.updateStaff.name}
                 onChange={(e) => {
                   dispatch(handleChangeForm("name", e.currentTarget.value));
                 }}
@@ -180,7 +189,7 @@ function FormAddMedicalStaff() {
               <Form.Group className="mb-3" controlId="formGroupNumberPhone">
                 <Form.Label>Số điện thoại:</Form.Label>
                 <Form.Control
-                  value={state.createMedicalStaff.numberPhone}
+                  value={state.updateStaff.numberPhone}
                   onChange={(e) => {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
@@ -197,7 +206,7 @@ function FormAddMedicalStaff() {
               <Form.Group className="mb-3" controlId="formGroupEmail">
                 <Form.Label>Email:</Form.Label>
                 <Form.Control
-                  value={state.createMedicalStaff.email}
+                  value={state.updateStaff.email}
                   onChange={(e) => {
                     dispatch(handleChangeForm("email", e.currentTarget.value));
                   }}
@@ -229,19 +238,19 @@ function FormAddMedicalStaff() {
                       value={EPermission.MagagerBlog}
                       id="MagagerBlog"
                       checked={
-                        !state.createMedicalStaff.permissions?.includes(
+                        !state.updateStaff.permissions?.includes(
                           EPermission.Magager
                         ) &&
-                        state.createMedicalStaff.permissions.includes(
+                        state.updateStaff.permissions.includes(
                           EPermission.MagagerBlog
                         )
                       }
-                      disabled={state.createMedicalStaff.permissions?.includes(
+                      disabled={state.updateStaff.permissions?.includes(
                         EPermission.Magager
                       )}
                       onChange={(e) => {
                         const currPer: EPermission[] =
-                          state.createMedicalStaff.permissions;
+                          state.updateStaff.permissions;
                         if (e.currentTarget.checked) {
                           currPer.push(EPermission.MagagerBlog);
                         } else {
@@ -261,19 +270,19 @@ function FormAddMedicalStaff() {
                       value={EPermission.MagagerPackage}
                       id="MagagerPackage"
                       checked={
-                        !state.createMedicalStaff.permissions?.includes(
+                        !state.updateStaff.permissions?.includes(
                           EPermission.Magager
                         ) &&
-                        state.createMedicalStaff.permissions.includes(
+                        state.updateStaff.permissions.includes(
                           EPermission.MagagerPackage
                         )
                       }
-                      disabled={state.createMedicalStaff.permissions?.includes(
+                      disabled={state.updateStaff.permissions?.includes(
                         EPermission.Magager
                       )}
                       onChange={(e) => {
                         const currPer: EPermission[] =
-                          state.createMedicalStaff.permissions;
+                          state.updateStaff.permissions;
                         if (e.currentTarget.checked) {
                           currPer.push(EPermission.MagagerPackage);
                         } else {
@@ -295,19 +304,19 @@ function FormAddMedicalStaff() {
                       value={EPermission.MagagerVaccine}
                       id="MagagerVaccine"
                       checked={
-                        !state.createMedicalStaff.permissions?.includes(
+                        !state.updateStaff.permissions?.includes(
                           EPermission.Magager
                         ) &&
-                        state.createMedicalStaff.permissions.includes(
+                        state.updateStaff.permissions.includes(
                           EPermission.MagagerVaccine
                         )
                       }
-                      disabled={state.createMedicalStaff.permissions?.includes(
+                      disabled={state.updateStaff.permissions?.includes(
                         EPermission.Magager
                       )}
                       onChange={(e) => {
                         const currPer: EPermission[] =
-                          state.createMedicalStaff.permissions;
+                          state.updateStaff.permissions;
                         if (e.currentTarget.checked) {
                           currPer.push(EPermission.MagagerVaccine);
                         } else {
@@ -327,19 +336,19 @@ function FormAddMedicalStaff() {
                       value={EPermission.ManagerSpecialty}
                       id="MagagerSpecialty"
                       checked={
-                        !state.createMedicalStaff.permissions?.includes(
+                        !state.updateStaff.permissions?.includes(
                           EPermission.Magager
                         ) &&
-                        state.createMedicalStaff.permissions.includes(
+                        state.updateStaff.permissions.includes(
                           EPermission.ManagerSpecialty
                         )
                       }
-                      disabled={state.createMedicalStaff.permissions?.includes(
+                      disabled={state.updateStaff.permissions?.includes(
                         EPermission.Magager
                       )}
                       onChange={(e) => {
                         const currPer: EPermission[] =
-                          state.createMedicalStaff.permissions;
+                          state.updateStaff.permissions;
                         if (e.currentTarget.checked) {
                           currPer.push(EPermission.ManagerSpecialty);
                         } else {
@@ -360,7 +369,7 @@ function FormAddMedicalStaff() {
             </Col>
           </Row>
           <Row>
-            {state.createMedicalStaff.permissions.includes(
+            {state.updateStaff.permissions.includes(
               EPermission.ManagerSpecialty
             ) && (
               <Col>
@@ -377,7 +386,7 @@ function FormAddMedicalStaff() {
                       </tr>
                     </thead>
                     <tbody>
-                      {state.createMedicalStaff?.specialtyId?.map((p, i) => {
+                      {state.updateStaff?.specialtyId?.map((p, i) => {
                         const name: string | undefined =
                           state.optionsSpecialties.find(
                             (item) => item.value === p
@@ -405,14 +414,14 @@ function FormAddMedicalStaff() {
                     options={state.optionsSpecialties}
                     onChange={(e) => {
                       if (
-                        state.createMedicalStaff.specialtyId?.findIndex(
+                        state.updateStaff.specialtyId?.findIndex(
                           (p) => p === e?.value
                         ) === -1 ||
-                        !state.createMedicalStaff.specialtyId
+                        !state.updateStaff.specialtyId
                       ) {
                         dispatch(
                           handleChangeForm("specialtyId", [
-                            ...(state.createMedicalStaff.specialtyId || []),
+                            ...(state.updateStaff.specialtyId || []),
                             e?.value,
                           ])
                         );
@@ -442,6 +451,7 @@ function FormAddMedicalStaff() {
               <Button variant="primary" type="submit">
                 <IoSaveOutline className="mx-2" />
                 Lưu
+                <StatusCpn loading={loadUpdate} error={errUpdate} />
               </Button>
             </div>
           </Row>
@@ -450,4 +460,4 @@ function FormAddMedicalStaff() {
     </Container>
   );
 }
-export default FormAddMedicalStaff;
+export default FormUpdateMedicalStaff;

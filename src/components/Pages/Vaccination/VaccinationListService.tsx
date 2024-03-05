@@ -1,31 +1,44 @@
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { Row, Col, Table, Dropdown, Spinner } from "react-bootstrap";
 import {
-  Doctor,
-  MedicalSpecialties,
   Vaccination,
-  useDeleteDoctorMutation,
+  useDeleteVaccinationMutation,
   useGetAllVaccinationByFacilityIdLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { formatter, getToken } from "src/utils/contain";
-import { CiMenuKebab } from "react-icons/ci";
-import { EtypeService } from "src/utils/enum";
 import React, { useEffect, useState } from "react";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import ButtonGroupCheck from "src/components/sub/ButtonShowHide";
+import { showToast } from "src/components/sub/toasts";
+import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 interface IProps {
-  handleDelete: (id: string, name: string, type: EtypeService) => void;
   facilityId: string | undefined;
-  loadingDeleteVaccination: boolean;
 }
 
 function VaccinationListServive(props: IProps) {
-  const { facilityId, handleDelete, loadingDeleteVaccination } = props;
+  const { facilityId } = props;
   const [vaccines, setVaccines] = useState<Vaccination[]>([]);
   const [show, setShow] = useState<boolean>(false);
-
+  const [deleteVacination, { loading: loadingDeleteVaccination }] =
+    useDeleteVaccinationMutation({
+      fetchPolicy: "no-cache",
+    });
+  const handleDelete = async (id: string) => {
+    await deleteVacination({
+      variables: {
+        input: id,
+      },
+    })
+      .then(() => {
+        showToast("Đã xóa vaccine 👍");
+        setVaccines((pre) => {
+          return pre.filter((p) => p.id !== id);
+        });
+      })
+      .catch((e) => console.error(e));
+  };
   const [getVaccine, { data, loading, error }] =
     useGetAllVaccinationByFacilityIdLazyQuery({
       fetchPolicy: "no-cache",
@@ -110,7 +123,8 @@ function VaccinationListServive(props: IProps) {
                     <td>{formatter.format(vc.price)}</td>
                     <td className="fs-6">
                       <Dropdown drop="down">
-                        <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
+                        <Dropdown.Toggle
+                          as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item
                             as={Link}
@@ -129,11 +143,7 @@ function VaccinationListServive(props: IProps) {
                             <p
                               className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                               onClick={() => {
-                                handleDelete(
-                                  vc.id,
-                                  vc.vaccineName,
-                                  EtypeService.Vaccine
-                                );
+                                handleDelete(vc.id);
                               }}>
                               Xóa Vaccine
                             </p>

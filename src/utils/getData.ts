@@ -4,30 +4,20 @@ import {
   EDegree,
   EGender,
   EGenderPackage,
+  EPermission,
   EStateRegister,
   EStatusService,
+  Schedule,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
-import { EQuickAddSessions } from "./enum";
+import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
 
-interface AnyObject {
-  [key: string]: any;
-}
-
-export function removeTypename(obj: AnyObject): AnyObject {
-  const newObj: AnyObject = {};
-
-  for (const key in obj) {
-    if (key !== "__typename") {
-      newObj[key] =
-        typeof obj[key] === "object" ? removeTypename(obj[key]) : obj[key];
-    }
-  }
-
-  return newObj;
-}
-
+export const getSelectedItem = (id: string, options: [IOption]): IOption => {
+  return (
+    options.find((option) => option.value === id) || { value: "", label: "" }
+  );
+};
 export const getDayOfWeek = (day: string | undefined) => {
   switch (day) {
     case "Monday":
@@ -74,6 +64,16 @@ export const renderDayOfWeek = (day: string | undefined): string => {
     default:
       return "";
   }
+};
+export const renderDayOfWeek2 = (days: Schedule[]): string => {
+  var result = "Thứ: ";
+  if (days.length === 0) return "";
+  if (days.length === 1 && days[0].dayOfWeek === "Chủ nhật") return "Chủ nhật";
+  if (days.length > 0)
+    for (var i = 0; i < days.length; i++) {
+      result = result + ", " + days[i].dayOfWeek;
+    }
+  return result;
 };
 export const getAcademicTitle = (at: string) => {
   switch (at) {
@@ -215,10 +215,8 @@ export const getEnumValueStateService = (input: string): EStatusService => {
 
   switch (input) {
     case "Mở":
-      // console.log("return ", EStatusService.Open);
       return EStatusService.Open;
-    case "Đống":
-      // console.log("return ", EStatusService.Close);
+    case "Đóng":
       return EStatusService.Close;
     default:
       return EStatusService.Open;

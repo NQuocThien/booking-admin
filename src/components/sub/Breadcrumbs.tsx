@@ -12,22 +12,29 @@ export interface ICustomBreadcrumbsProps {
 }
 
 const CustomBreadcrumbs: React.FC<ICustomBreadcrumbsProps> = ({ paths }) => {
-  const location = useLocation();
-
   return (
     <Breadcrumb>
-      {paths.map((path, index) => (
-        <Breadcrumb.Item
-          key={index}
-          active={index === paths.length - 1}
-          as={index === paths.length - 1 ? "span" : undefined}>
-          {index === paths.length - 1 ? (
-            path.label
-          ) : (
-            <Link to={path.url}>{path.label}</Link>
-          )}
-        </Breadcrumb.Item>
-      ))}
+      {paths.map((path, index) => {
+        if (index === paths.length - 1)
+          return (
+            <Breadcrumb.Item
+              key={index}
+              active={index === paths.length - 1}
+              as={"span"}>
+              {/* {index === paths.length - 1 ? (
+                path.label
+              ) : (
+                // <Link to={path.url}>{path.label}</Link>
+              )} */}
+              {path.label}
+            </Breadcrumb.Item>
+          );
+        return (
+          <Link key={index} to={path.url}>
+            {path.label} /{" "}
+          </Link>
+        );
+      })}
     </Breadcrumb>
   );
 };

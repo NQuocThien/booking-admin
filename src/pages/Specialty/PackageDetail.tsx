@@ -16,7 +16,7 @@ import { useAuth } from "src/context/AuthContext";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { formatDate, formatter } from "src/utils/contain";
 import { FaDoorOpen } from "react-icons/fa";
-import ListRegister from "src/components/Register/ListRegister";
+import ListRegister from "src/components/Pages/Register/ListRegister";
 function SpecialtyDetailPage() {
   const { idSpecialty, id } = useParams();
   const { checkExpirationToken } = useAuth();

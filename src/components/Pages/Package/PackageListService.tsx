@@ -2,25 +2,24 @@ import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { Row, Col, Table, Dropdown, Spinner } from "react-bootstrap";
 import {
   Package,
+  useDeletePackageMutation,
   useGetAllPackageByFacilityIdLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { formatter, getToken } from "src/utils/contain";
-import { CiMenuKebab } from "react-icons/ci";
-import { EtypeService } from "src/utils/enum";
 import React, { useEffect, useState } from "react";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import ButtonGroupCheck from "src/components/sub/ButtonShowHide";
+import { showToast } from "src/components/sub/toasts";
+import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 interface IProps {
-  handleDelete: (id: string, name: string, type: EtypeService) => void;
   // packages: Package[] | undefined | null;
   facilityId: string | undefined;
-  loadingDeletePackage: boolean;
 }
 
 function PackageListServive(props: IProps) {
-  const { handleDelete, loadingDeletePackage, facilityId } = props;
+  const { facilityId } = props;
   const [packages, setPackages] = useState<Package[]>([]);
   const [show, setShow] = useState<boolean>(false);
   const [getPackage, { data, loading, error }] =
@@ -35,6 +34,24 @@ function PackageListServive(props: IProps) {
         input: facilityId || "",
       },
     });
+  const [deletePackage, { loading: loadingDeletePackage }] =
+    useDeletePackageMutation({
+      fetchPolicy: "no-cache",
+    });
+  const handleDelete = async (id: string) => {
+    await deletePackage({
+      variables: {
+        input: id,
+      },
+    })
+      .then(() => {
+        showToast("Đã xóa gói khám 👍");
+        setPackages((pre) => {
+          return pre.filter((p) => p.id !== id);
+        });
+      })
+      .catch((e) => console.error(e));
+  };
   useEffect(() => {
     if (facilityId && show)
       getPackage({
@@ -105,7 +122,8 @@ function PackageListServive(props: IProps) {
                     <td>{formatter.format(p.price)}</td>
                     <td className="fs-6">
                       <Dropdown drop="down">
-                        <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
+                        <Dropdown.Toggle
+                          as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item
                             as={Link}
@@ -119,17 +137,10 @@ function PackageListServive(props: IProps) {
                             className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                             Chỉnh sửa gói
                           </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDelete(
-                                p.id,
-                                p.packageName,
-                                EtypeService.Package
-                              )
-                            }>
+                          <Dropdown.Item onClick={() => handleDelete(p.id)}>
                             {" "}
                             <p className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                              Xóa cơ gói khám
+                              Xóa gói khám
                             </p>
                           </Dropdown.Item>
                         </Dropdown.Menu>

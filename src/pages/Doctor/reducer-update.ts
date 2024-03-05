@@ -15,6 +15,7 @@ export interface IStateFormUpdateDoctor {
   avatarFile: Blob | null;
   formMedical: boolean;
   optionsSpecialties: [IOption];
+  optionsFacilities: [IOption];
 }
 export interface IActionFormAddDoctor {
   type: string;
@@ -60,6 +61,12 @@ export const initState: IStateFormUpdateDoctor = {
       value: "",
     },
   ],
+  optionsFacilities: [
+    {
+      label: "",
+      value: "",
+    },
+  ],
 };
 
 //actions
@@ -71,6 +78,7 @@ const HC_IMAGE = "hc-image";
 const HC_AVATAR = "hc-avatar";
 const HC_STATE_FORM = "hc-change-state-form";
 const HC_OPT_SPECIALTIES = "hc-change-opt-specialties";
+const HC_OPT_FACILITES = "hc-change-opt-facilities";
 const HC_WORK_SCHEDULE = "hc-work-schedule";
 export const handleChangeForm = (
   name: keyof UpdateDoctorInput,
@@ -139,6 +147,14 @@ export const handleSetDataFormUpdate = (payload: UpdateDoctorInput) => {
     payload: payload,
   };
 };
+export const handleChangeOptFacilities = (
+  payload: IOption[]
+): IActionFormAddDoctor => {
+  return {
+    type: HC_OPT_FACILITES,
+    payload: payload,
+  };
+};
 // reducer
 export const reducer = (
   state: IStateFormUpdateDoctor,
@@ -174,6 +190,11 @@ export const reducer = (
       return {
         ...state,
         optionsSpecialties: action.payload,
+      };
+    case HC_OPT_FACILITES:
+      return {
+        ...state,
+        optionsFacilities: action.payload,
       };
     case HC_WORK_SCHEDULE:
       return {

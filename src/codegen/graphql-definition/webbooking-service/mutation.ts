@@ -320,3 +320,17 @@ const confirmRegister = gql`
     }
   }
 `;
+const deleteMedicalStaff = gql`
+  mutation deleteMedicalStaff($input: String!) {
+    deleteMedicalStaff(input: $input) {
+      id
+    }
+  }
+`;
+const updateMedicalStaff = gql`
+  mutation updateMedicalStaff($input: UpdateMedicalStaffInput!) {
+    updateMedicalStaff(input: $input) {
+      id
+    }
+  }
+`;

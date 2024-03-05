@@ -129,6 +129,14 @@ const getAllMedicalFacility = gql`
     }
   }
 `;
+const getAllMedicalFacilitySelect = gql`
+  query getAllMedicalFacilitySelect {
+    getAllMedicalFacility {
+      id
+      medicalFacilityName
+    }
+  }
+`;
 const getMedicalFacilityById = gql`
   query getMedicalFacilityById($input: String!) {
     getMedicalFacilityById(id: $input) {
@@ -328,6 +336,21 @@ const getMedicalFacilityNameById = gql`
     }
   }
 `;
+const getMedicalStaffByFacilityId = gql`
+  query getMedicalStaffByFacilityId($input: String!) {
+    getMedicalStaffByFacilityId(input: $input) {
+      id
+      userId
+      medicalFacilityId
+      name
+      gender
+      numberPhone
+      email
+      permissions
+      specialtyId
+    }
+  }
+`;
 const getUserSelected = gql`
   query getUserSelected($input: String!) {
     getUserSelected(id: $input) {
@@ -380,6 +403,41 @@ const getDoctorById = gql`
         id
         name
       }
+    }
+  }
+`;
+const getDoctorPending = gql`
+  query getAllDoctorPending {
+    getAllDoctorPending {
+      id
+      name
+      gender
+      academicTitle
+      degree
+      numberPhone
+      email
+      avatar {
+        filename
+        type
+        url
+      }
+      discription
+      price
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+        status
+      }
+      userId
+      medicalFactilitiesId
+      specialistId
     }
   }
 `;
@@ -451,6 +509,58 @@ const getDoctorToUpdateById = gql`
         }
       }
     }
+  }
+`;
+const getAllDoctorPagination = gql`
+  query getAllDoctorPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+  ) {
+    getAllDoctorPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      discription
+      price
+      avatar {
+        filename
+        type
+        url
+      }
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getTotalDoctorsCount = gql`
+  query getTotalDoctorsCount($search: String) {
+    getTotalDoctorsCount(search: $search)
   }
 `;
 const getPackageById = gql`

@@ -38,7 +38,7 @@ function ModalCpn({
         <Modal.Body>{children}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            {(textButtonClose && textButtonClose) || "Đống"}
+            {(textButtonClose && textButtonClose) || "Đóng"}
           </Button>
           {!onlySclose && (
             <Button variant="primary" onClick={handleSave}>

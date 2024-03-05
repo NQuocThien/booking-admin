@@ -339,7 +339,7 @@ function FormUpdateMedicalFacility() {
                     }
                     value={EStatusService.Close}>
                     {" "}
-                    Đống
+                    Đóngs
                   </option>
                 </Form.Select>
               </Form.Group>

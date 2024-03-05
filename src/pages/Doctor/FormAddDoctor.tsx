@@ -3,6 +3,7 @@ import {
   handleChangAvatar,
   handleChangeForm,
   handleChangeFormWorkSchedule,
+  handleChangeOptFacilities,
   handleChangeOptSpecialties,
   handleChangeStateForm,
   handleSetValidate,
@@ -21,6 +22,7 @@ import {
   LinkImageInput,
   WorkScheduleInput,
   useCreateDoctorMutation,
+  useGetAllMedicalFacilitySelectLazyQuery,
   useGetMedicalSpecialtiesSelectQuery,
   useGetUserDoctorPendingQuery,
 } from "src/graphql/webbooking-service.generated";
@@ -46,7 +48,7 @@ function FormAddDoctor() {
   } = useGetMedicalSpecialtiesSelectQuery({
     fetchPolicy: "no-cache",
     variables: {
-      input: idMedical || "",
+      input: state.createDoctor.medicalFactilitiesId || "",
     },
   });
   const {
@@ -75,6 +77,23 @@ function FormAddDoctor() {
       label: "",
     },
   ]);
+
+  const [
+    getFacility,
+    {
+      data: dataFacilitySelect,
+      loading: loadingFacilitySelect,
+      error: errorFacilitySelect,
+    },
+  ] = useGetAllMedicalFacilitySelectLazyQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   useEffect(() => {
     if (dataUsers?.getUserDoctorPending) {
       const options = dataUsers?.getUserDoctorPending.map((user) => ({
@@ -85,12 +104,14 @@ function FormAddDoctor() {
     }
   }, [dataUsers]);
   useEffect(() => {
-    console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));
+    } else {
+      getFacility();
     }
-  }, [idMedical]);
+  }, []);
+
   useEffect(() => {
     if (dataSpecialtiesSelect) {
       // console.log("test spcialty", dataSpecialtiesSelect);
@@ -103,7 +124,15 @@ function FormAddDoctor() {
         );
       dispatch(handleChangeOptSpecialties(optSpecialties));
     }
-  }, [dataSpecialtiesSelect]);
+    if (dataFacilitySelect) {
+      const optFacility: IOption[] =
+        dataFacilitySelect.getAllMedicalFacility.map((item) => ({
+          label: item.medicalFacilityName,
+          value: item.id,
+        }));
+      dispatch(handleChangeOptFacilities(optFacility));
+    }
+  }, [dataSpecialtiesSelect, dataFacilitySelect]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -140,6 +169,12 @@ function FormAddDoctor() {
   const hanldeSetWorkSchedule = (workSchedule: WorkScheduleInput) => {
     dispatch(handleChangeFormWorkSchedule(workSchedule));
   };
+  if (loadingFacilitySelect || errorFacilitySelect) {
+    return (
+      <StatusCpn error={errorFacilitySelect} loading={loadingFacilitySelect} />
+    );
+  }
+
   return (
     <Container className={`${s.component}`}>
       <Button
@@ -151,11 +186,28 @@ function FormAddDoctor() {
         }}>
         <IoArrowBack />
       </Button>
+
       <Row>
         <Form noValidate validated={state.validate} onSubmit={handleSubmit}>
           <Row>
-            <h3 className="text-center text-primary">Thêm cơ sở y tế</h3>
+            <h3 className="text-center text-primary">Thêm bác sỉ</h3>
           </Row>
+          {!state.formMedical && (
+            <Row>
+              <Form.Group className="mb-3" controlId="formGroupNameDoctor">
+                <Form.Label>Chọn cơ sở y tế:</Form.Label>
+
+                <Select
+                  onChange={(e) => {
+                    dispatch(
+                      handleChangeForm("medicalFactilitiesId", e?.value)
+                    );
+                  }}
+                  options={state.optionsFacilities}
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row>
             <Form.Group className="mb-3" controlId="formGroupNameDoctor">
               <Form.Label>Tên bác sĩ:</Form.Label>
@@ -345,7 +397,7 @@ function FormAddDoctor() {
             </Col>
           </Row>
           <Row>
-            {state.formMedical && (
+            {state.createDoctor.medicalFactilitiesId !== "" && (
               <Col>
                 <Form.Group className="mb-3" controlId="formGroupStatus">
                   <Form.Label>
@@ -410,7 +462,6 @@ function FormAddDoctor() {
               setWorkSchedule={hanldeSetWorkSchedule}
             />
           </Row>
-
           <Row className="mt-3">
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">

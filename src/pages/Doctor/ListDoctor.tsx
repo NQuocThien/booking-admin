@@ -3,8 +3,8 @@ import { Col, Container, Dropdown, Image, Row, Table } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
-  useDeleteMedicalFacilityMutation,
-  useGetAllMedicalFacilityPaginationQuery,
+  useDeleteDoctorMutation,
+  useGetAllDoctorPaginationQuery,
   useGetTotalFacilitiesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
@@ -15,39 +15,35 @@ import ShowAlert from "src/components/sub/alerts";
 import {
   handleChangePagination,
   handleChangeSearchTerm,
-  handleSetListFacility,
+  handleSetlistDoctor,
   initState,
   reducer,
 } from "./reducer-list";
 import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
+import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
-function ListMedicalFacilityPage() {
+function ListDoctorPage() {
   const token = getToken();
   const { checkExpirationToken } = useAuth();
   checkExpirationToken();
 
   const [state, dispatch] = useReducer(reducer, initState);
-  const { refetch, data, loading, error } =
-    useGetAllMedicalFacilityPaginationQuery({
-      fetchPolicy: "no-cache",
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const { refetch, data, loading, error } = useGetAllDoctorPaginationQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      variables: {
-        limit: 10,
-        page: state.pagination.current,
-        search: state.searchTerm,
-        sortOrder: state.pagination.sort,
-      },
-    });
-  const {
-    data: dataTotal,
-    loading: loadTotal,
-    error: errTotal,
-  } = useGetTotalFacilitiesCountQuery({
+    },
+    variables: {
+      limit: 10,
+      page: state.pagination.current,
+      search: state.searchTerm,
+      sortOrder: state.pagination.sort,
+    },
+  });
+  const { data: dataTotal } = useGetTotalFacilitiesCountQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -58,18 +54,14 @@ function ListMedicalFacilityPage() {
       search: state.searchTerm,
     },
   });
-  const [deleteMedicalFacility] = useDeleteMedicalFacilityMutation({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
+  const [deleteDoctor, { loading: loadingDeleteDoctor }] =
+    useDeleteDoctorMutation({
+      fetchPolicy: "no-cache",
+    });
 
   useEffect(() => {
-    if (data?.getAllMedicalFacilityPagination) {
-      dispatch(handleSetListFacility(data?.getAllMedicalFacilityPagination));
+    if (data?.getAllDoctorPagination) {
+      dispatch(handleSetlistDoctor(data?.getAllDoctorPagination));
     }
   }, [data]);
   useEffect(() => {
@@ -86,7 +78,7 @@ function ListMedicalFacilityPage() {
     var userConfirmed = window.confirm("Bạn có chắc muốn xóa không?");
     if (userConfirmed) {
       try {
-        await deleteMedicalFacility({
+        await deleteDoctor({
           variables: {
             input: id,
           },
@@ -101,6 +93,7 @@ function ListMedicalFacilityPage() {
       console.log("Hủy bỏ xóa");
     }
   };
+  // if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) {
     console.log(error);
     return <ShowAlert />;
@@ -121,49 +114,48 @@ function ListMedicalFacilityPage() {
                 })
               );
             }}
-            loading={loading}
+            loading={loading || loadingDeleteDoctor}
             error={error}
           />
         </Col>
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={"/admin-page/medical-facility/form-add"}>
+            to={"/admin-page/doctors/form-add"}>
             <FiPlus />
           </Link>
         </Col>
       </Row>
       <Row>
-        {/* <StatusCpn loading={loadTotal} error={errTotal} />
-        {!loadTotal && <StatusCpn loading={loading} error={error} />} */}
         <Table striped hover className="">
           <thead>
             <tr>
               <th>#</th>
               <th>Hình ảnh</th>
-              <th>Tên cơ sở y tế</th>
+              <th>Tên Bác sĩ</th>
               <th>Email</th>
               <th>Số điện thoại</th>
-              <th>Người đại diện</th>
-              <th>Trạng thái</th>
+              <th>Giới tính</th>
+              <th>Giá khám</th>
+              <th>Lịch làm việc</th>
               <th>Hành động </th>
             </tr>
           </thead>
           <tbody>
-            {state.listFacility &&
-              state.listFacility.map((c, i) => (
+            {state.listDoctor &&
+              state.listDoctor.map((c, i) => (
                 <tr key={i} className="">
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
                   <td className="fs-6">
                     <Image
                       height={70}
                       width={70}
-                      alt="facility"
-                      src={c.logo.url}
+                      alt="doctor"
+                      src={c.avatar.url}
                     />
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.medicalFacilityName}
+                    {c.name}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     {c.email}
@@ -172,10 +164,13 @@ function ListMedicalFacilityPage() {
                     {c.numberPhone}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.legalRepresentation}
+                    {c.gender}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.status}
+                    {c.price}
+                  </td>
+                  <td className="fs-6" style={{ verticalAlign: "middle" }}>
+                    {renderDayOfWeek2(c.workSchedule.schedule)}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     <Dropdown drop="down">
@@ -185,13 +180,13 @@ function ListMedicalFacilityPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/medical-facility/${c.id}`}>
+                          to={`/admin-page/doctors/${c.id}`}>
                           Chi tiết
                         </Dropdown.Item>
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/medical-facility/update/${c.id}`}>
+                          to={`/admin-page/doctors/update/${c.id}`}>
                           Chỉnh sửa
                         </Dropdown.Item>
                         <Dropdown.Item>
@@ -199,7 +194,7 @@ function ListMedicalFacilityPage() {
                           <p
                             className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                             onClick={async () => await hanldeDelete(c.id)}>
-                            Xóa cơ sở y tế
+                            Xóa bác sỉ
                           </p>
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -227,4 +222,4 @@ function ListMedicalFacilityPage() {
   );
 }
 
-export default ListMedicalFacilityPage;
+export default ListDoctorPage;

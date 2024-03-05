@@ -260,7 +260,7 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
             value={EStatusService.Close}
             // selected={workSchedule.status === EStatusService.Close}
           >
-            Đống
+            Đóng
           </option>
         </Form.Select>
       </Form.Group>

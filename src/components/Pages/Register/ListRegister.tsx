@@ -9,21 +9,22 @@ import {
   useConfirmRegisterMutation,
   useGetAllRegisterByOptionLazyQuery,
 } from "src/graphql/webbooking-service.generated";
-import SessionItem from "../WorkSchedule/Session";
+import SessionItem from "../../WorkSchedule/Session";
 import { getEnumValueStateRegis, renderDayOfWeek } from "src/utils/getData";
 import { formatDate, getToken } from "src/utils/contain";
-import StatusCpn from "../sub/Status";
-import DatePickerCpn from "../sub/DatePicker";
+import StatusCpn from "../../sub/Status";
+import DatePickerCpn from "../../sub/DatePicker";
 import { format } from "date-fns";
-import { CiCalendarDate, CiMenuKebab } from "react-icons/ci";
-import ModalCpn from "../sub/Modal";
+import { CiCalendarDate } from "react-icons/ci";
+import ModalCpn from "../../sub/Modal";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa";
 import { MdOutlineEmail, MdOutlineTransgender } from "react-icons/md";
 import { SiGoogletagmanager, SiStaffbase } from "react-icons/si";
 import { GiMedicalPackAlt } from "react-icons/gi";
 import { FaPeopleGroup } from "react-icons/fa6";
-import { showToast } from "../sub/toasts";
+import { showToast } from "../../sub/toasts";
+import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 interface IProps {
   listSchedule: Schedule[] | undefined;
   doctorId?: string;
@@ -313,7 +314,8 @@ function ListRegister(props: IProps) {
                       )}
                       <td>
                         <Dropdown drop="down">
-                          <Dropdown.Toggle as={CiMenuKebab}></Dropdown.Toggle>
+                          <Dropdown.Toggle
+                            as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
                             <Dropdown.Item
                               onClick={() => handleConfirmRegister(regis)}>

@@ -1,17 +1,8 @@
-import {
-  Col,
-  Container,
-  Image,
-  Row,
-  Spinner,
-  Table,
-  Button,
-} from "react-bootstrap";
+import { Col, Container, Image, Row, Spinner, Table } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
   Schedule,
-  Session,
   useGetDoctorbyIdQuery,
   useGetMedicalFacilityNameByIdQuery,
 } from "src/graphql/webbooking-service.generated";
@@ -22,7 +13,7 @@ import CustomBreadcrumbs, {
 } from "src/components/sub/Breadcrumbs";
 import { useEffect, useState } from "react";
 import { useAuth } from "src/context/AuthContext";
-import { FaBriefcaseMedical, FaEye } from "react-icons/fa";
+import { FaBriefcaseMedical } from "react-icons/fa";
 import { HiOutlineAcademicCap } from "react-icons/hi2";
 import { SiMicrosoftacademic } from "react-icons/si";
 import { MdOutlineMarkEmailRead } from "react-icons/md";
@@ -35,8 +26,7 @@ import {
 } from "src/utils/getData";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { formatDate, formatter } from "src/utils/contain";
-import ListRegister from "src/components/Register/ListRegister";
-import { EtypeService } from "src/utils/enum";
+import ListRegister from "src/components/Pages/Register/ListRegister";
 function DoctorDetailPage() {
   const { idDoctor, id } = useParams();
   const { checkExpirationToken } = useAuth();
@@ -46,7 +36,6 @@ function DoctorDetailPage() {
       input: id || "",
     },
   });
-  //   console.log("test ID medical:", dataMedical);
 
   const { data, loading, error } = useGetDoctorbyIdQuery({
     fetchPolicy: "no-cache",
@@ -55,11 +44,9 @@ function DoctorDetailPage() {
     },
   });
   const location = useLocation();
-  useEffect(() => checkExpirationToken(), []);
-  // console.log("test", location.pathname.search("/admin-page/medical-facility"));
+  checkExpirationToken();
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   const [listSchedule, setListSchedule] = useState<Schedule[]>();
-  const [showService, setShowService] = useState<EtypeService[]>([]);
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
       const urlMedical = "/admin-page/medical-facility/" + id;
@@ -69,6 +56,15 @@ function DoctorDetailPage() {
           url: urlMedical,
           label: dataMedical?.getMedicalFacilityById.medicalFacilityName || "",
         },
+        {
+          url: "",
+          label: "BS." + data?.getDoctorbyId.name || "",
+        },
+      ]);
+    }
+    if (location.pathname.search("/admin-page/doctors") !== -1) {
+      setBreadcrumbs([
+        { url: "/admin-page/doctors", label: "Quản lý bác sỉ" },
         {
           url: "",
           label: "BS." + data?.getDoctorbyId.name || "",

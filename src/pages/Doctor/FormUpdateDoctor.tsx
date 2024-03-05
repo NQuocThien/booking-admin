@@ -2,6 +2,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import {
   handleChangAvatar,
   handleChangeForm,
+  handleChangeOptFacilities,
   handleChangeOptSpecialties,
   handleChangeStateForm,
   handleSetValidate,
@@ -27,6 +28,7 @@ import {
   LinkImageInput,
   ScheduleInput,
   UpdateDoctorInput,
+  useGetAllMedicalFacilitySelectLazyQuery,
   useGetDoctorToUpdateByIdQuery,
   useGetMedicalSpecialtiesSelectQuery,
   useGetUserDoctorPendingUpdateQuery,
@@ -46,6 +48,7 @@ import {
   getEnumValueDegree,
   getEnumValueGender,
   getEnumValueStateService,
+  getSelectedItem,
 } from "src/utils/getData";
 import WorkScheduleUpdateCpn from "src/components/WorkSchedule/WorkScheduleUpdate";
 import StatusCpn from "src/components/sub/Status";
@@ -66,6 +69,7 @@ function FormUpdateDoctor() {
       input: idDoctor || "",
     },
   });
+
   useEffect(() => {
     if (dataUpdate?.getDoctorbyId) {
       const data = dataUpdate?.getDoctorbyId;
@@ -107,6 +111,15 @@ function FormUpdateDoctor() {
       input: idMedical || "",
     },
   });
+  const [getFacility, { data: dataFacilitySelect }] =
+    useGetAllMedicalFacilitySelectLazyQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
   const {
     data: dataUsers,
     loading,
@@ -122,15 +135,14 @@ function FormUpdateDoctor() {
       },
     },
   });
-  const [updateDoctor, { data: dataUpdated, loading: loadingUpdated }] =
-    useUpdateDoctorMutation({
-      fetchPolicy: "no-cache",
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const [updateDoctor, { loading: loadingUpdated }] = useUpdateDoctorMutation({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    });
+    },
+  });
   const [optUsers, setOptUser] = useState<IOption[]>([
     {
       value: "",
@@ -153,8 +165,11 @@ function FormUpdateDoctor() {
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));
+    } else {
+      // nếu không có sẵng Id
+      getFacility();
     }
-  }, [idMedical]);
+  }, [idMedical, getFacility]);
   useEffect(() => {
     if (dataSpecialtiesSelect) {
       const optSpecialties: IOption[] =
@@ -166,7 +181,15 @@ function FormUpdateDoctor() {
         );
       dispatch(handleChangeOptSpecialties(optSpecialties));
     }
-  }, [dataSpecialtiesSelect]);
+    if (dataFacilitySelect) {
+      const optFacility: IOption[] =
+        dataFacilitySelect.getAllMedicalFacility.map((item) => ({
+          label: item.medicalFacilityName,
+          value: item.id,
+        }));
+      dispatch(handleChangeOptFacilities(optFacility));
+    }
+  }, [dataSpecialtiesSelect, dataFacilitySelect]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     checkExpirationToken();
     const form = e.currentTarget;
@@ -174,7 +197,6 @@ function FormUpdateDoctor() {
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
       try {
-        // console.log("test input ");
         let avatar: LinkImageInput = state.updateDoctor.avatar;
         if (state.avatarFile) {
           avatar = await uploadImage(state.avatarFile, "doctors");
@@ -234,7 +256,6 @@ function FormUpdateDoctor() {
     console.log(error);
     return <ShowAlert />;
   }
-  // console.log("select ", state.optionsSpecialties[0]);
   return (
     <Container className={`${s.component}`}>
       <Button
@@ -251,6 +272,26 @@ function FormUpdateDoctor() {
           <Row>
             <h3 className="text-center text-primary">Sửa thông tin bác sĩ</h3>
           </Row>
+          {!state.formMedical && (
+            <Row>
+              <Form.Group className="mb-3" controlId="formGroupNameDoctor">
+                <Form.Label>Chọn cơ sở y tế:</Form.Label>
+
+                <Select
+                  value={getSelectedItem(
+                    state.updateDoctor.medicalFactilitiesId,
+                    state.optionsFacilities
+                  )}
+                  onChange={(e) => {
+                    dispatch(
+                      handleChangeForm("medicalFactilitiesId", e?.value)
+                    );
+                  }}
+                  options={state.optionsFacilities}
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row>
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>Tên bác sĩ:</Form.Label>
@@ -364,20 +405,8 @@ function FormUpdateDoctor() {
                   }}
                   defaultValue={undefined}>
                   <option>Chọn học hàm</option>
-                  <option
-                    // selected={
-                    //   state.updateDoctor.academicTitle ===
-                    //   EAcademicTitle.Professor
-                    // }
-                    value={EAcademicTitle.Professor}>
-                    Giáo sư
-                  </option>
-                  <option
-                    // selected={
-                    //   state.updateDoctor.academicTitle ===
-                    //   EAcademicTitle.AssociateProfesso
-                    // }
-                    value={EAcademicTitle.AssociateProfesso}>
+                  <option value={EAcademicTitle.Professor}>Giáo sư</option>
+                  <option value={EAcademicTitle.AssociateProfesso}>
                     Phó giáo sư
                   </option>
                 </Form.Select>
@@ -393,34 +422,12 @@ function FormUpdateDoctor() {
                     dispatch(handleChangeForm("degree", e.target.value));
                   }}
                   defaultValue={EDegree.Doctor}>
-                  <option
-                    // selected={state.updateDoctor.degree === EDegree.Doctor}
-                    value={EDegree.Doctor}>
-                    Bác sĩ
-                  </option>
-                  <option
-                    // selected={state.updateDoctor.degree === EDegree.DoctorS1}
-                    value={EDegree.DoctorS1}>
-                    Bác sĩ chuyên khoa 1
-                  </option>
+                  <option value={EDegree.Doctor}>Bác sĩ</option>
+                  <option value={EDegree.DoctorS1}>Bác sĩ chuyên khoa 1</option>
 
-                  <option
-                    // selected={state.updateDoctor.degree === EDegree.DoctorS2}
-                    value={EDegree.DoctorS2}>
-                    Bác sĩ chuyên khoa 2
-                  </option>
-                  <option
-                    // selected={state.updateDoctor.degree === EDegree.Doctorate}
-                    value={EDegree.Doctorate}>
-                    Thạc sĩ bác sĩ
-                  </option>
-                  <option
-                    // selected={
-                    //   state.updateDoctor.degree === EDegree.MasterDoctor
-                    // }
-                    value={EDegree.MasterDoctor}>
-                    Tiến sĩ bác sĩ
-                  </option>
+                  <option value={EDegree.DoctorS2}>Bác sĩ chuyên khoa 2</option>
+                  <option value={EDegree.Doctorate}>Thạc sĩ bác sĩ</option>
+                  <option value={EDegree.MasterDoctor}>Tiến sĩ bác sĩ</option>
                 </Form.Select>
               </Form.Group>
             </Col>

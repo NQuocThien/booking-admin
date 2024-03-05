@@ -281,7 +281,7 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
             state.updateDoctor.workSchedule.status
           )}>
           <option value={EStatusService.Open}>Mở</option>
-          <option value={EStatusService.Close}>Đống</option>
+          <option value={EStatusService.Close}>Đóng</option>
         </Form.Select>
       </Form.Group>
       <Form.Group className="mb-3" controlId="formGroupStatus">

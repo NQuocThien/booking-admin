@@ -20,6 +20,7 @@ import VaccinationDetailPage from "src/pages/Vaccination/VaccinationDetail";
 import FormUpdateVaccination from "src/pages/Vaccination/FormUpdateVacinnation";
 import FormAddMedicalStaff from "src/pages/MedicalStaff/FormAddStaff";
 import ListDoctorPage from "src/pages/Doctor/ListDoctor";
+import FormUpdateMedicalStaff from "src/pages/MedicalStaff/FormUpdateStaff";
 export interface IRoute {
   path: string;
   name: string;
@@ -125,6 +126,11 @@ const routes: IRoute[] = [
     path: "/admin-page/medical-facility/:id/staff/form-add",
     name: "Dashboard",
     element: FormAddMedicalStaff,
+  },
+  {
+    path: "/admin-page/medical-facility/:id/staff/update/:idStaff",
+    name: "Dashboard",
+    element: FormUpdateMedicalStaff,
   },
   {
     path: "/admin-page/doctors",

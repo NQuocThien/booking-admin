@@ -48,7 +48,7 @@ import {
   getEnumValueDegree,
   getEnumValueGender,
   getEnumValueStateService,
-  getSelectedItem,
+  getSelectedOption,
 } from "src/utils/getData";
 import WorkScheduleUpdateCpn from "src/components/WorkSchedule/WorkScheduleUpdate";
 import StatusCpn from "src/components/sub/Status";
@@ -161,7 +161,7 @@ function FormUpdateDoctor() {
     }
   }, [dataUsers]);
   useEffect(() => {
-    // console.log("ID Medical: ", idMedical);
+    // console.log("ID 333: ", idDoctor);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));
@@ -169,7 +169,7 @@ function FormUpdateDoctor() {
       // nếu không có sẵng Id
       getFacility();
     }
-  }, [idMedical, getFacility]);
+  }, [idMedical]);
   useEffect(() => {
     if (dataSpecialtiesSelect) {
       const optSpecialties: IOption[] =
@@ -278,7 +278,7 @@ function FormUpdateDoctor() {
                 <Form.Label>Chọn cơ sở y tế:</Form.Label>
 
                 <Select
-                  value={getSelectedItem(
+                  value={getSelectedOption(
                     state.updateDoctor.medicalFactilitiesId,
                     state.optionsFacilities
                   )}
@@ -464,7 +464,6 @@ function FormUpdateDoctor() {
                       ) || null
                     }
                     onChange={(selectedOption) => {
-                      // Sử dụng selectedOption để lấy giá trị đã chọn
                       const selectedValue = selectedOption?.value;
                       dispatch(handleChangeForm("specialistId", selectedValue));
                     }}

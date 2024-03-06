@@ -351,6 +351,21 @@ const getMedicalStaffByFacilityId = gql`
     }
   }
 `;
+const getMedicalStaffById = gql`
+  query getMedicalStaffById($input: String!) {
+    getMedicalStaffById(input: $input) {
+      id
+      userId
+      medicalFacilityId
+      name
+      gender
+      numberPhone
+      email
+      permissions
+      specialtyId
+    }
+  }
+`;
 const getUserSelected = gql`
   query getUserSelected($input: String!) {
     getUserSelected(id: $input) {

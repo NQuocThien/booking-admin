@@ -755,6 +755,7 @@ export type Query = {
   getMedicalSpecialtyById: MedicalSpecialties;
   getMedicalSpecialtySelect: Array<MedicalSpecialties>;
   getMedicalStaffByFacilityId: Array<MedicalStaff>;
+  getMedicalStaffById: MedicalStaff;
   getPackageById: Package;
   getProfileByCustomerId: Array<Profile>;
   getSetting: Setting;
@@ -871,6 +872,11 @@ export type QueryGetMedicalSpecialtySelectArgs = {
 
 
 export type QueryGetMedicalStaffByFacilityIdArgs = {
+  input: Scalars['String']['input'];
+};
+
+
+export type QueryGetMedicalStaffByIdArgs = {
   input: Scalars['String']['input'];
 };
 
@@ -1450,6 +1456,13 @@ export type GetMedicalStaffByFacilityIdQueryVariables = Exact<{
 
 
 export type GetMedicalStaffByFacilityIdQuery = { __typename?: 'Query', getMedicalStaffByFacilityId: Array<{ __typename?: 'MedicalStaff', id: string, userId: string, medicalFacilityId: string, name: string, gender: string, numberPhone: string, email: string, permissions: Array<string>, specialtyId?: Array<string> | null }> };
+
+export type GetMedicalStaffByIdQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetMedicalStaffByIdQuery = { __typename?: 'Query', getMedicalStaffById: { __typename?: 'MedicalStaff', id: string, userId: string, medicalFacilityId: string, name: string, gender: string, numberPhone: string, email: string, permissions: Array<string>, specialtyId?: Array<string> | null } };
 
 export type GetUserSelectedQueryVariables = Exact<{
   input: Scalars['String']['input'];
@@ -3369,6 +3382,49 @@ export function useGetMedicalStaffByFacilityIdLazyQuery(baseOptions?: Apollo.Laz
 export type GetMedicalStaffByFacilityIdQueryHookResult = ReturnType<typeof useGetMedicalStaffByFacilityIdQuery>;
 export type GetMedicalStaffByFacilityIdLazyQueryHookResult = ReturnType<typeof useGetMedicalStaffByFacilityIdLazyQuery>;
 export type GetMedicalStaffByFacilityIdQueryResult = Apollo.QueryResult<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>;
+export const GetMedicalStaffByIdDocument = gql`
+    query getMedicalStaffById($input: String!) {
+  getMedicalStaffById(input: $input) {
+    id
+    userId
+    medicalFacilityId
+    name
+    gender
+    numberPhone
+    email
+    permissions
+    specialtyId
+  }
+}
+    `;
+
+/**
+ * __useGetMedicalStaffByIdQuery__
+ *
+ * To run a query within a React component, call `useGetMedicalStaffByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMedicalStaffByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMedicalStaffByIdQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetMedicalStaffByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>(GetMedicalStaffByIdDocument, options);
+      }
+export function useGetMedicalStaffByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>(GetMedicalStaffByIdDocument, options);
+        }
+export type GetMedicalStaffByIdQueryHookResult = ReturnType<typeof useGetMedicalStaffByIdQuery>;
+export type GetMedicalStaffByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalStaffByIdLazyQuery>;
+export type GetMedicalStaffByIdQueryResult = Apollo.QueryResult<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>;
 export const GetUserSelectedDocument = gql`
     query getUserSelected($input: String!) {
   getUserSelected(id: $input) {

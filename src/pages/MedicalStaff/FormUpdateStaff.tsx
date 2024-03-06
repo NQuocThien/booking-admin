@@ -5,12 +5,21 @@ import {
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
   handleChangeStateForm,
+  handleSetDataFormUpdate,
   handleSetValidate,
   initState,
   reducer,
 } from "./reducer-update";
 import Select from "react-select";
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+  Table,
+} from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
@@ -18,6 +27,7 @@ import {
   EPermission,
   UpdateMedicalStaffInput,
   useGetAllUserStaffSelectQuery,
+  useGetMedicalStaffByIdQuery,
   useGetSpecialtySelectQuery,
   useUpdateMedicalStaffMutation,
 } from "src/graphql/webbooking-service.generated";
@@ -28,12 +38,28 @@ import ShowAlert from "src/components/sub/alerts";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { showToast } from "src/components/sub/toasts";
 import StatusCpn from "src/components/sub/Status";
-import { getEnumValueGender } from "src/utils/getData";
+import {
+  getEnumValueGender,
+  getEnumValuePermission,
+  getSelectedOption,
+} from "src/utils/getData";
 function FormUpdateMedicalStaff() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
-  const { id: idMedical } = useParams();
+  const { id: idMedical, idStaff } = useParams();
   const token = getToken();
+
+  const { data, loading, error } = useGetMedicalStaffByIdQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: {
+      input: idStaff || "",
+    },
+  });
 
   const [updateStaff, { loading: loadUpdate, error: errUpdate }] =
     useUpdateMedicalStaffMutation({
@@ -71,9 +97,29 @@ function FormUpdateMedicalStaff() {
       },
     },
     variables: {
-      input: "",
+      input: idStaff || "",
     },
   });
+
+  useEffect(() => {
+    if (data?.getMedicalStaffById) {
+      const input: UpdateMedicalStaffInput = {
+        id: data?.getMedicalStaffById.id,
+        email: data?.getMedicalStaffById.email,
+        medicalFacilityId: data?.getMedicalStaffById.medicalFacilityId,
+        name: data?.getMedicalStaffById.name,
+        specialtyId: data?.getMedicalStaffById.specialtyId,
+        numberPhone: data?.getMedicalStaffById.numberPhone,
+        userId: data?.getMedicalStaffById.userId,
+        permissions: (data?.getMedicalStaffById.permissions || [])
+          .map((per) => getEnumValuePermission(per))
+          .filter((per) => per !== null) as EPermission[],
+        gender: getEnumValueGender(data?.getMedicalStaffById.gender),
+      };
+      dispatch(handleSetDataFormUpdate(input));
+    }
+  }, [data]);
+
   useEffect(() => {
     console.log("ID Medical: ", idMedical);
     if (idMedical) {
@@ -119,10 +165,10 @@ function FormUpdateMedicalStaff() {
       };
       updateStaff({
         variables: {
-          input: input,
+          input: state.updateStaff,
         },
       }).then(() => {
-        showToast("Đã thêm nhân viên 👌👌");
+        showToast("Đã sửa nhân viên 👌👌");
         navigate(-1);
       });
     }
@@ -138,7 +184,8 @@ function FormUpdateMedicalStaff() {
       if (index !== -1) dispatch(handleChangeForm(name, tpmData));
     }
   };
-  if (errSpecialty || !idMedical) {
+  if (loading) return <Spinner animation="border" variant="primary" />;
+  if (errSpecialty || !idMedical || error || !idStaff) {
     return <ShowAlert />;
   }
   return (
@@ -155,7 +202,7 @@ function FormUpdateMedicalStaff() {
       <Row>
         <Form noValidate validated={state.validate} onSubmit={handleSubmit}>
           <Row>
-            <h3 className="text-center text-primary">Thêm nhân viên</h3>
+            <h3 className="text-center text-primary">Sửa nhân viên</h3>
           </Row>
           <Row>
             <Form.Group className="mb-3" controlId="formGroupNameNV">
@@ -438,6 +485,10 @@ function FormUpdateMedicalStaff() {
                 Chọn tài khoản <StatusCpn loading={loadUser} error={errUser} />
               </Form.Label>
               <Select
+                value={getSelectedOption(
+                  state.updateStaff.userId,
+                  state.optionsUser
+                )}
                 options={state.optionsUser}
                 onChange={(e) => {
                   dispatch(handleChangeForm("userId", e?.value));
@@ -451,7 +502,12 @@ function FormUpdateMedicalStaff() {
               <Button variant="primary" type="submit">
                 <IoSaveOutline className="mx-2" />
                 Lưu
-                <StatusCpn loading={loadUpdate} error={errUpdate} />
+                <StatusCpn
+                  size="sm"
+                  variant="light"
+                  loading={loadUpdate}
+                  error={errUpdate}
+                />
               </Button>
             </div>
           </Row>

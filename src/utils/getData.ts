@@ -13,7 +13,7 @@ import {
 import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
 
-export const getSelectedItem = (id: string, options: [IOption]): IOption => {
+export const getSelectedOption = (id: string, options: [IOption]): IOption => {
   return (
     options.find((option) => option.value === id) || { value: "", label: "" }
   );
@@ -242,5 +242,25 @@ export const getEnumValueGenderPackage = (input: string): EGenderPackage => {
       return EGenderPackage.Both;
     default:
       return EGenderPackage.Both;
+  }
+};
+export const getEnumValuePermission = (
+  input: string
+): EPermission | undefined => {
+  switch (input) {
+    case "Quản lý":
+      return EPermission.Magager;
+
+    case "Quản lý bài viết":
+      return EPermission.MagagerBlog;
+
+    case "Quản lý chuyên khoa":
+      return EPermission.ManagerSpecialty;
+
+    case "Quản lý gói khám":
+      return EPermission.MagagerPackage;
+
+    case "Quản lý tim chủng":
+      return EPermission.MagagerVaccine;
   }
 };

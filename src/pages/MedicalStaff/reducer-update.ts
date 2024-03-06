@@ -66,7 +66,7 @@ export const initState: IStateForm = {
 
 //actions
 const HANDLE_CHANGE_FORM = "handle-change-form";
-const HANDLE_SET_DATAUPDATED = "handle-set-data-updated";
+const HANDLE_SET_DATA_UPDATE = "handle-set-data-updated";
 const HC_VALIDATE = "hc-validate";
 const HC_IMAGE = "hc-image";
 const HC_STATE_FORM = "hc-change-state-form";
@@ -117,6 +117,16 @@ export const handleChangImage = (payload: Blob): IActionFormAdd => {
     payload: payload,
   };
 };
+
+export const handleSetDataFormUpdate = (
+  payload: UpdateMedicalStaffInput
+): IActionFormAdd => {
+  return {
+    type: HANDLE_SET_DATA_UPDATE,
+    payload: payload,
+  };
+};
+
 // reducer
 export const reducer = (
   state: IStateForm,
@@ -133,6 +143,11 @@ export const reducer = (
           },
         };
       } else return state;
+    case HANDLE_SET_DATA_UPDATE:
+      return {
+        ...state,
+        updateStaff: action.payload,
+      };
     case HC_VALIDATE:
       return {
         ...state,

@@ -173,7 +173,7 @@ function MedicalFacilityListStaff({ facilityId }: IProp) {
                             <Dropdown.Item
                               as={Link}
                               className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                              to={`/admin-page/medical-facility/update/${staff.id}`}>
+                              to={`staff/update/${staff.id}`}>
                               Chỉnh sửa
                             </Dropdown.Item>
                             <Dropdown.Item

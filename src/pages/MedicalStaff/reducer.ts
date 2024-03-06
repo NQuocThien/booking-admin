@@ -11,9 +11,8 @@ export interface IStateForm {
   validate: boolean;
   formMedical: boolean;
   optionsSpecialties: [IOption];
-  optionsPackage: [IOption];
-  optionsVaccine: [IOption];
   optionsUser: [IOption];
+  optionsFacility: [IOption];
 }
 export interface IActionFormAdd {
   type: string;
@@ -43,19 +42,15 @@ export const initState: IStateForm = {
       value: "",
     },
   ],
-  optionsPackage: [
-    {
-      label: "",
-      value: "",
-    },
-  ],
-  optionsVaccine: [
-    {
-      label: "",
-      value: "",
-    },
-  ],
+
   optionsUser: [
+    {
+      label: "",
+      value: "",
+    },
+  ],
+
+  optionsFacility: [
     {
       label: "",
       value: "",
@@ -66,12 +61,10 @@ export const initState: IStateForm = {
 //actions
 const HANDLE_CHANGE_FORM = "handle-change-form";
 const HC_VALIDATE = "hc-validate";
-const HC_IMAGE = "hc-image";
 const HC_STATE_FORM = "hc-change-state-form";
-const HC_OPTION_PACKAGE = "hc-option-package";
 const HC_OPTION_SPECIALTY = "hc-option-specialty";
-const HC_OPTION_VACCINE = "hc-option-vaccine";
 const HC_OPTION_USER = "hc-option-users";
+const HC_OPTION_FACILITY = "hc-option-facility";
 export const handleChangeForm = (
   name: keyof CreateMedicalStaffInput,
   value: any
@@ -96,22 +89,6 @@ export const handleChangeStateForm = (payload: boolean): IActionFormAdd => {
   };
 };
 
-export const handleChangeOptionPackage = (
-  payload: IOption[]
-): IActionFormAdd => {
-  return {
-    type: HC_OPTION_PACKAGE,
-    payload: payload,
-  };
-};
-export const handleChangeOptionVaccine = (
-  payload: IOption[]
-): IActionFormAdd => {
-  return {
-    type: HC_OPTION_VACCINE,
-    payload: payload,
-  };
-};
 export const handleChangeOptionUser = (payload: IOption[]): IActionFormAdd => {
   return {
     type: HC_OPTION_USER,
@@ -126,13 +103,15 @@ export const handleChangeOptionSpecialty = (
     payload: payload,
   };
 };
-
-export const handleChangImage = (payload: Blob): IActionFormAdd => {
+export const handleChangeOptionFacility = (
+  payload: IOption[]
+): IActionFormAdd => {
   return {
-    type: HC_IMAGE,
+    type: HC_OPTION_FACILITY,
     payload: payload,
   };
 };
+
 // reducer
 export const reducer = (
   state: IStateForm,
@@ -159,16 +138,7 @@ export const reducer = (
         ...state,
         formMedical: action.payload,
       };
-    case HC_OPTION_PACKAGE:
-      return {
-        ...state,
-        optionsPackage: action.payload,
-      };
-    case HC_OPTION_VACCINE:
-      return {
-        ...state,
-        optionsVaccine: action.payload,
-      };
+
     case HC_OPTION_SPECIALTY:
       return {
         ...state,
@@ -178,6 +148,11 @@ export const reducer = (
       return {
         ...state,
         optionsUser: action.payload,
+      };
+    case HC_OPTION_FACILITY:
+      return {
+        ...state,
+        optionsFacility: action.payload,
       };
     default:
       return state;

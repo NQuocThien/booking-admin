@@ -40,22 +40,29 @@ const _navAdmin: Item[] = [
     items: [
       {
         component: "NavItem",
-        name: "Quản lý User",
+        name: "Người dùng",
         to: "/admin-page/users",
         iconName: "MdOutlinePersonOutline",
       },
       {
         component: "NavItem",
-        name: "Quản lý CSYT",
+        name: "Cơ sơ y tế",
         to: "/admin-page/medical-facility",
         iconName: "MdOutlineMedicalServices",
       },
       {
         component: "NavItem",
-        name: "Quản lý Bác sĩ",
+        name: "Bác sĩ",
         to: "/admin-page/doctors",
         iconName: "LiaUserNurseSolid",
       },
+      {
+        component: "NavItem",
+        name: "Nhân viên CSYT",
+        to: "/admin-page/staffs",
+        iconName: "MdOutlineNaturePeople",
+      },
+
       {
         component: "NavItem",
         name: "Quản lý Khách hàng",

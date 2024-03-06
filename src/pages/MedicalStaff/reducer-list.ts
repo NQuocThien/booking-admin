@@ -1,41 +1,49 @@
 import { ICheckRoles, IPagination } from "src/assets/contains/item-interface";
 import {
-  CreatePackageInput,
-  Doctor,
+  MedicalStaff,
   // Doctor,
 } from "src/graphql/webbooking-service.generated";
 
-export interface IStateListDoctor {
-  listDoctor: Doctor[];
-  facilityClicked: Doctor | undefined;
-  searchTerm: string;
-  pagination: IPagination;
-}
 export interface IAction {
   type: string;
-  key?: keyof CreatePackageInput;
   payload: any;
 }
 
+export interface IStateListStaff {
+  listStaff: MedicalStaff[];
+  selectedStaff: MedicalStaff | undefined;
+  searchTerm: string;
+  pagination: IPagination;
+  showModal: boolean;
+}
 // innitState
-export const initState: IStateListDoctor = {
-  listDoctor: [],
-  facilityClicked: undefined,
+export const initState: IStateListStaff = {
+  listStaff: [],
+  selectedStaff: undefined,
   searchTerm: "",
   pagination: {
     current: 1,
     total: 0,
     sort: "asc",
   },
+  showModal: false,
 };
 
 //actions
 const HANDLE_SET_LIST_FACILITY = "handle-set-list-facility";
 const HC_SEARCH_TERM = "handle-search-term";
 const HC_PAGINATION = "handle-change-pagination";
-export const handleSetlistDoctor = (value: Doctor[]): IAction => {
+const SET_SHOW_MODAL = "set-show-modal";
+const SET_SELECTED_STAFF = "set-selected-staff";
+export const handleSetlistStaff = (value: MedicalStaff[]): IAction => {
   return {
     type: HANDLE_SET_LIST_FACILITY,
+    payload: value,
+  };
+};
+export const handleSetShowModal = (value: boolean): IAction => {
+  return {
+    type: SET_SHOW_MODAL,
     payload: value,
   };
 };
@@ -51,17 +59,23 @@ export const handleChangePagination = (payload: IPagination): IAction => {
     payload: payload,
   };
 };
+export const handleSetSelectedStaff = (payload: MedicalStaff): IAction => {
+  return {
+    type: SET_SELECTED_STAFF,
+    payload: payload,
+  };
+};
 
 // reducer
 export const reducer = (
-  state: IStateListDoctor,
+  state: IStateListStaff,
   action: IAction
-): IStateListDoctor => {
+): IStateListStaff => {
   switch (action.type) {
     case HANDLE_SET_LIST_FACILITY:
       return {
         ...state,
-        listDoctor: action.payload,
+        listStaff: action.payload,
       };
     case HC_SEARCH_TERM:
       return {
@@ -72,6 +86,16 @@ export const reducer = (
       return {
         ...state,
         pagination: action.payload,
+      };
+    case SET_SELECTED_STAFF:
+      return {
+        ...state,
+        selectedStaff: action.payload,
+      };
+    case SET_SHOW_MODAL:
+      return {
+        ...state,
+        showModal: action.payload,
       };
     default:
       return state;

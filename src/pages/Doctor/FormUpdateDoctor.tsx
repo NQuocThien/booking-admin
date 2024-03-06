@@ -161,7 +161,6 @@ function FormUpdateDoctor() {
     }
   }, [dataUsers]);
   useEffect(() => {
-    // console.log("ID 333: ", idDoctor);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));

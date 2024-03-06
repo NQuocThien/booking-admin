@@ -50,7 +50,7 @@ function SpecialtyDetailPage() {
           label: data?.getMedicalSpecialtyById.name || "",
         },
       ]);
-      if (data?.getMedicalSpecialtyById) {
+      if (data?.getMedicalSpecialtyById.workSchedule) {
         setListSchedule(data?.getMedicalSpecialtyById.workSchedule.schedule);
       }
     }
@@ -74,7 +74,10 @@ function SpecialtyDetailPage() {
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
               <FaDoorOpen className={`${style.icon}`} />
-              <p>{data?.getMedicalSpecialtyById.workSchedule.status}</p>
+              <p>
+                {data?.getMedicalSpecialtyById.workSchedule &&
+                  data?.getMedicalSpecialtyById.workSchedule.status}
+              </p>
             </div>
             <div className={`${style.top__info_item}`}>
               <IoPricetagsOutline className={`${style.icon}`} />
@@ -100,11 +103,14 @@ function SpecialtyDetailPage() {
         <div className="mb-3">
           <p>Ngày nghỉ:</p>
           <div className={s.main__dayOff}>
-            {data?.getMedicalSpecialtyById.workSchedule.dayOff.map((day, i) => (
-              <span key={i} className="mx-1 p-2 border border-info">
-                {formatDate(day)}
-              </span>
-            ))}
+            {data?.getMedicalSpecialtyById.workSchedule &&
+              data?.getMedicalSpecialtyById.workSchedule.dayOff.map(
+                (day, i) => (
+                  <span key={i} className="mx-1 p-2 border border-info">
+                    {formatDate(day)}
+                  </span>
+                )
+              )}
           </div>
         </div>
         <div>
@@ -117,26 +123,29 @@ function SpecialtyDetailPage() {
               </tr>
             </thead>
             <tbody>
-              {data?.getMedicalSpecialtyById.workSchedule.schedule.map(
-                (s, i) => (
-                  <tr key={i}>
-                    <td> Thứ {s.dayOfWeek}</td>
-                    <td
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                      }}>
-                      {s.sessions.map((session, i) => (
-                        <span className="m-1 p-2 border border-success" key={i}>
-                          {session.startTime}
-                          {"-"}
-                          {session.endTime}
-                        </span>
-                      ))}
-                    </td>
-                  </tr>
-                )
-              )}
+              {data?.getMedicalSpecialtyById.workSchedule &&
+                data?.getMedicalSpecialtyById.workSchedule.schedule.map(
+                  (s, i) => (
+                    <tr key={i}>
+                      <td> Thứ {s.dayOfWeek}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                        }}>
+                        {s.sessions.map((session, i) => (
+                          <span
+                            className="m-1 p-2 border border-success"
+                            key={i}>
+                            {session.startTime}
+                            {"-"}
+                            {session.endTime}
+                          </span>
+                        ))}
+                      </td>
+                    </tr>
+                  )
+                )}
             </tbody>
           </Table>
         </div>

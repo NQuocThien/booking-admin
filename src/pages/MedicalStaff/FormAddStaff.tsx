@@ -2,10 +2,9 @@ import { useEffect, useReducer } from "react";
 import {
   IOption,
   handleChangeForm,
-  handleChangeOptionPackage,
+  handleChangeOptionFacility,
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
-  handleChangeOptionVaccine,
   handleChangeStateForm,
   handleSetValidate,
   initState,
@@ -20,9 +19,8 @@ import {
   EGenderPackage,
   EPermission,
   useCreateMedicalStaffMutation,
-  useGetAllPackageSelectQuery,
+  useGetAllMedicalFacilitySelectLazyQuery,
   useGetAllUserStaffSelectQuery,
-  useGetAllVaccinationSelectQuery,
   useGetSpecialtySelectQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -76,11 +74,29 @@ function FormAddMedicalStaff() {
       input: "",
     },
   });
+
+  const [
+    getFacility,
+    {
+      data: dataFacilitySelect,
+      loading: loadingFacilitySelect,
+      error: errorFacilitySelect,
+    },
+  ] = useGetAllMedicalFacilitySelectLazyQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
   useEffect(() => {
     console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFacilityId", idMedical));
+    } else {
+      getFacility();
     }
   }, [idMedical]);
   useEffect(() => {
@@ -101,7 +117,15 @@ function FormAddMedicalStaff() {
       }));
       dispatch(handleChangeOptionUser(options));
     }
-  }, [dataSpecialty, dataUser]);
+    if (dataFacilitySelect) {
+      const optFacility: IOption[] =
+        dataFacilitySelect.getAllMedicalFacility.map((item) => ({
+          label: item.medicalFacilityName,
+          value: item.id,
+        }));
+      dispatch(handleChangeOptionFacility(optFacility));
+    }
+  }, [dataSpecialty, dataUser, dataFacilitySelect]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -129,7 +153,7 @@ function FormAddMedicalStaff() {
       if (index !== -1) dispatch(handleChangeForm(name, tpmData));
     }
   };
-  if (errSpecialty || !idMedical) {
+  if (errSpecialty) {
     return <ShowAlert />;
   }
   return (
@@ -148,6 +172,20 @@ function FormAddMedicalStaff() {
           <Row>
             <h3 className="text-center text-primary">Thêm nhân viên</h3>
           </Row>
+          {!state.formMedical && (
+            <Row>
+              <Form.Group className="mb-3" controlId="formGroupNameDoctor">
+                <Form.Label>Chọn cơ sở y tế:</Form.Label>
+
+                <Select
+                  onChange={(e) => {
+                    dispatch(handleChangeForm("medicalFacilityId", e?.value));
+                  }}
+                  options={state.optionsFacility}
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row>
             <Form.Group className="mb-3" controlId="formGroupNameNV">
               <Form.Label>Tên nhân viên:</Form.Label>

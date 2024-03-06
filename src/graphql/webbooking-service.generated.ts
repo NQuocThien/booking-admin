@@ -88,7 +88,7 @@ export type CreateMedicalSpecialtyInput = {
   medicalFactilityId: Scalars['String']['input'];
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
-  workSchedule: WorkScheduleInput;
+  workSchedule?: InputMaybe<WorkScheduleInput>;
 };
 
 export type CreateMedicalStaffInput = {
@@ -392,7 +392,7 @@ export type MedicalSpecialties = {
   medicalFactilityId: Scalars['String']['output'];
   name: Scalars['String']['output'];
   price: Scalars['Float']['output'];
-  workSchedule: WorkSchedule;
+  workSchedule?: Maybe<WorkSchedule>;
 };
 
 export type MedicalStaff = {
@@ -404,6 +404,7 @@ export type MedicalStaff = {
   name: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
   permissions: Array<Scalars['String']['output']>;
+  specialties?: Maybe<Array<MedicalSpecialties>>;
   specialtyId?: Maybe<Array<Scalars['String']['output']>>;
   userId: Scalars['String']['output'];
 };
@@ -740,7 +741,9 @@ export type Query = {
   getAllPackage: Array<Package>;
   getAllPackageByFacilityId: Array<Package>;
   getAllPackageSelect: Array<Package>;
+  getAllProfile: Array<Profile>;
   getAllRegisterByOption: Array<Register>;
+  getAllStaffPagination: Array<MedicalStaff>;
   getAllUsersPagination: Array<User>;
   getAllVacation: Array<Vaccination>;
   getAllVaccinationByFacilityId: Array<Vaccination>;
@@ -769,6 +772,7 @@ export type Query = {
   getUserSelected: User;
   getUserStaffSelect: Array<User>;
   getVaccineById: Vaccination;
+  totalStaffsCount: Scalars['Float']['output'];
   totalUsersCount: Scalars['Float']['output'];
   users: Array<User>;
 };
@@ -809,6 +813,15 @@ export type QueryGetAllPackageSelectArgs = {
 
 export type QueryGetAllRegisterByOptionArgs = {
   input: GetRegisterByOptionInput;
+};
+
+
+export type QueryGetAllStaffPaginationArgs = {
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -931,6 +944,11 @@ export type QueryGetVaccineByIdArgs = {
 };
 
 
+export type QueryTotalStaffsCountArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryTotalUsersCountArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1041,7 +1059,7 @@ export type UpdateMedicalSpecialtyInput = {
   medicalFactilityId: Scalars['String']['input'];
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
-  workSchedule: WorkScheduleInput;
+  workSchedule?: InputMaybe<WorkScheduleInput>;
 };
 
 export type UpdateMedicalStaffInput = {
@@ -1306,7 +1324,7 @@ export type CreateMedicalSpecialtyMutationVariables = Exact<{
 }>;
 
 
-export type CreateMedicalSpecialtyMutation = { __typename?: 'Mutation', createMedicalSpecialty: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } } };
+export type CreateMedicalSpecialtyMutation = { __typename?: 'Mutation', createMedicalSpecialty: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } | null } };
 
 export type UpdateMedicalSpecialtyMutationVariables = Exact<{
   input: UpdateMedicalSpecialtyInput;
@@ -1434,7 +1452,7 @@ export type GetAllMedicalFacilityPaginationQueryVariables = Exact<{
 }>;
 
 
-export type GetAllMedicalFacilityPaginationQuery = { __typename?: 'Query', getAllMedicalFacilityPagination: Array<{ __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, status: string, dateOff?: Array<any> | null, schedule: string, logo: { __typename?: 'LinkImage', filename: string, type: string, url: string }, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, doctors?: Array<{ __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, academicTitle?: string | null, discription: string, price: number, degree: string, email: string, numberPhone: string, gender: string, specialistId: string, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, medicalSpecialties?: Array<{ __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, vaccinations?: Array<{ __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, countryOfOrigin: string, indication: string, note: string, prophylactic: string, price: number, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, packages?: Array<{ __typename?: 'Package', id: string, packageName: string, medicalFactilitiesId: string, gender: string, examinationDetails: string, price: number, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, medicalStaffs?: Array<{ __typename?: 'MedicalStaff', id: string, userId: string, name: string, email: string, numberPhone: string, gender: string, medicalFacilityId: string, permissions: Array<string> }> | null }> };
+export type GetAllMedicalFacilityPaginationQuery = { __typename?: 'Query', getAllMedicalFacilityPagination: Array<{ __typename?: 'MedicalFacilities', id: string, userId: string, medicalFacilityName: string, address: string, numberPhone: string, email: string, lat?: number | null, lng?: number | null, discription: string, introduce: string, operatingStatus: string, legalRepresentation: string, taxCode: string, status: string, dateOff?: Array<any> | null, schedule: string, logo: { __typename?: 'LinkImage', filename: string, type: string, url: string }, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, doctors?: Array<{ __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, academicTitle?: string | null, discription: string, price: number, degree: string, email: string, numberPhone: string, gender: string, specialistId: string, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, medicalSpecialties?: Array<{ __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } | null }> | null, vaccinations?: Array<{ __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, countryOfOrigin: string, indication: string, note: string, prophylactic: string, price: number, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, packages?: Array<{ __typename?: 'Package', id: string, packageName: string, medicalFactilitiesId: string, gender: string, examinationDetails: string, price: number, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> | null, medicalStaffs?: Array<{ __typename?: 'MedicalStaff', id: string, userId: string, name: string, email: string, numberPhone: string, gender: string, medicalFacilityId: string, permissions: Array<string> }> | null }> };
 
 export type GetTotalFacilitiesCountQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -1541,14 +1559,14 @@ export type GetMedicalSpecialtyByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetMedicalSpecialtyByIdQuery = { __typename?: 'Query', getMedicalSpecialtyById: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } } };
+export type GetMedicalSpecialtyByIdQuery = { __typename?: 'Query', getMedicalSpecialtyById: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } | null } };
 
 export type GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
 }>;
 
 
-export type GetMedicalSpecialtiesByMedicalFacilityIdQuery = { __typename?: 'Query', getMedicalSpecialtiesByMedicalFacilityId: Array<{ __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } }> };
+export type GetMedicalSpecialtiesByMedicalFacilityIdQuery = { __typename?: 'Query', getMedicalSpecialtiesByMedicalFacilityId: Array<{ __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, name: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } | null }> };
 
 export type GetVaccineByIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
@@ -1609,6 +1627,24 @@ export type GetAllRegisterByOptionQueryVariables = Exact<{
 
 
 export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, isHealthInsurance: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, name: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null }, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
+
+export type GetAllStaffPaginationQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAllStaffPaginationQuery = { __typename?: 'Query', getAllStaffPagination: Array<{ __typename?: 'MedicalStaff', id: string, userId: string, medicalFacilityId: string, name: string, gender: string, numberPhone: string, email: string, permissions: Array<string>, specialtyId?: Array<string> | null, specialties?: Array<{ __typename?: 'MedicalSpecialties', id: string, name: string, medicalFactilityId: string, discription: string, price: number }> | null }> };
+
+export type TotalStaffsCountQueryVariables = Exact<{
+  input?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TotalStaffsCountQuery = { __typename?: 'Query', totalStaffsCount: number };
 
 export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4451,6 +4487,99 @@ export function useGetAllRegisterByOptionLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetAllRegisterByOptionQueryHookResult = ReturnType<typeof useGetAllRegisterByOptionQuery>;
 export type GetAllRegisterByOptionLazyQueryHookResult = ReturnType<typeof useGetAllRegisterByOptionLazyQuery>;
 export type GetAllRegisterByOptionQueryResult = Apollo.QueryResult<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>;
+export const GetAllStaffPaginationDocument = gql`
+    query getAllStaffPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
+  getAllStaffPagination(
+    search: $search
+    page: $page
+    limit: $limit
+    sortField: $sortField
+    sortOrder: $sortOrder
+  ) {
+    id
+    userId
+    medicalFacilityId
+    name
+    gender
+    numberPhone
+    email
+    permissions
+    specialtyId
+    specialties {
+      id
+      name
+      medicalFactilityId
+      discription
+      price
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllStaffPaginationQuery__
+ *
+ * To run a query within a React component, call `useGetAllStaffPaginationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllStaffPaginationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllStaffPaginationQuery({
+ *   variables: {
+ *      search: // value for 'search'
+ *      page: // value for 'page'
+ *      limit: // value for 'limit'
+ *      sortField: // value for 'sortField'
+ *      sortOrder: // value for 'sortOrder'
+ *   },
+ * });
+ */
+export function useGetAllStaffPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>(GetAllStaffPaginationDocument, options);
+      }
+export function useGetAllStaffPaginationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>(GetAllStaffPaginationDocument, options);
+        }
+export type GetAllStaffPaginationQueryHookResult = ReturnType<typeof useGetAllStaffPaginationQuery>;
+export type GetAllStaffPaginationLazyQueryHookResult = ReturnType<typeof useGetAllStaffPaginationLazyQuery>;
+export type GetAllStaffPaginationQueryResult = Apollo.QueryResult<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>;
+export const TotalStaffsCountDocument = gql`
+    query totalStaffsCount($input: String) {
+  totalStaffsCount(search: $input)
+}
+    `;
+
+/**
+ * __useTotalStaffsCountQuery__
+ *
+ * To run a query within a React component, call `useTotalStaffsCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTotalStaffsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTotalStaffsCountQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useTotalStaffsCountQuery(baseOptions?: Apollo.QueryHookOptions<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>(TotalStaffsCountDocument, options);
+      }
+export function useTotalStaffsCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>(TotalStaffsCountDocument, options);
+        }
+export type TotalStaffsCountQueryHookResult = ReturnType<typeof useTotalStaffsCountQuery>;
+export type TotalStaffsCountLazyQueryHookResult = ReturnType<typeof useTotalStaffsCountLazyQuery>;
+export type TotalStaffsCountQueryResult = Apollo.QueryResult<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>;
 export const GetGeneralInfor3Document = gql`
     query GetGeneralInfor3 {
   getGeneralInfor {

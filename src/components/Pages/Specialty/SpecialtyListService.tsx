@@ -110,12 +110,16 @@ function SpecialtyListServive(props: IProps) {
                     <td>{ms.name}</td>
                     <td>
                       Thứ:{" "}
-                      {ms.workSchedule.schedule.map((s, i) => (
-                        <span key={i}>
-                          {s.dayOfWeek}{" "}
-                          {i === ms.workSchedule.schedule.length ? ", " : ""}
-                        </span>
-                      ))}
+                      {ms.workSchedule &&
+                        ms.workSchedule.schedule.map((s, i) => (
+                          <span key={i}>
+                            {s.dayOfWeek}{" "}
+                            {ms.workSchedule &&
+                            i === ms.workSchedule.schedule.length
+                              ? ", "
+                              : ""}
+                          </span>
+                        ))}
                     </td>
                     <td>{formatter.format(ms.price)}</td>
                     <td className="fs-6">

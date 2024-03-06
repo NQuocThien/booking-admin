@@ -64,7 +64,7 @@ function FormUpdateSpecialty() {
     }
   }, [idMedical, idSpecialty]);
   useEffect(() => {
-    if (data?.getMedicalSpecialtyById) {
+    if (data?.getMedicalSpecialtyById.workSchedule) {
       const dataUpdate: UpdateMedicalSpecialtyInput = {
         ...data.getMedicalSpecialtyById,
         workSchedule: {
@@ -87,15 +87,12 @@ function FormUpdateSpecialty() {
     const form = e.currentTarget;
     e.preventDefault();
     dispatch(handleSetValidate(true));
+
     if (form.checkValidity() === true) {
       try {
-        const dataInput: UpdateMedicalSpecialtyInput = {
-          id: state.updateSpecialty.id,
-          name: state.updateSpecialty.name,
-          discription: state.updateSpecialty.discription,
-          medicalFactilityId: state.updateSpecialty.medicalFactilityId,
-          price: state.updateSpecialty.price,
-          workSchedule: {
+        var workSchedule: WorkScheduleInput | undefined = undefined;
+        if (state.updateSpecialty.workSchedule) {
+          workSchedule = {
             dayOff: state.updateSpecialty.workSchedule.dayOff,
             numberSlot: state.updateSpecialty.workSchedule.numberSlot,
             schedule: state.updateSpecialty.workSchedule.schedule.map((sc) => ({
@@ -106,7 +103,15 @@ function FormUpdateSpecialty() {
               })) as SessionInput[],
             })) as ScheduleInput[],
             status: state.updateSpecialty.workSchedule.status,
-          },
+          };
+        }
+        const dataInput: UpdateMedicalSpecialtyInput = {
+          id: state.updateSpecialty.id,
+          name: state.updateSpecialty.name,
+          discription: state.updateSpecialty.discription,
+          medicalFactilityId: state.updateSpecialty.medicalFactilityId,
+          price: state.updateSpecialty.price,
+          workSchedule: workSchedule,
         };
         await updateMedicalSpecialty({
           variables: {
@@ -197,12 +202,14 @@ function FormUpdateSpecialty() {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <WorkSchedule
-              workSchedule={state.updateSpecialty.workSchedule}
-              setWorkSchedule={handleChangeWorkSchedule}
-            />
-          </Row>
+          {state.updateSpecialty.workSchedule && (
+            <Row>
+              <WorkSchedule
+                workSchedule={state.updateSpecialty.workSchedule}
+                setWorkSchedule={handleChangeWorkSchedule}
+              />
+            </Row>
+          )}
 
           <Row className="mt-3">
             <div className="d-flex justify-content-end">

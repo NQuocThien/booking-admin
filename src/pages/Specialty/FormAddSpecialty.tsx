@@ -130,12 +130,14 @@ function FormAddSpecialty() {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <WorkSchedule
-              workSchedule={state.createSpcialty.workSchedule}
-              setWorkSchedule={handleChangeWorkSchedule}
-            />
-          </Row>
+          {state.createSpcialty.workSchedule && (
+            <Row>
+              <WorkSchedule
+                workSchedule={state.createSpcialty.workSchedule}
+                setWorkSchedule={handleChangeWorkSchedule}
+              />
+            </Row>
+          )}
 
           <Row className="mt-3">
             <div className="d-flex justify-content-end">

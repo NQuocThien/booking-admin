@@ -2,6 +2,7 @@ import { useEffect, useReducer } from "react";
 import {
   IOption,
   handleChangeForm,
+  handleChangeOptionFacility,
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
   handleChangeStateForm,
@@ -26,6 +27,7 @@ import {
   EGenderPackage,
   EPermission,
   UpdateMedicalStaffInput,
+  useGetAllMedicalFacilitySelectLazyQuery,
   useGetAllUserStaffSelectQuery,
   useGetMedicalStaffByIdQuery,
   useGetSpecialtySelectQuery,
@@ -60,7 +62,21 @@ function FormUpdateMedicalStaff() {
       input: idStaff || "",
     },
   });
-
+  const [
+    getFacility,
+    {
+      data: dataFacilitySelect,
+      loading: loadingFacilitySelect,
+      error: errorFacilitySelect,
+    },
+  ] = useGetAllMedicalFacilitySelectLazyQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
   const [updateStaff, { loading: loadUpdate, error: errUpdate }] =
     useUpdateMedicalStaffMutation({
       fetchPolicy: "no-cache",
@@ -125,6 +141,8 @@ function FormUpdateMedicalStaff() {
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFacilityId", idMedical));
+    } else {
+      getFacility();
     }
   }, [idMedical]);
   useEffect(() => {
@@ -137,6 +155,14 @@ function FormUpdateMedicalStaff() {
       );
       dispatch(handleChangeOptionSpecialty(options));
     }
+    if (dataFacilitySelect) {
+      const optFacility: IOption[] =
+        dataFacilitySelect.getAllMedicalFacility.map((item) => ({
+          label: item.medicalFacilityName,
+          value: item.id,
+        }));
+      dispatch(handleChangeOptionFacility(optFacility));
+    }
 
     if (dataUser?.getUserStaffSelect) {
       const options: IOption[] = dataUser?.getUserStaffSelect.map((p) => ({
@@ -145,7 +171,7 @@ function FormUpdateMedicalStaff() {
       }));
       dispatch(handleChangeOptionUser(options));
     }
-  }, [dataSpecialty, dataUser]);
+  }, [dataSpecialty, dataUser, dataFacilitySelect]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -185,7 +211,7 @@ function FormUpdateMedicalStaff() {
     }
   };
   if (loading) return <Spinner animation="border" variant="primary" />;
-  if (errSpecialty || !idMedical || error || !idStaff) {
+  if (errSpecialty || error || !idStaff) {
     return <ShowAlert />;
   }
   return (
@@ -204,6 +230,24 @@ function FormUpdateMedicalStaff() {
           <Row>
             <h3 className="text-center text-primary">Sửa nhân viên</h3>
           </Row>
+          {!state.formMedical && (
+            <Row>
+              <Form.Group className="mb-3" controlId="formGroupNameDoctor">
+                <Form.Label>Chọn cơ sở y tế:</Form.Label>
+
+                <Select
+                  value={getSelectedOption(
+                    state.updateStaff.medicalFacilityId,
+                    state.optionsFacility
+                  )}
+                  onChange={(e) => {
+                    dispatch(handleChangeForm("medicalFacilityId", e?.value));
+                  }}
+                  options={state.optionsFacility}
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row>
             <Form.Group className="mb-3" controlId="formGroupNameNV">
               <Form.Label>Tên nhân viên:</Form.Label>

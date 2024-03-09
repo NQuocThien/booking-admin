@@ -1,6 +1,7 @@
 import { getToken } from "src/utils/contain";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import {
+  Role,
   User,
   useActiveUserMutation,
   useGetAllUsersPaginationQuery,
@@ -214,12 +215,12 @@ function ListUserPage() {
     dispatch(handleChangShowModal({ ...state.showModals, roles: true }));
   };
   const handleActionFormChangeRoles = () => {
-    var roles: string[] = [];
-    if (state.stateRoles.admin) roles.push(ERoles.admin);
-    if (state.stateRoles.clinic) roles.push(ERoles.clinic);
-    if (state.stateRoles.doctor) roles.push(ERoles.doctor);
-    if (state.stateRoles.customer) roles.push(ERoles.customer);
-    if (state.stateRoles.staff) roles.push(ERoles.staff);
+    var roles: Role[] = [];
+    if (state.stateRoles.admin) roles.push(Role.Admin);
+    if (state.stateRoles.clinic) roles.push(Role.Clinic);
+    if (state.stateRoles.doctor) roles.push(Role.Doctor);
+    if (state.stateRoles.customer) roles.push(Role.Customer);
+    if (state.stateRoles.staff) roles.push(Role.Staff);
     if (state.userClicked?.id)
       updateRolesMutation({
         variables: {
@@ -273,7 +274,7 @@ function ListUserPage() {
 
   useEffect(() => {
     dispatch(handleChangePagination({ ...state.pagination, current: 1 }));
-  }, [state.searchTerm, state.pagination]);
+  }, [state.searchTerm]);
   useEffect(() => {
     if (dataUserTotal?.totalUsersCount) {
       dispatch(
@@ -283,10 +284,10 @@ function ListUserPage() {
         })
       );
     }
-  }, [dataUserTotal, state.pagination]);
+  }, [dataUserTotal]);
   useEffect(() => {
     handleSearch();
-  }, [state.listUser, handleSearch]);
+  }, [handleSearch]);
   return (
     <div className="overflow-x-auto">
       <Button

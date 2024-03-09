@@ -22,13 +22,14 @@ import FormAddMedicalStaff from "src/pages/MedicalStaff/FormAddStaff";
 import ListDoctorPage from "src/pages/Doctor/ListDoctor";
 import FormUpdateMedicalStaff from "src/pages/MedicalStaff/FormUpdateStaff";
 import ListMedicalStaffPage from "src/pages/MedicalStaff/ListMedicalStaff";
+import ListCustomerPage from "src/pages/Customer/ListCustomer";
 export interface IRoute {
   path: string;
   name: string;
   element?: React.FC;
   exact?: boolean;
 }
-const routes: IRoute[] = [
+const routes_admin: IRoute[] = [
   { path: "/", exact: true, name: "Home" },
   { path: "/admin-page/me", name: "Dashboard", element: CurrentUserDetailPage },
   { path: "/admin-page/dashboard", name: "Dashboard", element: DashboardPage },
@@ -168,6 +169,11 @@ const routes: IRoute[] = [
     name: "Dashboard",
     element: FormUpdateMedicalStaff,
   },
+  {
+    path: "/admin-page/customers",
+    name: "Dashboard",
+    element: ListCustomerPage,
+  },
 ];
 
 const routes_clinic: IRoute[] = [
@@ -181,4 +187,4 @@ const routes_doctor: IRoute[] = [
   { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
   { path: "/dashboard", name: "Dashboard", element: DashboardPage },
 ];
-export { routes, routes_clinic, routes_doctor };
+export { routes_admin, routes_clinic, routes_doctor };

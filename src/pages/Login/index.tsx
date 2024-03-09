@@ -39,7 +39,6 @@ function LoginPage() {
     },
   });
   const handleSubmit = async (e: any) => {
-    // console.log('tests')
     const form = e.currentTarget;
     e.preventDefault();
     if (form.checkValidity() === false) {
@@ -55,9 +54,6 @@ function LoginPage() {
       };
       callLogin(queryValues);
     }
-    // else {
-    //     logout()
-    // }
     setValidated(true);
   };
 

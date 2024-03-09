@@ -1,10 +1,13 @@
-import { Row, Col, Dropdown, Image } from "react-bootstrap";
+import { Row, Col, Dropdown, Image, FormSelect, Form } from "react-bootstrap";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { useAuth } from "src/context/AuthContext";
+import { GetRole } from "src/utils/enum-value";
+import { getEnumValueRole } from "src/utils/getData";
 function MainHeader({ setNav }: { setNav: () => void }) {
-  const { userInfor, logout, isLoginIn } = useAuth();
+  const { userInfor, logout, isLoginIn, currRole, handleChangeCurrRole } =
+    useAuth();
   // console.log('header', isLoginIn)
   return (
     <Row className={s.header__top}>
@@ -26,7 +29,7 @@ function MainHeader({ setNav }: { setNav: () => void }) {
             />
             <div className={s.infor}>
               <h6>{userInfor?.username}</h6>
-              <p>{userInfor?.roles}</p>
+              <p>{currRole}</p>
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -47,6 +50,26 @@ function MainHeader({ setNav }: { setNav: () => void }) {
               className={s.header__top_infor_item}>
               Đăng xuất
             </Dropdown.Item>
+            {userInfor?.roles && userInfor?.roles?.length > 1 && (
+              <>
+                <Dropdown.Divider />
+                <Form>
+                  <p className="mx-3">Đổi vai trò:</p>
+                  <Form.Select
+                    onChange={(e) => {
+                      if (e.currentTarget.value)
+                        handleChangeCurrRole(e.currentTarget.value as GetRole);
+                    }}
+                    value={currRole}>
+                    {userInfor.roles.map((role, i) => (
+                      <option key={i} value={getEnumValueRole(role)}>
+                        {role}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form>
+              </>
+            )}
           </Dropdown.Menu>
         </Dropdown>
       </Col>

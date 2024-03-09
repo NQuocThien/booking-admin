@@ -60,7 +60,7 @@ function FormAddPackage() {
           ...state.createPackage,
           image: image,
         };
-        console.log("---> inputed: ", input);
+        // console.log("---> inputed: ", input);
         await createPackage({
           variables: {
             input: input,

@@ -5,3 +5,11 @@ export enum GetEPermission {
   MagagerPackage = "Quản lý gói khám",
   MagagerVaccine = "Quản lý tim chủng",
 }
+export enum GetRole {
+  User = "user",
+  Admin = "admin",
+  Customer = "customer",
+  Clinic = "clinic",
+  Doctor = "doctor",
+  Staff = "staff",
+}

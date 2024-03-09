@@ -3,17 +3,24 @@ import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { Item, _navAdmin, _navClinic, _navDoctor } from "src/assets/nav/_nav";
 import SideBarNav from "src/components/layout/SideBarNav";
 import { useAuth } from "src/context/AuthContext";
+import { GetRole } from "src/utils/enum-value";
+import { useEffect, useLayoutEffect, useState } from "react";
 function MainNavigation() {
-  const { isLoginIn, userInfor } = useAuth();
-  let items: Item[] = [];
-  if (isLoginIn) {
+  const { isLoginIn, userInfor, currRole } = useAuth();
+  // let items: Item[] = [];
+  const [items, setItems] = useState<Item[]>([]);
+  // console.log('Routing: '+ )
+  useLayoutEffect(() => {
     const roles = userInfor?.roles;
-    if (userInfor?.roles?.includes("admin")) items = _navAdmin;
+    if (currRole === GetRole.Admin) setItems(_navAdmin);
     else {
-      if (roles?.includes("clinic")) items = _navClinic;
-      else if (roles?.includes("doctor")) items = _navDoctor;
+      if (currRole === GetRole.Clinic) setItems(_navClinic);
+      else if (currRole === GetRole.Doctor) setItems(_navDoctor);
+      else if (currRole === GetRole.Staff) setItems(_navClinic);
     }
-  }
+    // console.log("--> Test currRole:", currRole);
+  }, [isLoginIn, currRole]);
+
   return (
     <div>
       <Row className={s.nav__top}>

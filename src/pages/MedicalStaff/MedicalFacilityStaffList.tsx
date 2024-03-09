@@ -50,12 +50,12 @@ function MedicalFacilityListStaff({ facilityId }: IProp) {
       input: facilityId || "",
     },
   });
-  const [deleteVacination, { loading: loadingDeleteVaccination }] =
+  const [deleteStaff, { loading: loadingDeleteVaccination }] =
     useDeleteMedicalStaffMutation({
       fetchPolicy: "no-cache",
     });
   const handleDelete = async (id: string) => {
-    await deleteVacination({
+    await deleteStaff({
       variables: {
         input: id,
       },

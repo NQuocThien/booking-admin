@@ -212,114 +212,6 @@ const getAllMedicalFacilityPagination = gql`
       status
       dateOff
       schedule
-      doctors {
-        id
-        userId
-        medicalFactilitiesId
-        name
-        academicTitle
-        avatar {
-          filename
-          type
-          url
-        }
-        discription
-        price
-        degree
-        email
-        numberPhone
-        gender
-        userId
-        specialistId
-        workSchedule {
-          dayOff
-          numberSlot
-          schedule {
-            dayOfWeek
-            sessions {
-              startTime
-              endTime
-            }
-          }
-          status
-        }
-      }
-      medicalSpecialties {
-        id
-        medicalFactilityId
-        name
-        price
-        workSchedule {
-          dayOff
-          numberSlot
-          schedule {
-            dayOfWeek
-            sessions {
-              startTime
-              endTime
-            }
-          }
-          status
-        }
-        discription
-      }
-      vaccinations {
-        id
-        medicalFactilitiesId
-        vaccineName
-        countryOfOrigin
-        indication
-        note
-        prophylactic
-        price
-        workSchedule {
-          dayOff
-          numberSlot
-          schedule {
-            dayOfWeek
-            sessions {
-              startTime
-              endTime
-            }
-          }
-          status
-        }
-      }
-      packages {
-        id
-        packageName
-        medicalFactilitiesId
-        gender
-        examinationDetails
-        price
-        image {
-          filename
-          type
-          url
-        }
-        workSchedule {
-          dayOff
-          numberSlot
-          schedule {
-            dayOfWeek
-            sessions {
-              startTime
-              endTime
-            }
-          }
-          status
-        }
-      }
-      medicalStaffs {
-        id
-        userId
-        name
-        email
-        numberPhone
-        gender
-        medicalFacilityId
-        permissions
-      }
     }
   }
 `;
@@ -875,5 +767,52 @@ const getAllStaffPagination = gql`
 const totalStaffsCount = gql`
   query totalStaffsCount($input: String) {
     totalStaffsCount(search: $input)
+  }
+`;
+const getAllCustomerPagination = gql`
+  query getAllCustomerPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+  ) {
+    getAllCustomerPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      id
+      userId
+      name
+      gender
+      numberPhone
+      email
+      address
+      dateOfBirth
+      ethnic
+      profiles {
+        id
+        fullname
+        address
+        gender
+        dataOfBirth
+        numberPhone
+        email
+        identity
+        medicalInsurance
+        job
+        relationship
+        customerId
+        ethnic
+      }
+    }
+  }
+`;
+const getTotalCustomersCount = gql`
+  query getTotalCustomersCount($search: String) {
+    getTotalCustomersCount(search: $search)
   }
 `;

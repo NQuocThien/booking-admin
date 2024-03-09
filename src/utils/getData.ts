@@ -12,6 +12,7 @@ import {
 } from "src/graphql/webbooking-service.generated";
 import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
+import { GetRole } from "./enum-value";
 
 export const getSelectedOption = (id: string, options: [IOption]): IOption => {
   return (
@@ -262,5 +263,23 @@ export const getEnumValuePermission = (
 
     case "Quản lý tim chủng":
       return EPermission.MagagerVaccine;
+  }
+};
+export const getEnumValueRole = (input: string): GetRole | undefined => {
+  switch (input) {
+    case GetRole.Admin:
+      return GetRole.Admin;
+
+    case GetRole.Doctor:
+      return GetRole.Doctor;
+
+    case GetRole.Clinic:
+      return GetRole.Clinic;
+
+    case GetRole.Staff:
+      return GetRole.Staff;
+
+    default:
+      return GetRole.Customer;
   }
 };

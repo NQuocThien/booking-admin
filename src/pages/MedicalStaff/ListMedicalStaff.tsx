@@ -72,10 +72,6 @@ function ListMedicalStaffPage() {
     dispatch(handleSetShowModal(true));
   };
 
-  // const [deleteDoctor, { loading: loadingDeleteDoctor }] =
-  //   useDeleteDoctorMutation({
-  //     fetchPolicy: "no-cache",
-  //   });
   const [deleteStaff, { loading: loadingDeleteStaff }] =
     useDeleteMedicalStaffMutation({
       fetchPolicy: "no-cache",

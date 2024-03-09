@@ -1,15 +1,19 @@
 import {
+  Role,
   User,
   useCheckLoginQueryQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getLocalStorage, setLocalStorage } from "src/utils/contain";
 import { createContext, useContext, useEffect, useState } from "react";
+import { GetRole } from "src/utils/enum-value";
 
 interface AuthContextType {
   isLoginIn: boolean;
   login: (token: string) => void;
   logout: () => void;
   userInfor: User | undefined;
+  currRole: GetRole | undefined;
+  handleChangeCurrRole: (role: GetRole) => void;
   handleChangeUserInfor: (dataUser: User) => void;
   checkExpirationToken: () => void;
 }
@@ -29,11 +33,11 @@ interface AuthProviderProps {
 function AuthContextProvider({ children }: AuthProviderProps) {
   const [isLoginIn, setIsLoginIn] = useState<boolean>(false);
   const [userInfor, setUserInfor] = useState<User>();
+  const [currRole, setCurrRole] = useState<GetRole>();
   const tokenKey = process.env.REACT_APP_ACCESS_TOKEN
     ? process.env.REACT_APP_ACCESS_TOKEN
     : "access_token";
   const token: string = getLocalStorage(tokenKey) || "null";
-  // console.log('state token: ', token)
   const { refetch: refetchData, data } = useCheckLoginQueryQuery({
     context: {
       headers: {
@@ -44,27 +48,44 @@ function AuthContextProvider({ children }: AuthProviderProps) {
   });
   useEffect(() => {
     // thực hiện kiểm tra đăng nhập và get thông tin user
-    if (data) {
+    if (data?.checklogin.roles) {
       setIsLoginIn(true);
-      // console.log('data, ', data)
       setUserInfor(data.checklogin);
     } else {
       setIsLoginIn(false);
     }
   }, [data]);
-  //check login
+  useEffect(() => {
+    if (data?.checklogin.roles) {
+      const roles = data.checklogin.roles;
+      if (userInfor?.roles?.includes(GetRole.Admin)) setCurrRole(GetRole.Admin);
+      else {
+        if (roles?.includes(GetRole.Clinic)) setCurrRole(GetRole.Clinic);
+        else if (roles?.includes(GetRole.Doctor)) setCurrRole(GetRole.Doctor);
+        else if (roles?.includes(GetRole.Staff)) setCurrRole(GetRole.Staff);
+      }
+    }
+  }, [isLoginIn]);
   const login = (token: string) => {
     setLocalStorage(tokenKey, token);
+    // refetchData();
     setIsLoginIn(true);
+  };
+  const handleChangeCurrRole = (role: GetRole) => {
+    if (data?.checklogin.roles?.includes(role)) {
+      setCurrRole(role);
+    }
   };
   const logout = () => {
     setIsLoginIn(false);
     setLocalStorage(tokenKey, "");
-    // refetchData()
   };
   const handleChangeUserInfor = (dataUser: User) => {
     setUserInfor(dataUser);
   };
+  // const handleChangeRole = (role: Role) => {
+  //   setCurrRoute(role);
+  // };
   const checkExpirationToken = () => {
     // cắt token lấy payload và giải mã Base64 URL-encoded  thành JSON rồi chuyển json thành object
     const expirationTime = JSON.parse(atob(token.split(".")[1])).exp;
@@ -81,7 +102,9 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         login,
         logout,
         userInfor,
+        currRole,
         handleChangeUserInfor,
+        handleChangeCurrRole,
         checkExpirationToken,
       }}>
       {children}

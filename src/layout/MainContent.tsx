@@ -18,12 +18,10 @@ function MainContent() {
   useEffect(() => {
     if (currRole === GetRole.Admin) setRoutes(routes_admin);
     else {
-      if (currRole === GetRole.Clinic) setRoutes(routes_clinic);
+      if (currRole === GetRole.Facility) setRoutes(routes_clinic);
       else if (currRole === GetRole.Doctor) setRoutes(routes_doctor);
       else if (currRole === GetRole.Staff) setRoutes(routes_clinic);
     }
-    // console.log("---> test route1: ", currRole);
-    // console.log("---> test route: ", routes);
   }, [auth, currRole]);
   const routeComponents = useMemo(() => {
     return routes.map((route) => {

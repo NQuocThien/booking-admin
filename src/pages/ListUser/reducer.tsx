@@ -31,7 +31,7 @@ export const initState: IStateListUserPage = {
   userClicked: undefined,
   stateRoles: {
     admin: false,
-    clinic: false,
+    facility: false,
     customer: false,
     doctor: false,
     staff: false,

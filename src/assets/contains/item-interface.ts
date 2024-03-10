@@ -1,7 +1,7 @@
 export interface ICheckRoles {
   admin: boolean;
   customer: boolean;
-  clinic: boolean;
+  facility: boolean;
   doctor: boolean;
   staff: boolean;
 }

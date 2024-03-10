@@ -7,6 +7,7 @@ interface IProps {
   setPageActive: (pageNumber: number) => void;
 }
 function PaginationCpn(props: IProps) {
+  console.log("---> total page: ", props.totalPage);
   const { setPageActive, size = "sm", totalPage } = props;
   const pageNumbers: number[] = [];
   for (let i = 1; i <= totalPage; i++) {

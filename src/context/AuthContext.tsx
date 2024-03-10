@@ -1,6 +1,7 @@
 import {
   Role,
   User,
+  useCheckLoginQueryLazyQuery,
   useCheckLoginQueryQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getLocalStorage, setLocalStorage } from "src/utils/contain";
@@ -38,7 +39,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     ? process.env.REACT_APP_ACCESS_TOKEN
     : "access_token";
   const token: string = getLocalStorage(tokenKey) || "null";
-  const { refetch: refetchData, data } = useCheckLoginQueryQuery({
+  const [checkLogin, { data }] = useCheckLoginQueryLazyQuery({
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,7 +48,9 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     fetchPolicy: "no-cache",
   });
   useEffect(() => {
-    // thực hiện kiểm tra đăng nhập và get thông tin user
+    if (token) checkLogin();
+  }, []);
+  useEffect(() => {
     if (data?.checklogin.roles) {
       setIsLoginIn(true);
       setUserInfor(data.checklogin);
@@ -60,15 +63,27 @@ function AuthContextProvider({ children }: AuthProviderProps) {
       const roles = data.checklogin.roles;
       if (userInfor?.roles?.includes(GetRole.Admin)) setCurrRole(GetRole.Admin);
       else {
-        if (roles?.includes(GetRole.Clinic)) setCurrRole(GetRole.Clinic);
+        if (roles?.includes(GetRole.Facility)) setCurrRole(GetRole.Facility);
         else if (roles?.includes(GetRole.Doctor)) setCurrRole(GetRole.Doctor);
         else if (roles?.includes(GetRole.Staff)) setCurrRole(GetRole.Staff);
       }
     }
+    // console.group("Conext Login");
+    // console.log("---> Test isLogin: ", isLoginIn);
+    // console.log("---> Test role: ", data?.checklogin.roles);
+    // console.log("---> Test currRole: ", currRole);
+    // console.groupEnd();
   }, [isLoginIn]);
-  const login = (token: string) => {
-    setLocalStorage(tokenKey, token);
-    // refetchData();
+  const login = async (newToken: string) => {
+    setLocalStorage(tokenKey, newToken);
+    await checkLogin({
+      context: {
+        headers: {
+          Authorization: `Bearer ${newToken}`, // Thay đổi token hoặc header khác nếu cần
+          // Các header khác nếu cần
+        },
+      },
+    } as any);
     setIsLoginIn(true);
   };
   const handleChangeCurrRole = (role: GetRole) => {

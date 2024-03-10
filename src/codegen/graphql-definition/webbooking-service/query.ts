@@ -64,14 +64,15 @@ const GetAllUser = gql`
     }
   }
 `;
-const getUserClinicPending = gql`
-  query getUserClinicPending {
-    getUserMedicalNon {
+const getUserFacilitySelect = gql`
+  query getUserFacilitySelect($input: String!) {
+    getUserFacilitySelect(input: $input) {
       id
       username
     }
   }
 `;
+
 const getUserDoctorPending = gql`
   query getUserDoctorPending {
     getUserDoctorPending {
@@ -167,6 +168,85 @@ const getMedicalFacilityById = gql`
       status
       dateOff
       schedule
+    }
+  }
+`;
+const getMedicalFacilityByUserId = gql`
+  query getMedicalFacilityByUserId($input: String!) {
+    getMedicalFacilityByUserId(id: $input) {
+      id
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      logo {
+        filename
+        type
+        url
+      }
+
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
+      discription
+      introduce
+      operatingStatus
+      legalRepresentation
+      taxCode
+      status
+      dateOff
+      schedule
+      totalDoctors
+      totalPackages
+      totalSpecialties
+      totalVaccinations
+    }
+  }
+`;
+const getGeneralMedicalFacilityByUserId = gql`
+  query getGeneralMedicalFacilityByUserId($input: String!) {
+    getMedicalFacilityByUserId(id: $input) {
+      id
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      logo {
+        filename
+        type
+        url
+      }
+
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
+      discription
+      introduce
+      operatingStatus
+      legalRepresentation
+      taxCode
+      status
+      dateOff
+      schedule
+    }
+  }
+`;
+const getMedicalFacilityIdByUserId = gql`
+  query getMedicalFacilityIdByUserId($input: String!) {
+    getMedicalFacilityByUserId(id: $input) {
+      id
+      userId
+      medicalFacilityName
     }
   }
 `;
@@ -465,9 +545,58 @@ const getAllDoctorPagination = gql`
     }
   }
 `;
+const getAllDoctorPaginationOfFacility = gql`
+  query getAllDoctorPaginationOfFacility(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $userId: String!
+  ) {
+    getAllDoctorPaginationOfFacility(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      discription
+      price
+      avatar {
+        filename
+        type
+        url
+      }
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
 const getTotalDoctorsCount = gql`
-  query getTotalDoctorsCount($search: String) {
-    getTotalDoctorsCount(search: $search)
+  query getTotalDoctorsCount($search: String, $userId: String) {
+    getTotalDoctorsCount(search: $search, userId: $userId)
   }
 `;
 const getPackageById = gql`

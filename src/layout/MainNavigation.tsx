@@ -7,18 +7,14 @@ import { GetRole } from "src/utils/enum-value";
 import { useEffect, useLayoutEffect, useState } from "react";
 function MainNavigation() {
   const { isLoginIn, userInfor, currRole } = useAuth();
-  // let items: Item[] = [];
   const [items, setItems] = useState<Item[]>([]);
-  // console.log('Routing: '+ )
-  useLayoutEffect(() => {
-    const roles = userInfor?.roles;
+  useEffect(() => {
     if (currRole === GetRole.Admin) setItems(_navAdmin);
     else {
-      if (currRole === GetRole.Clinic) setItems(_navClinic);
+      if (currRole === GetRole.Facility) setItems(_navClinic);
       else if (currRole === GetRole.Doctor) setItems(_navDoctor);
       else if (currRole === GetRole.Staff) setItems(_navClinic);
     }
-    // console.log("--> Test currRole:", currRole);
   }, [isLoginIn, currRole]);
 
   return (

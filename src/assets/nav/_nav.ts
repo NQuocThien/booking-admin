@@ -82,24 +82,6 @@ const _navAdmin: Item[] = [
         to: "/admin-page/client",
         iconName: "MdWebhook",
       },
-      {
-        component: "NavItem",
-        name: "Chuyên Khoa",
-        to: "/general/special",
-        iconName: "MdOutlineMedicalServices",
-      },
-      {
-        component: "NavItem",
-        name: "Học vị",
-        to: "/general/degree",
-        iconName: "MdOutlineRotate90DegreesCw",
-      },
-      {
-        component: "NavItem",
-        name: "Gói khám",
-        to: "/general/carepackage",
-        iconName: "MdMedication",
-      },
     ],
   },
 ];
@@ -109,7 +91,7 @@ const _navClinic: Item[] = [
   {
     component: "NavItem",
     name: "Trang chủ",
-    to: "/home",
+    to: "/facility-page",
     iconName: "MdHomeFilled",
     badge: {
       nameBadge: "Mới",
@@ -123,7 +105,7 @@ const _navClinic: Item[] = [
   {
     component: "NavItem",
     name: "CSYT",
-    to: "/home/myclinic",
+    to: "/facility-page/home",
     iconName: "MdMedicalServices",
     badge: {
       nameBadge: "+",
@@ -137,9 +119,27 @@ const _navClinic: Item[] = [
     items: [
       {
         component: "NavItem",
+        name: "Bác sỉ",
+        to: "/facility-page/doctors",
+        iconName: "LiaUserNurseSolid",
+      },
+      {
+        component: "NavItem",
+        name: "Chuyên khoa",
+        to: "/facility-page/specialties",
+        iconName: "MdOutlineMedicalServices",
+      },
+      {
+        component: "NavItem",
+        name: "Tim chủng",
+        to: "/facility-page/vaccinations",
+        iconName: "MdVaccines",
+      },
+      {
+        component: "NavItem",
         name: "Gói khám",
-        to: "/clinic/manager/carepackage",
-        iconName: "MdSupervisedUserCircle",
+        to: "/facility-page/packages",
+        iconName: "MdOutlineMedicalInformation",
       },
     ],
   },

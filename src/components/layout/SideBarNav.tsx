@@ -5,8 +5,6 @@ import { Item } from "src/assets/nav/_nav";
 import { useLocation } from "react-router-dom";
 
 function SideBarNav({ items }: { items: Item[] }) {
-  const location = useLocation();
-  // console.log('path: ', location.pathname)
   return (
     <>
       {items?.map((item, index) => {

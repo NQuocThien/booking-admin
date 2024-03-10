@@ -273,8 +273,8 @@ export const getEnumValueRole = (input: string): GetRole | undefined => {
     case GetRole.Doctor:
       return GetRole.Doctor;
 
-    case GetRole.Clinic:
-      return GetRole.Clinic;
+    case GetRole.Facility:
+      return GetRole.Facility;
 
     case GetRole.Staff:
       return GetRole.Staff;

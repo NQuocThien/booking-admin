@@ -24,7 +24,7 @@ import {
   EStatusService,
   LinkImageInput,
   useCreateMedicalFacilityMutation,
-  useGetUserClinicPendingQuery,
+  useGetUserFacilitySelectQuery,
 } from "src/graphql/webbooking-service.generated";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -42,12 +42,15 @@ function FormAddMedicalFacility() {
   const logoRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
   const token = getToken();
-  const { data: dataUsers, loading } = useGetUserClinicPendingQuery({
+  const { data: dataUsers, loading } = useGetUserFacilitySelectQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    },
+    variables: {
+      input: "",
     },
   });
   const [createMedicalFacility] = useCreateMedicalFacilityMutation({
@@ -65,8 +68,8 @@ function FormAddMedicalFacility() {
     },
   ]);
   useEffect(() => {
-    if (dataUsers?.getUserMedicalNon) {
-      const options = dataUsers?.getUserMedicalNon.map((user) => ({
+    if (dataUsers?.getUserFacilitySelect) {
+      const options = dataUsers?.getUserFacilitySelect.map((user) => ({
         value: user.id,
         label: user.username,
       }));

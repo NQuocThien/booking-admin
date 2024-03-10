@@ -30,7 +30,6 @@ import {
 } from "src/graphql/webbooking-service.generated";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
@@ -39,7 +38,7 @@ import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
-function FormUpdateMedicalFacility() {
+function FormUpdateGeneralMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -498,32 +497,6 @@ function FormUpdateMedicalFacility() {
             `}</style>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Group className="mb-3" controlId="formGroupUser">
-                <Form.Label>
-                  Chọn tài khoản:{" "}
-                  {loading && (
-                    <Spinner animation="border" variant="primary" size="sm" />
-                  )}
-                </Form.Label>
-                <Select
-                  required
-                  value={optUsersSelected}
-                  onChange={(e) => {
-                    if (e?.label && e.value) {
-                      dispatch(handleChangeForm("userId", e?.value));
-                      setOptUsersSelected({
-                        value: e?.label,
-                        label: e?.label,
-                      });
-                    }
-                  }}
-                  options={optUsers}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
           <Row className="mt-3">
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">
@@ -537,4 +510,4 @@ function FormUpdateMedicalFacility() {
     </Container>
   );
 }
-export default FormUpdateMedicalFacility;
+export default FormUpdateGeneralMedicalFacility;

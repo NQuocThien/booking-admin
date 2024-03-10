@@ -9,7 +9,7 @@ export enum GetRole {
   User = "user",
   Admin = "admin",
   Customer = "customer",
-  Clinic = "clinic",
+  Facility = "facility",
   Doctor = "doctor",
   Staff = "staff",
 }

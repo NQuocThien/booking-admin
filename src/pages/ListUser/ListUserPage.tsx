@@ -91,7 +91,7 @@ function ListUserPage() {
 
   // const [stateRoles, setStateRoles] = useState<ICheckRoles>({
   //   admin: false,
-  //   clinic: false,
+  //   facility: false,
   //   customer: false,
   //   doctor: false,
   //   staff: false,
@@ -156,7 +156,7 @@ function ListUserPage() {
     dispatch(
       handleChangeStateRoles({
         admin: false,
-        clinic: false,
+        facility: false,
         customer: false,
         doctor: false,
         staff: false,
@@ -173,11 +173,11 @@ function ListUserPage() {
               })
             );
             break;
-          case ERoles.clinic:
+          case ERoles.facility:
             dispatch(
               handleChangeStateRoles({
                 ...state.stateRoles,
-                clinic: true,
+                facility: true,
               })
             );
             break;
@@ -217,7 +217,7 @@ function ListUserPage() {
   const handleActionFormChangeRoles = () => {
     var roles: Role[] = [];
     if (state.stateRoles.admin) roles.push(Role.Admin);
-    if (state.stateRoles.clinic) roles.push(Role.Clinic);
+    if (state.stateRoles.facility) roles.push(Role.Facility);
     if (state.stateRoles.doctor) roles.push(Role.Doctor);
     if (state.stateRoles.customer) roles.push(Role.Customer);
     if (state.stateRoles.staff) roles.push(Role.Staff);
@@ -392,15 +392,15 @@ function ListUserPage() {
 
               <Form.Check
                 type="switch"
-                id="custom-clinic"
-                label="Clinic"
-                name="check-clinic"
-                checked={state.stateRoles.clinic}
+                id="custom-facility"
+                label="facility"
+                name="check-facility"
+                checked={state.stateRoles.facility}
                 onChange={() =>
                   dispatch(
                     handleChangeStateRoles({
                       ...state.stateRoles,
-                      clinic: !state.stateRoles.clinic,
+                      facility: !state.stateRoles.facility,
                     })
                   )
                 }

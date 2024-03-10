@@ -23,6 +23,10 @@ import ListDoctorPage from "src/pages/Doctor/ListDoctor";
 import FormUpdateMedicalStaff from "src/pages/MedicalStaff/FormUpdateStaff";
 import ListMedicalStaffPage from "src/pages/MedicalStaff/ListMedicalStaff";
 import ListCustomerPage from "src/pages/Customer/ListCustomer";
+import FacilityHomePage from "src/pages/MedicalFacilities/Facility-Page/HomePage";
+import GeneralInforFacilityPage from "src/pages/MedicalFacilities/Facility-Page/GeneralInforFacility";
+import FormUpdateGeneralMedicalFacility from "src/pages/MedicalFacilities/Facility-Page/FormUpdateGeneral";
+import ListDoctorOfFacilityPage from "src/pages/Doctor/Facility-Page/ListDoctorOfFacility";
 export interface IRoute {
   path: string;
   name: string;
@@ -31,7 +35,7 @@ export interface IRoute {
 }
 const routes_admin: IRoute[] = [
   { path: "/", exact: true, name: "Home" },
-  { path: "/admin-page/me", name: "Dashboard", element: CurrentUserDetailPage },
+  { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
   { path: "/admin-page/dashboard", name: "Dashboard", element: DashboardPage },
   { path: "/admin-page/users", name: "Dashboard", element: ListUserPage },
   {
@@ -180,11 +184,41 @@ const routes_clinic: IRoute[] = [
   { path: "/", exact: true, name: "Home" },
   { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
   { path: "/dashboard", name: "Dashboard", element: DashboardPage },
+  { path: "/facility-page", name: "Dashboard", element: FacilityHomePage },
+  {
+    path: "/facility-page/home",
+    name: "Dashboard",
+    element: GeneralInforFacilityPage,
+  },
+  {
+    path: "/facility-page/update/:id",
+    name: "Dashboard",
+    element: FormUpdateGeneralMedicalFacility,
+  },
+  {
+    path: "/facility-page/doctors",
+    name: "Dashboard",
+    element: ListDoctorOfFacilityPage,
+  },
+  {
+    path: "/facility-page/doctors/form-add/:id",
+    name: "Dashboard",
+    element: FormAddDoctor,
+  },
+  {
+    path: "/facility-page/doctors/update/:id/:idDoctor",
+    name: "Dashboard",
+    element: FormUpdateDoctor,
+  },
 ];
 
 const routes_doctor: IRoute[] = [
   { path: "/", exact: true, name: "Home" },
-  { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
+  {
+    path: "/me",
+    name: "Dashboard",
+    element: CurrentUserDetailPage,
+  },
   { path: "/dashboard", name: "Dashboard", element: DashboardPage },
 ];
 export { routes_admin, routes_clinic, routes_doctor };

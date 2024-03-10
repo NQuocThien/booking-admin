@@ -1,6 +1,7 @@
 import * as MaterialDesignIcon from "react-icons/md";
 import * as GameIcon from "react-icons/gi";
 import * as IconS8 from "react-icons/lia";
+import * as Fa6 from "react-icons/fa6";
 import momnet from "moment";
 import React from "react";
 import { SessionInput } from "src/graphql/webbooking-service.generated";
@@ -43,6 +44,8 @@ export function getIcon(iconName: string | undefined) {
   const iconTemp: any = MaterialDesignIcon;
   const iconTemp2: any = GameIcon;
   const iconTemp3: any = IconS8;
+  const iconTemp4: any = Fa6;
+
   if (iconName)
     if (iconTemp[iconName]) {
       return React.createElement(iconTemp[iconName]);
@@ -50,6 +53,8 @@ export function getIcon(iconName: string | undefined) {
       if (iconTemp2[iconName]) return React.createElement(iconTemp2[iconName]);
       else if (iconTemp3[iconName])
         return React.createElement(iconTemp3[iconName]);
+      else if (iconTemp4[iconName])
+        return React.createElement(iconTemp4[iconName]);
       else return null;
     }
   else return null;

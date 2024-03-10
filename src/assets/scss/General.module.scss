@@ -1,0 +1,6 @@
+@import "./abstracts/variables.module.scss";
+.component {
+  background-color: $white;
+  padding: 10px;
+  border-radius: 10px;
+}

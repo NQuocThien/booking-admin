@@ -1,0 +1,17 @@
+@import "../abstracts/variables.module.scss";
+.component {
+  background-color: $white;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 260px;
+}
+.icon {
+  background-color: #d2fffc;
+  border-radius: 50%;
+  max-width: 60px;
+  color: #1b837c;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

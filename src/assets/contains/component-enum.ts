@@ -10,7 +10,7 @@ export enum Evariant {
 }
 export enum ERoles {
   admin = "admin",
-  clinic = "clinic",
+  facility = "facility",
   customer = "customer",
   doctor = "doctor",
   staff = "staff",

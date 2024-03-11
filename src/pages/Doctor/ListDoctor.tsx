@@ -90,10 +90,8 @@ function ListDoctorPage() {
         showToast("Có lỗi xảy ra 😢😢", "error");
       }
     } else {
-      console.log("Hủy bỏ xóa");
     }
   };
-  // if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) {
     console.log(error);
     return <ShowAlert />;

@@ -55,6 +55,17 @@ function VaccinationDetailPage() {
       if (data?.getVaccineById) {
         setListSchedule(data?.getVaccineById.workSchedule.schedule);
       }
+    } else if (location.pathname.search("/facility-page/vaccinations") !== -1) {
+      setBreadcrumbs([
+        { url: "/facility-page/vaccinations", label: "Danh sách vaccine" },
+        {
+          url: "",
+          label: data?.getVaccineById.vaccineName || "",
+        },
+      ]);
+      if (data?.getVaccineById) {
+        setListSchedule(data?.getVaccineById.workSchedule.schedule);
+      }
     }
   }, [location, data, dataMedical]);
 

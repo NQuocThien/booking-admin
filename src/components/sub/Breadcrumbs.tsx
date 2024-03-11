@@ -21,17 +21,12 @@ const CustomBreadcrumbs: React.FC<ICustomBreadcrumbsProps> = ({ paths }) => {
               key={index}
               active={index === paths.length - 1}
               as={"span"}>
-              {/* {index === paths.length - 1 ? (
-                path.label
-              ) : (
-                // <Link to={path.url}>{path.label}</Link>
-              )} */}
               {path.label}
             </Breadcrumb.Item>
           );
         return (
-          <Link key={index} to={path.url}>
-            {path.label} /{" "}
+          <Link key={index} to={path.url} className="me-1">
+            {path.label} /
           </Link>
         );
       })}

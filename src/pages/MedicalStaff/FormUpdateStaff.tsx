@@ -177,7 +177,6 @@ function FormUpdateMedicalStaff() {
     e.preventDefault();
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
-      console.log("test input: ", state.updateStaff);
       const input: UpdateMedicalStaffInput = {
         id: state.updateStaff.id,
         email: state.updateStaff.email,

@@ -17,7 +17,6 @@ export const setLocalStorage = (key: string, value: string | object | []) => {
 export const getLocalStorage = (key: string) => {
   try {
     const storedValue = localStorage.getItem(key);
-    // console.log('get item ' + key + ', ' + storedValue)
     return storedValue;
   } catch (error) {
     // Xử lý lỗi nếu có
@@ -31,7 +30,6 @@ export const getToken = () => {
     const storedValue = localStorage.getItem(
       process.env.REACT_APP_ACCESS_TOKEN || "access_token"
     );
-    // console.log('get item ' + key + ', ' + storedValue)
     return storedValue;
   } catch (error) {
     // Xử lý lỗi nếu có

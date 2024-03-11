@@ -8,7 +8,6 @@ import { getEnumValueRole } from "src/utils/getData";
 function MainHeader({ setNav }: { setNav: () => void }) {
   const { userInfor, logout, isLoginIn, currRole, handleChangeCurrRole } =
     useAuth();
-  // console.log('header', isLoginIn)
   return (
     <Row className={s.header__top}>
       <Col xl={2} lg={2} md={2} className={s.header__top_menu}>

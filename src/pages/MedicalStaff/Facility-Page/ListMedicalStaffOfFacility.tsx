@@ -4,10 +4,16 @@ import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
   MedicalStaff,
-  useDeleteDoctorMutation,
   useDeleteMedicalStaffMutation,
-  useGetAllStaffPaginationQuery,
-  useGetTotalFacilitiesCountQuery,
+  useDeletePackageMutation,
+  useDeleteVaccinationMutation,
+  useGetAllMedicalStaffPaginationOfFacilityQuery,
+  useGetAllPackagePaginationOfFacilityQuery,
+  useGetAllVaccinationPaginationOfFacilityQuery,
+  useGetMedicalFacilityIdByUserIdQuery,
+  useGetTotalPackagesCountQuery,
+  useGetTotalVaccinationsCountQuery,
+  useTotalStaffsCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -19,29 +25,47 @@ import {
   handleChangeSearchTerm,
   handleSetSelectedStaff,
   handleSetShowModal,
-  handleSetlistStaff,
+  handleSetlistMedicalStaff,
   initState,
   reducer,
 } from "./reducer-list";
 import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
+import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import ModalCpn from "src/components/sub/Modal";
-import { IoPersonCircleOutline, IoSettingsSharp } from "react-icons/io5";
-import { FaPhone } from "react-icons/fa";
+import { FaPhone } from "react-icons/fa6";
 import {
   MdManageAccounts,
   MdOutlineEmail,
   MdOutlineTransgender,
 } from "react-icons/md";
+import { IoPersonCircleOutline, IoSettingsSharp } from "react-icons/io5";
 import { GetEPermission } from "src/utils/enum-value";
-function ListMedicalStaffPage() {
+function ListMedicalStaffOfFacilityPage() {
   const token = getToken();
-  const { checkExpirationToken } = useAuth();
+  const { checkExpirationToken, userInfor } = useAuth();
+
   checkExpirationToken();
 
   const [state, dispatch] = useReducer(reducer, initState);
-  const { refetch, data, loading, error } = useGetAllStaffPaginationQuery({
+  const { refetch, data, loading, error } =
+    useGetAllMedicalStaffPaginationOfFacilityQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      variables: {
+        limit: 10,
+        page: state.pagination.current,
+        search: state.searchTerm,
+        sortOrder: state.pagination.sort,
+        userId: userInfor?.id || "",
+      },
+    });
+  const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -49,13 +73,10 @@ function ListMedicalStaffPage() {
       },
     },
     variables: {
-      limit: 10,
-      page: state.pagination.current,
-      search: state.searchTerm,
-      sortOrder: state.pagination.sort,
+      input: userInfor?.id || "",
     },
   });
-  const { data: dataTotal } = useGetTotalFacilitiesCountQuery({
+  const { data: dataTotal } = useTotalStaffsCountQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -64,29 +85,27 @@ function ListMedicalStaffPage() {
     },
     variables: {
       search: state.searchTerm,
+      userId: userInfor?.id || "",
     },
   });
-
-  const handleClickStaff = (staff: MedicalStaff) => {
-    dispatch(handleSetSelectedStaff(staff));
-    dispatch(handleSetShowModal(true));
-  };
-
   const [deleteStaff, { loading: loadingDeleteStaff }] =
     useDeleteMedicalStaffMutation({
       fetchPolicy: "no-cache",
     });
+
   useEffect(() => {
-    if (data?.getAllStaffPagination) {
-      dispatch(handleSetlistStaff(data?.getAllStaffPagination));
+    if (data?.getAllMedicalStaffPaginationOfFacility) {
+      dispatch(
+        handleSetlistMedicalStaff(data?.getAllMedicalStaffPaginationOfFacility)
+      );
     }
   }, [data]);
   useEffect(() => {
-    if (dataTotal?.getTotalFacilitiesCount) {
+    if (dataTotal?.totalStaffsCount) {
       dispatch(
         handleChangePagination({
           ...state.pagination,
-          total: dataTotal.getTotalFacilitiesCount,
+          total: dataTotal.totalStaffsCount,
         })
       );
     }
@@ -99,7 +118,7 @@ function ListMedicalStaffPage() {
           variables: {
             input: id,
           },
-        }).then((res) => {
+        }).then(() => {
           showToast("Xóa thành công ✌️", "success");
           refetch();
         });
@@ -108,6 +127,10 @@ function ListMedicalStaffPage() {
       }
     } else {
     }
+  };
+  const handleClickStaff = (staff: MedicalStaff) => {
+    dispatch(handleSetSelectedStaff(staff));
+    dispatch(handleSetShowModal(true));
   };
   if (error) {
     console.log(error);
@@ -136,7 +159,7 @@ function ListMedicalStaffPage() {
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={"/admin-page/staffs/form-add"}>
+            to={`/facility-page/staffs/form-add/${dataFacilityId?.getMedicalFacilityByUserId.id}`}>
             <FiPlus />
           </Link>
         </Col>
@@ -146,17 +169,16 @@ function ListMedicalStaffPage() {
           <thead>
             <tr>
               <th>#</th>
-              <th>Tên nhân viên</th>
-              <th>Email</th>
-              <th>Số điện thoại</th>
-              <th>Giới tính</th>
-              <th style={{ maxWidth: 200 }}>Quyền</th>
+              <th>Tên Vaccine</th>
+              <th>Nguồn gốc</th>
+              <th>Giá</th>
+              <th>Lịch làm việc</th>
               <th>Hành động </th>
             </tr>
           </thead>
           <tbody>
-            {state.listStaff &&
-              state.listStaff.map((c, i) => (
+            {state.listMedicalStaff &&
+              state.listMedicalStaff.map((c, i) => (
                 <tr key={i} className="">
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
 
@@ -190,7 +212,7 @@ function ListMedicalStaffPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/staffs/update/${c.id}`}>
+                          to={`/facility-page/staffs/update/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
                           Chỉnh sửa
                         </Dropdown.Item>
                         <Dropdown.Item>
@@ -315,4 +337,4 @@ function ListMedicalStaffPage() {
   );
 }
 
-export default ListMedicalStaffPage;
+export default ListMedicalStaffOfFacilityPage;

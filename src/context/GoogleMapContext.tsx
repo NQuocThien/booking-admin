@@ -17,7 +17,6 @@ export const GoogleMapProvider: React.FC<GoogleMapContextProps> = ({
   children,
 }) => {
   const [map, setMap] = useState<google.maps.Map | undefined>(undefined);
-  // console.log("sate map: ", map);
   return (
     <GoogleMapContext.Provider value={{ map, setMap }}>
       {children}

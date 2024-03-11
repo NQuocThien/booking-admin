@@ -96,7 +96,6 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
     const editSchedules: ScheduleInput | undefined = workSchedule.schedule.find(
       (s) => s.dayOfWeek === schedule.dayOfWeek
     );
-    // console.log("input schedule: ", s, " --- editSchedules: ", editSchedules);
     setSchedule(editSchedules);
     setModal(true);
   };
@@ -139,7 +138,6 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
   };
 
   const handleRemoveSession = (session: SessionInput) => {
-    // console.log("remove session", session);
     if (schedule?.sessions) {
       const indexToRemove: number = schedule?.sessions.findIndex(
         (ss) =>
@@ -156,7 +154,6 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
             };
           }
         });
-        // console.log("removed session", tpmSession);
       }
     }
   };
@@ -184,7 +181,6 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
         return pre;
       });
     }
-    // console.log("test get sessions: ", sessions);
   };
   const handleSortSchedule = () => {
     setSchedule((pre) => {
@@ -243,7 +239,6 @@ function WorkScheduleCpn({ workSchedule, setWorkSchedule }: IProp) {
           onChange={(e) => {
             const statusValue: EStatusService = e.target
               .value as EStatusService;
-            // console.log("test status:", statusValue);
             setWorkSchedule({
               ...workSchedule,
               status: statusValue,

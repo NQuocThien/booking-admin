@@ -40,7 +40,6 @@ function FormAddPackage() {
   });
 
   useEffect(() => {
-    console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));
@@ -60,7 +59,6 @@ function FormAddPackage() {
           ...state.createPackage,
           image: image,
         };
-        // console.log("---> inputed: ", input);
         await createPackage({
           variables: {
             input: input,
@@ -69,7 +67,6 @@ function FormAddPackage() {
           showToast("Đã thêm gói khám 👌👌");
           navigate(-1);
         });
-        console.log("input: ", input);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");

@@ -141,6 +141,12 @@ const _navClinic: Item[] = [
         to: "/facility-page/packages",
         iconName: "MdOutlineMedicalInformation",
       },
+      {
+        component: "NavItem",
+        name: "Nhân viên",
+        to: "/facility-page/staffs",
+        iconName: "MdOutlineMedicalInformation",
+      },
     ],
   },
 ];

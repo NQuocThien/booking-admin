@@ -61,6 +61,14 @@ function DoctorDetailPage() {
           label: "BS." + data?.getDoctorbyId.name || "",
         },
       ]);
+    } else if (location.pathname.search("/facility-page/doctors") !== -1) {
+      setBreadcrumbs([
+        { url: "/facility-page/doctors", label: "Danh sách bác sỉ" },
+        {
+          url: "",
+          label: "BS." + data?.getDoctorbyId.name || "",
+        },
+      ]);
     }
     if (location.pathname.search("/admin-page/doctors") !== -1) {
       setBreadcrumbs([

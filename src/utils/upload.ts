@@ -16,7 +16,6 @@ export enum ETypeFile {
 const BackendUri = process.env.BACKEND_URI
   ? process.env.BACKEND_URI
   : "http://localhost:4000";
-// console.log('backendUri', BackendUri)
 export const backendUrlFile = {
   image: `${BackendUri}${"/images"}`,
   video: `${BackendUri}${"/videos"}`,

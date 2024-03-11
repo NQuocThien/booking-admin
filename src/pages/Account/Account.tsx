@@ -56,10 +56,8 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
         updateWithPass(getToken() || "", dataUserUpdated)
           .then((res) => {
             // if (res && res.updateUserWithPass)
-            console.log(res);
             showToast("😘 Đã lưu thay đổi thành công", "success");
             const { passwordNew, ...newUser } = dataUserUpdated;
-            // console.log('data submit: ', newUser);
             handleChangeUserInfor(newUser);
             setDisabled(true);
           })
@@ -175,7 +173,6 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     }
   }, [userInfor]); // tinh tỉnh data đầu vào
 
-  // console.log("tets ref: ", avatarRef);
   return (
     <Container className={s.inforUser}>
       {isLoginIn && (

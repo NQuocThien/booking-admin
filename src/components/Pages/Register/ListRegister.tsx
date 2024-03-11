@@ -73,7 +73,6 @@ function ListRegister(props: IProps) {
   });
   useEffect(() => {
     if (doctorId && selectedDate) {
-      // console.log("Reload ===", doctorId, selectedDate);
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
       getRegisters({
         variables: {
@@ -85,7 +84,6 @@ function ListRegister(props: IProps) {
       });
     }
     if (packageId && selectedDate) {
-      // console.log("Reload ===", doctorId, selectedDate);
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
       getRegisters({
         variables: {
@@ -97,7 +95,6 @@ function ListRegister(props: IProps) {
       });
     }
     if (vaccineId && selectedDate) {
-      // console.log("Reload ===", doctorId, selectedDate);
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
       getRegisters({
         variables: {
@@ -109,7 +106,6 @@ function ListRegister(props: IProps) {
       });
     }
     if (specialtyId && selectedDate) {
-      // console.log("Reload ===", doctorId, selectedDate);
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
       getRegisters({
         variables: {
@@ -293,7 +289,6 @@ function ListRegister(props: IProps) {
                     regis.session.endTime === selectedSession?.endTime) ||
                   !selectedSession
                 ) {
-                  // console.log("test2: ", regis);
                   return (
                     <tr key={i}>
                       <td>{regis.profile.fullname}</td>

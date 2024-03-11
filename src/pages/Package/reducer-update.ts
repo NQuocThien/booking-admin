@@ -125,11 +125,9 @@ export const reducer = (
   state: IStateFormUpdatePackage,
   action: IActionFormUpdateDoctor
 ): IStateFormUpdatePackage => {
-  // console.log("test state: ", state.updatePackage.workSchedule);
   switch (action.type) {
     case HANDLE_CHANGE_FORM:
       if (action.key && action.key in state.updatePackage) {
-        // console.log("test state create doctor: ", state.createDoctor);
         return {
           ...state,
           updatePackage: {
@@ -154,7 +152,6 @@ export const reducer = (
         imageFile: action.payload,
       };
     case HC_WORK_SCHEDULE:
-      // console.log("test payload: ", action.payload);
       return {
         ...state,
         updatePackage: {

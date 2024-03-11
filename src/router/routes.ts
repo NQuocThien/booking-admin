@@ -14,7 +14,7 @@ import FormAddPackage from "src/pages/Package/FormAddPackage";
 import FormUpdatePackage from "src/pages/Package/FormUpdatePackage";
 import FormAddSpecialty from "src/pages/Specialty/FormAddSpecialty";
 import FormUpdateSpecialty from "src/pages/Specialty/FormUpdateSpecialty";
-import SpecialtyDetailPage from "src/pages/Specialty/PackageDetail";
+import SpecialtyDetailPage from "src/pages/Specialty/SpecialtyDetail";
 import FormAddVaccination from "src/pages/Vaccination/FormAddVacinnation";
 import VaccinationDetailPage from "src/pages/Vaccination/VaccinationDetail";
 import FormUpdateVaccination from "src/pages/Vaccination/FormUpdateVacinnation";
@@ -27,6 +27,10 @@ import FacilityHomePage from "src/pages/MedicalFacilities/Facility-Page/HomePage
 import GeneralInforFacilityPage from "src/pages/MedicalFacilities/Facility-Page/GeneralInforFacility";
 import FormUpdateGeneralMedicalFacility from "src/pages/MedicalFacilities/Facility-Page/FormUpdateGeneral";
 import ListDoctorOfFacilityPage from "src/pages/Doctor/Facility-Page/ListDoctorOfFacility";
+import ListMedicalSpecialtyOfFacilityPage from "src/pages/Specialty/Facility-Page/ListSpecialtyOfFacility";
+import ListVaccinationOfFacilityPage from "src/pages/Vaccination/Facility-Page/ListVaccinationOfFacility";
+import ListPackageOfFacilityPage from "src/pages/Package/Facility-Page/ListPackageOfFacility";
+import ListMedicalStaffOfFacilityPage from "src/pages/MedicalStaff/Facility-Page/ListMedicalStaffOfFacility";
 export interface IRoute {
   path: string;
   name: string;
@@ -201,6 +205,11 @@ const routes_clinic: IRoute[] = [
     element: ListDoctorOfFacilityPage,
   },
   {
+    path: "/facility-page/doctors/:id/:idDoctor",
+    name: "Dashboard",
+    element: DoctorDetailPage,
+  },
+  {
     path: "/facility-page/doctors/form-add/:id",
     name: "Dashboard",
     element: FormAddDoctor,
@@ -209,6 +218,81 @@ const routes_clinic: IRoute[] = [
     path: "/facility-page/doctors/update/:id/:idDoctor",
     name: "Dashboard",
     element: FormUpdateDoctor,
+  },
+  {
+    path: "/facility-page/specialties",
+    name: "Dashboard",
+    element: ListMedicalSpecialtyOfFacilityPage,
+  },
+  {
+    path: "/facility-page/specialties/form-add/:id",
+    name: "Dashboard",
+    element: FormAddSpecialty,
+  },
+  {
+    path: "/facility-page/specialties/:id/:idSpecialty",
+    name: "Dashboard",
+    element: SpecialtyDetailPage,
+  },
+  {
+    path: "/facility-page/specialties/update/:id/:idSpecialty",
+    name: "Dashboard",
+    element: FormUpdateSpecialty,
+  },
+  {
+    path: "/facility-page/vaccinations",
+    name: "Dashboard",
+    element: ListVaccinationOfFacilityPage,
+  },
+  {
+    path: "/facility-page/vaccinations/form-add/:id",
+    name: "Dashboard",
+    element: FormAddVaccination,
+  },
+  {
+    path: "/facility-page/vaccinations/:id/:idVaccine",
+    name: "Dashboard",
+    element: VaccinationDetailPage,
+  },
+  {
+    path: "/facility-page/vaccinations/update/:id/:idVaccine",
+    name: "Dashboard",
+    element: FormUpdateVaccination,
+  },
+  {
+    path: "/facility-page/packages",
+    name: "Dashboard",
+    element: ListPackageOfFacilityPage,
+  },
+  {
+    path: "/facility-page/packages/form-add/:id",
+    name: "Dashboard",
+    element: FormAddPackage,
+  },
+  {
+    path: "/facility-page/packages/:id/:idPackage",
+    name: "Dashboard",
+    element: PackageDetailPage,
+  },
+  {
+    path: "/facility-page/packages/update/:id/:idPackage",
+    name: "Dashboard",
+    element: FormUpdatePackage,
+  },
+  {
+    path: "/facility-page/staffs",
+    name: "Dashboard",
+    element: ListMedicalStaffOfFacilityPage,
+  },
+  {
+    path: "/facility-page/staffs/form-add/:id",
+    name: "Dashboard",
+    element: FormAddMedicalStaff,
+  },
+  {
+    path: "/facility-page/staffs/update/:id/:idStaff",
+    name: "Dashboard",
+    element: FormUpdateMedicalStaff,
   },
 ];
 

@@ -117,7 +117,6 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
       state.updateDoctor.workSchedule.schedule.find(
         (s) => s.dayOfWeek === schedule.dayOfWeek
       );
-    // console.log("input schedule: ", s, " --- editSchedules: ", editSchedules);
     setSchedule(editSchedules);
     setModal(true);
   };
@@ -160,7 +159,6 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
   };
 
   const handleRemoveSession = (session: SessionInput) => {
-    // console.log("remove session", session);
     if (schedule?.sessions) {
       const indexToRemove: number = schedule?.sessions.findIndex(
         (ss) =>
@@ -177,7 +175,6 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
             };
           }
         });
-        // console.log("removed session", tpmSession);
       }
     }
   };
@@ -225,7 +222,6 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
         return pre;
       });
     }
-    // console.log("test get sessions: ", sessions);
   };
   const handleSortSchedule = () => {
     setSchedule((pre) => {

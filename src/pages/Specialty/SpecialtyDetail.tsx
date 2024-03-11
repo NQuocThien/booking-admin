@@ -40,11 +40,24 @@ function SpecialtyDetailPage() {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
       const urlMedical = "/admin-page/medical-facility/" + id;
       setBreadcrumbs([
-        { url: "/admin-page/medical-facility", label: "Cơ sở y tế" },
+        { url: "/admin-page/medical-facility", label: "Dach sách chuyên khoa" },
         {
           url: urlMedical,
           label: dataMedical?.getMedicalFacilityById.medicalFacilityName || "",
         },
+        {
+          url: "",
+          label: data?.getMedicalSpecialtyById.name || "",
+        },
+      ]);
+      if (data?.getMedicalSpecialtyById.workSchedule) {
+        setListSchedule(data?.getMedicalSpecialtyById.workSchedule.schedule);
+      }
+    }
+    if (location.pathname.search("/facility-page/specialties/") !== -1) {
+      const urlMedical = "/facility-page/specialties" + id;
+      setBreadcrumbs([
+        { url: "/facility-page/specialties", label: "Danh sách chuyên khoa" },
         {
           url: "",
           label: data?.getMedicalSpecialtyById.name || "",

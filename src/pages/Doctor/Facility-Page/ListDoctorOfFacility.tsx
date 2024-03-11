@@ -106,7 +106,6 @@ function ListDoctorOfFacilityPage() {
         showToast("Có lỗi xảy ra 😢😢", "error");
       }
     } else {
-      console.log("Hủy bỏ xóa");
     }
   };
   // if (loading) return <Spinner animation="border" variant="primary" />;
@@ -196,7 +195,7 @@ function ListDoctorOfFacilityPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/doctors/${c.id}`}>
+                          to={`/facility-page/doctors/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
                           Chi tiết
                         </Dropdown.Item>
                         <Dropdown.Item

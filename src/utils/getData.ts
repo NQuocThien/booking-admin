@@ -212,8 +212,6 @@ export const getEnumValueDayOfWeek = (input: string): EDayOfWeed => {
   }
 };
 export const getEnumValueStateService = (input: string): EStatusService => {
-  // console.log("input ", input);
-
   switch (input) {
     case "Mở":
       return EStatusService.Open;

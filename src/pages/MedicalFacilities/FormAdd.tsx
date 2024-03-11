@@ -104,7 +104,6 @@ function FormAddMedicalFacility() {
           showToast("Đã thêm CSYT 👌👌");
           navigate(-1);
         });
-        console.log("input: ", input);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");

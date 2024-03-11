@@ -91,7 +91,6 @@ function FormAddMedicalStaff() {
     },
   });
   useEffect(() => {
-    console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFacilityId", idMedical));
@@ -131,7 +130,6 @@ function FormAddMedicalStaff() {
     e.preventDefault();
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
-      console.log("test input: ", state.createMedicalStaff);
       createMedicalStaff({
         variables: {
           input: state.createMedicalStaff,

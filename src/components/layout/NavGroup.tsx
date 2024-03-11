@@ -5,25 +5,8 @@ import NavItem from "./NavItem";
 import { Item } from "src/assets/nav/_nav";
 import React from "react";
 import { getIcon } from "src/utils/contain";
-
-// Đối tượng chứa tất cả các biểu tượng
-// import * as ICON from "react-icons/md";
-// import * as ICON2 from "react-icons/gi";
-// function getIcon(iconName: string | undefined) {
-//   const iconTemp: any = ICON;
-//   const iconTemp2: any = ICON2;
-//   if (iconName)
-//     if (iconTemp[iconName]) {
-//       return React.createElement(iconTemp[iconName]);
-//     } else {
-//       if (iconTemp2[iconName]) return React.createElement(iconTemp[iconName]);
-//       else return null;
-//     }
-//   else return null;
-// }
 function NavGroup({ items }: { items: Item }) {
   const icon = getIcon(items.iconName);
-  //   console.log("test icon g: ", icon);
   return (
     <>
       {!!items.items && (

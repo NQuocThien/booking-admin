@@ -1,11 +1,15 @@
 import { useEffect, useReducer } from "react";
-import { Col, Container, Dropdown, Image, Row, Table } from "react-bootstrap";
+import { Col, Container, Dropdown, Row, Table } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
-  useDeleteMedicalFacilityMutation,
-  useGetAllMedicalFacilityPaginationQuery,
-  useGetTotalFacilitiesCountQuery,
+  useDeletePackageMutation,
+  useDeleteVaccinationMutation,
+  useGetAllPackagePaginationOfFacilityQuery,
+  useGetAllVaccinationPaginationOfFacilityQuery,
+  useGetMedicalFacilityIdByUserIdQuery,
+  useGetTotalPackagesCountQuery,
+  useGetTotalVaccinationsCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -15,21 +19,23 @@ import ShowAlert from "src/components/sub/alerts";
 import {
   handleChangePagination,
   handleChangeSearchTerm,
-  handleSetListFacility,
+  handleSetlistPackage,
   initState,
   reducer,
 } from "./reducer-list";
 import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
+import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
-function ListMedicalFacilityPage() {
+function ListPackageOfFacilityPage() {
   const token = getToken();
-  const { checkExpirationToken } = useAuth();
+  const { checkExpirationToken, userInfor } = useAuth();
+
   checkExpirationToken();
 
   const [state, dispatch] = useReducer(reducer, initState);
   const { refetch, data, loading, error } =
-    useGetAllMedicalFacilityPaginationQuery({
+    useGetAllPackagePaginationOfFacilityQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -41,13 +47,21 @@ function ListMedicalFacilityPage() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
+        userId: userInfor?.id || "",
       },
     });
-  const {
-    data: dataTotal,
-    loading: loadTotal,
-    error: errTotal,
-  } = useGetTotalFacilitiesCountQuery({
+  const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: {
+      input: userInfor?.id || "",
+    },
+  });
+  const { data: dataTotal } = useGetTotalPackagesCountQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -56,28 +70,25 @@ function ListMedicalFacilityPage() {
     },
     variables: {
       search: state.searchTerm,
+      userId: userInfor?.id || "",
     },
   });
-  const [deleteMedicalFacility] = useDeleteMedicalFacilityMutation({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
+  const [deletePackage, { loading: LoadingDeletePackage }] =
+    useDeletePackageMutation({
+      fetchPolicy: "no-cache",
+    });
 
   useEffect(() => {
-    if (data?.getAllMedicalFacilityPagination) {
-      dispatch(handleSetListFacility(data?.getAllMedicalFacilityPagination));
+    if (data?.getAllPackagePaginationOfFacility) {
+      dispatch(handleSetlistPackage(data?.getAllPackagePaginationOfFacility));
     }
   }, [data]);
   useEffect(() => {
-    if (dataTotal?.getTotalFacilitiesCount) {
+    if (dataTotal?.getTotalPackagesCount) {
       dispatch(
         handleChangePagination({
           ...state.pagination,
-          total: dataTotal.getTotalFacilitiesCount,
+          total: dataTotal.getTotalPackagesCount,
         })
       );
     }
@@ -86,11 +97,11 @@ function ListMedicalFacilityPage() {
     var userConfirmed = window.confirm("Bạn có chắc muốn xóa không?");
     if (userConfirmed) {
       try {
-        await deleteMedicalFacility({
+        await deletePackage({
           variables: {
             input: id,
           },
-        }).then((res) => {
+        }).then(() => {
           showToast("Xóa thành công ✌️", "success");
           refetch();
         });
@@ -120,61 +131,48 @@ function ListMedicalFacilityPage() {
                 })
               );
             }}
-            loading={loading}
+            loading={loading || LoadingDeletePackage}
             error={error}
           />
         </Col>
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={"/admin-page/medical-facility/form-add"}>
+            to={`/facility-page/packages/form-add/${dataFacilityId?.getMedicalFacilityByUserId.id}`}>
             <FiPlus />
           </Link>
         </Col>
       </Row>
       <Row>
-        {/* <StatusCpn loading={loadTotal} error={errTotal} />
-        {!loadTotal && <StatusCpn loading={loading} error={error} />} */}
         <Table striped hover className="">
           <thead>
             <tr>
               <th>#</th>
-              <th>Hình ảnh</th>
-              <th>Tên cơ sở y tế</th>
-              <th>Email</th>
-              <th>Số điện thoại</th>
-              <th>Người đại diện</th>
-              <th>Trạng thái</th>
+              <th>Tên Vaccine</th>
+              <th>Nguồn gốc</th>
+              <th>Giá</th>
+              <th>Lịch làm việc</th>
               <th>Hành động </th>
             </tr>
           </thead>
           <tbody>
-            {state.listFacility &&
-              state.listFacility.map((c, i) => (
+            {state.listPackage &&
+              state.listPackage.map((c, i) => (
                 <tr key={i} className="">
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
-                  <td className="fs-6">
-                    <Image
-                      height={70}
-                      width={70}
-                      alt="facility"
-                      src={c.logo.url}
-                    />
+
+                  <td className="fs-6" style={{ verticalAlign: "middle" }}>
+                    {c.packageName}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.medicalFacilityName}
+                    {c.price}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.email}
+                    {c.price}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.numberPhone}
-                  </td>
-                  <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.legalRepresentation}
-                  </td>
-                  <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.status}
+                    {c?.workSchedule?.schedule &&
+                      renderDayOfWeek2(c.workSchedule.schedule)}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     <Dropdown drop="down">
@@ -184,13 +182,13 @@ function ListMedicalFacilityPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/medical-facility/${c.id}`}>
+                          to={`/facility-page/packages/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
                           Chi tiết
                         </Dropdown.Item>
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/admin-page/medical-facility/update/${c.id}`}>
+                          to={`/facility-page/packages/update/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
                           Chỉnh sửa
                         </Dropdown.Item>
                         <Dropdown.Item>
@@ -198,7 +196,7 @@ function ListMedicalFacilityPage() {
                           <p
                             className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                             onClick={async () => await hanldeDelete(c.id)}>
-                            Xóa cơ sở y tế
+                            Xóa gói khám
                           </p>
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -226,4 +224,4 @@ function ListMedicalFacilityPage() {
   );
 }
 
-export default ListMedicalFacilityPage;
+export default ListPackageOfFacilityPage;

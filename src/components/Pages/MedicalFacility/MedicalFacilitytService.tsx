@@ -1,10 +1,4 @@
-import {
-  MedicalFacilities,
-  useDeleteDoctorMutation,
-  useDeleteMecialSpecialtyMutation,
-  useDeletePackageMutation,
-  useDeleteVaccinationMutation,
-} from "src/graphql/webbooking-service.generated";
+import { MedicalFacilities } from "src/graphql/webbooking-service.generated";
 import { DoctorListServiveMemory } from "../Doctor/DoctorListService";
 import { PackageListServiveMemory } from "../Package/PackageListService";
 import { SpecialtyListServiveMemory } from "../Specialty/SpecialtyListService";

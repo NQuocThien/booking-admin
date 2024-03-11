@@ -126,7 +126,6 @@ function GeneralInforWebCpn() {
       e.stopPropagation();
     } else {
       checkExpirationToken();
-      console.log("uploading");
       handleUploadImage();
     }
     setValidateForm(true);

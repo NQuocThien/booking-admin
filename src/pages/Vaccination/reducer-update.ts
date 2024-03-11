@@ -104,7 +104,6 @@ export const reducer = (
   switch (action.type) {
     case HANDLE_CHANGE_FORM:
       if (action.key && action.key in state.updateVaccine) {
-        // console.log("test state create doctor: ", state.createDoctor);
         return {
           ...state,
           updateVaccine: {

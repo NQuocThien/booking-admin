@@ -46,7 +46,6 @@ function FormUpdateVaccination() {
   });
 
   useEffect(() => {
-    console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilitiesId", idMedical));
@@ -105,7 +104,6 @@ function FormUpdateVaccination() {
             status: state.updateVaccine.workSchedule.status,
           },
         };
-        console.log("test input: ", input);
         await updateVaccine({
           variables: {
             input: input,
@@ -119,7 +117,6 @@ function FormUpdateVaccination() {
             showToast("Lỗi: " + e.status, "error");
             console.error(e);
           });
-        console.log("input: ", input);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");

@@ -68,11 +68,6 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         else if (roles?.includes(GetRole.Staff)) setCurrRole(GetRole.Staff);
       }
     }
-    // console.group("Conext Login");
-    // console.log("---> Test isLogin: ", isLoginIn);
-    // console.log("---> Test role: ", data?.checklogin.roles);
-    // console.log("---> Test currRole: ", currRole);
-    // console.groupEnd();
   }, [isLoginIn]);
   const login = async (newToken: string) => {
     setLocalStorage(tokenKey, newToken);
@@ -106,7 +101,6 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     const expirationTime = JSON.parse(atob(token.split(".")[1])).exp;
     const currentTime = Math.floor(Date.now() / 1000); // Lấy thời gian hiện tại ở đơn vị giây
     if (expirationTime && expirationTime < currentTime) {
-      // console.log('Token đã hết hạn.');
       logout();
     }
   };
@@ -123,7 +117,6 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         checkExpirationToken,
       }}>
       {children}
-      {/* {console.log('bottom')} */}
     </AuthContext.Provider>
   );
 }

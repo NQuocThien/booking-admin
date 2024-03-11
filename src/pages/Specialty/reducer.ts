@@ -79,7 +79,6 @@ export const reducer = (state: IStateForm, action: IActionForm): IStateForm => {
   switch (action.type) {
     case HANDLE_CHANGE_FORM:
       if (action.key && action.key in state.createSpcialty) {
-        // console.log("test state create doctor: ", state.createDoctor);
         return {
           ...state,
           createSpcialty: {

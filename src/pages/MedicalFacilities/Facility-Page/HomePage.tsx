@@ -22,7 +22,6 @@ function FacilityHomePage() {
       },
     },
   });
-  console.log("--> test: ", userInfor?.id);
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) {
     console.log(error);

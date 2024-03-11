@@ -177,10 +177,8 @@ function FormUpdateGeneralMedicalFacility() {
           showToast("Đã Sửa CSYT 👌👌");
           navigate(-1);
         });
-        // console.log("input: ", input);
       } catch (e: unknown) {
         if (e instanceof Error) {
-          console.log("Lỗi: ", e);
           showToast("Lỗi: " + e.message, "error");
         }
       }

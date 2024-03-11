@@ -110,7 +110,6 @@ export const reducer = (state: IState, action: IAction): IState => {
   switch (action.type) {
     case HANDLE_CHANGE_FORM:
       if (action.key && action.key in state.updateMedicalFacility) {
-        // console.log("test chang: ", state.updateMedicalFacility);
         return {
           ...state,
           updateMedicalFacility: {

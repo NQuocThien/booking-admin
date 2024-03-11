@@ -27,7 +27,6 @@ function PackageDetailPage() {
       input: id || "",
     },
   });
-  //   console.log("test ID medical:", dataMedical);
 
   const { data, loading, error } = useGetPackageByIdQuery({
     fetchPolicy: "no-cache",
@@ -39,7 +38,6 @@ function PackageDetailPage() {
   useEffect(() => checkExpirationToken(), []);
 
   const [listSchedule, setListSchedule] = useState<Schedule[]>();
-  // console.log("test", location.pathname.search("/admin-page/medical-facility"));
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   useEffect(() => {
     if (location.pathname.search("/admin-page/medical-facility") !== -1) {
@@ -55,7 +53,16 @@ function PackageDetailPage() {
           label: data?.getPackageById.packageName || "",
         },
       ]);
+    } else if (location.pathname.search("/facility-page/packages") !== -1) {
+      setBreadcrumbs([
+        { url: "/facility-page/packages", label: "Danh sách gói khám" },
+        {
+          url: "",
+          label: data?.getPackageById.packageName || "",
+        },
+      ]);
     }
+
     if (data?.getPackageById) {
       setListSchedule(data?.getPackageById.workSchedule.schedule);
     }

@@ -56,7 +56,6 @@ function FormUpdateSpecialty() {
   });
 
   useEffect(() => {
-    console.log("ID Medical: ", idMedical);
     if (idMedical) {
       dispatch(handleChangeStateForm(true));
       dispatch(handleChangeForm("medicalFactilityId", idMedical));

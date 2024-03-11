@@ -114,7 +114,6 @@ function FormAddDoctor() {
 
   useEffect(() => {
     if (dataSpecialtiesSelect) {
-      // console.log("test spcialty", dataSpecialtiesSelect);
       const optSpecialties: IOption[] =
         dataSpecialtiesSelect.getMedicalSpecialtiesByMedicalFacilityId.map(
           (item) => ({
@@ -139,8 +138,6 @@ function FormAddDoctor() {
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
       try {
-        // console.log("test input ");
-
         const avatar: LinkImageInput = await uploadImage(
           state.avatarFile,
           "doctors"
@@ -149,7 +146,6 @@ function FormAddDoctor() {
           ...state.createDoctor,
           avatar: avatar,
         };
-        // console.log("test input: ", input);
         await createDoctor({
           variables: {
             input: input,
@@ -158,7 +154,6 @@ function FormAddDoctor() {
           showToast("Đã thêm Bác Sĩ 👌👌");
           navigate(-1);
         });
-        console.log("input: ", input);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");

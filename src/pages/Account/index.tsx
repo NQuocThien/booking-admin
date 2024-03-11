@@ -44,7 +44,6 @@ function CurrentUserDetailPage() {
         },
       });
     } catch (e) {
-      console.log("test error: ", e);
       throw e;
     }
   };
@@ -84,7 +83,6 @@ function CurrentUserDetailPage() {
         },
       });
     } catch (e) {
-      console.log("test error: ", e);
       throw e;
     }
   };

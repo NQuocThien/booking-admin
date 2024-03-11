@@ -657,6 +657,54 @@ const getPackageByFacilityId = gql`
     }
   }
 `;
+const getAllPackagePaginationOfFacility = gql`
+  query getAllPackagePaginationOfFacility(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $userId: String!
+  ) {
+    getAllPackagePaginationOfFacility(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      id
+      medicalFactilitiesId
+      packageName
+      gender
+      price
+      image {
+        filename
+        type
+        url
+      }
+      examinationDetails
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getTotalPackagesCount = gql`
+  query getTotalPackagesCount($search: String, $userId: String) {
+    getTotalPackagesCount(search: $search, userId: $userId)
+  }
+`;
 const getMedicalSpecialtyByid = gql`
   query getMedicalSpecialtyById($input: String!) {
     getMedicalSpecialtyById(input: $input) {
@@ -701,6 +749,48 @@ const getAllMedicalSpecialtyByFacilityId = gql`
         }
       }
     }
+  }
+`;
+const getAllMedicalSpecialtiesPaginationOfFacility = gql`
+  query getAllMedicalSpecialtiesPaginationOfFacility(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $userId: String!
+  ) {
+    getAllMedicalSpecialtiesPaginationOfFacility(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      id
+      medicalFactilityId
+      name
+      price
+      discription
+      workSchedule {
+        dayOff
+        numberSlot
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getTotalMedicalSpecialtiesCount = gql`
+  query getTotalMedicalSpecialtiesCount($search: String, $userId: String) {
+    getTotalMedicalSpecialtiesCount(search: $search, userId: $userId)
   }
 `;
 const getVaccineById = gql`
@@ -753,6 +843,51 @@ const getVaccineByFacilityId = gql`
         status
       }
     }
+  }
+`;
+const getAllVaccinationPaginationOfFacility = gql`
+  query getAllVaccinationPaginationOfFacility(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $userId: String!
+  ) {
+    getAllVaccinationPaginationOfFacility(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      id
+      medicalFactilitiesId
+      vaccineName
+      price
+      countryOfOrigin
+      prophylactic
+      indication
+      note
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+  }
+`;
+const getTotalVaccinationsCount = gql`
+  query getTotalVaccinationsCount($search: String, $userId: String) {
+    getTotalVaccinationsCount(search: $search, userId: $userId)
   }
 `;
 const getMedicalSpecialtySelect = gql`
@@ -894,8 +1029,44 @@ const getAllStaffPagination = gql`
   }
 `;
 const totalStaffsCount = gql`
-  query totalStaffsCount($input: String) {
-    totalStaffsCount(search: $input)
+  query totalStaffsCount($search: String, $userId: String) {
+    totalStaffsCount(search: $search, userId: $userId)
+  }
+`;
+const getAllMedicalStaffPaginationOfFacility = gql`
+  query getAllMedicalStaffPaginationOfFacility(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $userId: String!
+  ) {
+    getAllMedicalStaffPaginationOfFacility(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      userId: $userId
+    ) {
+      id
+      userId
+      medicalFacilityId
+      name
+      gender
+      numberPhone
+      email
+      permissions
+      specialtyId
+      specialties {
+        id
+        name
+        medicalFactilityId
+        discription
+        price
+      }
+    }
   }
 `;
 const getAllCustomerPagination = gql`

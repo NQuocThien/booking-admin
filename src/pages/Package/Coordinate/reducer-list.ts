@@ -1,8 +1,9 @@
-import { ICheckRoles, IPagination } from "src/assets/contains/item-interface";
-import { MedicalSpecialties } from "src/graphql/webbooking-service.generated";
+import { IPagination } from "src/assets/contains/item-interface";
+import { Package } from "src/graphql/webbooking-service.generated";
 
-export interface IStateListMedicalSpecialty {
-  listSpecialty: MedicalSpecialties[];
+export interface IStateListPackage {
+  listPackage: Package[];
+  selectedPackage: Package | undefined;
   searchTerm: string;
   pagination: IPagination;
 }
@@ -12,9 +13,10 @@ export interface IAction {
 }
 
 // innitState
-export const initState: IStateListMedicalSpecialty = {
-  listSpecialty: [],
+export const initState: IStateListPackage = {
+  listPackage: [],
   // facilityClicked: undefined,
+  selectedPackage: undefined,
   searchTerm: "",
   pagination: {
     current: 1,
@@ -24,14 +26,13 @@ export const initState: IStateListMedicalSpecialty = {
 };
 
 //actions
-const HANDLE_SET_LIST_SPECIALTY = "handle-set-list-specialty";
+const HANDLE_SET_LIST_PACKAGE = "handle-set-list-package";
 const HC_SEARCH_TERM = "handle-search-term";
 const HC_PAGINATION = "handle-change-pagination";
-export const handleSetlistSpecialty = (
-  value: MedicalSpecialties[]
-): IAction => {
+const HC_SELECTED_PACKAGE = "handle-selected-package";
+export const handleSetlistPackage = (value: Package[]): IAction => {
   return {
-    type: HANDLE_SET_LIST_SPECIALTY,
+    type: HANDLE_SET_LIST_PACKAGE,
     payload: value,
   };
 };
@@ -47,17 +48,27 @@ export const handleChangePagination = (payload: IPagination): IAction => {
     payload: payload,
   };
 };
-
+export const handleChangeSelectedPackage = (payload: Package): IAction => {
+  return {
+    type: HC_SELECTED_PACKAGE,
+    payload: payload,
+  };
+};
 // reducer
 export const reducer = (
-  state: IStateListMedicalSpecialty,
+  state: IStateListPackage,
   action: IAction
-): IStateListMedicalSpecialty => {
+): IStateListPackage => {
   switch (action.type) {
-    case HANDLE_SET_LIST_SPECIALTY:
+    case HANDLE_SET_LIST_PACKAGE:
       return {
         ...state,
-        listSpecialty: action.payload,
+        listPackage: action.payload,
+      };
+    case HC_SELECTED_PACKAGE:
+      return {
+        ...state,
+        selectedPackage: action.payload,
       };
     case HC_SEARCH_TERM:
       return {

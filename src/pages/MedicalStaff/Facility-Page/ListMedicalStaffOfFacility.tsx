@@ -169,11 +169,12 @@ function ListMedicalStaffOfFacilityPage() {
           <thead>
             <tr>
               <th>#</th>
-              <th>Tên Vaccine</th>
-              <th>Nguồn gốc</th>
-              <th>Giá</th>
-              <th>Lịch làm việc</th>
-              <th>Hành động </th>
+              <th>Tên nhân viên</th>
+              <th>Email</th>
+              <th>Số điện thoại</th>
+              <th>Giới tính</th>
+              <th>Quyền</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>

@@ -89,16 +89,6 @@ function ListUserPage() {
     },
   });
 
-  // const [stateRoles, setStateRoles] = useState<ICheckRoles>({
-  //   admin: false,
-  //   facility: false,
-  //   customer: false,
-  //   doctor: false,
-  //   staff: false,
-  // });
-
-  // const [userClicked, setUserClicked] = useState<User | undefined>();
-
   const hanldeActiveUser = (id: string) => {
     checkExpirationToken();
     activeUser({
@@ -434,7 +424,7 @@ function ListUserPage() {
                   dispatch(
                     handleChangeStateRoles({
                       ...state.stateRoles,
-                      customer: state.stateRoles.customer,
+                      customer: !state.stateRoles.customer,
                     })
                   )
                 }
@@ -449,7 +439,7 @@ function ListUserPage() {
                   dispatch(
                     handleChangeStateRoles({
                       ...state.stateRoles,
-                      staff: state.stateRoles.staff,
+                      staff: !state.stateRoles.staff,
                     })
                   )
                 }

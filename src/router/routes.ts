@@ -32,6 +32,11 @@ import ListVaccinationOfFacilityPage from "src/pages/Vaccination/Facility-Page/L
 import ListPackageOfFacilityPage from "src/pages/Package/Facility-Page/ListPackageOfFacility";
 import ListMedicalStaffOfFacilityPage from "src/pages/MedicalStaff/Facility-Page/ListMedicalStaffOfFacility";
 import CoordinateDoctor from "src/pages/Doctor/Facility-Page/Coordinate/CoordinateDoctor";
+import CoordinateMedcialSpecialties from "src/pages/Specialty/Coordinate/CoordinateSpecialty";
+import CoordinateVaccination from "src/pages/Vaccination/Coordinate/CoordinateVaccination";
+import CoordinatePackages from "src/pages/Package/Coordinate/CoordinatePackage";
+import DoctorDetailForDoctorPage from "src/pages/Doctor/Doctor-Page/DoctorDetail";
+import DoctorRegistration from "src/pages/Doctor/Doctor-Page/DoctorRegistration";
 export interface IRoute {
   path: string;
   name: string;
@@ -300,6 +305,21 @@ const routes_clinic: IRoute[] = [
     name: "Dashboard",
     element: CoordinateDoctor,
   },
+  {
+    path: "/facility-page/coordinate/specialties",
+    name: "Dashboard",
+    element: CoordinateMedcialSpecialties,
+  },
+  {
+    path: "/facility-page/coordinate/vaccination",
+    name: "Dashboard",
+    element: CoordinateVaccination,
+  },
+  {
+    path: "/facility-page/coordinate/packages",
+    name: "Dashboard",
+    element: CoordinatePackages,
+  },
 ];
 
 const routes_doctor: IRoute[] = [
@@ -310,5 +330,15 @@ const routes_doctor: IRoute[] = [
     element: CurrentUserDetailPage,
   },
   { path: "/dashboard", name: "Dashboard", element: DashboardPage },
+  {
+    path: "/doctor-page/home",
+    name: "Dashboard",
+    element: DoctorDetailForDoctorPage,
+  },
+  {
+    path: "/doctor-page/registration",
+    name: "Dashboard",
+    element: DoctorRegistration,
+  },
 ];
 export { routes_admin, routes_clinic, routes_doctor };

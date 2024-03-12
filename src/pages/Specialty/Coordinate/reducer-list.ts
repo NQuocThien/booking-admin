@@ -3,6 +3,7 @@ import { MedicalSpecialties } from "src/graphql/webbooking-service.generated";
 
 export interface IStateListMedicalSpecialty {
   listSpecialty: MedicalSpecialties[];
+  selectedSpecialty: MedicalSpecialties | undefined;
   searchTerm: string;
   pagination: IPagination;
 }
@@ -15,6 +16,7 @@ export interface IAction {
 export const initState: IStateListMedicalSpecialty = {
   listSpecialty: [],
   // facilityClicked: undefined,
+  selectedSpecialty: undefined,
   searchTerm: "",
   pagination: {
     current: 1,
@@ -27,6 +29,7 @@ export const initState: IStateListMedicalSpecialty = {
 const HANDLE_SET_LIST_SPECIALTY = "handle-set-list-specialty";
 const HC_SEARCH_TERM = "handle-search-term";
 const HC_PAGINATION = "handle-change-pagination";
+const HC_SELECTED_SPECIALTY = "handle-selected-specialty";
 export const handleSetlistSpecialty = (
   value: MedicalSpecialties[]
 ): IAction => {
@@ -47,7 +50,14 @@ export const handleChangePagination = (payload: IPagination): IAction => {
     payload: payload,
   };
 };
-
+export const handleChangeSelectedSpecialty = (
+  payload: MedicalSpecialties
+): IAction => {
+  return {
+    type: HC_SELECTED_SPECIALTY,
+    payload: payload,
+  };
+};
 // reducer
 export const reducer = (
   state: IStateListMedicalSpecialty,
@@ -58,6 +68,11 @@ export const reducer = (
       return {
         ...state,
         listSpecialty: action.payload,
+      };
+    case HC_SELECTED_SPECIALTY:
+      return {
+        ...state,
+        selectedSpecialty: action.payload,
       };
     case HC_SEARCH_TERM:
       return {

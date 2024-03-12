@@ -1641,6 +1641,13 @@ export type GetDoctorbyIdQueryVariables = Exact<{
 
 export type GetDoctorbyIdQuery = { __typename?: 'Query', getDoctorbyId: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> }, specialty?: { __typename?: 'MedicalSpecialties', id: string, name: string } | null } };
 
+export type GetDoctorbyUserIdQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type GetDoctorbyUserIdQuery = { __typename?: 'Query', getDoctorbyUserId: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> }, specialty?: { __typename?: 'MedicalSpecialties', id: string, name: string } | null } };
+
 export type GetAllDoctorPendingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3896,6 +3903,73 @@ export function useGetDoctorbyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetDoctorbyIdQueryHookResult = ReturnType<typeof useGetDoctorbyIdQuery>;
 export type GetDoctorbyIdLazyQueryHookResult = ReturnType<typeof useGetDoctorbyIdLazyQuery>;
 export type GetDoctorbyIdQueryResult = Apollo.QueryResult<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>;
+export const GetDoctorbyUserIdDocument = gql`
+    query getDoctorbyUserId($input: String!) {
+  getDoctorbyUserId(id: $input) {
+    id
+    userId
+    medicalFactilitiesId
+    name
+    gender
+    numberPhone
+    email
+    academicTitle
+    degree
+    specialistId
+    discription
+    price
+    avatar {
+      filename
+      type
+      url
+    }
+    workSchedule {
+      dayOff
+      status
+      numberSlot
+      schedule {
+        dayOfWeek
+        sessions {
+          startTime
+          endTime
+        }
+      }
+    }
+    specialty {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorbyUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorbyUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorbyUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorbyUserIdQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDoctorbyUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>(GetDoctorbyUserIdDocument, options);
+      }
+export function useGetDoctorbyUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>(GetDoctorbyUserIdDocument, options);
+        }
+export type GetDoctorbyUserIdQueryHookResult = ReturnType<typeof useGetDoctorbyUserIdQuery>;
+export type GetDoctorbyUserIdLazyQueryHookResult = ReturnType<typeof useGetDoctorbyUserIdLazyQuery>;
+export type GetDoctorbyUserIdQueryResult = Apollo.QueryResult<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>;
 export const GetAllDoctorPendingDocument = gql`
     query getAllDoctorPending {
   getAllDoctorPending {

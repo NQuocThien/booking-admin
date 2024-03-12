@@ -184,23 +184,13 @@ const _navClinic: Item[] = [
 // NAV DOCTOR
 const _navDoctor: Item[] = [
   {
-    component: "NavItem",
-    name: "Trang chủ",
-    to: "/home",
-    iconName: "MdHomeFilled",
-    badge: {
-      nameBadge: "Mới",
-      color: "info",
-    },
-  },
-  {
     component: "NavTitle",
     name: "Doctor",
   },
   {
     component: "NavItem",
     name: "Thông tin BS",
-    to: "/home/mydoctor",
+    to: "/doctor-page/home",
     iconName: "GiDoctorFace",
     badge: {
       nameBadge: "Mới",
@@ -208,23 +198,10 @@ const _navDoctor: Item[] = [
     },
   },
   {
-    component: "NavGroup",
-    name: "Bệnh Nhân",
-    iconName: "MdOutlineManageAccounts",
-    items: [
-      {
-        component: "NavItem",
-        name: "Lịch làm việc",
-        to: "/",
-        iconName: "MdSupervisedUserCircle",
-      },
-      {
-        component: "NavItem",
-        name: "",
-        to: "/infor",
-        iconName: "MdWebhook",
-      },
-    ],
+    component: "NavItem",
+    name: "Quản lý khám bệnh",
+    to: "/doctor-page/registration",
+    iconName: "GiDoctorFace",
   },
 ];
 export { _navAdmin, _navClinic, _navDoctor };

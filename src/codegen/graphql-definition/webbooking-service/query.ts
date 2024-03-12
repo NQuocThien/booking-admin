@@ -393,6 +393,45 @@ const getDoctorById = gql`
     }
   }
 `;
+const getDoctorByUserId = gql`
+  query getDoctorbyUserId($input: String!) {
+    getDoctorbyUserId(id: $input) {
+      id
+      userId
+      medicalFactilitiesId
+      name
+      gender
+      numberPhone
+      email
+      academicTitle
+      degree
+      specialistId
+      discription
+      price
+      avatar {
+        filename
+        type
+        url
+      }
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+      specialty {
+        id
+        name
+      }
+    }
+  }
+`;
 const getDoctorPending = gql`
   query getAllDoctorPending {
     getAllDoctorPending {

@@ -36,10 +36,11 @@ function MainHeader({ setNav }: { setNav: () => void }) {
               <h5>{userInfor?.username}</h5>
             </Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item>
-              <Link to={"/me"} className={s.header__top_infor_item}>
-                Thông tin tài khoản
-              </Link>
+            <Dropdown.Item
+              as={Link}
+              to={"/me"}
+              className={s.header__top_infor_item}>
+              Thông tin tài khoản
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {

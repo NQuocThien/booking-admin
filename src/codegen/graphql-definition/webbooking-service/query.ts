@@ -547,7 +547,7 @@ const getAllDoctorPagination = gql`
 `;
 const getAllDoctorPaginationOfFacility = gql`
   query getAllDoctorPaginationOfFacility(
-    $search: String
+    $filter: FilterDoctorInput
     $page: Float!
     $limit: Float!
     $sortField: String
@@ -555,12 +555,12 @@ const getAllDoctorPaginationOfFacility = gql`
     $userId: String!
   ) {
     getAllDoctorPaginationOfFacility(
-      search: $search
       page: $page
       limit: $limit
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      filter: $filter
     ) {
       id
       userId
@@ -595,8 +595,8 @@ const getAllDoctorPaginationOfFacility = gql`
   }
 `;
 const getTotalDoctorsCount = gql`
-  query getTotalDoctorsCount($search: String, $userId: String) {
-    getTotalDoctorsCount(search: $search, userId: $userId)
+  query getTotalDoctorsCount($filter: FilterDoctorInput, $userId: String) {
+    getTotalDoctorsCount(filter: $filter, userId: $userId)
   }
 `;
 const getPackageById = gql`

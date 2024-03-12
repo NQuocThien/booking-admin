@@ -289,6 +289,14 @@ export type Evaluate = {
   userId: Scalars['String']['output'];
 };
 
+export type FilterDoctorInput = {
+  academicTitle?: InputMaybe<EAcademicTitle>;
+  degree?: InputMaybe<EDegree>;
+  gender?: InputMaybe<EGender>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  specialistId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type GeneralInfor = {
   __typename?: 'GeneralInfor';
   ID?: Maybe<Scalars['String']['output']>;
@@ -811,9 +819,9 @@ export type QueryGetAllDoctorPaginationArgs = {
 
 
 export type QueryGetAllDoctorPaginationOfFacilityArgs = {
+  filter?: InputMaybe<FilterDoctorInput>;
   limit?: Scalars['Float']['input'];
   page?: Scalars['Float']['input'];
-  search?: InputMaybe<Scalars['String']['input']>;
   sortField?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
@@ -978,7 +986,7 @@ export type QueryGetTotalCustomersCountArgs = {
 
 
 export type QueryGetTotalDoctorsCountArgs = {
-  search?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<FilterDoctorInput>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1664,7 +1672,7 @@ export type GetAllDoctorPaginationQueryVariables = Exact<{
 export type GetAllDoctorPaginationQuery = { __typename?: 'Query', getAllDoctorPagination: Array<{ __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> };
 
 export type GetAllDoctorPaginationOfFacilityQueryVariables = Exact<{
-  search?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<FilterDoctorInput>;
   page: Scalars['Float']['input'];
   limit: Scalars['Float']['input'];
   sortField?: InputMaybe<Scalars['String']['input']>;
@@ -1676,7 +1684,7 @@ export type GetAllDoctorPaginationOfFacilityQueryVariables = Exact<{
 export type GetAllDoctorPaginationOfFacilityQuery = { __typename?: 'Query', getAllDoctorPaginationOfFacility: Array<{ __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, name: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> };
 
 export type GetTotalDoctorsCountQueryVariables = Exact<{
-  search?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<FilterDoctorInput>;
   userId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -4150,14 +4158,14 @@ export type GetAllDoctorPaginationQueryHookResult = ReturnType<typeof useGetAllD
 export type GetAllDoctorPaginationLazyQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationLazyQuery>;
 export type GetAllDoctorPaginationQueryResult = Apollo.QueryResult<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>;
 export const GetAllDoctorPaginationOfFacilityDocument = gql`
-    query getAllDoctorPaginationOfFacility($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String!) {
+    query getAllDoctorPaginationOfFacility($filter: FilterDoctorInput, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String!) {
   getAllDoctorPaginationOfFacility(
-    search: $search
     page: $page
     limit: $limit
     sortField: $sortField
     sortOrder: $sortOrder
     userId: $userId
+    filter: $filter
   ) {
     id
     userId
@@ -4204,7 +4212,7 @@ export const GetAllDoctorPaginationOfFacilityDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllDoctorPaginationOfFacilityQuery({
  *   variables: {
- *      search: // value for 'search'
+ *      filter: // value for 'filter'
  *      page: // value for 'page'
  *      limit: // value for 'limit'
  *      sortField: // value for 'sortField'
@@ -4225,8 +4233,8 @@ export type GetAllDoctorPaginationOfFacilityQueryHookResult = ReturnType<typeof 
 export type GetAllDoctorPaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationOfFacilityLazyQuery>;
 export type GetAllDoctorPaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>;
 export const GetTotalDoctorsCountDocument = gql`
-    query getTotalDoctorsCount($search: String, $userId: String) {
-  getTotalDoctorsCount(search: $search, userId: $userId)
+    query getTotalDoctorsCount($filter: FilterDoctorInput, $userId: String) {
+  getTotalDoctorsCount(filter: $filter, userId: $userId)
 }
     `;
 
@@ -4242,7 +4250,7 @@ export const GetTotalDoctorsCountDocument = gql`
  * @example
  * const { data, loading, error } = useGetTotalDoctorsCountQuery({
  *   variables: {
- *      search: // value for 'search'
+ *      filter: // value for 'filter'
  *      userId: // value for 'userId'
  *   },
  * });

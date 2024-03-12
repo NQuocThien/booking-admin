@@ -1,13 +1,27 @@
 import { ReactNode, useState } from "react";
-import { Pagination } from "react-bootstrap";
+import { FormSelect, Pagination } from "react-bootstrap";
 
 interface IProps {
   totalPage: number;
   size?: "sm" | "lg";
+  short?: boolean;
+  isRowPerPage?: boolean;
+  optionsRow?: number[];
+  rowPerPage?: number;
   setPageActive: (pageNumber: number) => void;
+  setRowsPerPage?: (numberRow: number) => void;
 }
 function PaginationCpn(props: IProps) {
-  const { setPageActive, size = "sm", totalPage } = props;
+  const {
+    setPageActive,
+    size = "sm",
+    totalPage,
+    short = false,
+    isRowPerPage = false,
+    optionsRow = undefined,
+    setRowsPerPage = () => {},
+    rowPerPage = undefined,
+  } = props;
   const pageNumbers: number[] = [];
   for (let i = 1; i <= totalPage; i++) {
     pageNumbers.push(i);
@@ -71,11 +85,24 @@ function PaginationCpn(props: IProps) {
   };
   return (
     <Pagination>
-      <Pagination.First onClick={handleClickStart} />
+      {isRowPerPage && optionsRow && (
+        <FormSelect
+          size="sm"
+          className="me-1"
+          value={rowPerPage}
+          onChange={(e) => setRowsPerPage(+e.currentTarget.value)}>
+          {optionsRow.map((option, i) => (
+            <option value={option} key={i}>
+              {option}
+            </option>
+          ))}
+        </FormSelect>
+      )}
+      {!short && <Pagination.First onClick={handleClickStart} />}
       <Pagination.Prev onClick={handleClickPrevious} />
       {renderPagination()}
       <Pagination.Next onClick={handleClickNext} />
-      <Pagination.Last onClick={handleClickEnd} />
+      {!short && <Pagination.Last onClick={handleClickEnd} />}
     </Pagination>
   );
 }

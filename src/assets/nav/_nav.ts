@@ -114,6 +114,37 @@ const _navClinic: Item[] = [
   },
   {
     component: "NavGroup",
+    name: "Điều phối",
+    iconName: "MdOutlineSpaceDashboard",
+    items: [
+      {
+        component: "NavItem",
+        name: "Khám bác sỉ",
+        to: "/facility-page/coordinate/doctors",
+        iconName: "LiaUserNurseSolid",
+      },
+      {
+        component: "NavItem",
+        name: "Khám chuyên khoa",
+        to: "/facility-page/coordinate/specialties",
+        iconName: "LiaBookMedicalSolid",
+      },
+      {
+        component: "NavItem",
+        name: "Khám gói khám",
+        to: "/facility-page/coordinate/packages",
+        iconName: "LiaLaptopMedicalSolid",
+      },
+      {
+        component: "NavItem",
+        name: "Khám tim chủng",
+        to: "/facility-page/coordinate/vaccination",
+        iconName: "MdOutlineVaccines",
+      },
+    ],
+  },
+  {
+    component: "NavGroup",
     name: "Quản lý",
     iconName: "MdOutlineManageAccounts",
     items: [

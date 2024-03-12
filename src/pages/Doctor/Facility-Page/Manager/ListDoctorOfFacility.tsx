@@ -3,6 +3,7 @@ import { Col, Container, Dropdown, Image, Row, Table } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
+  FilterDoctorInput,
   useDeleteDoctorMutation,
   useGetAllDoctorPaginationOfFacilityQuery,
   useGetMedicalFacilityIdByUserIdQuery,
@@ -14,8 +15,8 @@ import { Link } from "react-router-dom";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
 import {
+  handleChangeFilter,
   handleChangePagination,
-  handleChangeSearchTerm,
   handleSetlistDoctor,
   initState,
   reducer,
@@ -24,6 +25,7 @@ import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
 import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
+import FilterDoctor from "src/components/Filters/FilterDoctor";
 function ListDoctorOfFacilityPage() {
   const token = getToken();
   const { checkExpirationToken, userInfor } = useAuth();
@@ -42,9 +44,9 @@ function ListDoctorOfFacilityPage() {
       variables: {
         limit: 10,
         page: state.pagination.current,
-        search: state.searchTerm,
         sortOrder: state.pagination.sort,
         userId: userInfor?.id || "",
+        filter: state.filter,
       },
     });
   const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
@@ -66,7 +68,7 @@ function ListDoctorOfFacilityPage() {
       },
     },
     variables: {
-      search: state.searchTerm,
+      filter: state.filter,
       userId: userInfor?.id || "",
     },
   });
@@ -117,9 +119,24 @@ function ListDoctorOfFacilityPage() {
     <Container fluid className={` ${s.component}`}>
       <Row>
         <Col xl={10} lg={10}>
-          <SearchInputCpn
+          {/* <SearchInputCpn
             onSearch={(s: string) => {
-              dispatch(handleChangeSearchTerm(s));
+              dispatch(handleChangeFilter({ ...state.filter, name: s }));
+            }}
+            onSort={(sort) => {
+              dispatch(
+                handleChangePagination({
+                  ...state.pagination,
+                  sort: sort,
+                })
+              );
+            }}
+            loading={loading || loadingDeleteDoctor}
+            error={error}
+          /> */}
+          <FilterDoctor
+            onChangeFilter={(filter: FilterDoctorInput | undefined) => {
+              if (filter) dispatch(handleChangeFilter(filter));
             }}
             onSort={(sort) => {
               dispatch(

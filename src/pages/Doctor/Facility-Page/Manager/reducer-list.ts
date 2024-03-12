@@ -2,14 +2,15 @@ import { ICheckRoles, IPagination } from "src/assets/contains/item-interface";
 import {
   CreatePackageInput,
   Doctor,
+  FilterDoctorInput,
   // Doctor,
 } from "src/graphql/webbooking-service.generated";
 
 export interface IStateListDoctor {
   listDoctor: Doctor[];
   facilityClicked: Doctor | undefined;
-  searchTerm: string;
   pagination: IPagination;
+  filter: FilterDoctorInput | undefined;
 }
 export interface IAction {
   type: string;
@@ -21,17 +22,22 @@ export interface IAction {
 export const initState: IStateListDoctor = {
   listDoctor: [],
   facilityClicked: undefined,
-  searchTerm: "",
   pagination: {
     current: 1,
     total: 0,
     sort: "asc",
   },
+  filter: {
+    name: undefined,
+    academicTitle: undefined,
+    degree: undefined,
+    gender: undefined,
+  },
 };
 
 //actions
 const HANDLE_SET_LIST_FACILITY = "handle-set-list-facility";
-const HC_SEARCH_TERM = "handle-search-term";
+const HC_FILTER = "handle-filter";
 const HC_PAGINATION = "handle-change-pagination";
 export const handleSetlistDoctor = (value: Doctor[]): IAction => {
   return {
@@ -39,9 +45,9 @@ export const handleSetlistDoctor = (value: Doctor[]): IAction => {
     payload: value,
   };
 };
-export const handleChangeSearchTerm = (payload: string): IAction => {
+export const handleChangeFilter = (payload: FilterDoctorInput): IAction => {
   return {
-    type: HC_SEARCH_TERM,
+    type: HC_FILTER,
     payload: payload,
   };
 };
@@ -63,10 +69,10 @@ export const reducer = (
         ...state,
         listDoctor: action.payload,
       };
-    case HC_SEARCH_TERM:
+    case HC_FILTER:
       return {
         ...state,
-        searchTerm: action.payload,
+        filter: action.payload,
       };
     case HC_PAGINATION:
       return {

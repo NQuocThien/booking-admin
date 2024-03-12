@@ -44,4 +44,5 @@ export interface IPagination {
   total: number;
   current: number;
   sort: Sort;
+  rowPerPage?: number;
 }

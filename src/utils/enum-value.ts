@@ -13,3 +13,16 @@ export enum GetRole {
   Doctor = "doctor",
   Staff = "staff",
 }
+
+export enum GetEDegree { // bằng cấp
+  Doctorate = "TS BS",
+  MasterDoctor = "ThS BS",
+  Doctor = "BS",
+  DoctorS1 = "BS CKI",
+  DoctorS2 = "BS CKII",
+}
+
+export enum GetEAcademicTitle { // học hàm
+  Professor = "GS",
+  AssociateProfesso = "PGS",
+}

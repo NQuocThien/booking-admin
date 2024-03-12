@@ -26,11 +26,12 @@ import ListCustomerPage from "src/pages/Customer/ListCustomer";
 import FacilityHomePage from "src/pages/MedicalFacilities/Facility-Page/HomePage";
 import GeneralInforFacilityPage from "src/pages/MedicalFacilities/Facility-Page/GeneralInforFacility";
 import FormUpdateGeneralMedicalFacility from "src/pages/MedicalFacilities/Facility-Page/FormUpdateGeneral";
-import ListDoctorOfFacilityPage from "src/pages/Doctor/Facility-Page/ListDoctorOfFacility";
+import ListDoctorOfFacilityPage from "src/pages/Doctor/Facility-Page/Manager/ListDoctorOfFacility";
 import ListMedicalSpecialtyOfFacilityPage from "src/pages/Specialty/Facility-Page/ListSpecialtyOfFacility";
 import ListVaccinationOfFacilityPage from "src/pages/Vaccination/Facility-Page/ListVaccinationOfFacility";
 import ListPackageOfFacilityPage from "src/pages/Package/Facility-Page/ListPackageOfFacility";
 import ListMedicalStaffOfFacilityPage from "src/pages/MedicalStaff/Facility-Page/ListMedicalStaffOfFacility";
+import CoordinateDoctor from "src/pages/Doctor/Facility-Page/Coordinate/CoordinateDoctor";
 export interface IRoute {
   path: string;
   name: string;
@@ -293,6 +294,11 @@ const routes_clinic: IRoute[] = [
     path: "/facility-page/staffs/update/:id/:idStaff",
     name: "Dashboard",
     element: FormUpdateMedicalStaff,
+  },
+  {
+    path: "/facility-page/coordinate/doctors",
+    name: "Dashboard",
+    element: CoordinateDoctor,
   },
 ];
 

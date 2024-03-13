@@ -48,7 +48,8 @@ const SearchInputCpn = ({
             onChange={(e) => setValue(e.target.value)}
           />
           <Button variant="outline-secondary" type="submit">
-            <IoSearch />
+            {!loading && <IoSearch />}
+            {loading && <StatusCpn size="sm" error={error} loading={loading} />}
           </Button>
         </InputGroup>
       </Form>
@@ -82,7 +83,6 @@ const SearchInputCpn = ({
           <FaSortAlphaDownAlt />
         </ToggleButton>
       </ButtonGroup>
-      {loading && <StatusCpn error={error} loading={loading} />}
     </div>
   );
 };

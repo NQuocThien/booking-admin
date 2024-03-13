@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import s from "src/assets/scss/General.module.scss";
 import {
   handleChangePagination,
@@ -10,7 +10,9 @@ import {
 } from "./reducer-list";
 import {
   Package,
+  useGetAllPackagePaginationOfFacilityLazyQuery,
   useGetAllPackagePaginationOfFacilityQuery,
+  useGetTotalPackagesCountLazyQuery,
   useGetTotalPackagesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
@@ -19,12 +21,16 @@ import { Col, ListGroup, Row } from "react-bootstrap";
 import ListRegisterV2 from "src/components/Pages/Register/ListRegisterV2";
 import PaginationCpn from "src/components/sub/Pagination";
 import FilterShort from "src/components/Filters/FilterShort";
+import { GetEPermission, GetRole } from "src/utils/enum-value";
+import ShowAlert from "src/components/sub/alerts";
+import { IPagination } from "src/assets/contains/item-interface";
 function CoordinatePackages() {
-  const { userInfor } = useAuth();
+  const { userInfor, infoStaff, currRole } = useAuth();
   const token = getToken();
+  const [authorized, setAuthorized] = useState<boolean>(true);
   const [state, dispatch] = useReducer(reducer, initState);
-  const { refetch, data, loading, error } =
-    useGetAllPackagePaginationOfFacilityQuery({
+  const [getData, { refetch, data, loading, error }] =
+    useGetAllPackagePaginationOfFacilityLazyQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -39,18 +45,84 @@ function CoordinatePackages() {
         userId: userInfor?.id || "",
       },
     });
-  const { data: dataTotal } = useGetTotalPackagesCountQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  const [getDataTotal, { data: dataTotal }] = useGetTotalPackagesCountLazyQuery(
+    {
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-    variables: {
-      search: state.searchTerm,
-      userId: userInfor?.id || "",
-    },
-  });
+    }
+  );
+  const handleReloadData = async (
+    pagination: IPagination,
+    searchTerm: string
+  ) => {
+    if (currRole === GetRole.Facility) {
+      await getData({
+        variables: {
+          limit: 10,
+          page: pagination.current,
+          search: searchTerm,
+          sortOrder: pagination.sort,
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      // load data from staff id
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        await getData({
+          variables: {
+            limit: 10,
+            page: pagination.current,
+            search: searchTerm,
+            sortOrder: pagination.sort,
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
+  };
+  useEffect(() => {
+    if (currRole === GetRole.Facility) {
+      getData({
+        variables: {
+          limit: 10,
+          page: state.pagination.current,
+          search: state.searchTerm,
+          sortOrder: state.pagination.sort,
+          userId: userInfor?.id || "",
+        },
+      });
+      getDataTotal({
+        variables: {
+          search: state.searchTerm,
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      // load data from staff id
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        // console.log("==> Test Form Staff: ", infoStaff.id);
+        getData({
+          variables: {
+            limit: 10,
+            page: state.pagination.current,
+            search: state.searchTerm,
+            sortOrder: state.pagination.sort,
+            staffId: infoStaff?.id || "",
+          },
+        });
+        getDataTotal({
+          variables: {
+            search: state.searchTerm,
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
+  }, [currRole]);
   useEffect(() => {
     if (data?.getAllPackagePaginationOfFacility) {
       dispatch(handleSetlistPackage(data?.getAllPackagePaginationOfFacility));
@@ -69,17 +141,22 @@ function CoordinatePackages() {
   const handleClicked = (spec: Package) => {
     dispatch(handleChangeSelectedPackage(spec));
   };
+  if (!authorized) {
+    return <ShowAlert head="Không có quyền truy cập" />;
+  }
+
   return (
     <Row>
       <Col className={`col-3 p-2`}>
         <div className={`${s.component}`}>
           <Row>
-            <h5>Chọn vaccine</h5>
+            <h5>Chọn gói khám</h5>
           </Row>
           <Row className="mt-3">
             <FilterShort
               onSearch={(s: string) => {
                 dispatch(handleChangeSearchTerm(s));
+                handleReloadData(state.pagination, s);
               }}
               loading={loading}
               error={error}

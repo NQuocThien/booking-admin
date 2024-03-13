@@ -132,12 +132,14 @@ function FilterDoctorShort(props: IProps) {
               <option value={EGender.Female}>Nữ</option>
             </Form.Select>
             <Button variant="outline-secondary" type="submit">
-              <IoSearch />
+              {!loading && <IoSearch />}
+              {loading && (
+                <StatusCpn size="sm" error={error} loading={loading} />
+              )}
             </Button>
           </InputGroup>
         </Row>
       </Form>
-      {loading && <StatusCpn error={error} loading={loading} />}
     </Row>
   );
 }

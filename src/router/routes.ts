@@ -32,11 +32,18 @@ import ListVaccinationOfFacilityPage from "src/pages/Vaccination/Facility-Page/L
 import ListPackageOfFacilityPage from "src/pages/Package/Facility-Page/ListPackageOfFacility";
 import ListMedicalStaffOfFacilityPage from "src/pages/MedicalStaff/Facility-Page/ListMedicalStaffOfFacility";
 import CoordinateDoctor from "src/pages/Doctor/Facility-Page/Coordinate/CoordinateDoctor";
-import CoordinateMedcialSpecialties from "src/pages/Specialty/Coordinate/CoordinateSpecialty";
-import CoordinateVaccination from "src/pages/Vaccination/Coordinate/CoordinateVaccination";
-import CoordinatePackages from "src/pages/Package/Coordinate/CoordinatePackage";
+import CoordinateMedcialSpecialties from "src/pages/Specialty/Facility-Page/Coordinate/CoordinateSpecialty";
+import CoordinateVaccination from "src/pages/Vaccination/Facility-Page/Coordinate/CoordinateVaccination";
+import CoordinatePackages from "src/pages/Package/Facility-Page/Coordinate/CoordinatePackage";
 import DoctorDetailForDoctorPage from "src/pages/Doctor/Doctor-Page/DoctorDetail";
 import DoctorRegistration from "src/pages/Doctor/Doctor-Page/DoctorRegistration";
+import MedicalStaffDetailPage from "src/pages/MedicalStaff/Staff-Page/StaffDetail";
+import CoordinatePackagesByStaff from "src/pages/Package/Staff-Page/Coordinate/CoordinatePackage";
+import ListPackageByStaffPage from "src/pages/Package/Staff-Page/ListPackageOfFacility";
+import CoordinateVaccinationByStaff from "src/pages/Vaccination/Staff-Page/Coordinate/CoordinateVaccination";
+import ListVaccinationByStaffPage from "src/pages/Vaccination/Staff-Page/ListVaccinationOfFacility";
+import CoordinateMedcialSpecialtiesByStaff from "src/pages/Specialty/Staff-Page/Coordinate/CoordinateSpecialty";
+import ListMedicalSpecialtyByStaffPage from "src/pages/Specialty/Staff-Page/ListSpecialtyOfFacility";
 export interface IRoute {
   path: string;
   name: string;
@@ -341,4 +348,212 @@ const routes_doctor: IRoute[] = [
     element: DoctorRegistration,
   },
 ];
-export { routes_admin, routes_clinic, routes_doctor };
+
+// ======================
+const routes_staff_manager: IRoute[] = [
+  { path: "/", exact: true, name: "Home" },
+  { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
+  { path: "/facility-page", name: "Dashboard", element: FacilityHomePage },
+  {
+    path: "/facility-page/staff-info",
+    name: "Dashboard",
+    element: MedicalStaffDetailPage,
+  },
+  {
+    path: "/facility-page/home",
+    name: "Dashboard",
+    element: GeneralInforFacilityPage,
+  },
+  {
+    path: "/facility-page/update/:id",
+    name: "Dashboard",
+    element: FormUpdateGeneralMedicalFacility,
+  },
+  {
+    path: "/facility-page/doctors",
+    name: "Dashboard",
+    element: ListDoctorOfFacilityPage,
+  },
+  {
+    path: "/facility-page/doctors/:id/:idDoctor",
+    name: "Dashboard",
+    element: DoctorDetailPage,
+  },
+  {
+    path: "/facility-page/doctors/form-add/:id",
+    name: "Dashboard",
+    element: FormAddDoctor,
+  },
+  {
+    path: "/facility-page/doctors/update/:id/:idDoctor",
+    name: "Dashboard",
+    element: FormUpdateDoctor,
+  },
+  {
+    path: "/facility-page/specialties",
+    name: "Dashboard",
+    element: ListMedicalSpecialtyOfFacilityPage,
+  },
+  {
+    path: "/facility-page/specialties/form-add/:id",
+    name: "Dashboard",
+    element: FormAddSpecialty,
+  },
+  {
+    path: "/facility-page/specialties/:id/:idSpecialty",
+    name: "Dashboard",
+    element: SpecialtyDetailPage,
+  },
+  {
+    path: "/facility-page/specialties/update/:id/:idSpecialty",
+    name: "Dashboard",
+    element: FormUpdateSpecialty,
+  },
+  {
+    path: "/facility-page/vaccinations",
+    name: "Dashboard",
+    element: ListVaccinationOfFacilityPage,
+  },
+  {
+    path: "/facility-page/vaccinations/form-add/:id",
+    name: "Dashboard",
+    element: FormAddVaccination,
+  },
+  {
+    path: "/facility-page/vaccinations/:id/:idVaccine",
+    name: "Dashboard",
+    element: VaccinationDetailPage,
+  },
+  {
+    path: "/facility-page/vaccinations/update/:id/:idVaccine",
+    name: "Dashboard",
+    element: FormUpdateVaccination,
+  },
+  {
+    path: "/facility-page/packages",
+    name: "Dashboard",
+    element: ListPackageOfFacilityPage,
+  },
+  {
+    path: "/facility-page/packages/form-add/:id",
+    name: "Dashboard",
+    element: FormAddPackage,
+  },
+  {
+    path: "/facility-page/packages/:id/:idPackage",
+    name: "Dashboard",
+    element: PackageDetailPage,
+  },
+  {
+    path: "/facility-page/packages/update/:id/:idPackage",
+    name: "Dashboard",
+    element: FormUpdatePackage,
+  },
+  {
+    path: "/facility-page/staffs",
+    name: "Dashboard",
+    element: ListMedicalStaffOfFacilityPage,
+  },
+  {
+    path: "/facility-page/staffs/form-add/:id",
+    name: "Dashboard",
+    element: FormAddMedicalStaff,
+  },
+  {
+    path: "/facility-page/staffs/update/:id/:idStaff",
+    name: "Dashboard",
+    element: FormUpdateMedicalStaff,
+  },
+  {
+    path: "/facility-page/coordinate/doctors",
+    name: "Dashboard",
+    element: CoordinateDoctor,
+  },
+  {
+    path: "/facility-page/coordinate/specialties",
+    name: "Dashboard",
+    element: CoordinateMedcialSpecialties,
+  },
+  {
+    path: "/facility-page/coordinate/vaccination",
+    name: "Dashboard",
+    element: CoordinateVaccination,
+  },
+  {
+    path: "/facility-page/coordinate/packages",
+    name: "Dashboard",
+    element: CoordinatePackages,
+  },
+];
+
+const routes_staff_general: IRoute[] = [
+  { path: "/", exact: true, name: "Home" },
+  { path: "/me", name: "Dashboard", element: CurrentUserDetailPage },
+  {
+    path: "/staff-page/home",
+    name: "Dashboard",
+    element: MedicalStaffDetailPage,
+  },
+];
+const routes_staff_specialties: IRoute[] = [
+  {
+    path: "/staff-page/specialties",
+    name: "Dashboard",
+    element: ListMedicalSpecialtyByStaffPage,
+  },
+  {
+    path: "/staff-page/specialties/:id/:idSpecialty",
+    name: "Dashboard",
+    element: SpecialtyDetailPage,
+  },
+  {
+    path: "/staff-page/specialties/registration",
+    name: "Dashboard",
+    element: CoordinateMedcialSpecialtiesByStaff,
+  },
+];
+const routes_staff_packages: IRoute[] = [
+  {
+    path: "/staff-page/packages",
+    name: "Dashboard",
+    element: ListPackageByStaffPage,
+  },
+  {
+    path: "/staff-page/packages/:id/:idPackage",
+    name: "Dashboard",
+    element: PackageDetailPage,
+  },
+  {
+    path: "/staff-page/packages/registration",
+    name: "Dashboard",
+    element: CoordinatePackagesByStaff,
+  },
+];
+const routes_staff_vaccination: IRoute[] = [
+  {
+    path: "/staff-page/vaccination",
+    name: "Dashboard",
+    element: ListVaccinationByStaffPage,
+  },
+  {
+    path: "/staff-page/vaccination/:id/:idVaccine",
+    name: "Dashboard",
+    element: VaccinationDetailPage,
+  },
+  {
+    path: "/staff-page/vaccination/registration",
+    name: "Dashboard",
+    element: CoordinateVaccinationByStaff,
+  },
+];
+
+export {
+  routes_admin,
+  routes_clinic,
+  routes_doctor,
+  routes_staff_manager,
+  routes_staff_general,
+  routes_staff_specialties,
+  routes_staff_vaccination,
+  routes_staff_packages,
+};

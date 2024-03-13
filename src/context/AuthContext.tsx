@@ -1,8 +1,8 @@
 import {
-  Role,
+  MedicalStaff,
   User,
   useCheckLoginQueryLazyQuery,
-  useCheckLoginQueryQuery,
+  useGetMedicalStaffByUserIdLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getLocalStorage, setLocalStorage } from "src/utils/contain";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -13,6 +13,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   userInfor: User | undefined;
+  infoStaff: MedicalStaff | undefined;
   currRole: GetRole | undefined;
   handleChangeCurrRole: (role: GetRole) => void;
   handleChangeUserInfor: (dataUser: User) => void;
@@ -29,12 +30,12 @@ function useAuth() {
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  // checkLogin: (token: string) => Promise<any>;
 }
 function AuthContextProvider({ children }: AuthProviderProps) {
   const [isLoginIn, setIsLoginIn] = useState<boolean>(false);
   const [userInfor, setUserInfor] = useState<User>();
   const [currRole, setCurrRole] = useState<GetRole>();
+  const [infoStaff, setInfoStaff] = useState<MedicalStaff>();
   const tokenKey = process.env.REACT_APP_ACCESS_TOKEN
     ? process.env.REACT_APP_ACCESS_TOKEN
     : "access_token";
@@ -47,6 +48,13 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     },
     fetchPolicy: "no-cache",
   });
+  const [getInfoStaff, { data: dataStaff }] =
+    useGetMedicalStaffByUserIdLazyQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   useEffect(() => {
     if (token) checkLogin();
   }, []);
@@ -54,10 +62,30 @@ function AuthContextProvider({ children }: AuthProviderProps) {
     if (data?.checklogin.roles) {
       setIsLoginIn(true);
       setUserInfor(data.checklogin);
+      if (data?.checklogin.roles?.includes(GetRole.Staff))
+        getInfoStaff({
+          variables: {
+            input: userInfor?.id || "",
+          },
+        });
     } else {
       setIsLoginIn(false);
     }
   }, [data]);
+  useEffect(() => {
+    if (userInfor?.id && currRole === GetRole.Staff) {
+      getInfoStaff({
+        variables: {
+          input: userInfor.id,
+        },
+      });
+    }
+  }, [currRole]);
+  useEffect(() => {
+    if (dataStaff?.getMedicalStaffByUserId) {
+      setInfoStaff(dataStaff.getMedicalStaffByUserId);
+    }
+  }, [dataStaff]);
   useEffect(() => {
     if (data?.checklogin.roles) {
       const roles = data.checklogin.roles;
@@ -111,6 +139,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         login,
         logout,
         userInfor,
+        infoStaff,
         currRole,
         handleChangeUserInfor,
         handleChangeCurrRole,

@@ -10,6 +10,7 @@ import {
 } from "./reducer-list";
 import {
   MedicalSpecialties,
+  useGetAllMedicalSpecialtiesPaginationByStaffQuery,
   useGetAllMedicalSpecialtiesPaginationOfFacilityQuery,
   useGetTotalMedicalSpecialtiesCountQuery,
 } from "src/graphql/webbooking-service.generated";
@@ -19,12 +20,12 @@ import { Col, ListGroup, Row } from "react-bootstrap";
 import ListRegisterV2 from "src/components/Pages/Register/ListRegisterV2";
 import PaginationCpn from "src/components/sub/Pagination";
 import FilterShort from "src/components/Filters/FilterShort";
-function CoordinateMedcialSpecialties() {
-  const { userInfor } = useAuth();
+function CoordinateMedcialSpecialtiesByStaff() {
+  const { infoStaff } = useAuth();
   const token = getToken();
   const [state, dispatch] = useReducer(reducer, initState);
   const { refetch, data, loading, error } =
-    useGetAllMedicalSpecialtiesPaginationOfFacilityQuery({
+    useGetAllMedicalSpecialtiesPaginationByStaffQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -36,40 +37,18 @@ function CoordinateMedcialSpecialties() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+        staffId: infoStaff?.id || "",
       },
     });
-  const { data: dataTotal } = useGetTotalMedicalSpecialtiesCountQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: {
-      search: state.searchTerm,
-      userId: userInfor?.id || "",
-    },
-  });
+
   useEffect(() => {
-    if (data?.getAllMedicalSpecialtiesPaginationOfFacility) {
+    if (data?.getAllMedicalSpecialtiesPaginationByStaff) {
       dispatch(
-        handleSetlistSpecialty(
-          data?.getAllMedicalSpecialtiesPaginationOfFacility
-        )
+        handleSetlistSpecialty(data?.getAllMedicalSpecialtiesPaginationByStaff)
       );
     }
   }, [data]);
-  useEffect(() => {
-    if (dataTotal?.getTotalMedicalSpecialtiesCount) {
-      dispatch(
-        handleChangePagination({
-          ...state.pagination,
-          total: dataTotal.getTotalMedicalSpecialtiesCount,
-        })
-      );
-    }
-  }, [dataTotal]);
+
   const handleClicked = (spec: MedicalSpecialties) => {
     dispatch(handleChangeSelectedSpecialty(spec));
   };
@@ -124,7 +103,11 @@ function CoordinateMedcialSpecialties() {
                   })
                 );
               }}
-              totalPage={Math.ceil(state.pagination.total / 10)}
+              totalPage={Math.ceil(
+                (infoStaff?.specialtyId &&
+                  infoStaff?.specialtyId?.length / 10) ||
+                  1
+              )}
             />
           </div>
         </div>
@@ -147,4 +130,4 @@ function CoordinateMedcialSpecialties() {
     </Row>
   );
 }
-export default CoordinateMedcialSpecialties;
+export default CoordinateMedcialSpecialtiesByStaff;

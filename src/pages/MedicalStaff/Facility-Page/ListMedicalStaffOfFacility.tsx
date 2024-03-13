@@ -5,14 +5,8 @@ import { useAuth } from "src/context/AuthContext";
 import {
   MedicalStaff,
   useDeleteMedicalStaffMutation,
-  useDeletePackageMutation,
-  useDeleteVaccinationMutation,
   useGetAllMedicalStaffPaginationOfFacilityQuery,
-  useGetAllPackagePaginationOfFacilityQuery,
-  useGetAllVaccinationPaginationOfFacilityQuery,
   useGetMedicalFacilityIdByUserIdQuery,
-  useGetTotalPackagesCountQuery,
-  useGetTotalVaccinationsCountQuery,
   useTotalStaffsCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
@@ -31,7 +25,6 @@ import {
 } from "./reducer-list";
 import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
-import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import ModalCpn from "src/components/sub/Modal";
 import { FaPhone } from "react-icons/fa6";
@@ -73,7 +66,7 @@ function ListMedicalStaffOfFacilityPage() {
       },
     },
     variables: {
-      input: userInfor?.id || "",
+      userId: userInfor?.id || "",
     },
   });
   const { data: dataTotal } = useTotalStaffsCountQuery({
@@ -159,7 +152,7 @@ function ListMedicalStaffOfFacilityPage() {
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={`/facility-page/staffs/form-add/${dataFacilityId?.getMedicalFacilityByUserId.id}`}>
+            to={`/facility-page/staffs/form-add/${dataFacilityId?.getMedicalFacilityInfo.id}`}>
             <FiPlus />
           </Link>
         </Col>
@@ -213,7 +206,7 @@ function ListMedicalStaffOfFacilityPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/facility-page/staffs/update/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
+                          to={`/facility-page/staffs/update/${dataFacilityId?.getMedicalFacilityInfo.id}/${c.id}`}>
                           Chỉnh sửa
                         </Dropdown.Item>
                         <Dropdown.Item>

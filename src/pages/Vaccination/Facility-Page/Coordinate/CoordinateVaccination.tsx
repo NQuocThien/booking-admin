@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import s from "src/assets/scss/General.module.scss";
 import {
   handleChangePagination,
@@ -10,48 +10,119 @@ import {
 } from "./reducer-list";
 import {
   Vaccination,
-  useGetAllVaccinationPaginationOfFacilityQuery,
-  useGetTotalVaccinationsCountQuery,
+  useGetAllVaccinationPaginationOfFacilityLazyQuery,
+  useGetTotalVaccinationsCountLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import { useAuth } from "src/context/AuthContext";
 import { Col, ListGroup, Row } from "react-bootstrap";
 import ListRegisterV2 from "src/components/Pages/Register/ListRegisterV2";
 import PaginationCpn from "src/components/sub/Pagination";
-import SearchInputCpn from "src/components/sub/InputSearch";
 import FilterShort from "src/components/Filters/FilterShort";
+import { GetEPermission, GetRole } from "src/utils/enum-value";
+import { IPagination } from "src/assets/contains/item-interface";
 function CoordinateVaccination() {
-  const { userInfor } = useAuth();
+  const { userInfor, currRole, infoStaff } = useAuth();
   const token = getToken();
   const [state, dispatch] = useReducer(reducer, initState);
-  const { refetch, data, loading, error } =
-    useGetAllVaccinationPaginationOfFacilityQuery({
+  const [authorized, setAuthorized] = useState<boolean>(true);
+  const [getData, { refetch, data, loading, error }] =
+    useGetAllVaccinationPaginationOfFacilityLazyQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       },
-      variables: {
-        limit: 10,
-        page: state.pagination.current,
-        search: state.searchTerm,
-        sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+    });
+  const [getDataTotal, { data: dataTotal }] =
+    useGetTotalVaccinationsCountLazyQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     });
-  const { data: dataTotal } = useGetTotalVaccinationsCountQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: {
-      search: state.searchTerm,
-      userId: userInfor?.id || "",
-    },
-  });
+  const handleLoadData = () => {
+    if (currRole === GetRole.Facility) {
+      getData({
+        variables: {
+          limit: 10,
+          page: state.pagination.current,
+          search: state.searchTerm,
+          sortOrder: state.pagination.sort,
+          userId: userInfor?.id || "",
+        },
+      });
+      getDataTotal({
+        variables: {
+          search: state.searchTerm,
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      // load data from staff id
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        getData({
+          variables: {
+            limit: 10,
+            page: state.pagination.current,
+            search: state.searchTerm,
+            sortOrder: state.pagination.sort,
+            staffId: infoStaff?.id || "",
+          },
+        });
+        getDataTotal({
+          variables: {
+            search: state.searchTerm,
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
+  };
+  const handleReloadData = (pagination: IPagination, searchTerm: string) => {
+    if (currRole === GetRole.Facility) {
+      getData({
+        variables: {
+          limit: 10,
+          page: pagination.current,
+          search: searchTerm,
+          sortOrder: pagination.sort,
+          userId: userInfor?.id || "",
+        },
+      });
+      getDataTotal({
+        variables: {
+          search: searchTerm,
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      // load data from staff id
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        getData({
+          variables: {
+            limit: 10,
+            page: pagination.current,
+            search: searchTerm,
+            sortOrder: pagination.sort,
+            staffId: infoStaff?.id || "",
+          },
+        });
+        getDataTotal({
+          variables: {
+            search: searchTerm,
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
+  };
+  useEffect(() => {
+    handleLoadData();
+  }, [currRole]);
   useEffect(() => {
     if (data?.getAllVaccinationPaginationOfFacility) {
       dispatch(
@@ -83,6 +154,7 @@ function CoordinateVaccination() {
             <FilterShort
               onSearch={(s: string) => {
                 dispatch(handleChangeSearchTerm(s));
+                handleReloadData(state.pagination, s);
               }}
               loading={loading}
               error={error}
@@ -114,6 +186,13 @@ function CoordinateVaccination() {
                     rowPerPage: numberRow,
                   })
                 );
+                handleReloadData(
+                  {
+                    ...state.pagination,
+                    rowPerPage: numberRow,
+                  },
+                  state.searchTerm
+                );
               }}
               setPageActive={(currPage) => {
                 dispatch(
@@ -121,6 +200,13 @@ function CoordinateVaccination() {
                     ...state.pagination,
                     current: currPage,
                   })
+                );
+                handleReloadData(
+                  {
+                    ...state.pagination,
+                    current: currPage,
+                  },
+                  state.searchTerm
                 );
               }}
               totalPage={Math.ceil(state.pagination.total / 10)}

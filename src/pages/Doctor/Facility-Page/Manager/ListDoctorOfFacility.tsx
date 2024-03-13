@@ -57,7 +57,7 @@ function ListDoctorOfFacilityPage() {
       },
     },
     variables: {
-      input: userInfor?.id || "",
+      userId: userInfor?.id || "",
     },
   });
   const { data: dataTotal } = useGetTotalDoctorsCountQuery({
@@ -153,7 +153,7 @@ function ListDoctorOfFacilityPage() {
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={`/facility-page/doctors/form-add/${dataFacilityId?.getMedicalFacilityByUserId.id}`}>
+            to={`/facility-page/doctors/form-add/${dataFacilityId?.getMedicalFacilityInfo.id}`}>
             <FiPlus />
           </Link>
         </Col>
@@ -212,13 +212,13 @@ function ListDoctorOfFacilityPage() {
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/facility-page/doctors/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
+                          to={`/facility-page/doctors/${dataFacilityId?.getMedicalFacilityInfo.id}/${c.id}`}>
                           Chi tiết
                         </Dropdown.Item>
                         <Dropdown.Item
                           as={Link}
                           className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/facility-page/doctors/update/${dataFacilityId?.getMedicalFacilityByUserId.id}/${c.id}`}>
+                          to={`/facility-page/doctors/update/${dataFacilityId?.getMedicalFacilityInfo.id}/${c.id}`}>
                           Chỉnh sửa
                         </Dropdown.Item>
                         <Dropdown.Item>

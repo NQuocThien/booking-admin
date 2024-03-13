@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Row,
-  Table,
-  Button,
-  Col,
-  Dropdown,
-  Overlay,
-  Popover,
-} from "react-bootstrap";
+import { Row, Table, Button, Col, Dropdown, Overlay } from "react-bootstrap";
 import {
   ConfirmRegisterInput,
   EStateRegister,
@@ -17,6 +9,7 @@ import {
   useConfirmRegisterMutation,
   useGetAllRegisterByOptionLazyQuery,
 } from "src/graphql/webbooking-service.generated";
+import { TfiReload } from "react-icons/tfi";
 import SessionItem from "../../WorkSchedule/Session";
 import { getEnumValueStateRegis, renderDayOfWeek } from "src/utils/getData";
 import { formatDate, getToken } from "src/utils/contain";
@@ -54,7 +47,7 @@ function ListRegisterV2(props: IProps) {
     specialtyId = undefined,
     vaccineId = undefined,
   } = props;
-  const [getRegisters, { data, loading, error }] =
+  const [getRegisters, { data, loading, error, refetch }] =
     useGetAllRegisterByOptionLazyQuery({
       fetchPolicy: "no-cache",
       context: {
@@ -89,6 +82,7 @@ function ListRegisterV2(props: IProps) {
     setShow(!show);
     setTarget(event.target);
   };
+
   useEffect(() => {
     if (doctorId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
@@ -243,7 +237,21 @@ function ListRegisterV2(props: IProps) {
     <Row>
       <Row>
         <Col className="col">
-          <p className="fw-medium">{title}</p>
+          <Row>
+            <Col sm={10}>
+              <p className="fw-medium">{title}</p>
+            </Col>
+            <Col>
+              <Button
+                size="sm"
+                variant="outline-success"
+                onClick={() => {
+                  refetch();
+                }}>
+                <TfiReload />
+              </Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row>
@@ -285,12 +293,13 @@ function ListRegisterV2(props: IProps) {
               containerPadding={20}>
               <div
                 style={{
-                  height: 200,
+                  minHeight: 200,
                   width: 700,
+                  zIndex: 999,
                 }}
                 className="shadow p-3 mb-5 mt-1 bg-body-tertiary rounded border">
                 <h6 className="text-dark">Chọn phiên</h6>
-                <div className="m-1 d-flex g-3 align-items-center">
+                <div className="m-1 d-flex flex-wrap g-3 align-items-center">
                   {schedule?.sessions.map((session, i) => (
                     <div className="" key={i}>
                       <SessionItem

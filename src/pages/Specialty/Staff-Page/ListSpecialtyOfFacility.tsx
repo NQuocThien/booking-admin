@@ -1,12 +1,10 @@
 import { useEffect, useReducer } from "react";
-import { Col, Container, Dropdown, Row, Table } from "react-bootstrap";
+import { Badge, Col, Container, Row, Table } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
   useDeleteMecialSpecialtyMutation,
-  useGetAllMedicalSpecialtiesPaginationOfFacilityQuery,
-  useGetMedicalFacilityIdByUserIdQuery,
-  useGetTotalMedicalSpecialtiesCountQuery,
+  useGetAllMedicalSpecialtiesPaginationByStaffQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -23,16 +21,15 @@ import {
 import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
 import { renderDayOfWeek2 } from "src/utils/getData";
-import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
-function ListMedicalSpecialtyOfFacilityPage() {
+function ListMedicalSpecialtyByStaffPage() {
   const token = getToken();
-  const { checkExpirationToken, userInfor } = useAuth();
+  const { checkExpirationToken, infoStaff } = useAuth();
 
   checkExpirationToken();
 
   const [state, dispatch] = useReducer(reducer, initState);
   const { refetch, data, loading, error } =
-    useGetAllMedicalSpecialtiesPaginationOfFacilityQuery({
+    useGetAllMedicalSpecialtiesPaginationByStaffQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -44,56 +41,22 @@ function ListMedicalSpecialtyOfFacilityPage() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+        staffId: infoStaff?.id || "",
       },
     });
-  const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: {
-      userId: userInfor?.id || "",
-    },
-  });
-  const { data: dataTotal } = useGetTotalMedicalSpecialtiesCountQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: {
-      search: state.searchTerm,
-      userId: userInfor?.id || "",
-    },
-  });
+
   const [deleteMedicalSpcialty, { loading: loadingDeleteSpecialty }] =
     useDeleteMecialSpecialtyMutation({
       fetchPolicy: "no-cache",
     });
 
   useEffect(() => {
-    if (data?.getAllMedicalSpecialtiesPaginationOfFacility) {
+    if (data?.getAllMedicalSpecialtiesPaginationByStaff) {
       dispatch(
-        handleSetlistSpecialty(
-          data?.getAllMedicalSpecialtiesPaginationOfFacility
-        )
+        handleSetlistSpecialty(data?.getAllMedicalSpecialtiesPaginationByStaff)
       );
     }
   }, [data]);
-  useEffect(() => {
-    if (dataTotal?.getTotalMedicalSpecialtiesCount) {
-      dispatch(
-        handleChangePagination({
-          ...state.pagination,
-          total: dataTotal.getTotalMedicalSpecialtiesCount,
-        })
-      );
-    }
-  }, [dataTotal]);
   const hanldeDelete = async (id: string) => {
     var userConfirmed = window.confirm("Bạn có chắc muốn xóa không?");
     if (userConfirmed) {
@@ -139,7 +102,7 @@ function ListMedicalSpecialtyOfFacilityPage() {
         <Col>
           <Link
             className="btn btn-outline-primary"
-            to={`/facility-page/specialties/form-add/${dataFacilityId?.getMedicalFacilityInfo.id}`}>
+            to={`/facility-page/specialties/form-add/${infoStaff?.medicalFacilityId}`}>
             <FiPlus />
           </Link>
         </Col>
@@ -152,7 +115,7 @@ function ListMedicalSpecialtyOfFacilityPage() {
               <th>Tên chuyên khoa</th>
               <th>Giá</th>
               <th>Lịch làm việc</th>
-              <th>Hành động </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -172,32 +135,15 @@ function ListMedicalSpecialtyOfFacilityPage() {
                       renderDayOfWeek2(c.workSchedule.schedule)}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    <Dropdown drop="down">
-                      <Dropdown.Toggle
-                        as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          as={Link}
-                          className="fs-6 text-decoration-none text-dark link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/facility-page/specialties/${dataFacilityId?.getMedicalFacilityInfo.id}/${c.id}`}>
-                          Chi tiết
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          as={Link}
-                          className="fs-6 text-decoration-none text-dark link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                          to={`/facility-page/specialties/update/${dataFacilityId?.getMedicalFacilityInfo.id}/${c.id}`}>
-                          Chỉnh sửa
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                          {" "}
-                          <p
-                            className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                            onClick={async () => await hanldeDelete(c.id)}>
-                            Xóa chuyên khoa
-                          </p>
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    <div>
+                      <Badge
+                        as={Link}
+                        className="text-decoration-none"
+                        to={`/staff-page/specialties/${infoStaff?.medicalFacilityId}/${c.id}`}
+                        bg="primary">
+                        Chi tiết
+                      </Badge>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -214,11 +160,13 @@ function ListMedicalSpecialtyOfFacilityPage() {
               })
             );
           }}
-          totalPage={Math.ceil(state.pagination.total / 10)}
+          totalPage={Math.ceil(
+            (infoStaff?.specialtyId && infoStaff?.specialtyId?.length / 10) || 1
+          )}
         />
       </div>
     </Container>
   );
 }
 
-export default ListMedicalSpecialtyOfFacilityPage;
+export default ListMedicalSpecialtyByStaffPage;

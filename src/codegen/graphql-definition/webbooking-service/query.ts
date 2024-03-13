@@ -171,9 +171,9 @@ const getMedicalFacilityById = gql`
     }
   }
 `;
-const getMedicalFacilityByUserId = gql`
-  query getMedicalFacilityByUserId($input: String!) {
-    getMedicalFacilityByUserId(id: $input) {
+const getMedicalFacilityInfo = gql`
+  query getMedicalFacilityInfo($userId: String, $staffId: String) {
+    getMedicalFacilityInfo(userId: $userId, staffId: $staffId) {
       id
       userId
       medicalFacilityName
@@ -185,7 +185,6 @@ const getMedicalFacilityByUserId = gql`
         type
         url
       }
-
       image {
         filename
         type
@@ -208,9 +207,9 @@ const getMedicalFacilityByUserId = gql`
     }
   }
 `;
-const getGeneralMedicalFacilityByUserId = gql`
-  query getGeneralMedicalFacilityByUserId($input: String!) {
-    getMedicalFacilityByUserId(id: $input) {
+const getGeneralMedicalFacilityInfo = gql`
+  query getGeneralMedicalFacilityInfo($userId: String, $staffId: String) {
+    getMedicalFacilityInfo(userId: $userId, staffId: $staffId) {
       id
       userId
       medicalFacilityName
@@ -222,7 +221,6 @@ const getGeneralMedicalFacilityByUserId = gql`
         type
         url
       }
-
       image {
         filename
         type
@@ -242,8 +240,8 @@ const getGeneralMedicalFacilityByUserId = gql`
   }
 `;
 const getMedicalFacilityIdByUserId = gql`
-  query getMedicalFacilityIdByUserId($input: String!) {
-    getMedicalFacilityByUserId(id: $input) {
+  query getMedicalFacilityIdByUserId($userId: String!) {
+    getMedicalFacilityInfo(userId: $userId) {
       id
       userId
       medicalFacilityName
@@ -326,6 +324,28 @@ const getMedicalStaffByFacilityId = gql`
 const getMedicalStaffById = gql`
   query getMedicalStaffById($input: String!) {
     getMedicalStaffById(input: $input) {
+      id
+      userId
+      medicalFacilityId
+      name
+      gender
+      numberPhone
+      email
+      permissions
+      specialtyId
+      specialties {
+        id
+        discription
+        medicalFactilityId
+        name
+        price
+      }
+    }
+  }
+`;
+const getMedicalStaffByUserId = gql`
+  query getMedicalStaffByUserId($input: String!) {
+    getMedicalStaffByUserId(input: $input) {
       id
       userId
       medicalFacilityId
@@ -634,8 +654,12 @@ const getAllDoctorPaginationOfFacility = gql`
   }
 `;
 const getTotalDoctorsCount = gql`
-  query getTotalDoctorsCount($filter: FilterDoctorInput, $userId: String) {
-    getTotalDoctorsCount(filter: $filter, userId: $userId)
+  query getTotalDoctorsCount(
+    $filter: FilterDoctorInput
+    $userId: String
+    $staffId: String
+  ) {
+    getTotalDoctorsCount(filter: $filter, userId: $userId, staffId: $staffId)
   }
 `;
 const getPackageById = gql`
@@ -703,7 +727,8 @@ const getAllPackagePaginationOfFacility = gql`
     $limit: Float!
     $sortField: String
     $sortOrder: String
-    $userId: String!
+    $userId: String
+    $staffId: String
   ) {
     getAllPackagePaginationOfFacility(
       search: $search
@@ -712,6 +737,50 @@ const getAllPackagePaginationOfFacility = gql`
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      staffId: $staffId
+    ) {
+      id
+      medicalFactilitiesId
+      packageName
+      gender
+      price
+      image {
+        filename
+        type
+        url
+      }
+      examinationDetails
+      workSchedule {
+        dayOff
+        status
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getAllPackagePaginationByStaff = gql`
+  query getAllPackagePaginationByStaff(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $staffId: String!
+  ) {
+    getAllPackagePaginationByStaff(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      staffId: $staffId
     ) {
       id
       medicalFactilitiesId
@@ -740,8 +809,12 @@ const getAllPackagePaginationOfFacility = gql`
   }
 `;
 const getTotalPackagesCount = gql`
-  query getTotalPackagesCount($search: String, $userId: String) {
-    getTotalPackagesCount(search: $search, userId: $userId)
+  query getTotalPackagesCount(
+    $search: String
+    $userId: String
+    $staffId: String
+  ) {
+    getTotalPackagesCount(search: $search, userId: $userId, staffId: $staffId)
   }
 `;
 const getMedicalSpecialtyByid = gql`
@@ -797,7 +870,8 @@ const getAllMedicalSpecialtiesPaginationOfFacility = gql`
     $limit: Float!
     $sortField: String
     $sortOrder: String
-    $userId: String!
+    $userId: String
+    $staffId: String
   ) {
     getAllMedicalSpecialtiesPaginationOfFacility(
       search: $search
@@ -806,6 +880,44 @@ const getAllMedicalSpecialtiesPaginationOfFacility = gql`
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      staffId: $staffId
+    ) {
+      id
+      medicalFactilityId
+      name
+      price
+      discription
+      workSchedule {
+        dayOff
+        numberSlot
+        status
+        schedule {
+          dayOfWeek
+          sessions {
+            endTime
+            startTime
+          }
+        }
+      }
+    }
+  }
+`;
+const getAllMedicalSpecialtiesPaginationByStaff = gql`
+  query getAllMedicalSpecialtiesPaginationByStaff(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $staffId: String!
+  ) {
+    getAllMedicalSpecialtiesPaginationByStaff(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      staffId: $staffId
     ) {
       id
       medicalFactilityId
@@ -828,8 +940,16 @@ const getAllMedicalSpecialtiesPaginationOfFacility = gql`
   }
 `;
 const getTotalMedicalSpecialtiesCount = gql`
-  query getTotalMedicalSpecialtiesCount($search: String, $userId: String) {
-    getTotalMedicalSpecialtiesCount(search: $search, userId: $userId)
+  query getTotalMedicalSpecialtiesCount(
+    $search: String
+    $userId: String
+    $staffId: String
+  ) {
+    getTotalMedicalSpecialtiesCount(
+      search: $search
+      userId: $userId
+      staffId: $staffId
+    )
   }
 `;
 const getVaccineById = gql`
@@ -891,7 +1011,8 @@ const getAllVaccinationPaginationOfFacility = gql`
     $limit: Float!
     $sortField: String
     $sortOrder: String
-    $userId: String!
+    $userId: String
+    $staffId: String
   ) {
     getAllVaccinationPaginationOfFacility(
       search: $search
@@ -900,6 +1021,47 @@ const getAllVaccinationPaginationOfFacility = gql`
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      staffId: $staffId
+    ) {
+      id
+      medicalFactilitiesId
+      vaccineName
+      price
+      countryOfOrigin
+      prophylactic
+      indication
+      note
+      workSchedule {
+        dayOff
+        numberSlot
+        schedule {
+          dayOfWeek
+          sessions {
+            startTime
+            endTime
+          }
+        }
+        status
+      }
+    }
+  }
+`;
+const getAllVaccinationPaginationByStaff = gql`
+  query getAllVaccinationPaginationByStaff(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortField: String
+    $sortOrder: String
+    $staffId: String!
+  ) {
+    getAllVaccinationPaginationByStaff(
+      search: $search
+      page: $page
+      limit: $limit
+      sortField: $sortField
+      sortOrder: $sortOrder
+      staffId: $staffId
     ) {
       id
       medicalFactilitiesId
@@ -925,8 +1087,16 @@ const getAllVaccinationPaginationOfFacility = gql`
   }
 `;
 const getTotalVaccinationsCount = gql`
-  query getTotalVaccinationsCount($search: String, $userId: String) {
-    getTotalVaccinationsCount(search: $search, userId: $userId)
+  query getTotalVaccinationsCount(
+    $search: String
+    $userId: String
+    $staffId: String
+  ) {
+    getTotalVaccinationsCount(
+      search: $search
+      userId: $userId
+      staffId: $staffId
+    )
   }
 `;
 const getMedicalSpecialtySelect = gql`

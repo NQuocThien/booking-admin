@@ -61,6 +61,14 @@ function PackageDetailPage() {
           label: data?.getPackageById.packageName || "",
         },
       ]);
+    } else if (location.pathname.search("/staff-page/packages") !== -1) {
+      setBreadcrumbs([
+        { url: "/staff-page/packages", label: "Danh sách gói khám" },
+        {
+          url: "",
+          label: data?.getPackageById.packageName || "",
+        },
+      ]);
     }
 
     if (data?.getPackageById) {

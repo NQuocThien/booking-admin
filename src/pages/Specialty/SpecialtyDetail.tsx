@@ -53,11 +53,21 @@ function SpecialtyDetailPage() {
       if (data?.getMedicalSpecialtyById.workSchedule) {
         setListSchedule(data?.getMedicalSpecialtyById.workSchedule.schedule);
       }
-    }
-    if (location.pathname.search("/facility-page/specialties/") !== -1) {
+    } else if (location.pathname.search("/facility-page/specialties/") !== -1) {
       const urlMedical = "/facility-page/specialties" + id;
       setBreadcrumbs([
         { url: "/facility-page/specialties", label: "Danh sách chuyên khoa" },
+        {
+          url: "",
+          label: data?.getMedicalSpecialtyById.name || "",
+        },
+      ]);
+      if (data?.getMedicalSpecialtyById.workSchedule) {
+        setListSchedule(data?.getMedicalSpecialtyById.workSchedule.schedule);
+      }
+    } else if (location.pathname.search("/staff-page/specialties") !== -1) {
+      setBreadcrumbs([
+        { url: "/staff-page/specialties", label: "Danh sách chuyên khoa" },
         {
           url: "",
           label: data?.getMedicalSpecialtyById.name || "",

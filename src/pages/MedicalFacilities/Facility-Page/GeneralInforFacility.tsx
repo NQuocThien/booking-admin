@@ -2,7 +2,7 @@ import { Col, Container, Image, Row, Spinner, Button } from "react-bootstrap";
 import ShowAlert from "src/components/sub/alerts";
 import {
   MedicalFacilities,
-  useGetGeneralMedicalFacilityByUserIdQuery,
+  useGetGeneralMedicalFacilityInfoLazyQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
@@ -14,28 +14,50 @@ import { useAuth } from "src/context/AuthContext";
 import MapAddressCpn from "src/components/sub/MapAddressCpn";
 import { getToken } from "src/utils/contain";
 import { Link } from "react-router-dom";
+import { GetEPermission, GetRole } from "src/utils/enum-value";
+import { info } from "console";
 function GeneralInforFacilityPage() {
-  const { checkExpirationToken, userInfor } = useAuth();
+  const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
+  const [authorized, setAuthorized] = useState<boolean>(true);
   const [medicalFacility, setMedicalFacility] = useState<MedicalFacilities>();
-  const { data, loading, error } = useGetGeneralMedicalFacilityByUserIdQuery({
-    fetchPolicy: "no-cache",
-    variables: {
-      input: userInfor?.id || "",
-    },
-    context: {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
+  const [getData, { data, loading, error }] =
+    useGetGeneralMedicalFacilityInfoLazyQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
       },
-    },
-  });
+    });
   useEffect(() => {
-    setMedicalFacility(data?.getMedicalFacilityByUserId);
+    if (currRole === GetRole.Facility) {
+      getData({
+        variables: {
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        // console.log("==> Test Form Staff: ", infoStaff.id);
+        getData({
+          variables: {
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
+  }, [currRole]);
+  useEffect(() => {
+    setMedicalFacility(data?.getMedicalFacilityInfo);
   }, [data]);
   checkExpirationToken();
   if (loading) return <Spinner animation="border" variant="primary" />;
-  if (error || !userInfor?.id) {
+  if (error) {
     console.log(error);
     return <ShowAlert />;
+  }
+  if (!authorized) {
+    return <ShowAlert head="Không có quyền truy cập" />;
   }
   return (
     <Container fluid className={`${style.main} `}>
@@ -57,12 +79,12 @@ function GeneralInforFacilityPage() {
             <div className={`${style.top__info_item}`}>
               <MdOutlineLocationOn className={`${style.icon}`} />
               <p className={`${style.contend}`}>
-                {data?.getMedicalFacilityByUserId.address}
+                {data?.getMedicalFacilityInfo.address}
               </p>
             </div>
             <div className={`${style.top__info_item}`}>
               <AiOutlineSchedule className={`${style.icon}`} />
-              <p>{data?.getMedicalFacilityByUserId.schedule}</p>
+              <p>{data?.getMedicalFacilityInfo.schedule}</p>
             </div>
           </div>
         </Col>
@@ -80,7 +102,7 @@ function GeneralInforFacilityPage() {
       <Row className={`${style.about}`}>
         <Col className={`col-4`}>
           <div className={`${style.about__discription} ${s.component}`}>
-            <p className={``}>{data?.getMedicalFacilityByUserId.discription}</p>
+            <p className={``}>{data?.getMedicalFacilityInfo.discription}</p>
           </div>
           <div className={`${style.about__map}`}>
             {medicalFacility?.lat && medicalFacility.lng && (
@@ -96,7 +118,7 @@ function GeneralInforFacilityPage() {
             <div
               className={``}
               dangerouslySetInnerHTML={{
-                __html: data?.getMedicalFacilityByUserId.introduce || "",
+                __html: data?.getMedicalFacilityInfo.introduce || "",
               }}></div>
           </div>
         </Col>
@@ -104,7 +126,7 @@ function GeneralInforFacilityPage() {
       <Row>
         <Link
           className="btn btn-primary"
-          to={`/facility-page/update/${data?.getMedicalFacilityByUserId.id}`}>
+          to={`/facility-page/update/${data?.getMedicalFacilityInfo.id}`}>
           Chỉnh sửa
         </Link>
       </Row>

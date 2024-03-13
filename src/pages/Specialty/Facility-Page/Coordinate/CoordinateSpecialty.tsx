@@ -1,34 +1,36 @@
 import { useEffect, useReducer, useState } from "react";
 import s from "src/assets/scss/General.module.scss";
 import {
-  handleChangeFilter,
   handleChangePagination,
-  handleChangeSelectedDoctor,
-  handleSetlistDoctor,
+  handleChangeSearchTerm,
+  handleChangeSelectedSpecialty,
+  handleSetlistSpecialty,
   initState,
   reducer,
 } from "./reducer-list";
 import {
-  Doctor,
-  FilterDoctorInput,
-  useGetAllDoctorPaginationOfFacilityLazyQuery,
-  useGetTotalDoctorsCountLazyQuery,
+  MedicalSpecialties,
+  useGetAllMedicalSpecialtiesPaginationOfFacilityLazyQuery,
+  useGetAllMedicalSpecialtiesPaginationOfFacilityQuery,
+  useGetTotalMedicalSpecialtiesCountLazyQuery,
+  useGetTotalMedicalSpecialtiesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import { useAuth } from "src/context/AuthContext";
 import { Col, ListGroup, Row } from "react-bootstrap";
 import ListRegisterV2 from "src/components/Pages/Register/ListRegisterV2";
 import PaginationCpn from "src/components/sub/Pagination";
-import FilterDoctorShort from "src/components/Filters/FilterDoctorShort";
+import FilterShort from "src/components/Filters/FilterShort";
 import { GetEPermission, GetRole } from "src/utils/enum-value";
+import ShowAlert from "src/components/sub/alerts";
 import { IPagination } from "src/assets/contains/item-interface";
-function CoordinateDoctor() {
+function CoordinateMedcialSpecialties() {
   const { userInfor, currRole, infoStaff } = useAuth();
   const token = getToken();
   const [state, dispatch] = useReducer(reducer, initState);
   const [authorized, setAuthorized] = useState<boolean>(true);
   const [getData, { refetch, data, loading, error }] =
-    useGetAllDoctorPaginationOfFacilityLazyQuery({
+    useGetAllMedicalSpecialtiesPaginationOfFacilityLazyQuery({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -36,69 +38,29 @@ function CoordinateDoctor() {
         },
       },
     });
-  const [getDataTotal, { data: dataTotal }] = useGetTotalDoctorsCountLazyQuery({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  const [getDataTotal, { data: dataTotal }] =
+    useGetTotalMedicalSpecialtiesCountLazyQuery({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  });
-  const handleGetData = () => {
+    });
+  const handleReloadData = (pagination: IPagination, searchTerm: string) => {
     if (currRole === GetRole.Facility) {
       getData({
         variables: {
-          limit: state.pagination?.rowPerPage || 10,
-          page: state.pagination.current,
-          filter: state.filter,
-          sortOrder: state.pagination.sort,
-          userId: userInfor?.id || "",
-        },
-      });
-      getDataTotal({
-        variables: {
-          filter: state.filter,
-          userId: userInfor?.id || "",
-        },
-      });
-    } else if (currRole === GetRole.Staff) {
-      // load data from staff id
-      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
-        getData({
-          variables: {
-            limit: state.pagination?.rowPerPage || 10,
-            page: state.pagination.current,
-            filter: state.filter,
-            sortOrder: state.pagination.sort,
-            userId: userInfor?.id || "",
-          },
-        });
-        getDataTotal({
-          variables: {
-            filter: state.filter,
-            userId: userInfor?.id || "",
-          },
-        });
-      } else setAuthorized(false);
-    }
-  };
-  const handleReloadData = (
-    filter: FilterDoctorInput,
-    pagination: IPagination
-  ) => {
-    if (currRole === GetRole.Facility) {
-      getData({
-        variables: {
-          limit: pagination?.rowPerPage || 10,
+          limit: 10,
           page: pagination.current,
-          filter: filter,
+          search: searchTerm,
           sortOrder: pagination.sort,
           userId: userInfor?.id || "",
         },
       });
       getDataTotal({
         variables: {
-          filter: filter,
+          search: searchTerm,
           userId: userInfor?.id || "",
         },
       });
@@ -107,73 +69,114 @@ function CoordinateDoctor() {
       if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
         getData({
           variables: {
-            limit: pagination?.rowPerPage || 10,
+            limit: 10,
             page: pagination.current,
-            filter: filter,
+            search: searchTerm,
             sortOrder: pagination.sort,
-            userId: userInfor?.id || "",
+            staffId: infoStaff?.id || "",
           },
         });
         getDataTotal({
           variables: {
-            filter: filter,
-            userId: userInfor?.id || "",
+            search: searchTerm,
+            staffId: infoStaff?.id || "",
           },
         });
       } else setAuthorized(false);
     }
   };
   useEffect(() => {
-    handleGetData();
+    if (currRole === GetRole.Facility) {
+      getData({
+        variables: {
+          limit: 10,
+          page: state.pagination.current,
+          search: state.searchTerm,
+          sortOrder: state.pagination.sort,
+          userId: userInfor?.id || "",
+        },
+      });
+      getDataTotal({
+        variables: {
+          search: state.searchTerm,
+          userId: userInfor?.id || "",
+        },
+      });
+    } else if (currRole === GetRole.Staff) {
+      // load data from staff id
+      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+        getData({
+          variables: {
+            limit: 10,
+            page: state.pagination.current,
+            search: state.searchTerm,
+            sortOrder: state.pagination.sort,
+            staffId: infoStaff?.id || "",
+          },
+        });
+        getDataTotal({
+          variables: {
+            search: state.searchTerm,
+            staffId: infoStaff?.id || "",
+          },
+        });
+      } else setAuthorized(false);
+    }
   }, [currRole]);
   useEffect(() => {
-    if (data?.getAllDoctorPaginationOfFacility) {
-      dispatch(handleSetlistDoctor(data?.getAllDoctorPaginationOfFacility));
+    if (data?.getAllMedicalSpecialtiesPaginationOfFacility) {
+      dispatch(
+        handleSetlistSpecialty(
+          data?.getAllMedicalSpecialtiesPaginationOfFacility
+        )
+      );
     }
   }, [data]);
   useEffect(() => {
-    if (dataTotal?.getTotalDoctorsCount) {
+    if (dataTotal?.getTotalMedicalSpecialtiesCount) {
       dispatch(
         handleChangePagination({
           ...state.pagination,
-          total: dataTotal.getTotalDoctorsCount,
+          total: dataTotal.getTotalMedicalSpecialtiesCount,
         })
       );
     }
   }, [dataTotal]);
-  const handleClicked = (doc: Doctor) => {
-    dispatch(handleChangeSelectedDoctor(doc));
+  const handleClicked = (spec: MedicalSpecialties) => {
+    dispatch(handleChangeSelectedSpecialty(spec));
   };
+  if (!authorized) {
+    return <ShowAlert head="Không có quyền truy cập" />;
+  }
   return (
     <Row>
       <Col className={`col-3 p-2`}>
         <div className={`${s.component}`}>
           <Row>
-            <h5>Chọn Bác sỉ</h5>
+            <h5>Chọn chuyên khoa</h5>
           </Row>
-          <Row>
-            <FilterDoctorShort
-              onChangeFilter={(filter) => {
-                if (filter) {
-                  dispatch(handleChangeFilter(filter));
-                  handleReloadData(filter, state.pagination);
-                }
+          <Row className="mt-3">
+            <FilterShort
+              onSearch={(s: string) => {
+                dispatch(handleChangeSearchTerm(s));
+                handleReloadData(state.pagination, s);
               }}
               loading={loading}
               error={error}
             />
           </Row>
-          <Row className="mt-3 px-2">
+          <Row className="mt-1 px-2">
             <ListGroup>
-              {state.listDoctor &&
-                state.listDoctor.map((doc, i) => (
+              {state.listSpecialty &&
+                state.listSpecialty.map((spec, i) => (
                   <ListGroup.Item
+                    className="fs-6"
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleClicked(doc)}
+                    onClick={() => handleClicked(spec)}
                     key={i}
-                    active={doc.id === state.selectedDoctor?.id}
+                    active={spec.id === state.selectedSpecialty?.id}
                     variant="info">
-                    {doc.name}
+                    {spec.name}
                   </ListGroup.Item>
                 ))}
             </ListGroup>
@@ -181,9 +184,6 @@ function CoordinateDoctor() {
           <div className="d-flex my-2 justify-content-center">
             <PaginationCpn
               short
-              isRowPerPage
-              optionsRow={[1, 2, 5, 10]}
-              rowPerPage={state.pagination.rowPerPage || 0}
               setRowsPerPage={(numberRow) => {
                 dispatch(
                   handleChangePagination({
@@ -191,10 +191,13 @@ function CoordinateDoctor() {
                     rowPerPage: numberRow,
                   })
                 );
-                handleReloadData(state.filter, {
-                  ...state.pagination,
-                  rowPerPage: numberRow,
-                });
+                handleReloadData(
+                  {
+                    ...state.pagination,
+                    rowPerPage: numberRow,
+                  },
+                  state.searchTerm
+                );
               }}
               setPageActive={(currPage) => {
                 dispatch(
@@ -203,16 +206,15 @@ function CoordinateDoctor() {
                     current: currPage,
                   })
                 );
-                handleReloadData(state.filter, {
-                  ...state.pagination,
-                  current: currPage,
-                });
+                handleReloadData(
+                  {
+                    ...state.pagination,
+                    current: currPage,
+                  },
+                  state.searchTerm
+                );
               }}
-              totalPage={Math.ceil(
-                state.pagination.rowPerPage
-                  ? state.pagination.total / state.pagination.rowPerPage
-                  : state.pagination.total / 10
-              )}
+              totalPage={Math.ceil(state.pagination.total / 10)}
             />
           </div>
         </div>
@@ -222,12 +224,12 @@ function CoordinateDoctor() {
           <Row className="mt-5 px-2">
             <ListRegisterV2
               title={
-                state?.selectedDoctor !== undefined
-                  ? `Danh sách đăng ký khám theo bác sỉ "${state.selectedDoctor.name}"`
-                  : "Vui lòng chọn bác sỉ"
+                state?.selectedSpecialty !== undefined
+                  ? `Danh sách đăng ký khám theo chuyên khoa "${state.selectedSpecialty.name}"`
+                  : "Vui lòng chọn chuyên khoa"
               }
-              listSchedule={state.selectedDoctor?.workSchedule.schedule}
-              doctorId={state.selectedDoctor?.id}
+              listSchedule={state.selectedSpecialty?.workSchedule?.schedule}
+              specialtyId={state.selectedSpecialty?.id}
             />
           </Row>
         </div>
@@ -235,4 +237,4 @@ function CoordinateDoctor() {
     </Row>
   );
 }
-export default CoordinateDoctor;
+export default CoordinateMedcialSpecialties;

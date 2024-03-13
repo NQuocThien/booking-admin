@@ -17,7 +17,6 @@ import {
   EGender,
   FilterDoctorInput,
 } from "src/graphql/webbooking-service.generated";
-import { getAcademicTitle, getDegree } from "src/utils/getData";
 import StatusCpn from "../sub/Status";
 import { GetEAcademicTitle, GetEDegree } from "src/utils/enum-value";
 
@@ -131,7 +130,8 @@ function FilterDoctor(props: IProps) {
             <option value={EGender.Female}>Nữ</option>
           </Form.Select>
           <Button variant="outline-secondary" type="submit">
-            <IoSearch />
+            {!loading && <IoSearch />}
+            {loading && <StatusCpn size="sm" error={error} loading={loading} />}
           </Button>
         </InputGroup>
       </Form>
@@ -165,7 +165,6 @@ function FilterDoctor(props: IProps) {
           <FaSortAlphaDownAlt />
         </ToggleButton>
       </ButtonGroup>
-      {loading && <StatusCpn error={error} loading={loading} />}
     </div>
   );
 }

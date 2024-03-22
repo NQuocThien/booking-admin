@@ -381,7 +381,7 @@ function FormUpdateDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("gender", e.target.value));
                   }}
-                  defaultValue={EStatusService.Open}>
+                  value={EStatusService.Open}>
                   <option
                     // selected={state.updateDoctor.gender === EGender.Male}
                     value={EGender.Male}>
@@ -403,7 +403,7 @@ function FormUpdateDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("academicTitle", e.target.value));
                   }}
-                  defaultValue={undefined}>
+                  value={undefined}>
                   <option>Chọn học hàm</option>
                   <option value={EAcademicTitle.Professor}>Giáo sư</option>
                   <option value={EAcademicTitle.AssociateProfesso}>
@@ -421,7 +421,7 @@ function FormUpdateDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("degree", e.target.value));
                   }}
-                  defaultValue={EDegree.Doctor}>
+                  value={EDegree.Doctor}>
                   <option value={EDegree.Doctor}>Bác sĩ</option>
                   <option value={EDegree.DoctorS1}>Bác sĩ chuyên khoa 1</option>
 

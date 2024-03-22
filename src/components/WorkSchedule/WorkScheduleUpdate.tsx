@@ -273,7 +273,7 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
               })
             );
           }}
-          defaultValue={getEnumValueStateService(
+          value={getEnumValueStateService(
             state.updateDoctor.workSchedule.status
           )}>
           <option value={EStatusService.Open}>Mở</option>

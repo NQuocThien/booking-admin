@@ -208,7 +208,7 @@ function FormAddMedicalStaff() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("gender", e.target.value));
                   }}
-                  defaultValue={EGenderPackage.Both}>
+                  value={EGenderPackage.Both}>
                   <option value={EGenderPackage.Male}>Nam</option>
                   <option value={EGenderPackage.Female}> Nữ</option>
                 </Form.Select>

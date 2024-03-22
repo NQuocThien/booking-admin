@@ -345,7 +345,7 @@ function FormUpdateMedicalFacility() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("status", e.target.value));
                   }}
-                  defaultValue={EStatusService.Open}>
+                  value={EStatusService.Open}>
                   <option
                     selected={
                       state.updateMedicalFacility.status === EStatusService.Open

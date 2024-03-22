@@ -151,7 +151,7 @@ function FormAddPackage() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("gender", e.target.value));
                   }}
-                  defaultValue={EGenderPackage.Both}>
+                  value={EGenderPackage.Both}>
                   <option value={EGenderPackage.Both}>Nam và nữ</option>
                   <option value={EGenderPackage.Male}>Nam</option>
                   <option value={EGenderPackage.Female}> Nữ</option>

@@ -294,7 +294,7 @@ function FormAddDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("gender", e.target.value));
                   }}
-                  defaultValue={EStatusService.Open}>
+                  value={EStatusService.Open}>
                   <option
                     selected={state.createDoctor.gender === EGender.Male}
                     value={EGender.Male}>
@@ -316,7 +316,7 @@ function FormAddDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("academicTitle", e.target.value));
                   }}
-                  defaultValue={undefined}>
+                  value={undefined}>
                   <option>Chọn học hàm</option>
                   <option
                     selected={
@@ -346,7 +346,7 @@ function FormAddDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("degree", e.target.value));
                   }}
-                  defaultValue={EDegree.Doctor}>
+                  value={EDegree.Doctor}>
                   <option
                     selected={state.createDoctor.degree === EDegree.Doctor}
                     value={EDegree.Doctor}>

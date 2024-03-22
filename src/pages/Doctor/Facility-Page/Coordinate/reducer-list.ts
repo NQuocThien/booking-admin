@@ -1,9 +1,6 @@
-import { ICheckRoles, IPagination } from "src/assets/contains/item-interface";
+import { IPagination } from "src/assets/contains/item-interface";
 import {
   Doctor,
-  EAcademicTitle,
-  EDegree,
-  EGender,
   FilterDoctorInput,
 } from "src/graphql/webbooking-service.generated";
 
@@ -29,7 +26,7 @@ export const initState: IStateListDoctor = {
     sort: "asc",
   },
   filter: {
-    name: undefined,
+    doctorName: undefined,
     academicTitle: undefined,
     degree: undefined,
     gender: undefined,

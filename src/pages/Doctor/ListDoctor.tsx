@@ -153,7 +153,7 @@ function ListDoctorPage() {
                     />
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.name}
+                    {c.doctorName}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     {c.email}

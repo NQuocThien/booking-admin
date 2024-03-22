@@ -68,7 +68,7 @@ function DoctorListServive(props: IProps) {
     if (facilityId) {
       const input: UpdateDoctorInput = {
         id: doctor.id,
-        name: doctor.name,
+        doctorName: doctor.doctorName,
         degree: getEnumValueDegree(doctor.degree),
         discription: doctor.discription,
         email: doctor.email,
@@ -117,7 +117,7 @@ function DoctorListServive(props: IProps) {
     if (facilityId) {
       const input: UpdateDoctorInput = {
         id: doctor.id,
-        name: doctor.name,
+        doctorName: doctor.doctorName,
         degree: getEnumValueDegree(doctor.degree),
         discription: doctor.discription,
         email: doctor.email,
@@ -255,7 +255,7 @@ function DoctorListServive(props: IProps) {
                   <tr key={i}>
                     <td>
                       {doctor.academicTitle ? doctor.academicTitle + "." : ""}
-                      {doctor.degree} {doctor.name}
+                      {doctor.degree} {doctor.doctorName}
                     </td>
                     <td>{doctor.gender}</td>
                     <td>
@@ -330,7 +330,7 @@ function DoctorListServive(props: IProps) {
               <tr key={i}>
                 <td>
                   {doctor.academicTitle ? doctor.academicTitle + "." : ""}
-                  {doctor.degree} {doctor.name}
+                  {doctor.degree} {doctor.doctorName}
                 </td>
                 <td>{doctor.gender}</td>
                 <td>{doctor.email}</td>

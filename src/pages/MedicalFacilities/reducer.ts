@@ -1,6 +1,7 @@
 import {
   CreateMedicalFacilityInput,
   EStatusService,
+  ETypeOfFacility,
 } from "src/graphql/webbooking-service.generated";
 
 interface IState {
@@ -34,6 +35,7 @@ const InitCreateMedicalFacility: CreateMedicalFacilityInput = {
   },
   introduce: "",
   legalRepresentation: "",
+  typeOfFacility: ETypeOfFacility.Clinic,
   numberPhone: "",
   operatingStatus: "",
   taxCode: "",

@@ -125,7 +125,7 @@ function ListMedicalSpecialtyByStaffPage() {
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
 
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.name}
+                    {c.specialtyName}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     {c.price}

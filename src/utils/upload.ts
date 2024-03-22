@@ -109,23 +109,3 @@ export const uploadImage = (
     );
   });
 };
-// export const uploadFilePromise = (
-//   typeFile: TypeFile,
-//   logo: Blob | null
-// ): Promise<ILinkImage> => {
-//   return new Promise((resolve, reject) => {
-//     uploadFile(typeFile, [logo], (error: any, result: any) => {
-//       if (error) {
-//         reject(error);
-//       } else {
-//         const ulrImage = `${process.env.REACT_APP_BACKEND_URI_IMAGE}/${result[0]?.filename}`;
-//         const linkImage: ILinkImage = {
-//           filename: result[0]?.filename + "",
-//           type: typeFile + "",
-//           url: ulrImage,
-//         };
-//         resolve(linkImage);
-//       }
-//     });
-//   });
-// };

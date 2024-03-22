@@ -11,8 +11,6 @@ import {
 import {
   MedicalSpecialties,
   useGetAllMedicalSpecialtiesPaginationByStaffQuery,
-  useGetAllMedicalSpecialtiesPaginationOfFacilityQuery,
-  useGetTotalMedicalSpecialtiesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import { useAuth } from "src/context/AuthContext";
@@ -79,7 +77,7 @@ function CoordinateMedcialSpecialtiesByStaff() {
                     key={i}
                     active={spec.id === state.selectedSpecialty?.id}
                     variant="info">
-                    {spec.name}
+                    {spec.specialtyName}
                   </ListGroup.Item>
                 ))}
             </ListGroup>
@@ -118,7 +116,7 @@ function CoordinateMedcialSpecialtiesByStaff() {
             <ListRegisterV2
               title={
                 state?.selectedSpecialty !== undefined
-                  ? `Danh sách đăng ký khám theo chuyên khoa "${state.selectedSpecialty.name}"`
+                  ? `Danh sách đăng ký khám theo chuyên khoa "${state.selectedSpecialty.specialtyName}"`
                   : "Vui lòng chọn chuyên khoa"
               }
               listSchedule={state.selectedSpecialty?.workSchedule?.schedule}

@@ -107,7 +107,7 @@ function SpecialtyListServive(props: IProps) {
               <tbody>
                 {specialties?.map((ms, i) => (
                   <tr key={i}>
-                    <td>{ms.name}</td>
+                    <td>{ms.specialtyName}</td>
                     <td>
                       Thứ:{" "}
                       {ms.workSchedule &&

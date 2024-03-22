@@ -83,9 +83,11 @@ function FormAddSpecialty() {
             <Form.Group className="mb-3" controlId="formGroupSpecialty">
               <Form.Label>Tên chuyên khoa khám:</Form.Label>
               <Form.Control
-                value={state.createSpcialty.name}
+                value={state.createSpcialty.specialtyName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("specialtyName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"

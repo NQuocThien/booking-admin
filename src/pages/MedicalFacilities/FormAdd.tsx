@@ -22,6 +22,7 @@ import { IoArrowBack } from "react-icons/io5";
 import {
   CreateMedicalFacilityInput,
   EStatusService,
+  ETypeOfFacility,
   LinkImageInput,
   useCreateMedicalFacilityMutation,
   useGetUserFacilitySelectQuery,
@@ -36,6 +37,7 @@ import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
+import { GetETypeOfFacility } from "src/utils/enum-value";
 function FormAddMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -311,6 +313,51 @@ function FormAddMedicalFacility() {
               </Form.Group>
             </Col>
 
+            <Col>
+              <Form.Group className="mb-3" controlId="formGroupShedule">
+                <Form.Label>Loại cơ sở y tế:</Form.Label>
+                <Form.Select
+                  onChange={(e) => {
+                    dispatch(
+                      handleChangeForm("typeOfFacility", e.target.value)
+                    );
+                  }}
+                  // defaultValue={EStatusService.Open}
+                  value={state.createMedicalFacility.typeOfFacility}>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.PublicHospital}>
+                    {GetETypeOfFacility.publicHospital}
+                  </option>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.PrivateHospital}>
+                    {GetETypeOfFacility.privateHospital}
+                  </option>
+
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.Clinic}>
+                    {GetETypeOfFacility.clinic}
+                  </option>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.VaccinationCenter}>
+                    {GetETypeOfFacility.vaccinationCenter}
+                  </option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
             <Col>
               <Form.Group className="mb-3" controlId="formGroupShedule">
                 <Form.Label>Lịch làm việc:</Form.Label>

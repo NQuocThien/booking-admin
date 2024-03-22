@@ -48,7 +48,9 @@ function GeneralInforFacilityPage() {
     }
   }, [currRole]);
   useEffect(() => {
-    setMedicalFacility(data?.getMedicalFacilityInfo);
+    if (data) {
+      setMedicalFacility(data?.getMedicalFacilityInfo);
+    }
   }, [data]);
   checkExpirationToken();
   if (loading) return <Spinner animation="border" variant="primary" />;

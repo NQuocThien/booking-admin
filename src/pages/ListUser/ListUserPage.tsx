@@ -235,11 +235,7 @@ function ListUserPage() {
       });
     dispatch(handleChangShowModal({ ...state.showModals, roles: false }));
   };
-  // const [createUser, setCreateUser] = useState<CreateUserByAdminInput>({
-  //   username: "",
-  //   email: "",
-  //   password: "",
-  // });
+
   const handelCreateUser = async () => {
     await createNewUser({ variables: { input: state.createUser } }).then(() => {
       showToast("Đã tạo mới tài khoản", undefined, 2000);
@@ -455,15 +451,15 @@ function ListUserPage() {
         openRequest={state.showModals.add}>
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Tên tài khoản: </Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter username"
+              placeholder="Nhập tên tài khoản"
               onChange={(e) => {
                 dispatch(
                   handleChangeCreateUser({
                     ...state.createUser,
-                    email: e.target.value,
+                    username: e.target.value,
                   })
                 );
               }}
@@ -471,10 +467,10 @@ function ListUserPage() {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Địa chỉ email:</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Enter email"
+              placeholder="Nhập email"
               onChange={(e) => {
                 // setCreateUser((pre) => ({ ...pre, email: e.target.value }));
                 dispatch(
@@ -489,7 +485,7 @@ function ListUserPage() {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Mật khẩu:</Form.Label>
             <Form.Control
               type="password"
               placeholder="Password"

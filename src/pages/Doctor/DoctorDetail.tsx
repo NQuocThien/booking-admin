@@ -58,7 +58,7 @@ function DoctorDetailPage() {
         },
         {
           url: "",
-          label: "BS." + data?.getDoctorbyId.name || "",
+          label: "BS." + data?.getDoctorbyId.doctorName || "",
         },
       ]);
     } else if (location.pathname.search("/facility-page/doctors") !== -1) {
@@ -66,7 +66,7 @@ function DoctorDetailPage() {
         { url: "/facility-page/doctors", label: "Danh sách bác sỉ" },
         {
           url: "",
-          label: "BS." + data?.getDoctorbyId.name || "",
+          label: "BS." + data?.getDoctorbyId.doctorName || "",
         },
       ]);
     }
@@ -75,7 +75,7 @@ function DoctorDetailPage() {
         { url: "/admin-page/doctors", label: "Quản lý bác sỉ" },
         {
           url: "",
-          label: "BS." + data?.getDoctorbyId.name || "",
+          label: "BS." + data?.getDoctorbyId.doctorName || "",
         },
       ]);
     }
@@ -104,12 +104,12 @@ function DoctorDetailPage() {
               roundedCircle
             />
             <p className={`${style.top__info_name}`}>
-              {data?.getDoctorbyId.name}
+              {data?.getDoctorbyId.doctorName}
             </p>
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
               <FaBriefcaseMedical className={`${style.icon}`} />
-              <p>{getDegree(data?.getDoctorbyId.specialty?.name)}</p>
+              <p>{getDegree(data?.getDoctorbyId.specialty?.specialtyName)}</p>
             </div>
             {data?.getDoctorbyId.academicTitle && (
               <div className={`${style.top__info_item}`}>
@@ -147,7 +147,7 @@ function DoctorDetailPage() {
         <Col className={`col-8`}>
           <Row className={`${style.about__discription} ${s.component}`}>
             <p className="fs-5">
-              Đôi nét về bác sĩ "{data?.getDoctorbyId.name}"
+              Đôi nét về bác sĩ "{data?.getDoctorbyId.doctorName}"
             </p>
             <div className={``}>{data?.getDoctorbyId.discription}</div>
           </Row>

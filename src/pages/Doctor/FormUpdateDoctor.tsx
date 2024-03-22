@@ -174,7 +174,7 @@ function FormUpdateDoctor() {
       const optSpecialties: IOption[] =
         dataSpecialtiesSelect.getMedicalSpecialtiesByMedicalFacilityId.map(
           (item) => ({
-            label: item.name,
+            label: item.specialtyName,
             value: item.id,
           })
         );
@@ -202,7 +202,7 @@ function FormUpdateDoctor() {
         }
         const input: UpdateDoctorInput = {
           id: state.updateDoctor.id,
-          name: state.updateDoctor.name,
+          doctorName: state.updateDoctor.doctorName,
           degree: state.updateDoctor.degree,
           discription: state.updateDoctor.discription,
           email: state.updateDoctor.email,
@@ -294,9 +294,11 @@ function FormUpdateDoctor() {
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>Tên bác sĩ:</Form.Label>
               <Form.Control
-                value={state.updateDoctor.name}
+                value={state.updateDoctor.doctorName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("doctorName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"

@@ -26,3 +26,10 @@ export enum GetEAcademicTitle { // học hàm
   Professor = "GS",
   AssociateProfesso = "PGS",
 }
+
+export enum GetETypeOfFacility {
+  publicHospital = "Bệnh viện công",
+  privateHospital = "Bệnh viện tư",
+  clinic = "Phòng khám",
+  vaccinationCenter = "Trung tâm tiêm chủng",
+}

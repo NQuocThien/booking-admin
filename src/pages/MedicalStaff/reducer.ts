@@ -21,7 +21,7 @@ export interface IActionFormAdd {
 }
 
 const innitState: CreateMedicalStaffInput = {
-  name: "",
+  staffName: "",
   userId: "",
   email: "",
   gender: EGender.Male,

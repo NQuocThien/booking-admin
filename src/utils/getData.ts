@@ -7,12 +7,13 @@ import {
   EPermission,
   EStateRegister,
   EStatusService,
+  ETypeOfFacility,
   Schedule,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
 import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
-import { GetRole } from "./enum-value";
+import { GetETypeOfFacility, GetRole } from "./enum-value";
 
 export const getSelectedOption = (id: string, options: [IOption]): IOption => {
   return (
@@ -279,5 +280,23 @@ export const getEnumValueRole = (input: string): GetRole | undefined => {
 
     default:
       return GetRole.Customer;
+  }
+};
+export const getEnumValueTypeOfFacility = (input: string): ETypeOfFacility => {
+  switch (input) {
+    case GetETypeOfFacility.vaccinationCenter:
+      return ETypeOfFacility.VaccinationCenter;
+
+    case GetETypeOfFacility.clinic:
+      return ETypeOfFacility.Clinic;
+
+    case GetETypeOfFacility.privateHospital:
+      return ETypeOfFacility.PrivateHospital;
+
+    case GetETypeOfFacility.publicHospital:
+      return ETypeOfFacility.PublicHospital;
+
+    default:
+      return ETypeOfFacility.Clinic;
   }
 };

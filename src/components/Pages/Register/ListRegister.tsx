@@ -481,7 +481,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {selectedRegiser.profile.customer.name}{" "}
+                    {selectedRegiser.profile.customer.fullname}{" "}
                   </span>
                 </h6>
               </div>

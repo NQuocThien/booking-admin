@@ -84,7 +84,7 @@ function MedicalFacilityListStaff({ facilityId }: IProp) {
     if (dataSpecialty?.getMedicalSpecialtySelect) {
       const data: IOption[] = dataSpecialty.getMedicalSpecialtySelect.map(
         (item) => ({
-          label: item.name,
+          label: item.specialtyName,
           value: item.id,
         })
       );
@@ -148,7 +148,7 @@ function MedicalFacilityListStaff({ facilityId }: IProp) {
                 <tbody>
                   {staffs?.map((staff, i) => (
                     <tr key={i}>
-                      <td>{staff.name}</td>
+                      <td>{staff.staffName}</td>
                       <td>{staff.gender}</td>
                       <td>{staff.numberPhone}</td>
                       <td>{staff.email}</td>
@@ -209,7 +209,7 @@ function MedicalFacilityListStaff({ facilityId }: IProp) {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {selectedStaff.name}{" "}
+                    {selectedStaff.staffName}{" "}
                   </span>
                 </h6>
               </div>

@@ -117,7 +117,7 @@ function FormAddDoctor() {
       const optSpecialties: IOption[] =
         dataSpecialtiesSelect.getMedicalSpecialtiesByMedicalFacilityId.map(
           (item) => ({
-            label: item.name,
+            label: item.specialtyName,
             value: item.id,
           })
         );
@@ -207,9 +207,11 @@ function FormAddDoctor() {
             <Form.Group className="mb-3" controlId="formGroupNameDoctor">
               <Form.Label>Tên bác sĩ:</Form.Label>
               <Form.Control
-                value={state.createDoctor.name}
+                value={state.createDoctor.doctorName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("doctorName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"

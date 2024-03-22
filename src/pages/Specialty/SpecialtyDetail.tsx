@@ -47,7 +47,7 @@ function SpecialtyDetailPage() {
         },
         {
           url: "",
-          label: data?.getMedicalSpecialtyById.name || "",
+          label: data?.getMedicalSpecialtyById.specialtyName || "",
         },
       ]);
       if (data?.getMedicalSpecialtyById.workSchedule) {
@@ -59,7 +59,7 @@ function SpecialtyDetailPage() {
         { url: "/facility-page/specialties", label: "Danh sách chuyên khoa" },
         {
           url: "",
-          label: data?.getMedicalSpecialtyById.name || "",
+          label: data?.getMedicalSpecialtyById.specialtyName || "",
         },
       ]);
       if (data?.getMedicalSpecialtyById.workSchedule) {
@@ -70,7 +70,7 @@ function SpecialtyDetailPage() {
         { url: "/staff-page/specialties", label: "Danh sách chuyên khoa" },
         {
           url: "",
-          label: data?.getMedicalSpecialtyById.name || "",
+          label: data?.getMedicalSpecialtyById.specialtyName || "",
         },
       ]);
       if (data?.getMedicalSpecialtyById.workSchedule) {
@@ -92,7 +92,7 @@ function SpecialtyDetailPage() {
         <Col className={`col-4 `}>
           <div className={`${style.top__info} ${s.component}`}>
             <p className={`${style.top__info_name}`}>
-              {data?.getMedicalSpecialtyById.name}
+              {data?.getMedicalSpecialtyById.specialtyName}
             </p>
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
@@ -114,7 +114,8 @@ function SpecialtyDetailPage() {
         <Col className={`col-8`}>
           <Row className={`${style.about__discription} ${s.component}`}>
             <p className="fs-5">
-              Chi tiết chuyên khoa khám"{data?.getMedicalSpecialtyById.name}"
+              Chi tiết chuyên khoa khám"
+              {data?.getMedicalSpecialtyById.specialtyName}"
             </p>
             <div className={``}>
               {data?.getMedicalSpecialtyById.discription}

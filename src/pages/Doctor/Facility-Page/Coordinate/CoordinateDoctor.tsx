@@ -173,7 +173,7 @@ function CoordinateDoctor() {
                     key={i}
                     active={doc.id === state.selectedDoctor?.id}
                     variant="info">
-                    {doc.name}
+                    {doc.doctorName}
                   </ListGroup.Item>
                 ))}
             </ListGroup>
@@ -223,7 +223,7 @@ function CoordinateDoctor() {
             <ListRegisterV2
               title={
                 state?.selectedDoctor !== undefined
-                  ? `Danh sách đăng ký khám theo bác sỉ "${state.selectedDoctor.name}"`
+                  ? `Danh sách đăng ký khám theo bác sỉ "${state.selectedDoctor.doctorName}"`
                   : "Vui lòng chọn bác sỉ"
               }
               listSchedule={state.selectedDoctor?.workSchedule.schedule}

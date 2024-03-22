@@ -31,7 +31,7 @@ const initUpdateDoctor: UpdateDoctorInput = {
     type: "image",
     url: "",
   },
-  name: "",
+  doctorName: "",
   gender: EGender.Male,
   numberPhone: "",
   email: "",

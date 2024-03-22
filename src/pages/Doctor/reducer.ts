@@ -30,7 +30,7 @@ const initCreateDoctor: CreateDoctorInput = {
     type: "image",
     url: "",
   },
-  name: "",
+  doctorName: "",
   gender: EGender.Male,
   numberPhone: "",
   email: "",

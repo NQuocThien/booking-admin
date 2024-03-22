@@ -22,7 +22,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
   EStatusService,
+  ETypeOfFacility,
   LinkImageInput,
+  UpdateMedicalFacilityInput,
   useGetMedicalFacilityByIdQuery,
   useGetUserFacilitySelectQuery,
   useGetUserSelectedQuery,
@@ -38,6 +40,8 @@ import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
+import { getEnumValueTypeOfFacility } from "src/utils/getData";
+import { GetETypeOfFacility } from "src/utils/enum-value";
 function FormUpdateGeneralMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -60,25 +64,16 @@ function FormUpdateGeneralMedicalFacility() {
   });
   useEffect(() => {
     if (dateMedical) {
-      dispatch(handleSetForm(dateMedical.getMedicalFacilityById));
+      const dataUpdate: UpdateMedicalFacilityInput = {
+        ...dateMedical.getMedicalFacilityById,
+        typeOfFacility: getEnumValueTypeOfFacility(
+          dateMedical.getMedicalFacilityById.typeOfFacility
+        ),
+      };
+      dispatch(handleSetForm(dataUpdate));
     }
   }, [dateMedical]);
-  useEffect(() => {
-    if (dataUserSelected) {
-      setOptUsersSelected({
-        value: dataUserSelected.getUserSelected.id,
-        label: dataUserSelected.getUserSelected.username,
-      });
-      setOptUser((pre) => {
-        const newOption = pre;
-        newOption.push({
-          value: dataUserSelected.getUserSelected.id,
-          label: dataUserSelected.getUserSelected.username,
-        });
-        return newOption;
-      });
-    }
-  }, [dataUserSelected]);
+
   const logoRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
   const token = getToken();
@@ -105,25 +100,6 @@ function FormUpdateGeneralMedicalFacility() {
       },
     },
   });
-  const [optUsers, setOptUser] = useState([
-    {
-      value: "",
-      label: "",
-    },
-  ]);
-  const [optUsersSelected, setOptUsersSelected] = useState({
-    value: "",
-    label: "",
-  });
-  useEffect(() => {
-    if (dataUsers?.getUserFacilitySelect) {
-      const options = dataUsers?.getUserFacilitySelect.map((user) => ({
-        value: user.id,
-        label: user.username,
-      }));
-      setOptUser(options);
-    }
-  }, [dataUsers]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
@@ -159,6 +135,7 @@ function FormUpdateGeneralMedicalFacility() {
           logo: logo,
           image: image,
           introduce: state.updateMedicalFacility.introduce,
+          typeOfFacility: state.updateMedicalFacility.typeOfFacility,
           legalRepresentation: state.updateMedicalFacility.legalRepresentation,
           numberPhone: state.updateMedicalFacility.numberPhone,
           operatingStatus: state.updateMedicalFacility.operatingStatus,
@@ -389,7 +366,34 @@ function FormUpdateGeneralMedicalFacility() {
                 />
               </Form.Group>
             </Col>
+            <Col>
+              <Form.Group className="mb-3" controlId="formGroupShedule">
+                <Form.Label>Loại cơ sở y tế:</Form.Label>
+                <Form.Select
+                  onChange={(e) => {
+                    dispatch(
+                      handleChangeForm("typeOfFacility", e.target.value)
+                    );
+                  }}
+                  value={state.updateMedicalFacility.typeOfFacility}>
+                  <option value={ETypeOfFacility.PublicHospital}>
+                    {GetETypeOfFacility.publicHospital}
+                  </option>
+                  <option value={ETypeOfFacility.PrivateHospital}>
+                    {GetETypeOfFacility.privateHospital}
+                  </option>
 
+                  <option value={ETypeOfFacility.Clinic}>
+                    {GetETypeOfFacility.clinic}
+                  </option>
+                  <option value={ETypeOfFacility.VaccinationCenter}>
+                    {GetETypeOfFacility.vaccinationCenter}
+                  </option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
             <Col>
               <Form.Group className="mb-3" controlId="formGroupShedule">
                 <Form.Label>Lịch làm việc:</Form.Label>

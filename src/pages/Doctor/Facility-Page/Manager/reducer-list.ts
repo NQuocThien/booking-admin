@@ -28,7 +28,7 @@ export const initState: IStateListDoctor = {
     sort: "asc",
   },
   filter: {
-    name: undefined,
+    doctorName: undefined,
     academicTitle: undefined,
     degree: undefined,
     gender: undefined,

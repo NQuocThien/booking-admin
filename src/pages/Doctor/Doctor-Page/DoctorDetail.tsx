@@ -74,12 +74,14 @@ function DoctorDetailForDoctorPage() {
               roundedCircle
             />
             <p className={`${style.top__info_name}`}>
-              {data?.getDoctorbyUserId.name}
+              {data?.getDoctorbyUserId.doctorName}
             </p>
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
               <FaBriefcaseMedical className={`${style.icon}`} />
-              <p>{getDegree(data?.getDoctorbyUserId.specialty?.name)}</p>
+              <p>
+                {getDegree(data?.getDoctorbyUserId.specialty?.specialtyName)}
+              </p>
             </div>
             {data?.getDoctorbyUserId.academicTitle && (
               <div className={`${style.top__info_item}`}>
@@ -117,7 +119,7 @@ function DoctorDetailForDoctorPage() {
         <Col className={`col-8`}>
           <Row className={`${style.about__discription} ${s.component}`}>
             <p className="fs-5">
-              Đôi nét về bác sĩ "{data?.getDoctorbyUserId.name}"
+              Đôi nét về bác sĩ "{data?.getDoctorbyUserId.doctorName}"
             </p>
             <div className={``}>{data?.getDoctorbyUserId.discription}</div>
           </Row>

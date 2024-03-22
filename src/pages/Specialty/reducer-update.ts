@@ -22,7 +22,7 @@ const innitState: UpdateMedicalSpecialtyInput = {
   id: "",
   medicalFactilityId: "",
   discription: "",
-  name: "",
+  specialtyName: "",
   price: 0,
   workSchedule: {
     dayOff: [],

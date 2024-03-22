@@ -21,7 +21,7 @@ export interface IActionForm {
 const innitState: CreateMedicalSpecialtyInput = {
   medicalFactilityId: "",
   discription: "",
-  name: "",
+  specialtyName: "",
   price: 0,
   workSchedule: {
     dayOff: [],

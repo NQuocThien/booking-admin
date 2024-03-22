@@ -22,7 +22,7 @@ export interface IActionFormAdd {
 
 const innitState: UpdateMedicalStaffInput = {
   id: "",
-  name: "",
+  staffName: "",
   userId: "",
   email: "",
   gender: EGender.Male,

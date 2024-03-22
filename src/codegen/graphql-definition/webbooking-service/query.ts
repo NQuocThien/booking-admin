@@ -162,6 +162,7 @@ const getMedicalFacilityById = gql`
       lng
       discription
       introduce
+      typeOfFacility
       operatingStatus
       legalRepresentation
       taxCode
@@ -194,6 +195,7 @@ const getMedicalFacilityInfo = gql`
       lng
       discription
       introduce
+      typeOfFacility
       operatingStatus
       legalRepresentation
       taxCode
@@ -230,6 +232,7 @@ const getGeneralMedicalFacilityInfo = gql`
       lng
       discription
       introduce
+      typeOfFacility
       operatingStatus
       legalRepresentation
       taxCode
@@ -284,6 +287,7 @@ const getAllMedicalFacilityPagination = gql`
       lng
       discription
       introduce
+      typeOfFacility
       operatingStatus
       legalRepresentation
       taxCode
@@ -312,7 +316,7 @@ const getMedicalStaffByFacilityId = gql`
       id
       userId
       medicalFacilityId
-      name
+      staffName
       gender
       numberPhone
       email
@@ -327,7 +331,7 @@ const getMedicalStaffById = gql`
       id
       userId
       medicalFacilityId
-      name
+      staffName
       gender
       numberPhone
       email
@@ -337,7 +341,7 @@ const getMedicalStaffById = gql`
         id
         discription
         medicalFactilityId
-        name
+        specialtyName
         price
       }
     }
@@ -349,7 +353,7 @@ const getMedicalStaffByUserId = gql`
       id
       userId
       medicalFacilityId
-      name
+      staffName
       gender
       numberPhone
       email
@@ -370,7 +374,7 @@ const getMedicalSpecialtiesSelect = gql`
   query getMedicalSpecialtiesSelect($input: String!) {
     getMedicalSpecialtiesByMedicalFacilityId(input: $input) {
       id
-      name
+      specialtyName
     }
   }
 `;
@@ -380,7 +384,7 @@ const getDoctorById = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -408,7 +412,7 @@ const getDoctorById = gql`
       }
       specialty {
         id
-        name
+        specialtyName
       }
     }
   }
@@ -419,7 +423,7 @@ const getDoctorByUserId = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -447,7 +451,7 @@ const getDoctorByUserId = gql`
       }
       specialty {
         id
-        name
+        specialtyName
       }
     }
   }
@@ -456,7 +460,7 @@ const getDoctorPending = gql`
   query getAllDoctorPending {
     getAllDoctorPending {
       id
-      name
+      doctorName
       gender
       academicTitle
       degree
@@ -491,7 +495,7 @@ const getDoctorByFacilityId = gql`
   query getAllDoctorByFacilityId($input: String!) {
     getAllDoctorByFacilityId(input: $input) {
       id
-      name
+      doctorName
       gender
       academicTitle
       degree
@@ -528,7 +532,7 @@ const getDoctorToUpdateById = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -575,7 +579,7 @@ const getAllDoctorPagination = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -624,7 +628,7 @@ const getAllDoctorPaginationOfFacility = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -822,7 +826,7 @@ const getMedicalSpecialtyByid = gql`
     getMedicalSpecialtyById(input: $input) {
       id
       medicalFactilityId
-      name
+      specialtyName
       price
       discription
       workSchedule {
@@ -845,7 +849,7 @@ const getAllMedicalSpecialtyByFacilityId = gql`
     getMedicalSpecialtiesByMedicalFacilityId(input: $input) {
       id
       medicalFactilityId
-      name
+      specialtyName
       price
       discription
       workSchedule {
@@ -884,7 +888,7 @@ const getAllMedicalSpecialtiesPaginationOfFacility = gql`
     ) {
       id
       medicalFactilityId
-      name
+      specialtyName
       price
       discription
       workSchedule {
@@ -921,7 +925,7 @@ const getAllMedicalSpecialtiesPaginationByStaff = gql`
     ) {
       id
       medicalFactilityId
-      name
+      specialtyName
       price
       discription
       workSchedule {
@@ -1103,7 +1107,7 @@ const getMedicalSpecialtySelect = gql`
   query getSpecialtySelect($input: String!) {
     getMedicalSpecialtySelect(input: $input) {
       id
-      name
+      specialtyName
     }
   }
 `;
@@ -1182,7 +1186,7 @@ const getAllRegisterByOption = gql`
         customer {
           id
           userId
-          name
+          fullname
           gender
           numberPhone
           email
@@ -1221,7 +1225,7 @@ const getAllStaffPagination = gql`
       id
       userId
       medicalFacilityId
-      name
+      staffName
       gender
       numberPhone
       email
@@ -1229,7 +1233,7 @@ const getAllStaffPagination = gql`
       specialtyId
       specialties {
         id
-        name
+        specialtyName
         medicalFactilityId
         discription
         price
@@ -1262,7 +1266,7 @@ const getAllMedicalStaffPaginationOfFacility = gql`
       id
       userId
       medicalFacilityId
-      name
+      staffName
       gender
       numberPhone
       email
@@ -1270,7 +1274,7 @@ const getAllMedicalStaffPaginationOfFacility = gql`
       specialtyId
       specialties {
         id
-        name
+        specialtyName
         medicalFactilityId
         discription
         price
@@ -1295,7 +1299,7 @@ const getAllCustomerPagination = gql`
     ) {
       id
       userId
-      name
+      fullname
       gender
       numberPhone
       email

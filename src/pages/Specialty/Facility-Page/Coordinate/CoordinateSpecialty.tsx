@@ -176,7 +176,7 @@ function CoordinateMedcialSpecialties() {
                     key={i}
                     active={spec.id === state.selectedSpecialty?.id}
                     variant="info">
-                    {spec.name}
+                    {spec.specialtyName}
                   </ListGroup.Item>
                 ))}
             </ListGroup>
@@ -225,7 +225,7 @@ function CoordinateMedcialSpecialties() {
             <ListRegisterV2
               title={
                 state?.selectedSpecialty !== undefined
-                  ? `Danh sách đăng ký khám theo chuyên khoa "${state.selectedSpecialty.name}"`
+                  ? `Danh sách đăng ký khám theo chuyên khoa "${state.selectedSpecialty.specialtyName}"`
                   : "Vui lòng chọn chuyên khoa"
               }
               listSchedule={state.selectedSpecialty?.workSchedule?.schedule}

@@ -3,7 +3,6 @@ import { Accordion } from "react-bootstrap";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import NavItem from "./NavItem";
 import { Item } from "src/assets/nav/_nav";
-import React from "react";
 import { getIcon } from "src/utils/contain";
 function NavGroup({ items }: { items: Item }) {
   const icon = getIcon(items.iconName);

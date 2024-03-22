@@ -106,7 +106,7 @@ function FormUpdateSpecialty() {
         }
         const dataInput: UpdateMedicalSpecialtyInput = {
           id: state.updateSpecialty.id,
-          name: state.updateSpecialty.name,
+          specialtyName: state.updateSpecialty.specialtyName,
           discription: state.updateSpecialty.discription,
           medicalFactilityId: state.updateSpecialty.medicalFactilityId,
           price: state.updateSpecialty.price,
@@ -155,9 +155,11 @@ function FormUpdateSpecialty() {
             <Form.Group className="mb-3" controlId="formGroupSpecialty">
               <Form.Label>Tên chuyên khoa khám:</Form.Label>
               <Form.Control
-                value={state.updateSpecialty.name}
+                value={state.updateSpecialty.specialtyName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("specialtyName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"

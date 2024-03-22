@@ -139,7 +139,7 @@ const createDoctor = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -172,7 +172,7 @@ const updateDoctor = gql`
       id
       userId
       medicalFactilitiesId
-      name
+      doctorName
       gender
       numberPhone
       email
@@ -260,7 +260,7 @@ const createMedicalSpecialty = gql`
     createMedicalSpecialty(input: $input) {
       id
       medicalFactilityId
-      name
+      specialtyName
       price
       discription
       workSchedule {

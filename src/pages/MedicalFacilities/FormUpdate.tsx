@@ -22,7 +22,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
   EStatusService,
+  ETypeOfFacility,
   LinkImageInput,
+  UpdateMedicalFacilityInput,
   useGetMedicalFacilityByIdQuery,
   useGetUserFacilitySelectQuery,
   useGetUserSelectedQuery,
@@ -39,6 +41,8 @@ import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
+import { getEnumValueTypeOfFacility } from "src/utils/getData";
+import { GetETypeOfFacility } from "src/utils/enum-value";
 function FormUpdateMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -61,7 +65,13 @@ function FormUpdateMedicalFacility() {
   });
   useEffect(() => {
     if (dateMedical) {
-      dispatch(handleSetForm(dateMedical.getMedicalFacilityById));
+      const dataUpdate: UpdateMedicalFacilityInput = {
+        ...dateMedical.getMedicalFacilityById,
+        typeOfFacility: getEnumValueTypeOfFacility(
+          dateMedical.getMedicalFacilityById.typeOfFacility
+        ),
+      };
+      dispatch(handleSetForm(dataUpdate));
     }
   }, [dateMedical]);
   useEffect(() => {
@@ -160,6 +170,7 @@ function FormUpdateMedicalFacility() {
           logo: logo,
           image: image,
           introduce: state.updateMedicalFacility.introduce,
+          typeOfFacility: state.updateMedicalFacility.typeOfFacility,
           legalRepresentation: state.updateMedicalFacility.legalRepresentation,
           numberPhone: state.updateMedicalFacility.numberPhone,
           operatingStatus: state.updateMedicalFacility.operatingStatus,
@@ -391,7 +402,51 @@ function FormUpdateMedicalFacility() {
                 />
               </Form.Group>
             </Col>
+            <Col>
+              <Form.Group className="mb-3" controlId="formGroupShedule">
+                <Form.Label>Loại cơ sở y tế:</Form.Label>
+                <Form.Select
+                  onChange={(e) => {
+                    dispatch(
+                      handleChangeForm("typeOfFacility", e.target.value)
+                    );
+                  }}
+                  // defaultValue={EStatusService.Open}
+                  value={state.updateMedicalFacility.typeOfFacility}>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.PublicHospital}>
+                    {GetETypeOfFacility.publicHospital}
+                  </option>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.PrivateHospital}>
+                    {GetETypeOfFacility.privateHospital}
+                  </option>
 
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.Clinic}>
+                    {GetETypeOfFacility.clinic}
+                  </option>
+                  <option
+                    // selected={
+                    //   state.createMedicalFacility.status === EStatusService.Open
+                    // }
+                    value={ETypeOfFacility.VaccinationCenter}>
+                    {GetETypeOfFacility.vaccinationCenter}
+                  </option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
             <Col>
               <Form.Group className="mb-3" controlId="formGroupShedule">
                 <Form.Label>Lịch làm việc:</Form.Label>

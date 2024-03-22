@@ -123,7 +123,7 @@ function FormUpdateMedicalStaff() {
         id: data?.getMedicalStaffById.id,
         email: data?.getMedicalStaffById.email,
         medicalFacilityId: data?.getMedicalStaffById.medicalFacilityId,
-        name: data?.getMedicalStaffById.name,
+        staffName: data?.getMedicalStaffById.staffName,
         specialtyId: data?.getMedicalStaffById.specialtyId,
         numberPhone: data?.getMedicalStaffById.numberPhone,
         userId: data?.getMedicalStaffById.userId,
@@ -150,7 +150,7 @@ function FormUpdateMedicalStaff() {
       const options: IOption[] = dataSpecialty?.getMedicalSpecialtySelect.map(
         (p) => ({
           value: p.id,
-          label: p.name,
+          label: p.specialtyName,
         })
       );
       dispatch(handleChangeOptionSpecialty(options));
@@ -182,7 +182,7 @@ function FormUpdateMedicalStaff() {
         email: state.updateStaff.email,
         gender: getEnumValueGender(state.updateStaff.gender),
         medicalFacilityId: state.updateStaff.medicalFacilityId,
-        name: state.updateStaff.name,
+        staffName: state.updateStaff.staffName,
         numberPhone: state.updateStaff.numberPhone,
         permissions: state.updateStaff.permissions,
         userId: state.updateStaff.userId,
@@ -251,9 +251,11 @@ function FormUpdateMedicalStaff() {
             <Form.Group className="mb-3" controlId="formGroupNameNV">
               <Form.Label>Tên nhân viên:</Form.Label>
               <Form.Control
-                value={state.updateStaff.name}
+                value={state.updateStaff.staffName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("staffName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"
@@ -548,7 +550,7 @@ function FormUpdateMedicalStaff() {
                 <StatusCpn
                   size="sm"
                   variant="light"
-                  loading={loadUpdate}
+                  loading={loadUpdate || loadingFacilitySelect}
                   error={errUpdate}
                 />
               </Button>

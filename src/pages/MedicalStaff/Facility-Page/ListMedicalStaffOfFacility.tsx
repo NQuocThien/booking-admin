@@ -177,7 +177,7 @@ function ListMedicalStaffOfFacilityPage() {
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
 
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.name}
+                    {c.staffName}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     {c.email}
@@ -254,7 +254,7 @@ function ListMedicalStaffOfFacilityPage() {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {state.selectedStaff.name}{" "}
+                    {state.selectedStaff.staffName}{" "}
                   </span>
                 </h6>
               </div>
@@ -318,7 +318,7 @@ function ListMedicalStaffOfFacilityPage() {
                     <div className="text-info ms-5">
                       {state.selectedStaff.specialties &&
                         state.selectedStaff.specialties.map((spec, i) => (
-                          <div key={i}>- {spec.name}</div>
+                          <div key={i}>- {spec.specialtyName}</div>
                         ))}
                     </div>
                   </div>

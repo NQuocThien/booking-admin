@@ -1,10 +1,6 @@
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import ShowAlert from "src/components/sub/alerts";
-import {
-  useGetMedicalFacilityNameByIdLazyQuery,
-  useGetMedicalStaffByIdQuery,
-} from "src/graphql/webbooking-service.generated";
-import { useEffect } from "react";
+import { useGetMedicalStaffByIdQuery } from "src/graphql/webbooking-service.generated";
 import { useAuth } from "src/context/AuthContext";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
@@ -15,10 +11,10 @@ import { GetEPermission } from "src/utils/enum-value";
 function MedicalStaffDetailPage() {
   // const { idDoctor, id } = useParams();
   const { checkExpirationToken, userInfor, infoStaff } = useAuth();
-  const [getMedical, { data: dataMedical }] =
-    useGetMedicalFacilityNameByIdLazyQuery({
-      fetchPolicy: "no-cache",
-    });
+  // const [getMedical, { data: dataMedical }] =
+  //   useGetMedicalFacilityNameByIdLazyQuery({
+  //     fetchPolicy: "no-cache",
+  //   });
 
   const { data, loading, error } = useGetMedicalStaffByIdQuery({
     fetchPolicy: "no-cache",
@@ -28,16 +24,16 @@ function MedicalStaffDetailPage() {
   });
   checkExpirationToken();
 
-  useEffect(() => {
-    if (data?.getMedicalStaffById.medicalFacilityId) {
-      const idMedical = data?.getMedicalStaffById.medicalFacilityId;
-      getMedical({
-        variables: {
-          input: idMedical,
-        },
-      });
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.getMedicalStaffById.medicalFacilityId) {
+  //     const idMedical = data?.getMedicalStaffById.medicalFacilityId;
+  //     getMedical({
+  //       variables: {
+  //         input: idMedical,
+  //       },
+  //     });
+  //   }
+  // }, [data]);
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !userInfor?.id) {
     console.log(error);
@@ -53,7 +49,7 @@ function MedicalStaffDetailPage() {
             <Col className={`col-4 `}>
               <div className={`${style.top__info} ${s.component}`}>
                 <p className={`${style.top__info_name}`}>
-                  {data?.getMedicalStaffById.name}
+                  {data?.getMedicalStaffById.staffName}
                 </p>
                 <div className={`${style.top__info_line}`}></div>
                 <div className={`${style.top__info_item}`}>
@@ -76,7 +72,7 @@ function MedicalStaffDetailPage() {
                   <span className="mx-1 text-primary">
                     <MdManageAccounts />
                   </span>
-                  Quyền của "{data?.getMedicalStaffById.name}"
+                  Quyền của "{data?.getMedicalStaffById.staffName}"
                 </h5>
                 {data.getMedicalStaffById?.permissions.map((per, i) => (
                   <div className="ms-5" key={i}>
@@ -98,7 +94,9 @@ function MedicalStaffDetailPage() {
                       <div className="ms-5">
                         {data.getMedicalStaffById?.specialties &&
                           data.getMedicalStaffById?.specialties.map(
-                            (spec, i) => <div key={i}>- {spec.name}</div>
+                            (spec, i) => (
+                              <div key={i}>- {spec.specialtyName}</div>
+                            )
                           )}
                       </div>
                     </div>

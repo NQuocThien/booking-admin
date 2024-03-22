@@ -158,7 +158,7 @@ function ListCustomerPage() {
                 <tr key={i} className="">
                   <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
-                    {c.name}
+                    {c.fullname}
                   </td>
                   <td className="fs-6" style={{ verticalAlign: "middle" }}>
                     {c.email}
@@ -234,7 +234,7 @@ function ListCustomerPage() {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {state.selectedCustomer.name}{" "}
+                    {state.selectedCustomer.fullname}{" "}
                   </span>
                 </h6>
               </div>
@@ -313,7 +313,7 @@ function ListCustomerPage() {
           {state.selectedCustomer && (
             <Row className="g-2">
               <h5 className="fw-bold">
-                Danh sách hồ sơ bệnh nhân "{state.selectedCustomer.name}"
+                Danh sách hồ sơ bệnh nhân "{state.selectedCustomer.fullname}"
               </h5>
               {state.selectedCustomer.profiles?.map((profile, i) => (
                 <Col className="col-6  p-3 mt-3">

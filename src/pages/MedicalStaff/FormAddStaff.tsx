@@ -103,7 +103,7 @@ function FormAddMedicalStaff() {
       const options: IOption[] = dataSpecialty?.getMedicalSpecialtySelect.map(
         (p) => ({
           value: p.id,
-          label: p.name,
+          label: p.specialtyName,
         })
       );
       dispatch(handleChangeOptionSpecialty(options));
@@ -188,9 +188,11 @@ function FormAddMedicalStaff() {
             <Form.Group className="mb-3" controlId="formGroupNameNV">
               <Form.Label>Tên nhân viên:</Form.Label>
               <Form.Control
-                value={state.createMedicalStaff.name}
+                value={state.createMedicalStaff.staffName}
                 onChange={(e) => {
-                  dispatch(handleChangeForm("name", e.currentTarget.value));
+                  dispatch(
+                    handleChangeForm("staffName", e.currentTarget.value)
+                  );
                 }}
                 required
                 type="text"

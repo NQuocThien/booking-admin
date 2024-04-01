@@ -67,7 +67,7 @@ function FacilityHomePage() {
           {data?.getMedicalFacilityInfo?.totalDoctors && (
             <Col xl={3} lg={4} sm={6}>
               <GeneralStatistic
-                title="Bác sỉ"
+                title="Bác sĩ"
                 number={data?.getMedicalFacilityInfo.totalDoctors}
                 icons={FaUserDoctor}
               />

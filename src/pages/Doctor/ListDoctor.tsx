@@ -192,7 +192,7 @@ function ListDoctorPage() {
                           <p
                             className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                             onClick={async () => await hanldeDelete(c.id)}>
-                            Xóa bác sỉ
+                            Xóa bác sĩ
                           </p>
                         </Dropdown.Item>
                       </Dropdown.Menu>

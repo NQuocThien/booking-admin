@@ -185,7 +185,7 @@ function FormAddDoctor() {
       <Row>
         <Form noValidate validated={state.validate} onSubmit={handleSubmit}>
           <Row>
-            <h3 className="text-center text-primary">Thêm bác sỉ</h3>
+            <h3 className="text-center text-primary">Thêm bác sĩ</h3>
           </Row>
           {!state.formMedical && (
             <Row>

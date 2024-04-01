@@ -17,12 +17,7 @@ import {
   handleChangeFormWorkSchedule,
 } from "src/pages/Doctor/reducer";
 import { FaSort } from "react-icons/fa";
-import {
-  getDayOfWeek,
-  getEnumValueGender,
-  getEnumValueStateService,
-  getQuickSessions,
-} from "src/utils/getData";
+import { getDayOfWeek, getQuickSessions } from "src/utils/getData";
 import { checkSessionExist, formatDate } from "src/utils/contain";
 import { EQuickAddSessions } from "src/utils/enum";
 import moment from "moment";
@@ -273,9 +268,7 @@ function WorkScheduleUpdateCpn({ state, dispatch }: IProp) {
               })
             );
           }}
-          value={getEnumValueStateService(
-            state.updateDoctor.workSchedule.status
-          )}>
+          value={state.updateDoctor.workSchedule.status}>
           <option value={EStatusService.Open}>Mở</option>
           <option value={EStatusService.Close}>Đóng</option>
         </Form.Select>

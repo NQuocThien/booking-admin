@@ -65,12 +65,13 @@ function ListRegister(props: IProps) {
   const [schedule, setSchedule] = useState<Schedule>();
   const [selectedSession, setSelectedSession] = useState<Session>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [listRegister, setListRegister] = useState<Register[]>();
+  const [listRegister, setListRegister] = useState<Register[]>([]);
   const [selectedRegiser, setSetSelectedRegister] = useState<Register>();
   const [showModal, setShowModal] = useState<IShowModal>({
     customer: false,
     profile: false,
   });
+
   useEffect(() => {
     if (doctorId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
@@ -107,6 +108,7 @@ function ListRegister(props: IProps) {
     }
     if (specialtyId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+
       getRegisters({
         variables: {
           input: {
@@ -291,9 +293,9 @@ function ListRegister(props: IProps) {
                 ) {
                   return (
                     <tr key={i}>
-                      <td>{regis.profile.fullname}</td>
-                      <td>{regis.profile.gender}</td>
-                      <td>{formatDate(regis.profile.dataOfBirth)}</td>
+                      <td>{regis?.profile?.fullname}</td>
+                      <td>{regis?.profile?.gender}</td>
+                      <td>{formatDate(regis?.profile?.dataOfBirth)}</td>
                       <td>
                         {regis.session.startTime} - {regis.session.endTime}
                       </td>
@@ -357,7 +359,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {selectedRegiser.profile.fullname}{" "}
+                    {selectedRegiser?.profile?.fullname}{" "}
                   </span>
                 </h6>
               </div>
@@ -368,7 +370,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Ngày sinh:
                   <span className="text-info ms-2">
-                    {formatDate(selectedRegiser.profile.dataOfBirth)}
+                    {formatDate(selectedRegiser?.profile?.dataOfBirth)}
                   </span>
                 </h6>
               </div>
@@ -379,7 +381,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Số điện thoại:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.numberPhone}
+                    {selectedRegiser?.profile?.numberPhone}
                   </span>
                 </h6>
               </div>
@@ -390,7 +392,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Email:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.email}
+                    {selectedRegiser?.profile?.email}
                   </span>
                 </h6>
               </div>
@@ -401,7 +403,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Giới tính:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.gender}
+                    {selectedRegiser?.profile?.gender}
                   </span>
                 </h6>
               </div>
@@ -412,7 +414,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Nghề nghiệp:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.job}
+                    {selectedRegiser?.profile?.job}
                   </span>
                 </h6>
               </div>
@@ -423,7 +425,7 @@ function ListRegister(props: IProps) {
                   </span>
                   CCCD:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.identity || "..."}
+                    {selectedRegiser?.profile?.identity || "..."}
                   </span>
                 </h6>
               </div>
@@ -434,7 +436,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Số BHYT:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.medicalInsurance || "..."}
+                    {selectedRegiser?.profile?.medicalInsurance || "..."}
                   </span>
                 </h6>
               </div>
@@ -445,7 +447,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Dân tộc:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.ethnic}
+                    {selectedRegiser?.profile?.ethnic}
                   </span>
                 </h6>
               </div>
@@ -456,7 +458,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Quan hệ với chủ hộ:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.relationship}
+                    {selectedRegiser?.profile?.relationship}
                   </span>
                 </h6>
               </div>
@@ -472,7 +474,7 @@ function ListRegister(props: IProps) {
         onlySclose
         openRequest={showModal.customer}>
         <div className="shadow-lg bg-light p-3 mt-3">
-          {selectedRegiser?.profile.customer && (
+          {selectedRegiser?.profile?.customer && (
             <>
               <div className="px-3">
                 <h6>
@@ -481,7 +483,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {selectedRegiser.profile.customer.fullname}{" "}
+                    {selectedRegiser?.profile?.customer.fullname}{" "}
                   </span>
                 </h6>
               </div>
@@ -492,7 +494,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Ngày sinh:
                   <span className="text-info ms-2">
-                    {formatDate(selectedRegiser.profile.customer.dateOfBirth)}
+                    {formatDate(selectedRegiser?.profile?.customer.dateOfBirth)}
                   </span>
                 </h6>
               </div>
@@ -503,7 +505,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Số điện thoại:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.numberPhone}
+                    {selectedRegiser?.profile?.customer.numberPhone}
                   </span>
                 </h6>
               </div>
@@ -514,7 +516,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Email:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.email}
+                    {selectedRegiser?.profile?.customer.email}
                   </span>
                 </h6>
               </div>
@@ -525,7 +527,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Giới tính:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.gender}
+                    {selectedRegiser?.profile?.customer.gender}
                   </span>
                 </h6>
               </div>
@@ -536,7 +538,7 @@ function ListRegister(props: IProps) {
                   </span>
                   Dân tộc:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.ethnic}
+                    {selectedRegiser?.profile?.customer.ethnic}
                   </span>
                 </h6>
               </div>

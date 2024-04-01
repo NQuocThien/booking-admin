@@ -119,7 +119,7 @@ const _navClinic: Item[] = [
     items: [
       {
         component: "NavItem",
-        name: "Khám bác sỉ",
+        name: "Khám bác sĩ",
         to: "/facility-page/coordinate/doctors",
         iconName: "LiaUserNurseSolid",
       },
@@ -150,7 +150,7 @@ const _navClinic: Item[] = [
     items: [
       {
         component: "NavItem",
-        name: "Bác sỉ",
+        name: "Bác sĩ",
         to: "/facility-page/doctors",
         iconName: "LiaUserNurseSolid",
       },
@@ -239,7 +239,7 @@ const _navStaffManager: Item[] = [
     items: [
       {
         component: "NavItem",
-        name: "Khám bác sỉ",
+        name: "Khám bác sĩ",
         to: "/facility-page/coordinate/doctors",
         iconName: "LiaUserNurseSolid",
       },
@@ -270,7 +270,7 @@ const _navStaffManager: Item[] = [
     items: [
       {
         component: "NavItem",
-        name: "Bác sỉ",
+        name: "Bác sĩ",
         to: "/facility-page/doctors",
         iconName: "LiaUserNurseSolid",
       },

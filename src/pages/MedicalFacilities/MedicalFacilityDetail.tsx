@@ -2,11 +2,7 @@ import { Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
-  Doctor,
   MedicalFacilities,
-  MedicalSpecialties,
-  Package,
-  Vaccination,
   useGetMedicalFacilityByIdQuery,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -20,9 +16,7 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { useAuth } from "src/context/AuthContext";
 import MedicalFacilityListService from "../../components/Pages/MedicalFacility/MedicalFacilitytService";
 import MedicalFacilityListStaff from "src/pages/MedicalStaff/MedicalFacilityStaffList";
-import { EtypeService } from "src/utils/enum";
 import MapAddressCpn from "src/components/sub/MapAddressCpn";
-import ModalCpn from "src/components/sub/Modal";
 function MedicalFacilityDetailPage() {
   const { id } = useParams();
   const { checkExpirationToken } = useAuth();

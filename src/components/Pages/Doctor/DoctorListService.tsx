@@ -106,7 +106,7 @@ function DoctorListServive(props: IProps) {
         },
       })
         .then(() => {
-          showToast("Đã thêm Bác sỉ 👌");
+          showToast("Đã thêm Bác sĩ 👌");
           getDoctorPending();
           getDoctor();
         })
@@ -155,7 +155,7 @@ function DoctorListServive(props: IProps) {
         },
       })
         .then(() => {
-          showToast("Đã xóa Bác sỉ 👌");
+          showToast("Đã xóa Bác sĩ 👌");
           getDoctorPending();
           getDoctor();
         })
@@ -224,10 +224,10 @@ function DoctorListServive(props: IProps) {
                       getDoctorPending();
                       setShowModal(true);
                     }}>
-                    Chọn bác sỉ có sẵn
+                    Chọn bác sĩ có sẵn
                   </Dropdown.Item>
                   <Dropdown.Item as={Link} to={`doctor/form-add`}>
-                    Tạo mới bác sỉ
+                    Tạo mới bác sĩ
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -310,7 +310,7 @@ function DoctorListServive(props: IProps) {
         handleSave={() => {}}
         onlySclose
         fullscreen
-        headerText="Chọn bác sỉ"
+        headerText="Chọn bác sĩ"
         handleClose={() => setShowModal(false)}
         openRequest={showModal}>
         <Table hover>

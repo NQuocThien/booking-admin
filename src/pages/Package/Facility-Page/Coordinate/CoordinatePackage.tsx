@@ -11,9 +11,7 @@ import {
 import {
   Package,
   useGetAllPackagePaginationOfFacilityLazyQuery,
-  useGetAllPackagePaginationOfFacilityQuery,
   useGetTotalPackagesCountLazyQuery,
-  useGetTotalPackagesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
 import { useAuth } from "src/context/AuthContext";
@@ -102,9 +100,7 @@ function CoordinatePackages() {
         },
       });
     } else if (currRole === GetRole.Staff) {
-      // load data from staff id
       if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
-        // console.log("==> Test Form Staff: ", infoStaff.id);
         getData({
           variables: {
             limit: 10,
@@ -212,7 +208,7 @@ function CoordinatePackages() {
                   : "Vui lòng chọn gói khám"
               }
               listSchedule={state.selectedPackage?.workSchedule?.schedule}
-              vaccineId={state.selectedPackage?.id}
+              packageId={state.selectedPackage?.id}
             />
           </Row>
         </div>

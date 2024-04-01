@@ -63,7 +63,7 @@ function DoctorDetailPage() {
       ]);
     } else if (location.pathname.search("/facility-page/doctors") !== -1) {
       setBreadcrumbs([
-        { url: "/facility-page/doctors", label: "Danh sách bác sỉ" },
+        { url: "/facility-page/doctors", label: "Danh sách bác sĩ" },
         {
           url: "",
           label: "BS." + data?.getDoctorbyId.doctorName || "",
@@ -72,7 +72,7 @@ function DoctorDetailPage() {
     }
     if (location.pathname.search("/admin-page/doctors") !== -1) {
       setBreadcrumbs([
-        { url: "/admin-page/doctors", label: "Quản lý bác sỉ" },
+        { url: "/admin-page/doctors", label: "Quản lý bác sĩ" },
         {
           url: "",
           label: "BS." + data?.getDoctorbyId.doctorName || "",
@@ -159,7 +159,7 @@ function DoctorDetailPage() {
               <p>Ngày nghỉ:</p>
               <div className={s.main__dayOff}>
                 {data?.getDoctorbyId.workSchedule.dayOff.map((day, i) => (
-                  <span className="mx-1 p-2 border border-info">
+                  <span key={i} className="mx-1 p-2 border border-info">
                     {formatDate(day)}
                   </span>
                 ))}
@@ -189,14 +189,6 @@ function DoctorDetailPage() {
                       </span>
                     ))}
                   </td>
-                  {/* <td>
-                    <Button
-                      size="sm"
-                      variant="outline-primary"
-                      onClick={() => handleClickSchedule(s)}>
-                      <FaEye />
-                    </Button>
-                  </td> */}
                 </tr>
               ))}
             </tbody>

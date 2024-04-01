@@ -138,32 +138,28 @@ export type CreateProfileInput = {
 export type CreateRegisterDoctorInput = {
   date: Scalars['DateTime']['input'];
   doctorId: Scalars['String']['input'];
-  isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
   session: SessionInput;
 };
 
 export type CreateRegisterPackageInput = {
   date: Scalars['DateTime']['input'];
-  isHealthInsurance: Scalars['Boolean']['input'];
   packageId: Scalars['String']['input'];
   profileId: Scalars['String']['input'];
-  sessionId: Scalars['String']['input'];
+  session: SessionInput;
 };
 
 export type CreateRegisterSpecialtyInput = {
   date: Scalars['DateTime']['input'];
-  isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
-  sessionId: Scalars['String']['input'];
+  session: SessionInput;
   specialtyId: Scalars['String']['input'];
 };
 
 export type CreateRegisterVaccineInput = {
   date: Scalars['DateTime']['input'];
-  isHealthInsurance: Scalars['Boolean']['input'];
   profileId: Scalars['String']['input'];
-  sessionId: Scalars['String']['input'];
+  session: SessionInput;
   vaccineId: Scalars['String']['input'];
 };
 
@@ -212,6 +208,7 @@ export type Doctor = {
   discription: Scalars['String']['output'];
   doctorName: Scalars['String']['output'];
   email: Scalars['String']['output'];
+  facility?: Maybe<MedicalFacilities>;
   gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   medicalFactilitiesId: Scalars['String']['output'];
@@ -442,6 +439,7 @@ export type MedicalFacilitiesVaccinationsArgs = {
 export type MedicalSpecialties = {
   __typename?: 'MedicalSpecialties';
   discription: Scalars['String']['output'];
+  facility?: Maybe<MedicalFacilities>;
   id: Scalars['ID']['output'];
   medicalFactilityId: Scalars['String']['output'];
   price: Scalars['Float']['output'];
@@ -750,6 +748,7 @@ export type Notification = {
 export type Package = {
   __typename?: 'Package';
   examinationDetails: Scalars['String']['output'];
+  facility?: Maybe<MedicalFacilities>;
   gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   image: LinkImage;
@@ -788,13 +787,16 @@ export type Query = {
   getAllDoctorByFacilityId: Array<Doctor>;
   getAllDoctorPagination: Array<Doctor>;
   getAllDoctorPaginationOfFacility: Array<Doctor>;
+  getAllDoctorPaginationOfFacilityForClient: Array<Doctor>;
   getAllDoctorPending: Array<Doctor>;
   getAllEvaluate: Array<Evaluate>;
   getAllMecialSpecialty: Array<MedicalSpecialties>;
   getAllMedicalFacility: Array<MedicalFacilities>;
+  getAllMedicalFacilityHaveSrvPaginationForClient: Array<MedicalFacilities>;
   getAllMedicalFacilityPagination: Array<MedicalFacilities>;
   getAllMedicalSpecialtiesPaginationByStaff: Array<MedicalSpecialties>;
   getAllMedicalSpecialtiesPaginationOfFacility: Array<MedicalSpecialties>;
+  getAllMedicalSpecialtiesPaginationOfFacilityForClient: Array<MedicalSpecialties>;
   getAllMedicalStaff: Array<MedicalStaff>;
   getAllMedicalStaffPaginationOfFacility: Array<MedicalStaff>;
   getAllNotification: Array<Notification>;
@@ -802,8 +804,10 @@ export type Query = {
   getAllPackageByFacilityId: Array<Package>;
   getAllPackagePaginationByStaff: Array<Package>;
   getAllPackagePaginationOfFacility: Array<Package>;
+  getAllPackagePaginationOfFacilityForClient: Array<Package>;
   getAllPackageSelect: Array<Package>;
   getAllProfile: Array<Profile>;
+  getAllRegisPending: Array<Register>;
   getAllRegisterByOption: Array<Register>;
   getAllStaffPagination: Array<MedicalStaff>;
   getAllUsersPagination: Array<User>;
@@ -811,6 +815,7 @@ export type Query = {
   getAllVaccinationByFacilityId: Array<Vaccination>;
   getAllVaccinationPaginationByStaff: Array<Vaccination>;
   getAllVaccinationPaginationOfFacility: Array<Vaccination>;
+  getAllVaccinationPaginationOfFacilityForClient: Array<Vaccination>;
   getAllVaccinationSelect: Array<Vaccination>;
   getDoctorbyId: Doctor;
   getDoctorbyUserId: Doctor;
@@ -826,14 +831,20 @@ export type Query = {
   getMedicalStaffByUserId: MedicalStaff;
   getPackageById: Package;
   getProfileByCustomerId: Array<Profile>;
+  getProfiles: Profile;
   getSetting: Setting;
   getTopMedicalFacilities: Array<MedicalFacilities>;
   getTotalCustomersCount: Scalars['Float']['output'];
   getTotalDoctorsCount: Scalars['Float']['output'];
+  getTotalDoctorsCountForClient: Scalars['Float']['output'];
   getTotalFacilitiesCount: Scalars['Float']['output'];
+  getTotalFacilitiesHaveSrvCountForClient: Scalars['Float']['output'];
   getTotalMedicalSpecialtiesCount: Scalars['Float']['output'];
+  getTotalMedicalSpecialtiesCountForClient: Scalars['Float']['output'];
   getTotalPackagesCount: Scalars['Float']['output'];
+  getTotalPackagesCountForClient: Scalars['Float']['output'];
   getTotalVaccinationsCount: Scalars['Float']['output'];
+  getTotalVaccinationsCountForClient: Scalars['Float']['output'];
   getUser: User;
   getUserDoctorPending: Array<User>;
   getUserDoctorPendingUpdate: Array<User>;
@@ -883,6 +894,26 @@ export type QueryGetAllDoctorPaginationOfFacilityArgs = {
 };
 
 
+export type QueryGetAllDoctorPaginationOfFacilityForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  filter?: InputMaybe<FilterDoctorInput>;
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllMedicalFacilityHaveSrvPaginationForClientArgs = {
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetAllMedicalFacilityPaginationArgs = {
   limit?: Scalars['Float']['input'];
   page?: Scalars['Float']['input'];
@@ -911,6 +942,16 @@ export type QueryGetAllMedicalSpecialtiesPaginationOfFacilityArgs = {
   sortOrder?: InputMaybe<Scalars['String']['input']>;
   staffId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllMedicalSpecialtiesPaginationOfFacilityForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -950,8 +991,23 @@ export type QueryGetAllPackagePaginationOfFacilityArgs = {
 };
 
 
+export type QueryGetAllPackagePaginationOfFacilityForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetAllPackageSelectArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllRegisPendingArgs = {
+  input: GetRegisterByOptionInput;
 };
 
 
@@ -1001,6 +1057,16 @@ export type QueryGetAllVaccinationPaginationOfFacilityArgs = {
   sortOrder?: InputMaybe<Scalars['String']['input']>;
   staffId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllVaccinationPaginationOfFacilityForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1075,6 +1141,11 @@ export type QueryGetProfileByCustomerIdArgs = {
 };
 
 
+export type QueryGetProfilesArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryGetTopMedicalFacilitiesArgs = {
   limit?: Scalars['Float']['input'];
   typeFacility: Scalars['String']['input'];
@@ -1093,7 +1164,19 @@ export type QueryGetTotalDoctorsCountArgs = {
 };
 
 
+export type QueryGetTotalDoctorsCountForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  filter?: InputMaybe<FilterDoctorInput>;
+};
+
+
 export type QueryGetTotalFacilitiesCountArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetTotalFacilitiesHaveSrvCountForClientArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1106,6 +1189,12 @@ export type QueryGetTotalMedicalSpecialtiesCountArgs = {
 };
 
 
+export type QueryGetTotalMedicalSpecialtiesCountForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetTotalPackagesCountArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
   staffId?: InputMaybe<Scalars['String']['input']>;
@@ -1113,10 +1202,22 @@ export type QueryGetTotalPackagesCountArgs = {
 };
 
 
+export type QueryGetTotalPackagesCountForClientArgs = {
+  facilityId?: InputMaybe<Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetTotalVaccinationsCountArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
   staffId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetTotalVaccinationsCountForClientArgs = {
+  facilityId: Scalars['String']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1167,17 +1268,21 @@ export type QueryTotalUsersCountArgs = {
 
 export type Register = {
   __typename?: 'Register';
+  cancel: Scalars['Boolean']['output'];
   date: Scalars['DateTime']['output'];
+  doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  isHealthInsurance: Scalars['Boolean']['output'];
+  package?: Maybe<Package>;
   packageId?: Maybe<Scalars['String']['output']>;
-  profile: Profile;
+  profile?: Maybe<Profile>;
   profileId: Scalars['String']['output'];
   session: Session;
+  specialty?: Maybe<MedicalSpecialties>;
   specialtyId?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
   typeOfService: Scalars['String']['output'];
+  vaccination?: Maybe<Vaccination>;
   vaccineId?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1214,6 +1319,26 @@ export type SessionInput = {
 export type Setting = {
   __typename?: 'Setting';
   defaultLang: Scalars['String']['output'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  registerCreated: Register;
+  registerDoctorCreated: Register;
+  registerPackageCreated: Register;
+  registerSpecialtyCreated: Register;
+  registerVaccinationCreated: Register;
+};
+
+
+export type SubscriptionRegisterCreatedArgs = {
+  option: GetRegisterByOptionInput;
+};
+
+
+export type SubscriptionRegisterDoctorCreatedArgs = {
+  date: Scalars['String']['input'];
+  doctorId: Scalars['String']['input'];
 };
 
 export type UpdateCustomerInput = {
@@ -1330,6 +1455,7 @@ export type UpdateProfileInput = {
 };
 
 export type UpdateRegisterInput = {
+  cancel: Scalars['Boolean']['input'];
   id: Scalars['String']['input'];
   state: EStateRegister;
 };
@@ -1396,6 +1522,7 @@ export type UserSelectInput = {
 export type Vaccination = {
   __typename?: 'Vaccination';
   countryOfOrigin: Scalars['String']['output'];
+  facility?: Maybe<MedicalFacilities>;
   id: Scalars['ID']['output'];
   indication: Scalars['String']['output'];
   medicalFactilitiesId: Scalars['String']['output'];
@@ -2002,7 +2129,7 @@ export type GetAllRegisterByOptionQueryVariables = Exact<{
 }>;
 
 
-export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, isHealthInsurance: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null }, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
+export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
 
 export type GetAllStaffPaginationQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2053,10 +2180,20 @@ export type GetTotalCustomersCountQueryVariables = Exact<{
 
 export type GetTotalCustomersCountQuery = { __typename?: 'Query', getTotalCustomersCount: number };
 
-export type GetGeneralInfor3QueryVariables = Exact<{ [key: string]: never; }>;
+export type RegisterDoctorCreatedSubscriptionVariables = Exact<{
+  doctorId: Scalars['String']['input'];
+  date: Scalars['String']['input'];
+}>;
 
 
-export type GetGeneralInfor3Query = { __typename?: 'Query', getGeneralInfor: { __typename?: 'GeneralInfor', company: string, address: string, copyrigth: string, email: string, hotline: string, liscenceBusiness: string, liscenceOparating: string, ID?: string | null, logoFooter: { __typename?: 'LinkImage', filename: string, url: string, type: string }, logoHeader: { __typename?: 'LinkImage', filename: string, url: string } } };
+export type RegisterDoctorCreatedSubscription = { __typename?: 'Subscription', registerDoctorCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
+
+export type RegisterCreatedSubscriptionVariables = Exact<{
+  option: GetRegisterByOptionInput;
+}>;
+
+
+export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
 
 
 export const LoginDocument = gql`
@@ -5592,7 +5729,7 @@ export const GetAllRegisterByOptionDocument = gql`
     id
     date
     typeOfService
-    isHealthInsurance
+    cancel
     profile {
       id
       customerId
@@ -5916,53 +6053,140 @@ export function useGetTotalCustomersCountLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetTotalCustomersCountQueryHookResult = ReturnType<typeof useGetTotalCustomersCountQuery>;
 export type GetTotalCustomersCountLazyQueryHookResult = ReturnType<typeof useGetTotalCustomersCountLazyQuery>;
 export type GetTotalCustomersCountQueryResult = Apollo.QueryResult<GetTotalCustomersCountQuery, GetTotalCustomersCountQueryVariables>;
-export const GetGeneralInfor3Document = gql`
-    query GetGeneralInfor3 {
-  getGeneralInfor {
-    company
-    address
-    copyrigth
-    email
-    hotline
-    liscenceBusiness
-    liscenceOparating
-    ID
-    logoFooter {
-      filename
-      url
-      type
+export const RegisterDoctorCreatedDocument = gql`
+    subscription registerDoctorCreated($doctorId: String!, $date: String!) {
+  registerDoctorCreated(doctorId: $doctorId, date: $date) {
+    id
+    date
+    typeOfService
+    cancel
+    profile {
+      id
+      customerId
+      email
+      ethnic
+      fullname
+      address
+      gender
+      job
+      dataOfBirth
+      identity
+      medicalInsurance
+      numberPhone
+      relationship
+      customer {
+        id
+        userId
+        fullname
+        gender
+        numberPhone
+        email
+        address
+        dateOfBirth
+        ethnic
+      }
     }
-    logoHeader {
-      filename
-      url
+    state
+    packageId
+    profileId
+    specialtyId
+    vaccineId
+    session {
+      startTime
+      endTime
     }
   }
 }
     `;
 
 /**
- * __useGetGeneralInfor3Query__
+ * __useRegisterDoctorCreatedSubscription__
  *
- * To run a query within a React component, call `useGetGeneralInfor3Query` and pass it any options that fit your needs.
- * When your component renders, `useGetGeneralInfor3Query` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRegisterDoctorCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRegisterDoctorCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetGeneralInfor3Query({
+ * const { data, loading, error } = useRegisterDoctorCreatedSubscription({
  *   variables: {
+ *      doctorId: // value for 'doctorId'
+ *      date: // value for 'date'
  *   },
  * });
  */
-export function useGetGeneralInfor3Query(baseOptions?: Apollo.QueryHookOptions<GetGeneralInfor3Query, GetGeneralInfor3QueryVariables>) {
+export function useRegisterDoctorCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterDoctorCreatedSubscription, RegisterDoctorCreatedSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetGeneralInfor3Query, GetGeneralInfor3QueryVariables>(GetGeneralInfor3Document, options);
+        return Apollo.useSubscription<RegisterDoctorCreatedSubscription, RegisterDoctorCreatedSubscriptionVariables>(RegisterDoctorCreatedDocument, options);
       }
-export function useGetGeneralInfor3LazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGeneralInfor3Query, GetGeneralInfor3QueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetGeneralInfor3Query, GetGeneralInfor3QueryVariables>(GetGeneralInfor3Document, options);
-        }
-export type GetGeneralInfor3QueryHookResult = ReturnType<typeof useGetGeneralInfor3Query>;
-export type GetGeneralInfor3LazyQueryHookResult = ReturnType<typeof useGetGeneralInfor3LazyQuery>;
-export type GetGeneralInfor3QueryResult = Apollo.QueryResult<GetGeneralInfor3Query, GetGeneralInfor3QueryVariables>;
+export type RegisterDoctorCreatedSubscriptionHookResult = ReturnType<typeof useRegisterDoctorCreatedSubscription>;
+export type RegisterDoctorCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterDoctorCreatedSubscription>;
+export const RegisterCreatedDocument = gql`
+    subscription registerCreated($option: GetRegisterByOptionInput!) {
+  registerCreated(option: $option) {
+    id
+    date
+    typeOfService
+    cancel
+    profile {
+      id
+      customerId
+      email
+      ethnic
+      fullname
+      address
+      gender
+      job
+      dataOfBirth
+      identity
+      medicalInsurance
+      numberPhone
+      relationship
+      customer {
+        id
+        userId
+        fullname
+        gender
+        numberPhone
+        email
+        address
+        dateOfBirth
+        ethnic
+      }
+    }
+    state
+    packageId
+    profileId
+    specialtyId
+    vaccineId
+    session {
+      startTime
+      endTime
+    }
+  }
+}
+    `;
+
+/**
+ * __useRegisterCreatedSubscription__
+ *
+ * To run a query within a React component, call `useRegisterCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRegisterCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRegisterCreatedSubscription({
+ *   variables: {
+ *      option: // value for 'option'
+ *   },
+ * });
+ */
+export function useRegisterCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterCreatedSubscription, RegisterCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<RegisterCreatedSubscription, RegisterCreatedSubscriptionVariables>(RegisterCreatedDocument, options);
+      }
+export type RegisterCreatedSubscriptionHookResult = ReturnType<typeof useRegisterCreatedSubscription>;
+export type RegisterCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterCreatedSubscription>;

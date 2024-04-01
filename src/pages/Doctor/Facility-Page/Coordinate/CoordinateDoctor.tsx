@@ -149,7 +149,7 @@ function CoordinateDoctor() {
       <Col className={`col-3 p-2`}>
         <div className={`${s.component}`}>
           <Row>
-            <h5>Chọn Bác sỉ</h5>
+            <h5>Chọn Bác sĩ</h5>
           </Row>
           <Row>
             <FilterDoctorShort
@@ -223,8 +223,8 @@ function CoordinateDoctor() {
             <ListRegisterV2
               title={
                 state?.selectedDoctor !== undefined
-                  ? `Danh sách đăng ký khám theo bác sỉ "${state.selectedDoctor.doctorName}"`
-                  : "Vui lòng chọn bác sỉ"
+                  ? `Danh sách đăng ký khám theo bác sĩ "${state.selectedDoctor.doctorName}"`
+                  : "Vui lòng chọn bác sĩ"
               }
               listSchedule={state.selectedDoctor?.workSchedule.schedule}
               doctorId={state.selectedDoctor?.id}

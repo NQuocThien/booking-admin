@@ -1168,7 +1168,7 @@ const getAllRegisterByOption = gql`
       date
       typeOfService
 
-      isHealthInsurance
+      cancel
       profile {
         id
         customerId

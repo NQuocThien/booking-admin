@@ -1,13 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { Row, Table, Button, Col, Dropdown, Overlay } from "react-bootstrap";
+import {
+  Row,
+  Table,
+  Button,
+  Col,
+  Dropdown,
+  Overlay,
+  Badge,
+  Spinner,
+} from "react-bootstrap";
 import {
   ConfirmRegisterInput,
   EStateRegister,
+  GetRegisterByOptionInput,
   Register,
   Schedule,
   Session,
   useConfirmRegisterMutation,
   useGetAllRegisterByOptionLazyQuery,
+  useRegisterCreatedSubscription,
 } from "src/graphql/webbooking-service.generated";
 import { TfiReload } from "react-icons/tfi";
 import SessionItem from "../../WorkSchedule/Session";
@@ -47,6 +58,28 @@ function ListRegisterV2(props: IProps) {
     specialtyId = undefined,
     vaccineId = undefined,
   } = props;
+
+  const [schedule, setSchedule] = useState<Schedule>();
+  const [selectedSession, setSelectedSession] = useState<Session>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [listRegister, setListRegister] = useState<Register[]>([]);
+  const [selectedRegiser, setSetSelectedRegister] = useState<Register>();
+  const [showModal, setShowModal] = useState<IShowModal>({
+    customer: false,
+    profile: false,
+  });
+  const [subscription, setSubscription] = useState<boolean>(false);
+  const [option, setOption] = useState<GetRegisterByOptionInput>({
+    date: new Date(),
+    doctorId: doctorId,
+    packageId: packageId,
+    specialtyId: specialtyId,
+    vaccineId: vaccineId,
+  });
+  const [show, setShow] = useState(false);
+  const [target, setTarget] = useState(null);
+  const ref = useRef(null);
+
   const [getRegisters, { data, loading, error, refetch }] =
     useGetAllRegisterByOptionLazyQuery({
       fetchPolicy: "no-cache",
@@ -65,27 +98,64 @@ function ListRegisterV2(props: IProps) {
         },
       },
     });
-  const [schedule, setSchedule] = useState<Schedule>();
-  const [selectedSession, setSelectedSession] = useState<Session>();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [listRegister, setListRegister] = useState<Register[]>();
-  const [selectedRegiser, setSetSelectedRegister] = useState<Register>();
-  const [showModal, setShowModal] = useState<IShowModal>({
-    customer: false,
-    profile: false,
+
+  const {
+    data: dataCreated,
+    loading: loadCreated,
+    error: errCreated,
+  } = useRegisterCreatedSubscription({
+    variables: {
+      option: {
+        date: option.date,
+        doctorId: option.doctorId,
+        packageId: option.packageId,
+        specialtyId: option.specialtyId,
+        vaccineId: option.vaccineId,
+      },
+    },
   });
-  const [show, setShow] = useState(false);
-  const [target, setTarget] = useState(null);
-  const ref = useRef(null);
+
+  useEffect(() => {
+    if (dataCreated)
+      setListRegister((pre) => [...pre, dataCreated?.registerCreated]);
+  }, [dataCreated]);
 
   const handleClick = (event: any) => {
     setShow(!show);
     setTarget(event.target);
   };
+  useEffect(() => {
+    if (doctorId) {
+      setOption((pre) => ({
+        ...pre,
+        doctorId: doctorId,
+      }));
+    } else if (packageId) {
+      setOption((pre) => ({
+        ...pre,
+        packageId: packageId,
+      }));
+    } else if (vaccineId) {
+      setOption((pre) => ({
+        ...pre,
+        vaccineId: vaccineId,
+      }));
+    } else if (specialtyId) {
+      setOption((pre) => ({
+        ...pre,
+        specialtyId: specialtyId,
+      }));
+    }
+  }, [selectedDate, doctorId, packageId, vaccineId, specialtyId]);
 
   useEffect(() => {
     if (doctorId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      setOption((pre) => ({
+        ...pre,
+        doctorId: doctorId,
+        date: dateFormat,
+      }));
       getRegisters({
         variables: {
           input: {
@@ -96,6 +166,11 @@ function ListRegisterV2(props: IProps) {
       });
     } else if (packageId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      setOption((pre) => ({
+        ...pre,
+        packageId: packageId,
+        date: dateFormat,
+      }));
       getRegisters({
         variables: {
           input: {
@@ -106,6 +181,11 @@ function ListRegisterV2(props: IProps) {
       });
     } else if (vaccineId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      setOption((pre) => ({
+        ...pre,
+        vaccineId: vaccineId,
+        date: dateFormat,
+      }));
       getRegisters({
         variables: {
           input: {
@@ -116,6 +196,11 @@ function ListRegisterV2(props: IProps) {
       });
     } else if (specialtyId && selectedDate) {
       const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      setOption((pre) => ({
+        ...pre,
+        specialtyId: specialtyId,
+        date: dateFormat,
+      }));
       getRegisters({
         variables: {
           input: {
@@ -131,6 +216,11 @@ function ListRegisterV2(props: IProps) {
       setListRegister(data?.getAllRegisterByOption);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (loadCreated) setSubscription(loadCreated);
+    if (errCreated) setSubscription(false);
+  }, [loadCreated, errCreated]);
 
   const filterWeekdays = (date: Date): boolean => {
     const day = date.getDay();
@@ -330,10 +420,17 @@ function ListRegisterV2(props: IProps) {
           </div>
         </div>
       </Row>
-      <Row>
+      <Row
+        style={{
+          maxHeight: "70vh",
+          overflow: "auto",
+        }}>
         <Col>
           <p>
             Danh sách đăng ký khám:{" "}
+            {subscription && (
+              <Spinner size="sm" animation="grow" variant="danger" />
+            )}
             <StatusCpn size="sm" loading={loadConfirm} error={errConfirm} />
           </p>
           <Table striped hover>
@@ -342,9 +439,8 @@ function ListRegisterV2(props: IProps) {
                 <th>Tên bệnh nhân</th>
                 <th>Giới tính</th>
                 <th>Năm sinh</th>
-                <th>Phiên</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
+                <th>Tr.Thái</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -356,12 +452,15 @@ function ListRegisterV2(props: IProps) {
                 ) {
                   return (
                     <tr key={i}>
-                      <td>{regis.profile.fullname}</td>
-                      <td>{regis.profile.gender}</td>
-                      <td>{formatDate(regis.profile.dataOfBirth)}</td>
-                      <td>
-                        {regis.session.startTime} - {regis.session.endTime}
+                      <td className="d-flex">
+                        {regis?.profile?.fullname}{" "}
+                        <span>
+                          {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
+                        </span>
                       </td>
+                      <td>{regis?.profile?.gender}</td>
+                      <td>{formatDate(regis?.profile?.dataOfBirth)}</td>
+
                       {(getEnumValueStateRegis(regis.state) ===
                         EStateRegister.Success && (
                         <td className="fw-medium text-success">
@@ -422,7 +521,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Họ và tên:{" "}
                   <span className="text-success ms-2">
-                    {selectedRegiser.profile.fullname}{" "}
+                    {selectedRegiser?.profile?.fullname}{" "}
                   </span>
                 </h6>
               </div>
@@ -433,7 +532,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Ngày sinh:
                   <span className="text-info ms-2">
-                    {formatDate(selectedRegiser.profile.dataOfBirth)}
+                    {formatDate(selectedRegiser?.profile?.dataOfBirth)}
                   </span>
                 </h6>
               </div>
@@ -444,7 +543,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Số điện thoại:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.numberPhone}
+                    {selectedRegiser?.profile?.numberPhone}
                   </span>
                 </h6>
               </div>
@@ -455,7 +554,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Email:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.email}
+                    {selectedRegiser?.profile?.email}
                   </span>
                 </h6>
               </div>
@@ -466,7 +565,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Giới tính:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.gender}
+                    {selectedRegiser?.profile?.gender}
                   </span>
                 </h6>
               </div>
@@ -477,7 +576,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Nghề nghiệp:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.job}
+                    {selectedRegiser?.profile?.job}
                   </span>
                 </h6>
               </div>
@@ -488,7 +587,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   CCCD:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.identity || "..."}
+                    {selectedRegiser?.profile?.identity || "..."}
                   </span>
                 </h6>
               </div>
@@ -499,7 +598,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Số BHYT:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.medicalInsurance || "..."}
+                    {selectedRegiser?.profile?.medicalInsurance || "..."}
                   </span>
                 </h6>
               </div>
@@ -510,7 +609,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Dân tộc:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.ethnic}
+                    {selectedRegiser?.profile?.ethnic}
                   </span>
                 </h6>
               </div>
@@ -521,7 +620,7 @@ function ListRegisterV2(props: IProps) {
                   </span>
                   Quan hệ với chủ hộ:
                   <span className="text-info ms-2">
-                    {selectedRegiser.profile.relationship}
+                    {selectedRegiser?.profile?.relationship}
                   </span>
                 </h6>
               </div>
@@ -537,7 +636,7 @@ function ListRegisterV2(props: IProps) {
         onlySclose
         openRequest={showModal.customer}>
         <div className="shadow-lg bg-light p-3 mt-3">
-          {selectedRegiser?.profile.customer && (
+          {selectedRegiser?.profile?.customer && (
             <>
               <div className="px-3">
                 <h6>

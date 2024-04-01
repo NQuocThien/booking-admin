@@ -135,7 +135,7 @@ function CoordinatePackagesByStaff() {
                   : "Vui lòng chọn gói khám"
               }
               listSchedule={state.selectedPackage?.workSchedule?.schedule}
-              vaccineId={state.selectedPackage?.id}
+              packageId={state.selectedPackage?.id}
             />
           </Row>
         </div>

@@ -324,12 +324,17 @@ function ListRegisterV2(props: IProps) {
     });
   };
   return (
-    <Row>
+    <div>
       <Row>
         <Col className="col">
           <Row>
             <Col sm={10}>
-              <p className="fw-medium">{title}</p>
+              <p className="fw-medium">
+                {title}{" "}
+                {subscription && (
+                  <Spinner size="sm" animation="grow" variant="danger" />
+                )}
+              </p>
             </Col>
             <Col>
               <Button
@@ -428,14 +433,12 @@ function ListRegisterV2(props: IProps) {
         <Col>
           <p>
             Danh sách đăng ký khám:{" "}
-            {subscription && (
-              <Spinner size="sm" animation="grow" variant="danger" />
-            )}
             <StatusCpn size="sm" loading={loadConfirm} error={errConfirm} />
           </p>
           <Table striped hover>
             <thead>
               <tr>
+                <th>#</th>
                 <th>Tên bệnh nhân</th>
                 <th>Giới tính</th>
                 <th>Năm sinh</th>
@@ -452,6 +455,7 @@ function ListRegisterV2(props: IProps) {
                 ) {
                   return (
                     <tr key={i}>
+                      <td>{i + 1}</td>
                       <td className="d-flex">
                         {regis?.profile?.fullname}{" "}
                         <span>
@@ -708,7 +712,7 @@ function ListRegisterV2(props: IProps) {
           )}
         </div>
       </ModalCpn>
-    </Row>
+    </div>
   );
 }
 export default ListRegisterV2;

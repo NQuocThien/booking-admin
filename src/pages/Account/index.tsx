@@ -22,7 +22,7 @@ function CurrentUserDetailPage() {
             email: dataUser.email,
             id: dataUser.id,
             username: dataUser.username,
-            linkImage: {
+            avatar: {
               filename: dataUser.linkImage?.filename,
               type: dataUser.linkImage.type,
               url: dataUser.linkImage?.url,
@@ -52,17 +52,17 @@ function CurrentUserDetailPage() {
     dataUser: UpdateUserWithPassInput
   ): Promise<any> => {
     try {
-      const input: UpdateUserWithPassInput = dataUser.linkImage
+      const input: UpdateUserWithPassInput = dataUser.avatar
         ? {
             email: dataUser.email,
             id: dataUser.id,
             password: dataUser.password,
             passwordNew: dataUser.passwordNew,
             username: dataUser.username,
-            linkImage: {
-              filename: dataUser.linkImage?.filename,
-              type: dataUser.linkImage.type,
-              url: dataUser.linkImage?.url,
+            avatar: {
+              filename: dataUser.avatar?.filename,
+              type: dataUser.avatar.type,
+              url: dataUser.avatar?.url,
             },
           }
         : {

@@ -62,6 +62,16 @@
       margin-top: 10px;
       height: 300px;
     }
+
+    &__introduce {
+      max-width: 100%;
+      height: auto;
+      background-color: #000;
+      * {
+        max-width: 100%;
+        height: auto;
+      }
+    }
   }
 }
 .title {

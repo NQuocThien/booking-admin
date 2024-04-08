@@ -82,6 +82,12 @@ const _navAdmin: Item[] = [
         to: "/admin-page/client",
         iconName: "MdWebhook",
       },
+      {
+        component: "NavItem",
+        name: "Bài viết",
+        to: "/admin-page/blogs",
+        iconName: "MdWebhook",
+      },
     ],
   },
 ];

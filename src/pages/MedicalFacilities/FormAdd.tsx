@@ -33,11 +33,11 @@ import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
-import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import { GetETypeOfFacility } from "src/utils/enum-value";
+import MapInputCpn from "src/components/sub/MapInput";
 function FormAddMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -400,34 +400,22 @@ function FormAddMedicalFacility() {
                 Tìm trên bản đồ <FcSearch size={24} />
               </Button>
 
-              <div style={{ height: "400px", width: "800px" }}>
+              <div className="mb-5" style={{ height: "400px", width: "800px" }}>
                 <h3>Chọn vị trí trên bản đồ</h3>
-                <MapComponent
-                  // visable={openModals.modalAdd}
-                  marker={{
-                    lat: state.createMedicalFacility.lat || 10.376941,
-                    lng: state.createMedicalFacility.lng || 105.441729,
-                  }}
-                  setMarker={(pos) => {
+                <MapInputCpn
+                  lat={10.275796634253519}
+                  lng={105.298391156358}
+                  onChange={(pos) => {
                     dispatch(handleChangeForm("lat", pos.lat));
                     dispatch(handleChangeForm("lng", pos.lng));
                   }}
-                  address={state.address}
                 />
               </div>
-              <Form.Check // prettier-ignore
-                className="mt-5"
-                type="switch"
-                id="custom-switch"
-                label="Lưu vị trí google map"
-              />
             </Form.Group>
           </Row>
           <Row>
             <Col>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1">
+              <Form.Group className="mb-3" controlId="disscription">
                 <Form.Label>Mô tả:</Form.Label>
                 <Form.Control
                   value={state.createMedicalFacility.discription}

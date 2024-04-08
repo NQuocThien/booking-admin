@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import {
   handleChangImage,
   handleChangLogo,
@@ -35,13 +35,13 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
 import { FcSearch } from "react-icons/fc";
-import MapComponent from "src/components/sub/MapCpn";
 import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
 import { getEnumValueTypeOfFacility } from "src/utils/getData";
 import { GetETypeOfFacility } from "src/utils/enum-value";
+import MapInputCpn from "src/components/sub/MapInput";
 function FormUpdateGeneralMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -438,17 +438,13 @@ function FormUpdateGeneralMedicalFacility() {
 
               <div style={{ height: "400px", width: "800px" }}>
                 <h3>Chọn vị trí trên bản đồ</h3>
-                <MapComponent
-                  // visable={openModals.modalAdd}
-                  marker={{
-                    lat: state.updateMedicalFacility.lat || 10.376941,
-                    lng: state.updateMedicalFacility.lng || 105.441729,
-                  }}
-                  setMarker={(pos) => {
+                <MapInputCpn
+                  lat={10.275796634253519}
+                  lng={105.298391156358}
+                  onChange={(pos) => {
                     dispatch(handleChangeForm("lat", pos.lat));
                     dispatch(handleChangeForm("lng", pos.lng));
                   }}
-                  address={state.address}
                 />
               </div>
               <Form.Check // prettier-ignore

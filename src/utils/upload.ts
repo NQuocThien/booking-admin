@@ -7,6 +7,7 @@ export type TypeFileImage =
   | "packages"
   | "facilities"
   | "users"
+  | "blogs"
   | "";
 export enum ETypeFile {
   Image = "image",

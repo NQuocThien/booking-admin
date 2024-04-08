@@ -7,6 +7,7 @@ import { getLocalStorage, getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import {
   LinkImage,
+  LinkImageInput,
   UpdateUserInput,
   UpdateUserWithPassInput,
   User,
@@ -28,17 +29,17 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
   const [selectedFile, setSelectedFile] = useState<Blob | null>(null);
 
   const handleUpdateInforUser = (
-    linkImage: LinkImage | undefined = undefined
+    avatar: LinkImageInput | undefined = undefined
   ) => {
     if (stateUpdatePass) {
       // nếu có đổi pass
       var dataUserUpdated: UpdateUserWithPassInput;
       if (userInfor) {
-        if (linkImage) {
+        if (avatar) {
           // có đổi hình
           dataUserUpdated = {
             ...userInfor,
-            linkImage: linkImage,
+            avatar: avatar,
             email: formData.email,
             password: formData.password,
             passwordNew: formData.passwordNew,
@@ -72,10 +73,10 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
       if (userInfor) {
         var dataUserUpdate: UpdateUserInput;
         const { password, ...currentUserInforNonPass } = userInfor;
-        if (linkImage) {
+        if (avatar) {
           dataUserUpdate = {
             ...currentUserInforNonPass,
-            linkImage: linkImage,
+            avatar: avatar,
             email: formData.email,
           };
         } else {
@@ -98,9 +99,9 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                 email: dataUserUpdate.email
                   ? dataUserUpdate.email
                   : userInfor.email,
-                linkImage: dataUserUpdate.linkImage
-                  ? dataUserUpdate.linkImage
-                  : userInfor.linkImage,
+                avatar: dataUserUpdate.avatar
+                  ? dataUserUpdate.avatar
+                  : userInfor.avatar,
               };
               handleChangeUserInfor(newUser);
             })
@@ -116,8 +117,8 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     e.preventDefault();
     if (selectedFile) {
       try {
-        const linkImage: LinkImage = await uploadImage(selectedFile, "users");
-        handleUpdateInforUser(linkImage);
+        const avatar: LinkImageInput = await uploadImage(selectedFile, "users");
+        handleUpdateInforUser(avatar);
       } catch (e) {
         showToast("Có lỗi khi upload", "error");
       }
@@ -130,7 +131,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
     username: "",
     password: "",
     passwordNew: "",
-    linkImage: {
+    avatar: {
       filename: "",
       url: "",
       type: "",
@@ -188,7 +189,7 @@ function InforUserCpn({ update, updateWithPass }: InforUserCpnProps) {
                   className={s.inforUser__form_avatar}
                   src={
                     (selectedFile && URL.createObjectURL(selectedFile)) ||
-                    formData.linkImage?.url
+                    formData.avatar?.url
                   }
                   thumbnail
                   onClick={() => avatarRef.current && avatarRef.current.click()}

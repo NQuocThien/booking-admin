@@ -334,3 +334,85 @@ const updateMedicalStaff = gql`
     }
   }
 `;
+const createBlog = gql`
+  mutation createBlog($input: CreateBlogInput!) {
+    createBlog(input: $input) {
+      id
+      slug
+      title
+      content
+      shortContent
+      priority
+      type
+      keywords
+      mainPhoto {
+        filename
+        type
+        url
+      }
+      createdAt
+      createdBy {
+        username
+        showName
+        role
+      }
+      updatedAt
+      updatedBy {
+        username
+        showName
+        role
+      }
+      deletedAt
+      deletedBy {
+        role
+        showName
+        username
+      }
+    }
+  }
+`;
+
+const updateBlog = gql`
+  mutation updateBlog($input: UpdateBlogInput!) {
+    updateBlog(input: $input) {
+      id
+      slug
+      title
+      content
+      shortContent
+      priority
+      type
+      keywords
+      mainPhoto {
+        filename
+        type
+        url
+      }
+      createdAt
+      createdBy {
+        username
+        showName
+        role
+      }
+      updatedAt
+      updatedBy {
+        username
+        showName
+        role
+      }
+      deletedAt
+      deletedBy {
+        role
+        showName
+        username
+      }
+    }
+  }
+`;
+const deleteUnDeleteBlog = gql`
+  mutation deleteUnDeleteBlog($id: String!) {
+    deleteUnDeleteBlog(id: $id) {
+      id
+    }
+  }
+`;

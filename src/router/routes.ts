@@ -44,6 +44,10 @@ import CoordinateVaccinationByStaff from "src/pages/Vaccination/Staff-Page/Coord
 import ListVaccinationByStaffPage from "src/pages/Vaccination/Staff-Page/ListVaccinationOfFacility";
 import CoordinateMedcialSpecialtiesByStaff from "src/pages/Specialty/Staff-Page/Coordinate/CoordinateSpecialty";
 import ListMedicalSpecialtyByStaffPage from "src/pages/Specialty/Staff-Page/ListSpecialtyOfFacility";
+import ListBlogsPage from "src/pages/Blogs/ListBlog";
+import FormAddBlog from "src/pages/Blogs/FormAdd";
+import FormUpdateBlog from "src/pages/Blogs/FormUpdate";
+import BlogDetailPage from "src/pages/Blogs/BlogDetail";
 export interface IRoute {
   path: string;
   name: string;
@@ -194,6 +198,26 @@ const routes_admin: IRoute[] = [
     path: "/admin-page/customers",
     name: "Dashboard",
     element: ListCustomerPage,
+  },
+  {
+    path: "/admin-page/blogs",
+    name: "Dashboard",
+    element: ListBlogsPage,
+  },
+  {
+    path: "/admin-page/blogs/form-add",
+    name: "Dashboard",
+    element: FormAddBlog,
+  },
+  {
+    path: "/admin-page/blogs/update/:slug",
+    name: "Dashboard",
+    element: FormUpdateBlog,
+  },
+  {
+    path: "/admin-page/blogs/:slug",
+    name: "Dashboard",
+    element: BlogDetailPage,
   },
 ];
 

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { Row, Table, Button, Col, Dropdown } from "react-bootstrap";
+import { Row, Table, Button, Col, Dropdown, Spinner } from "react-bootstrap";
 import {
   ConfirmRegisterInput,
   EStateRegister,
+  GetRegisterByOptionInput,
   Register,
   Schedule,
   Session,
   useConfirmRegisterMutation,
   useGetAllRegisterByOptionLazyQuery,
+  useRegisterCreatedSubscription,
 } from "src/graphql/webbooking-service.generated";
 import SessionItem from "../../WorkSchedule/Session";
 import { getEnumValueStateRegis, renderDayOfWeek } from "src/utils/getData";
@@ -44,6 +46,26 @@ function ListRegister(props: IProps) {
     specialtyId = undefined,
     vaccineId = undefined,
   } = props;
+
+  const [schedule, setSchedule] = useState<Schedule>();
+  const [selectedSession, setSelectedSession] = useState<Session>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [listRegister, setListRegister] = useState<Register[]>([]);
+  const [selectedRegiser, setSetSelectedRegister] = useState<Register>();
+  const [showModal, setShowModal] = useState<IShowModal>({
+    customer: false,
+    profile: false,
+  });
+
+  const [subscription, setSubscription] = useState<boolean>(false);
+  const [option, setOption] = useState<GetRegisterByOptionInput>({
+    date: new Date(),
+    doctorId: doctorId,
+    packageId: packageId,
+    specialtyId: specialtyId,
+    vaccineId: vaccineId,
+  });
+  //================================================================
   const [getRegisters, { data, loading, error }] =
     useGetAllRegisterByOptionLazyQuery({
       fetchPolicy: "no-cache",
@@ -62,15 +84,46 @@ function ListRegister(props: IProps) {
         },
       },
     });
-  const [schedule, setSchedule] = useState<Schedule>();
-  const [selectedSession, setSelectedSession] = useState<Session>();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [listRegister, setListRegister] = useState<Register[]>([]);
-  const [selectedRegiser, setSetSelectedRegister] = useState<Register>();
-  const [showModal, setShowModal] = useState<IShowModal>({
-    customer: false,
-    profile: false,
+  const {
+    data: dataCreated,
+    loading: loadCreated,
+    error: errCreated,
+  } = useRegisterCreatedSubscription({
+    variables: {
+      option: {
+        date: option.date,
+        doctorId: option.doctorId,
+        packageId: option.packageId,
+        specialtyId: option.specialtyId,
+        vaccineId: option.vaccineId,
+      },
+    },
   });
+  //================================================================
+
+  useEffect(() => {
+    if (doctorId) {
+      setOption((pre) => ({
+        ...pre,
+        doctorId: doctorId,
+      }));
+    } else if (packageId) {
+      setOption((pre) => ({
+        ...pre,
+        packageId: packageId,
+      }));
+    } else if (vaccineId) {
+      setOption((pre) => ({
+        ...pre,
+        vaccineId: vaccineId,
+      }));
+    } else if (specialtyId) {
+      setOption((pre) => ({
+        ...pre,
+        specialtyId: specialtyId,
+      }));
+    }
+  }, [selectedDate, doctorId, packageId, vaccineId, specialtyId]);
 
   useEffect(() => {
     if (doctorId && selectedDate) {
@@ -124,6 +177,17 @@ function ListRegister(props: IProps) {
       setListRegister(data?.getAllRegisterByOption);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (loadCreated) setSubscription(loadCreated);
+    if (errCreated) setSubscription(false);
+  }, [loadCreated, errCreated]);
+
+  useEffect(() => {
+    if (dataCreated)
+      setListRegister((pre) => [...pre, dataCreated?.registerCreated]);
+  }, [dataCreated]);
+  //================================================================
 
   const filterWeekdays = (date: Date): boolean => {
     const day = date.getDay();
@@ -230,7 +294,12 @@ function ListRegister(props: IProps) {
     <Row>
       <Row>
         <Col className="col">
-          <p className="fw-medium">Danh sách đăng ký:</p>
+          <p className="fw-medium">
+            Danh sách đăng ký:{" "}
+            {subscription && (
+              <Spinner size="sm" animation="grow" variant="danger" />
+            )}
+          </p>
         </Col>
       </Row>
       <Row>

@@ -8,6 +8,8 @@ import {
   EStateRegister,
   EStatusService,
   ETypeOfFacility,
+  EnumBlogStatus,
+  EnumBlogType,
   Schedule,
   SessionInput,
 } from "src/graphql/webbooking-service.generated";
@@ -298,5 +300,39 @@ export const getEnumValueTypeOfFacility = (input: string): ETypeOfFacility => {
 
     default:
       return ETypeOfFacility.Clinic;
+  }
+};
+export const getEnumValueBlogStatus = (
+  input: string
+): EnumBlogStatus | undefined => {
+  switch (input) {
+    case EnumBlogStatus.Public:
+      return EnumBlogStatus.Public;
+
+    case EnumBlogStatus.NotPublic:
+      return EnumBlogStatus.NotPublic;
+
+    case EnumBlogStatus.Deleted:
+      return EnumBlogStatus.Deleted;
+
+    default:
+      return undefined;
+  }
+};
+export const getEnumValueBlogType = (
+  input: string
+): EnumBlogType | undefined => {
+  switch (input) {
+    case EnumBlogType.Health:
+      return EnumBlogType.Health;
+
+    case EnumBlogType.Medical:
+      return EnumBlogType.Medical;
+
+    case EnumBlogType.Service:
+      return EnumBlogType.Service;
+
+    default:
+      return undefined;
   }
 };

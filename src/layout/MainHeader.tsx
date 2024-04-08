@@ -1,4 +1,4 @@
-import { Row, Col, Dropdown, Image, FormSelect, Form } from "react-bootstrap";
+import { Row, Col, Dropdown, Image, Form } from "react-bootstrap";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -22,7 +22,7 @@ function MainHeader({ setNav }: { setNav: () => void }) {
         <Dropdown>
           <Dropdown.Toggle variant="infor" className={s.dropdown}>
             <Image
-              src={userInfor?.linkImage?.url ? userInfor.linkImage.url : ""}
+              src={userInfor?.avatar?.url ? userInfor.avatar.url : ""}
               className={s.avatar}
               roundedCircle
             />

@@ -3,7 +3,7 @@ export const CheckLoginQuery = gql`
   query CheckLoginQuery {
     checklogin {
       id
-      linkImage {
+      avatar {
         filename
         type
         url
@@ -54,7 +54,7 @@ const GetAllUser = gql`
       email
       username
       password
-      linkImage {
+      avatar {
         filename
         type
         url
@@ -1146,7 +1146,7 @@ const getAllUserPagination = gql`
       email
       username
       password
-      linkImage {
+      avatar {
         filename
         type
         url
@@ -1327,5 +1327,99 @@ const getAllCustomerPagination = gql`
 const getTotalCustomersCount = gql`
   query getTotalCustomersCount($search: String) {
     getTotalCustomersCount(search: $search)
+  }
+`;
+const getTottalBlog = gql`
+  query getTottalBlog($search: String, $isDeleted: Boolean) {
+    getTotalBlogsCount(search: $search, isDeleted: $isDeleted)
+  }
+`;
+const getAllBlogPagination = gql`
+  query getAllBlogPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortOrder: String
+    $isDeleted: Boolean
+  ) {
+    getAllBlogPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortOrder: $sortOrder
+      isDeleted: $isDeleted
+    ) {
+      id
+      slug
+      title
+      status
+      content
+      shortContent
+      priority
+      type
+      keywords
+      mainPhoto {
+        filename
+        type
+        url
+      }
+      createdAt
+      createdBy {
+        username
+        showName
+        role
+      }
+      updatedAt
+      updatedBy {
+        username
+        showName
+        role
+      }
+      deletedAt
+      deletedBy {
+        role
+        showName
+        username
+      }
+    }
+  }
+`;
+
+const getBlogBySlug = gql`
+  query getBlogBySlug($slug: String!) {
+    getBlogBySlug(slug: $slug) {
+      id
+      slug
+      title
+      content
+      shortContent
+      priority
+      type
+      keywords
+      mainPhoto {
+        filename
+        type
+        url
+      }
+      status
+      createdAt
+      createdBy {
+        username
+        showName
+        role
+      }
+      updatedAt
+      updatedBy {
+        username
+        showName
+        role
+      }
+      deletedAt
+      deletedBy {
+        role
+        showName
+        username
+      }
+    }
   }
 `;

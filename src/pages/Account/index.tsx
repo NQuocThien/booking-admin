@@ -17,15 +17,15 @@ function CurrentUserDetailPage() {
   });
   const updateUser = async (token: string, dataUser: any): Promise<void> => {
     try {
-      const input: UpdateUserInput = dataUser.linkImage
+      const input: UpdateUserInput = dataUser.avatar
         ? {
             email: dataUser.email,
             id: dataUser.id,
             username: dataUser.username,
             avatar: {
-              filename: dataUser.linkImage?.filename,
-              type: dataUser.linkImage.type,
-              url: dataUser.linkImage?.url,
+              filename: dataUser.avatar?.filename,
+              type: dataUser.avatar.type,
+              url: dataUser.avatar?.url,
             },
           }
         : {

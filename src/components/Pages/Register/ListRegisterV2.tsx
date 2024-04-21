@@ -37,6 +37,7 @@ import { GiMedicalPackAlt } from "react-icons/gi";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { showToast } from "../../sub/toasts";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
+import moment from "moment";
 interface IProps {
   listSchedule: Schedule[] | undefined;
   title: string;
@@ -79,7 +80,7 @@ function ListRegisterV2(props: IProps) {
   const [show, setShow] = useState(false);
   const [target, setTarget] = useState(null);
   const ref = useRef(null);
-
+  // =================================================================
   const [getRegisters, { data, loading, error, refetch }] =
     useGetAllRegisterByOptionLazyQuery({
       fetchPolicy: "no-cache",
@@ -98,7 +99,16 @@ function ListRegisterV2(props: IProps) {
         },
       },
     });
-
+  // =================================================================
+  const handleSortRegis = (regiss: Register[]): Register[] => {
+    const regisSorted = regiss.sort((r1, r2) => {
+      const s1Start: moment.Moment = moment(r1.session.startTime, "HH:mm");
+      const s2Start: moment.Moment = moment(r2.session.startTime, "HH:mm");
+      return s1Start.diff(s2Start);
+    });
+    return regisSorted;
+  };
+  // =================================================================
   const {
     data: dataCreated,
     loading: loadCreated,
@@ -116,8 +126,13 @@ function ListRegisterV2(props: IProps) {
   });
 
   useEffect(() => {
-    if (dataCreated)
-      setListRegister((pre) => [...pre, dataCreated?.registerCreated]);
+    if (dataCreated) {
+      const newData: Register[] = handleSortRegis([
+        ...listRegister,
+        dataCreated.registerCreated,
+      ]);
+      setListRegister(newData);
+    }
   }, [dataCreated]);
 
   const handleClick = (event: any) => {
@@ -213,13 +228,17 @@ function ListRegisterV2(props: IProps) {
   }, [selectedDate, doctorId, packageId, vaccineId, specialtyId]);
   useEffect(() => {
     if (data?.getAllRegisterByOption) {
-      setListRegister(data?.getAllRegisterByOption);
+      const sortData: Register[] = handleSortRegis(data.getAllRegisterByOption);
+      setListRegister(sortData);
     }
   }, [data]);
 
   useEffect(() => {
     if (loadCreated) setSubscription(loadCreated);
-    if (errCreated) setSubscription(false);
+    if (errCreated) {
+      console.log(errCreated);
+      setSubscription(false);
+    }
   }, [loadCreated, errCreated]);
 
   const filterWeekdays = (date: Date): boolean => {
@@ -322,6 +341,10 @@ function ListRegisterV2(props: IProps) {
         setListRegister(editedRegiss);
       }
     });
+  };
+  const getTimeRegis = (date: string): string => {
+    const time = new Date(date);
+    return `${time.getMonth()}/${time.getDate()} - ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
   };
   return (
     <div>
@@ -440,8 +463,8 @@ function ListRegisterV2(props: IProps) {
               <tr>
                 <th>#</th>
                 <th>Tên bệnh nhân</th>
-                <th>Giới tính</th>
-                <th>Năm sinh</th>
+                <th>Ngày sinh</th>
+                <th>Phiên</th>
                 <th>Tr.Thái</th>
                 <th></th>
               </tr>
@@ -455,15 +478,25 @@ function ListRegisterV2(props: IProps) {
                 ) {
                   return (
                     <tr key={i}>
-                      <td>{i + 1}</td>
-                      <td className="d-flex">
-                        {regis?.profile?.fullname}{" "}
+                      <td className="align-middle">{i + 1}</td>
+                      <td className="align-middle">
+                        {regis?.profile?.fullname} ({regis?.profile?.gender}){" "}
                         <span>
                           {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
                         </span>
                       </td>
-                      <td>{regis?.profile?.gender}</td>
-                      <td>{formatDate(regis?.profile?.dataOfBirth)}</td>
+
+                      <td className="align-middle">
+                        {formatDate(regis?.profile?.dataOfBirth)}
+                      </td>
+                      <td className="text-center">
+                        <p className="m-0">
+                          {regis.session.startTime} - {regis.session.endTime}
+                        </p>
+                        <Badge bg="secondary">
+                          ({getTimeRegis(regis.createdAt)})
+                        </Badge>
+                      </td>
 
                       {(getEnumValueStateRegis(regis.state) ===
                         EStateRegister.Success && (
@@ -471,7 +504,7 @@ function ListRegisterV2(props: IProps) {
                           {regis.state}
                         </td>
                       )) || (
-                        <td className="fw-medium text-warning">
+                        <td className="fw-medium text-warning align-middle">
                           {regis.state}
                         </td>
                       )}

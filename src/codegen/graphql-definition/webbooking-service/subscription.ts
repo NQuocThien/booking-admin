@@ -83,6 +83,7 @@ const registerCreated = gql`
       profileId
       specialtyId
       vaccineId
+      createdAt
       session {
         startTime
         endTime

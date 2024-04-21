@@ -7,7 +7,6 @@ function DashboardPage() {
         CỔNG THÔNG TIN ĐĂNG KÝ KHÁM CHỮA BỆNH <br /> CHO CÁC CƠ SỞ Y TẾ TRÊN ĐỊA
         BÀN TỈNH AN GIANG
       </h4>
-      {/* <MapComponent visable={true} marker={maker} setMarker={handleSetMarker} /> */}
     </div>
   );
 }

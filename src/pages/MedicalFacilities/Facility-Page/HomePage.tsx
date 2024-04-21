@@ -1,9 +1,6 @@
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import s from "src/assets/scss/General.module.scss";
-import {
-  useGetMedicalFacilityInfoLazyQuery,
-  useGetMedicalFacilityInfoQuery,
-} from "src/graphql/webbooking-service.generated";
+import { useGetMedicalFacilityInfoLazyQuery } from "src/graphql/webbooking-service.generated";
 import { useAuth } from "src/context/AuthContext";
 import ShowAlert from "src/components/sub/alerts";
 import { getToken } from "src/utils/contain";
@@ -14,6 +11,7 @@ import { FaBriefcaseMedical } from "react-icons/fa";
 import { MdOutlineVaccines } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { GetEPermission, GetRole } from "src/utils/enum-value";
+import BarChartComponent from "src/components/sub/Chart";
 function FacilityHomePage() {
   const { userInfor, checkExpirationToken, currRole, infoStaff } = useAuth();
   checkExpirationToken();
@@ -62,46 +60,51 @@ function FacilityHomePage() {
           {data?.getMedicalFacilityInfo.medicalFacilityName}"
         </h4>
       </div>
-      {data?.getMedicalFacilityInfo && (
-        <Row>
-          {data?.getMedicalFacilityInfo?.totalDoctors && (
-            <Col xl={3} lg={4} sm={6}>
-              <GeneralStatistic
-                title="Bác sĩ"
-                number={data?.getMedicalFacilityInfo.totalDoctors}
-                icons={FaUserDoctor}
-              />
-            </Col>
-          )}
-          {data?.getMedicalFacilityInfo?.totalPackages && (
-            <Col xl={3} lg={4} sm={6}>
-              <GeneralStatistic
-                title="Gói khám"
-                number={data?.getMedicalFacilityInfo?.totalPackages}
-                icons={LuPackageCheck}
-              />
-            </Col>
-          )}
-          {data?.getMedicalFacilityInfo?.totalSpecialties && (
-            <Col xl={3} lg={4} sm={6}>
-              <GeneralStatistic
-                title="Chuyên khoa"
-                number={data?.getMedicalFacilityInfo?.totalSpecialties}
-                icons={FaBriefcaseMedical}
-              />
-            </Col>
-          )}
-          {data?.getMedicalFacilityInfo?.totalVaccinations && (
-            <Col xl={3} lg={4} sm={6}>
-              <GeneralStatistic
-                title="Tim chủng"
-                number={data?.getMedicalFacilityInfo?.totalVaccinations}
-                icons={MdOutlineVaccines}
-              />
-            </Col>
-          )}
-        </Row>
-      )}
+      <div>
+        {data?.getMedicalFacilityInfo && (
+          <Row>
+            {data?.getMedicalFacilityInfo?.totalDoctors && (
+              <Col xl={3} lg={4} sm={6}>
+                <GeneralStatistic
+                  title="Bác sĩ"
+                  number={data?.getMedicalFacilityInfo.totalDoctors}
+                  icons={FaUserDoctor}
+                />
+              </Col>
+            )}
+            {data?.getMedicalFacilityInfo?.totalPackages && (
+              <Col xl={3} lg={4} sm={6}>
+                <GeneralStatistic
+                  title="Gói khám"
+                  number={data?.getMedicalFacilityInfo?.totalPackages}
+                  icons={LuPackageCheck}
+                />
+              </Col>
+            )}
+            {data?.getMedicalFacilityInfo?.totalSpecialties && (
+              <Col xl={3} lg={4} sm={6}>
+                <GeneralStatistic
+                  title="Chuyên khoa"
+                  number={data?.getMedicalFacilityInfo?.totalSpecialties}
+                  icons={FaBriefcaseMedical}
+                />
+              </Col>
+            )}
+            {data?.getMedicalFacilityInfo?.totalVaccinations && (
+              <Col xl={3} lg={4} sm={6}>
+                <GeneralStatistic
+                  title="Tim chủng"
+                  number={data?.getMedicalFacilityInfo?.totalVaccinations}
+                  icons={MdOutlineVaccines}
+                />
+              </Col>
+            )}
+          </Row>
+        )}
+      </div>
+      <div>
+        <BarChartComponent />
+      </div>
     </div>
   );
 }

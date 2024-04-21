@@ -104,7 +104,7 @@ function FilterDoctor(props: IProps) {
             onChange={handleChangName}
           />
           <Form.Select
-            placeholder="Học hàm"
+            // placeholder="Học hàm"
             onChange={handleChangeAcademiTitle}>
             <option value={undefined}>Học hàm</option>
             <option value={EAcademicTitle.Professor}>
@@ -114,7 +114,9 @@ function FilterDoctor(props: IProps) {
               {GetEAcademicTitle.AssociateProfesso}
             </option>
           </Form.Select>
-          <Form.Select placeholder="Học vị" onChange={handleChangeDegree}>
+          <Form.Select
+            // placeholder="Học vị"
+            onChange={handleChangeDegree}>
             <option value={undefined}>Học vị</option>
             <option value={EDegree.Doctor}>{GetEDegree.Doctor}</option>
             <option value={EDegree.DoctorS1}>{GetEDegree.DoctorS1}</option>
@@ -124,7 +126,9 @@ function FilterDoctor(props: IProps) {
               {GetEDegree.MasterDoctor}
             </option>
           </Form.Select>
-          <Form.Select placeholder="Giới tính" onChange={handleChangeGender}>
+          <Form.Select
+            // placeholder="Giới tính"
+            onChange={handleChangeGender}>
             <option value={undefined}>Giới tính</option>
             <option value={EGender.Male}>Nam</option>
             <option value={EGender.Female}>Nữ</option>

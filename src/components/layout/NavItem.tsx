@@ -1,7 +1,6 @@
 import { Badge, Nav } from "react-bootstrap";
-import * as MaterialDesign from "react-icons/md";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Item } from "src/assets/nav/_nav";
 import { Link, useLocation } from "react-router-dom";
 import { getIcon as t } from "src/utils/contain";

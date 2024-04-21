@@ -2,10 +2,11 @@ import { ICheckRoles, IPagination } from "src/assets/contains/item-interface";
 import {
   CreatePackageInput,
   Blog,
+  GetAllBlogPaginationQuery,
 } from "src/graphql/webbooking-service.generated";
 
 export interface IStateListBlog {
-  listBlog: Blog[];
+  listBlog: GetAllBlogPaginationQuery;
   blog: Blog | undefined;
   searchTerm: string;
   isDeleted: boolean;
@@ -19,7 +20,9 @@ export interface IAction {
 
 // innitState
 export const initState: IStateListBlog = {
-  listBlog: [],
+  listBlog: {
+    getAllBlogPagination: [],
+  },
   blog: undefined,
   isDeleted: false,
   searchTerm: "",
@@ -36,7 +39,9 @@ const HC_BLOG_CLICKED = "handle-change-blog-clicked";
 const HC_BLOG_DELETED = "handle-change-blog-deleted";
 const HC_SEARCH_TERM = "handle-search-term";
 const HC_PAGINATION = "handle-change-pagination";
-export const handleSetListBlog = (value: Blog[]): IAction => {
+export const handleSetListBlog = (
+  value: GetAllBlogPaginationQuery
+): IAction => {
   return {
     type: HANDLE_SET_LIST_BLOG,
     payload: value,

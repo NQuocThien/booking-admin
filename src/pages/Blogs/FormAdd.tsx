@@ -86,7 +86,7 @@ function FormAddBlog() {
             input: input,
           },
         }).then((res) => {
-          showToast("Đã thêm CSYT 👌👌");
+          showToast("Đã thêm bài viết 👌👌");
           navigate(-1);
         });
       } catch (e: unknown) {

@@ -843,6 +843,7 @@ export type Query = {
   __typename?: 'Query';
   checklogin: User;
   checkloginCustomer: User;
+  getAllBlogOfFacilityPagination: Array<Blog>;
   getAllBlogPagination: Array<Blog>;
   getAllBlogPaginationForClient: Array<Blog>;
   getAllCustomer: Array<Customer>;
@@ -924,6 +925,17 @@ export type Query = {
   totalStaffsCount: Scalars['Float']['output'];
   totalUsersCount: Scalars['Float']['output'];
   users: Array<User>;
+};
+
+
+export type QueryGetAllBlogOfFacilityPaginationArgs = {
+  facilityId: Scalars['String']['input'];
+  isDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1373,6 +1385,7 @@ export type QueryTotalUsersCountArgs = {
 export type Register = {
   __typename?: 'Register';
   cancel: Scalars['Boolean']['output'];
+  createdAt: Scalars['DateTime']['output'];
   date: Scalars['DateTime']['output'];
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']['output']>;
@@ -2284,7 +2297,7 @@ export type GetAllRegisterByOptionQueryVariables = Exact<{
 }>;
 
 
-export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
+export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
 
 export type GetAllStaffPaginationQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2352,7 +2365,7 @@ export type GetAllBlogPaginationQueryVariables = Exact<{
 }>;
 
 
-export type GetAllBlogPaginationQuery = { __typename?: 'Query', getAllBlogPagination: Array<{ __typename?: 'Blog', id: string, slug: string, title: string, status: string, content: string, shortContent: string, priority: number, type: string, keywords: string, createdAt: number, updatedAt?: number | null, deletedAt?: number | null, mainPhoto: { __typename?: 'LinkImage', filename: string, type: string, url: string }, createdBy: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string }, updatedBy?: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string } | null, deletedBy?: { __typename?: 'UserSlimEntity', role: string, showName: string, username: string } | null }> };
+export type GetAllBlogPaginationQuery = { __typename?: 'Query', getAllBlogPagination: Array<{ __typename?: 'Blog', id: string, title: string, slug: string, status: string, priority: number, type: string, createdAt: number, deletedAt?: number | null, mainPhoto: { __typename?: 'LinkImage', filename: string, type: string, url: string } }> };
 
 export type GetBlogBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -2360,6 +2373,18 @@ export type GetBlogBySlugQueryVariables = Exact<{
 
 
 export type GetBlogBySlugQuery = { __typename?: 'Query', getBlogBySlug: { __typename?: 'Blog', id: string, slug: string, title: string, content: string, shortContent: string, priority: number, type: string, keywords: string, status: string, createdAt: number, updatedAt?: number | null, deletedAt?: number | null, mainPhoto: { __typename?: 'LinkImage', filename: string, type: string, url: string }, createdBy: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string }, updatedBy?: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string } | null, deletedBy?: { __typename?: 'UserSlimEntity', role: string, showName: string, username: string } | null } };
+
+export type GetAllBlogOfFacilityPaginationQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  facilityId: Scalars['String']['input'];
+  isDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type GetAllBlogOfFacilityPaginationQuery = { __typename?: 'Query', getAllBlogOfFacilityPagination: Array<{ __typename?: 'Blog', id: string, slug: string, title: string, status: string, priority: number, type: string, createdAt: number, updatedAt?: number | null, deletedAt?: number | null, mainPhoto: { __typename?: 'LinkImage', filename: string, type: string, url: string }, createdBy: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string }, updatedBy?: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string } | null, deletedBy?: { __typename?: 'UserSlimEntity', role: string, showName: string, username: string } | null }> };
 
 export type RegisterDoctorCreatedSubscriptionVariables = Exact<{
   doctorId: Scalars['String']['input'];
@@ -2374,7 +2399,7 @@ export type RegisterCreatedSubscriptionVariables = Exact<{
 }>;
 
 
-export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
+export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
 
 
 export const LoginDocument = gql`
@@ -6105,6 +6130,7 @@ export const GetAllRegisterByOptionDocument = gql`
       startTime
       endTime
     }
+    createdAt
   }
 }
     `;
@@ -6437,37 +6463,18 @@ export const GetAllBlogPaginationDocument = gql`
     isDeleted: $isDeleted
   ) {
     id
-    slug
     title
+    slug
     status
-    content
-    shortContent
     priority
     type
-    keywords
     mainPhoto {
       filename
       type
       url
     }
     createdAt
-    createdBy {
-      username
-      showName
-      role
-    }
-    updatedAt
-    updatedBy {
-      username
-      showName
-      role
-    }
     deletedAt
-    deletedBy {
-      role
-      showName
-      username
-    }
   }
 }
     `;
@@ -6569,6 +6576,81 @@ export function useGetBlogBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetBlogBySlugQueryHookResult = ReturnType<typeof useGetBlogBySlugQuery>;
 export type GetBlogBySlugLazyQueryHookResult = ReturnType<typeof useGetBlogBySlugLazyQuery>;
 export type GetBlogBySlugQueryResult = Apollo.QueryResult<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>;
+export const GetAllBlogOfFacilityPaginationDocument = gql`
+    query getAllBlogOfFacilityPagination($search: String, $page: Float!, $limit: Float!, $sortOrder: String, $facilityId: String!, $isDeleted: Boolean) {
+  getAllBlogOfFacilityPagination(
+    search: $search
+    page: $page
+    limit: $limit
+    sortOrder: $sortOrder
+    facilityId: $facilityId
+    isDeleted: $isDeleted
+  ) {
+    id
+    slug
+    title
+    status
+    priority
+    type
+    mainPhoto {
+      filename
+      type
+      url
+    }
+    createdAt
+    createdBy {
+      username
+      showName
+      role
+    }
+    updatedAt
+    updatedBy {
+      username
+      showName
+      role
+    }
+    deletedAt
+    deletedBy {
+      role
+      showName
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllBlogOfFacilityPaginationQuery__
+ *
+ * To run a query within a React component, call `useGetAllBlogOfFacilityPaginationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllBlogOfFacilityPaginationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllBlogOfFacilityPaginationQuery({
+ *   variables: {
+ *      search: // value for 'search'
+ *      page: // value for 'page'
+ *      limit: // value for 'limit'
+ *      sortOrder: // value for 'sortOrder'
+ *      facilityId: // value for 'facilityId'
+ *      isDeleted: // value for 'isDeleted'
+ *   },
+ * });
+ */
+export function useGetAllBlogOfFacilityPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>(GetAllBlogOfFacilityPaginationDocument, options);
+      }
+export function useGetAllBlogOfFacilityPaginationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>(GetAllBlogOfFacilityPaginationDocument, options);
+        }
+export type GetAllBlogOfFacilityPaginationQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationQuery>;
+export type GetAllBlogOfFacilityPaginationLazyQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationLazyQuery>;
+export type GetAllBlogOfFacilityPaginationQueryResult = Apollo.QueryResult<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>;
 export const RegisterDoctorCreatedDocument = gql`
     subscription registerDoctorCreated($doctorId: String!, $date: String!) {
   registerDoctorCreated(doctorId: $doctorId, date: $date) {
@@ -6676,6 +6758,7 @@ export const RegisterCreatedDocument = gql`
     profileId
     specialtyId
     vaccineId
+    createdAt
     session {
       startTime
       endTime

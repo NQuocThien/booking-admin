@@ -75,8 +75,9 @@ function FilterDoctorShort(props: IProps) {
     setFilter((pre) => ({ ...filter, degree: degree }));
   };
   const handleChangName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) setFilter((pre) => ({ ...pre, name: e.target.value }));
-    else setFilter((pre) => ({ ...pre, name: undefined }));
+    if (e.target.value)
+      setFilter((pre) => ({ ...pre, doctorName: e.target.value }));
+    else setFilter((pre) => ({ ...pre, doctorName: undefined }));
   };
   return (
     <Row className="d-flex gap-3">
@@ -99,9 +100,7 @@ function FilterDoctorShort(props: IProps) {
         </Row>
         <Row>
           <InputGroup size="sm" className="mb-2">
-            <Form.Select
-              placeholder="Học hàm"
-              onChange={handleChangeAcademiTitle}>
+            <Form.Select onChange={handleChangeAcademiTitle}>
               <option value={undefined}>Học hàm</option>
               <option value={EAcademicTitle.Professor}>
                 {GetEAcademicTitle.Professor}
@@ -111,7 +110,7 @@ function FilterDoctorShort(props: IProps) {
               </option>
             </Form.Select>
 
-            <Form.Select placeholder="Học vị" onChange={handleChangeDegree}>
+            <Form.Select onChange={handleChangeDegree}>
               <option value={undefined}>Học vị</option>
               <option value={EDegree.Doctor}>{GetEDegree.Doctor}</option>
               <option value={EDegree.DoctorS1}>{GetEDegree.DoctorS1}</option>
@@ -126,7 +125,9 @@ function FilterDoctorShort(props: IProps) {
 
         <Row>
           <InputGroup className="mb-2" size="sm">
-            <Form.Select placeholder="Giới tính" onChange={handleChangeGender}>
+            <Form.Select
+              // placeholder="Giới tính"
+              onChange={handleChangeGender}>
               <option value={undefined}>Giới tính</option>
               <option value={EGender.Male}>Nam</option>
               <option value={EGender.Female}>Nữ</option>

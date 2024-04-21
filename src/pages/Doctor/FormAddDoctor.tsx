@@ -292,20 +292,19 @@ function FormAddDoctor() {
                 <Form.Label>Giới tính:</Form.Label>
                 <Form.Select
                   onChange={(e) => {
-                    dispatch(handleChangeForm("gender", e.target.value));
+                    const value: EGender = e.target.value as EGender;
+
+                    var input: EGender = EGender.Male;
+                    if (value === EGender.Male) {
+                      input = EGender.Male;
+                    } else if (value === EGender.Female) {
+                      input = EGender.Female;
+                    }
+                    dispatch(handleChangeForm("gender", input));
                   }}
-                  value={EStatusService.Open}>
-                  <option
-                    selected={state.createDoctor.gender === EGender.Male}
-                    value={EGender.Male}>
-                    Nam
-                  </option>
-                  <option
-                    selected={state.createDoctor.gender === EGender.Female}
-                    value={EGender.Female}>
-                    {" "}
-                    Nữ
-                  </option>
+                  value={state.createDoctor.gender}>
+                  <option value={EGender.Male}>Nam</option>
+                  <option value={EGender.Female}> Nữ</option>
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -346,7 +345,7 @@ function FormAddDoctor() {
                   onChange={(e) => {
                     dispatch(handleChangeForm("degree", e.target.value));
                   }}
-                  value={EDegree.Doctor}>
+                  value={state.createDoctor.degree}>
                   <option
                     selected={state.createDoctor.degree === EDegree.Doctor}
                     value={EDegree.Doctor}>
@@ -388,6 +387,7 @@ function FormAddDoctor() {
                   }}
                   required
                   type="number"
+                  min={0}
                   placeholder="100.000"
                 />
               </Form.Group>

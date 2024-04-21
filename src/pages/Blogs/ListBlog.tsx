@@ -11,6 +11,7 @@ import {
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
+  EnumBlogType,
   useDeleteUnDeleteBlogMutation,
   useGetAllBlogPaginationQuery,
   useGetTottalBlogQuery,
@@ -79,7 +80,7 @@ function ListBlogsPage() {
 
   useEffect(() => {
     if (data?.getAllBlogPagination) {
-      dispatch(handleSetListBlog(data?.getAllBlogPagination));
+      dispatch(handleSetListBlog(data));
     }
   }, [data]);
   useEffect(() => {
@@ -161,6 +162,7 @@ function ListBlogsPage() {
                 <th>#</th>
                 <th>Hình ảnh</th>
                 <th>Tên bài viết</th>
+                <th>Danh mục</th>
                 <th>Ưu tiên</th>
                 <th>Trạng thái</th>
                 <th>Hành động </th>
@@ -168,7 +170,7 @@ function ListBlogsPage() {
             </thead>
             <tbody>
               {state.listBlog &&
-                state.listBlog.map((c, i) => (
+                state.listBlog.getAllBlogPagination.map((c, i) => (
                   <tr key={i} className="">
                     <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
                     <td className="fs-6">
@@ -181,6 +183,11 @@ function ListBlogsPage() {
                     </td>
                     <td className="fs-6" style={{ verticalAlign: "middle" }}>
                       {c.title}
+                    </td>
+                    <td className="fs-6" style={{ verticalAlign: "middle" }}>
+                      {c.type === EnumBlogType.Health && "Sức khỏe"}
+                      {c.type === EnumBlogType.Medical && "Y tế"}
+                      {c.type === EnumBlogType.Service && "Dịch vụ"}
                     </td>
                     <td className="fs-6" style={{ verticalAlign: "middle" }}>
                       {c.priority}
@@ -233,7 +240,7 @@ function ListBlogsPage() {
           <h4 className="text-center text-warning">
             Danh sách bài viết đã xóa
           </h4>
-          {(state.listBlog.length > 0 && (
+          {(state.listBlog.getAllBlogPagination.length > 0 && (
             <Table striped hover className="">
               <thead>
                 <tr>
@@ -247,7 +254,7 @@ function ListBlogsPage() {
               </thead>
               <tbody>
                 {state.listBlog &&
-                  state.listBlog.map((c, i) => (
+                  state.listBlog.getAllBlogPagination.map((c, i) => (
                     <tr key={i} className="">
                       <td style={{ verticalAlign: "middle" }}>{i + 1}.</td>
                       <td className="fs-6">

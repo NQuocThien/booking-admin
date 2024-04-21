@@ -1204,6 +1204,7 @@ const getAllRegisterByOption = gql`
         startTime
         endTime
       }
+      createdAt
     }
   }
 `;
@@ -1350,9 +1351,28 @@ const getAllBlogPagination = gql`
       isDeleted: $isDeleted
     ) {
       id
+      title
+      slug
+      status
+      priority
+      type
+      mainPhoto {
+        filename
+        type
+        url
+      }
+      createdAt
+      deletedAt
+    }
+  }
+`;
+
+const getBlogBySlug = gql`
+  query getBlogBySlug($slug: String!) {
+    getBlogBySlug(slug: $slug) {
+      id
       slug
       title
-      status
       content
       shortContent
       priority
@@ -1363,6 +1383,7 @@ const getAllBlogPagination = gql`
         type
         url
       }
+      status
       createdAt
       createdBy {
         username
@@ -1385,23 +1406,34 @@ const getAllBlogPagination = gql`
   }
 `;
 
-const getBlogBySlug = gql`
-  query getBlogBySlug($slug: String!) {
-    getBlogBySlug(slug: $slug) {
+const getAllBlogOfFacilityPagination = gql`
+  query getAllBlogOfFacilityPagination(
+    $search: String
+    $page: Float!
+    $limit: Float!
+    $sortOrder: String
+    $facilityId: String!
+    $isDeleted: Boolean
+  ) {
+    getAllBlogOfFacilityPagination(
+      search: $search
+      page: $page
+      limit: $limit
+      sortOrder: $sortOrder
+      facilityId: $facilityId
+      isDeleted: $isDeleted
+    ) {
       id
       slug
       title
-      content
-      shortContent
+      status
       priority
       type
-      keywords
       mainPhoto {
         filename
         type
         url
       }
-      status
       createdAt
       createdBy {
         username

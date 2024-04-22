@@ -39,7 +39,10 @@ import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
-import { getEnumValueTypeOfFacility } from "src/utils/getData";
+import {
+  getEnumValueStateService,
+  getEnumValueTypeOfFacility,
+} from "src/utils/getData";
 import { GetETypeOfFacility } from "src/utils/enum-value";
 import MapInputCpn from "src/components/sub/MapInput";
 function FormUpdateGeneralMedicalFacility() {
@@ -68,6 +71,9 @@ function FormUpdateGeneralMedicalFacility() {
         ...dateMedical.getMedicalFacilityById,
         typeOfFacility: getEnumValueTypeOfFacility(
           dateMedical.getMedicalFacilityById.typeOfFacility
+        ),
+        status: getEnumValueStateService(
+          dateMedical.getMedicalFacilityById.status
         ),
       };
       dispatch(handleSetForm(dataUpdate));

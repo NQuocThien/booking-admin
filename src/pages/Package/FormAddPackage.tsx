@@ -149,9 +149,11 @@ function FormAddPackage() {
                 <Form.Label>Đối tượng theo giới tính:</Form.Label>
                 <Form.Select
                   onChange={(e) => {
-                    dispatch(handleChangeForm("gender", e.target.value));
+                    const gender: EGenderPackage = e.target
+                      .value as EGenderPackage;
+                    dispatch(handleChangeForm("gender", gender));
                   }}
-                  value={EGenderPackage.Both}>
+                  value={state.createPackage.gender}>
                   <option value={EGenderPackage.Both}>Nam và nữ</option>
                   <option value={EGenderPackage.Male}>Nam</option>
                   <option value={EGenderPackage.Female}> Nữ</option>
@@ -168,6 +170,7 @@ function FormAddPackage() {
                   }}
                   required
                   type="number"
+                  min={0}
                   placeholder="100.000"
                 />
               </Form.Group>

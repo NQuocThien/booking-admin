@@ -440,6 +440,7 @@ function FormUpdateDoctor() {
                     dispatch(handleChangeForm("price", +e.currentTarget.value));
                   }}
                   required
+                  min={0}
                   type="number"
                   placeholder="100.000"
                 />

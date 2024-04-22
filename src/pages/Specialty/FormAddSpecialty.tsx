@@ -106,6 +106,7 @@ function FormAddSpecialty() {
                   }}
                   required
                   type="number"
+                  min={0}
                   placeholder="100.000"
                 />
               </Form.Group>

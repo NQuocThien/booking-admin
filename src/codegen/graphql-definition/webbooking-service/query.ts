@@ -1167,7 +1167,6 @@ const getAllRegisterByOption = gql`
       id
       date
       typeOfService
-
       cancel
       profile {
         id
@@ -1452,6 +1451,63 @@ const getAllBlogOfFacilityPagination = gql`
         showName
         username
       }
+    }
+  }
+`;
+
+const getAllDoctorCountOfFacility = gql`
+  query getAllDoctorCountOfFacility(
+    $userId: String
+    $staffId: String
+    $startTime: String!
+    $endTime: String!
+  ) {
+    getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
+      id
+      doctorName
+      registerCount(startTime: $startTime, endTime: $endTime)
+    }
+  }
+`;
+const getAllPackageCountOfFacility = gql`
+  query getAllPackageCountOfFacility(
+    $userId: String
+    $staffId: String
+    $startTime: String!
+    $endTime: String!
+  ) {
+    getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
+      id
+      packageName
+      registerCount(startTime: $startTime, endTime: $endTime)
+    }
+  }
+`;
+const getAllMedicalSpecialtiesCountOfFacility = gql`
+  query getAllMedicalSpecialtiesCountOfFacility(
+    $userId: String
+    $staffId: String
+    $startTime: String!
+    $endTime: String!
+  ) {
+    getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
+      id
+      specialtyName
+      registerCount(startTime: $startTime, endTime: $endTime)
+    }
+  }
+`;
+const getAllVaccinationCountOfFacility = gql`
+  query getAllVaccinationCountOfFacility(
+    $userId: String
+    $staffId: String
+    $startTime: String!
+    $endTime: String!
+  ) {
+    getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
+      id
+      vaccineName
+      registerCount(startTime: $startTime, endTime: $endTime)
     }
   }
 `;

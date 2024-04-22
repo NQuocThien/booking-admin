@@ -110,7 +110,7 @@ export type CreateMedicalFacilityInput = {
   numberPhone: Scalars['String']['input'];
   operatingStatus: Scalars['String']['input'];
   schedule: Scalars['String']['input'];
-  status: Scalars['String']['input'];
+  status: EStatusService;
   taxCode: Scalars['String']['input'];
   typeOfFacility: ETypeOfFacility;
   userId: Scalars['String']['input'];
@@ -246,10 +246,17 @@ export type Doctor = {
   medicalFactilitiesId: Scalars['String']['output'];
   numberPhone: Scalars['String']['output'];
   price: Scalars['Float']['output'];
+  registerCount?: Maybe<Scalars['Float']['output']>;
   specialistId: Scalars['String']['output'];
   specialty?: Maybe<MedicalSpecialties>;
   userId: Scalars['String']['output'];
   workSchedule: WorkSchedule;
+};
+
+
+export type DoctorRegisterCountArgs = {
+  endTime: Scalars['String']['input'];
+  startTime: Scalars['String']['input'];
 };
 
 export enum EAcademicTitle {
@@ -487,8 +494,15 @@ export type MedicalSpecialties = {
   id: Scalars['ID']['output'];
   medicalFactilityId: Scalars['String']['output'];
   price: Scalars['Float']['output'];
+  registerCount?: Maybe<Scalars['Float']['output']>;
   specialtyName: Scalars['String']['output'];
   workSchedule?: Maybe<WorkSchedule>;
+};
+
+
+export type MedicalSpecialtiesRegisterCountArgs = {
+  endTime: Scalars['String']['input'];
+  startTime: Scalars['String']['input'];
 };
 
 export type MedicalStaff = {
@@ -508,6 +522,7 @@ export type MedicalStaff = {
 export type Mutation = {
   __typename?: 'Mutation';
   activeUser: User;
+  cancelRegister: Register;
   confirmRegister: Register;
   createBlog: Blog;
   createCustomer: Customer;
@@ -560,6 +575,11 @@ export type Mutation = {
 
 
 export type MutationActiveUserArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationCancelRegisterArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -817,7 +837,14 @@ export type Package = {
   medicalFactilitiesId: Scalars['String']['output'];
   packageName: Scalars['String']['output'];
   price: Scalars['Float']['output'];
+  registerCount?: Maybe<Scalars['Float']['output']>;
   workSchedule: WorkSchedule;
+};
+
+
+export type PackageRegisterCountArgs = {
+  endTime: Scalars['String']['input'];
+  startTime: Scalars['String']['input'];
 };
 
 export type Profile = {
@@ -850,6 +877,7 @@ export type Query = {
   getAllCustomerPagination: Array<Customer>;
   getAllDoctor: Array<Doctor>;
   getAllDoctorByFacilityId: Array<Doctor>;
+  getAllDoctorOfFacility: Array<Doctor>;
   getAllDoctorPagination: Array<Doctor>;
   getAllDoctorPaginationOfFacility: Array<Doctor>;
   getAllDoctorPaginationOfFacilityForClient: Array<Doctor>;
@@ -859,6 +887,8 @@ export type Query = {
   getAllMedicalFacility: Array<MedicalFacilities>;
   getAllMedicalFacilityHaveSrvPaginationForClient: Array<MedicalFacilities>;
   getAllMedicalFacilityPagination: Array<MedicalFacilities>;
+  getAllMedicalFacilityPaginationForClient: Array<MedicalFacilities>;
+  getAllMedicalSpecialtiesOfFacility: Array<MedicalSpecialties>;
   getAllMedicalSpecialtiesPaginationByStaff: Array<MedicalSpecialties>;
   getAllMedicalSpecialtiesPaginationOfFacility: Array<MedicalSpecialties>;
   getAllMedicalSpecialtiesPaginationOfFacilityForClient: Array<MedicalSpecialties>;
@@ -867,6 +897,7 @@ export type Query = {
   getAllNotification: Array<Notification>;
   getAllPackage: Array<Package>;
   getAllPackageByFacilityId: Array<Package>;
+  getAllPackageOfFacility: Array<Package>;
   getAllPackagePaginationByStaff: Array<Package>;
   getAllPackagePaginationOfFacility: Array<Package>;
   getAllPackagePaginationOfFacilityForClient: Array<Package>;
@@ -878,6 +909,7 @@ export type Query = {
   getAllUsersPagination: Array<User>;
   getAllVacation: Array<Vaccination>;
   getAllVaccinationByFacilityId: Array<Vaccination>;
+  getAllVaccinationOfFacility: Array<Vaccination>;
   getAllVaccinationPaginationByStaff: Array<Vaccination>;
   getAllVaccinationPaginationOfFacility: Array<Vaccination>;
   getAllVaccinationPaginationOfFacilityForClient: Array<Vaccination>;
@@ -906,6 +938,7 @@ export type Query = {
   getTotalDoctorsCount: Scalars['Float']['output'];
   getTotalDoctorsCountForClient: Scalars['Float']['output'];
   getTotalFacilitiesCount: Scalars['Float']['output'];
+  getTotalFacilitiesCountForClient: Scalars['Float']['output'];
   getTotalFacilitiesHaveSrvCountForClient: Scalars['Float']['output'];
   getTotalMedicalSpecialtiesCount: Scalars['Float']['output'];
   getTotalMedicalSpecialtiesCountForClient: Scalars['Float']['output'];
@@ -973,6 +1006,12 @@ export type QueryGetAllDoctorByFacilityIdArgs = {
 };
 
 
+export type QueryGetAllDoctorOfFacilityArgs = {
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetAllDoctorPaginationArgs = {
   limit?: Scalars['Float']['input'];
   page?: Scalars['Float']['input'];
@@ -1023,6 +1062,23 @@ export type QueryGetAllMedicalFacilityPaginationArgs = {
 };
 
 
+export type QueryGetAllMedicalFacilityPaginationForClientArgs = {
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  searchField?: InputMaybe<Scalars['String']['input']>;
+  sortField?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllMedicalSpecialtiesOfFacilityArgs = {
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetAllMedicalSpecialtiesPaginationByStaffArgs = {
   limit?: Scalars['Float']['input'];
   page?: Scalars['Float']['input'];
@@ -1066,6 +1122,12 @@ export type QueryGetAllMedicalStaffPaginationOfFacilityArgs = {
 
 export type QueryGetAllPackageByFacilityIdArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllPackageOfFacilityArgs = {
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1135,6 +1197,12 @@ export type QueryGetAllUsersPaginationArgs = {
 
 export type QueryGetAllVaccinationByFacilityIdArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAllVaccinationOfFacilityArgs = {
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1292,6 +1360,13 @@ export type QueryGetTotalFacilitiesCountArgs = {
 };
 
 
+export type QueryGetTotalFacilitiesCountForClientArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
+  searchField?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetTotalFacilitiesHaveSrvCountForClientArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
@@ -1441,21 +1516,11 @@ export type Setting = {
 export type Subscription = {
   __typename?: 'Subscription';
   registerCreated: Register;
-  registerDoctorCreated: Register;
-  registerPackageCreated: Register;
-  registerSpecialtyCreated: Register;
-  registerVaccinationCreated: Register;
 };
 
 
 export type SubscriptionRegisterCreatedArgs = {
   option: GetRegisterByOptionInput;
-};
-
-
-export type SubscriptionRegisterDoctorCreatedArgs = {
-  date: Scalars['String']['input'];
-  doctorId: Scalars['String']['input'];
 };
 
 export type UpdateBlogInput = {
@@ -1527,7 +1592,7 @@ export type UpdateMedicalFacilityInput = {
   numberPhone: Scalars['String']['input'];
   operatingStatus: Scalars['String']['input'];
   schedule: Scalars['String']['input'];
-  status: Scalars['String']['input'];
+  status: EStatusService;
   taxCode: Scalars['String']['input'];
   typeOfFacility: ETypeOfFacility;
   userId: Scalars['String']['input'];
@@ -1676,8 +1741,15 @@ export type Vaccination = {
   note: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   prophylactic: Scalars['String']['output'];
+  registerCount?: Maybe<Scalars['Float']['output']>;
   vaccineName: Scalars['String']['output'];
   workSchedule: WorkSchedule;
+};
+
+
+export type VaccinationRegisterCountArgs = {
+  endTime: Scalars['String']['input'];
+  startTime: Scalars['String']['input'];
 };
 
 export type WorkSchedule = {
@@ -2386,13 +2458,45 @@ export type GetAllBlogOfFacilityPaginationQueryVariables = Exact<{
 
 export type GetAllBlogOfFacilityPaginationQuery = { __typename?: 'Query', getAllBlogOfFacilityPagination: Array<{ __typename?: 'Blog', id: string, slug: string, title: string, status: string, priority: number, type: string, createdAt: number, updatedAt?: number | null, deletedAt?: number | null, mainPhoto: { __typename?: 'LinkImage', filename: string, type: string, url: string }, createdBy: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string }, updatedBy?: { __typename?: 'UserSlimEntity', username: string, showName: string, role: string } | null, deletedBy?: { __typename?: 'UserSlimEntity', role: string, showName: string, username: string } | null }> };
 
-export type RegisterDoctorCreatedSubscriptionVariables = Exact<{
-  doctorId: Scalars['String']['input'];
-  date: Scalars['String']['input'];
+export type GetAllDoctorCountOfFacilityQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  endTime: Scalars['String']['input'];
 }>;
 
 
-export type RegisterDoctorCreatedSubscription = { __typename?: 'Subscription', registerDoctorCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
+export type GetAllDoctorCountOfFacilityQuery = { __typename?: 'Query', getAllDoctorOfFacility: Array<{ __typename?: 'Doctor', id: string, doctorName: string, registerCount?: number | null }> };
+
+export type GetAllPackageCountOfFacilityQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  endTime: Scalars['String']['input'];
+}>;
+
+
+export type GetAllPackageCountOfFacilityQuery = { __typename?: 'Query', getAllPackageOfFacility: Array<{ __typename?: 'Package', id: string, packageName: string, registerCount?: number | null }> };
+
+export type GetAllMedicalSpecialtiesCountOfFacilityQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  endTime: Scalars['String']['input'];
+}>;
+
+
+export type GetAllMedicalSpecialtiesCountOfFacilityQuery = { __typename?: 'Query', getAllMedicalSpecialtiesOfFacility: Array<{ __typename?: 'MedicalSpecialties', id: string, specialtyName: string, registerCount?: number | null }> };
+
+export type GetAllVaccinationCountOfFacilityQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  endTime: Scalars['String']['input'];
+}>;
+
+
+export type GetAllVaccinationCountOfFacilityQuery = { __typename?: 'Query', getAllVaccinationOfFacility: Array<{ __typename?: 'Vaccination', id: string, vaccineName: string, registerCount?: number | null }> };
 
 export type RegisterCreatedSubscriptionVariables = Exact<{
   option: GetRegisterByOptionInput;
@@ -3610,8 +3714,13 @@ export function useCheckLoginQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CheckLoginQueryQuery, CheckLoginQueryQueryVariables>(CheckLoginQueryDocument, options);
         }
+export function useCheckLoginQuerySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CheckLoginQueryQuery, CheckLoginQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CheckLoginQueryQuery, CheckLoginQueryQueryVariables>(CheckLoginQueryDocument, options);
+        }
 export type CheckLoginQueryQueryHookResult = ReturnType<typeof useCheckLoginQueryQuery>;
 export type CheckLoginQueryLazyQueryHookResult = ReturnType<typeof useCheckLoginQueryLazyQuery>;
+export type CheckLoginQuerySuspenseQueryHookResult = ReturnType<typeof useCheckLoginQuerySuspenseQuery>;
 export type CheckLoginQueryQueryResult = Apollo.QueryResult<CheckLoginQueryQuery, CheckLoginQueryQueryVariables>;
 export const GetSettingDocument = gql`
     query getSetting {
@@ -3644,8 +3753,13 @@ export function useGetSettingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetSettingQuery, GetSettingQueryVariables>(GetSettingDocument, options);
         }
+export function useGetSettingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSettingQuery, GetSettingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSettingQuery, GetSettingQueryVariables>(GetSettingDocument, options);
+        }
 export type GetSettingQueryHookResult = ReturnType<typeof useGetSettingQuery>;
 export type GetSettingLazyQueryHookResult = ReturnType<typeof useGetSettingLazyQuery>;
+export type GetSettingSuspenseQueryHookResult = ReturnType<typeof useGetSettingSuspenseQuery>;
 export type GetSettingQueryResult = Apollo.QueryResult<GetSettingQuery, GetSettingQueryVariables>;
 export const GetGeneralInforDocument = gql`
     query GetGeneralInfor {
@@ -3694,8 +3808,13 @@ export function useGetGeneralInforLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetGeneralInforQuery, GetGeneralInforQueryVariables>(GetGeneralInforDocument, options);
         }
+export function useGetGeneralInforSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGeneralInforQuery, GetGeneralInforQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGeneralInforQuery, GetGeneralInforQueryVariables>(GetGeneralInforDocument, options);
+        }
 export type GetGeneralInforQueryHookResult = ReturnType<typeof useGetGeneralInforQuery>;
 export type GetGeneralInforLazyQueryHookResult = ReturnType<typeof useGetGeneralInforLazyQuery>;
+export type GetGeneralInforSuspenseQueryHookResult = ReturnType<typeof useGetGeneralInforSuspenseQuery>;
 export type GetGeneralInforQueryResult = Apollo.QueryResult<GetGeneralInforQuery, GetGeneralInforQueryVariables>;
 export const GetAllUserDocument = gql`
     query GetAllUser {
@@ -3738,8 +3857,13 @@ export function useGetAllUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllUserQuery, GetAllUserQueryVariables>(GetAllUserDocument, options);
         }
+export function useGetAllUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllUserQuery, GetAllUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUserQuery, GetAllUserQueryVariables>(GetAllUserDocument, options);
+        }
 export type GetAllUserQueryHookResult = ReturnType<typeof useGetAllUserQuery>;
 export type GetAllUserLazyQueryHookResult = ReturnType<typeof useGetAllUserLazyQuery>;
+export type GetAllUserSuspenseQueryHookResult = ReturnType<typeof useGetAllUserSuspenseQuery>;
 export type GetAllUserQueryResult = Apollo.QueryResult<GetAllUserQuery, GetAllUserQueryVariables>;
 export const GetUserFacilitySelectDocument = gql`
     query getUserFacilitySelect($input: String!) {
@@ -3766,7 +3890,7 @@ export const GetUserFacilitySelectDocument = gql`
  *   },
  * });
  */
-export function useGetUserFacilitySelectQuery(baseOptions: Apollo.QueryHookOptions<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>) {
+export function useGetUserFacilitySelectQuery(baseOptions: Apollo.QueryHookOptions<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables> & ({ variables: GetUserFacilitySelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>(GetUserFacilitySelectDocument, options);
       }
@@ -3774,8 +3898,13 @@ export function useGetUserFacilitySelectLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>(GetUserFacilitySelectDocument, options);
         }
+export function useGetUserFacilitySelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>(GetUserFacilitySelectDocument, options);
+        }
 export type GetUserFacilitySelectQueryHookResult = ReturnType<typeof useGetUserFacilitySelectQuery>;
 export type GetUserFacilitySelectLazyQueryHookResult = ReturnType<typeof useGetUserFacilitySelectLazyQuery>;
+export type GetUserFacilitySelectSuspenseQueryHookResult = ReturnType<typeof useGetUserFacilitySelectSuspenseQuery>;
 export type GetUserFacilitySelectQueryResult = Apollo.QueryResult<GetUserFacilitySelectQuery, GetUserFacilitySelectQueryVariables>;
 export const GetUserDoctorPendingDocument = gql`
     query getUserDoctorPending {
@@ -3809,8 +3938,13 @@ export function useGetUserDoctorPendingLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>(GetUserDoctorPendingDocument, options);
         }
+export function useGetUserDoctorPendingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>(GetUserDoctorPendingDocument, options);
+        }
 export type GetUserDoctorPendingQueryHookResult = ReturnType<typeof useGetUserDoctorPendingQuery>;
 export type GetUserDoctorPendingLazyQueryHookResult = ReturnType<typeof useGetUserDoctorPendingLazyQuery>;
+export type GetUserDoctorPendingSuspenseQueryHookResult = ReturnType<typeof useGetUserDoctorPendingSuspenseQuery>;
 export type GetUserDoctorPendingQueryResult = Apollo.QueryResult<GetUserDoctorPendingQuery, GetUserDoctorPendingQueryVariables>;
 export const GetUserDoctorPendingUpdateDocument = gql`
     query getUserDoctorPendingUpdate($input: String!) {
@@ -3837,7 +3971,7 @@ export const GetUserDoctorPendingUpdateDocument = gql`
  *   },
  * });
  */
-export function useGetUserDoctorPendingUpdateQuery(baseOptions: Apollo.QueryHookOptions<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>) {
+export function useGetUserDoctorPendingUpdateQuery(baseOptions: Apollo.QueryHookOptions<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables> & ({ variables: GetUserDoctorPendingUpdateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>(GetUserDoctorPendingUpdateDocument, options);
       }
@@ -3845,8 +3979,13 @@ export function useGetUserDoctorPendingUpdateLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>(GetUserDoctorPendingUpdateDocument, options);
         }
+export function useGetUserDoctorPendingUpdateSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>(GetUserDoctorPendingUpdateDocument, options);
+        }
 export type GetUserDoctorPendingUpdateQueryHookResult = ReturnType<typeof useGetUserDoctorPendingUpdateQuery>;
 export type GetUserDoctorPendingUpdateLazyQueryHookResult = ReturnType<typeof useGetUserDoctorPendingUpdateLazyQuery>;
+export type GetUserDoctorPendingUpdateSuspenseQueryHookResult = ReturnType<typeof useGetUserDoctorPendingUpdateSuspenseQuery>;
 export type GetUserDoctorPendingUpdateQueryResult = Apollo.QueryResult<GetUserDoctorPendingUpdateQuery, GetUserDoctorPendingUpdateQueryVariables>;
 export const GetAllUserStaffSelectDocument = gql`
     query getAllUserStaffSelect($input: String!) {
@@ -3873,7 +4012,7 @@ export const GetAllUserStaffSelectDocument = gql`
  *   },
  * });
  */
-export function useGetAllUserStaffSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>) {
+export function useGetAllUserStaffSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables> & ({ variables: GetAllUserStaffSelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>(GetAllUserStaffSelectDocument, options);
       }
@@ -3881,8 +4020,13 @@ export function useGetAllUserStaffSelectLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>(GetAllUserStaffSelectDocument, options);
         }
+export function useGetAllUserStaffSelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>(GetAllUserStaffSelectDocument, options);
+        }
 export type GetAllUserStaffSelectQueryHookResult = ReturnType<typeof useGetAllUserStaffSelectQuery>;
 export type GetAllUserStaffSelectLazyQueryHookResult = ReturnType<typeof useGetAllUserStaffSelectLazyQuery>;
+export type GetAllUserStaffSelectSuspenseQueryHookResult = ReturnType<typeof useGetAllUserStaffSelectSuspenseQuery>;
 export type GetAllUserStaffSelectQueryResult = Apollo.QueryResult<GetAllUserStaffSelectQuery, GetAllUserStaffSelectQueryVariables>;
 export const GetAllMedicalFacilityDocument = gql`
     query getAllMedicalFacility {
@@ -3940,8 +4084,13 @@ export function useGetAllMedicalFacilityLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalFacilityQuery, GetAllMedicalFacilityQueryVariables>(GetAllMedicalFacilityDocument, options);
         }
+export function useGetAllMedicalFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalFacilityQuery, GetAllMedicalFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalFacilityQuery, GetAllMedicalFacilityQueryVariables>(GetAllMedicalFacilityDocument, options);
+        }
 export type GetAllMedicalFacilityQueryHookResult = ReturnType<typeof useGetAllMedicalFacilityQuery>;
 export type GetAllMedicalFacilityLazyQueryHookResult = ReturnType<typeof useGetAllMedicalFacilityLazyQuery>;
+export type GetAllMedicalFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalFacilitySuspenseQuery>;
 export type GetAllMedicalFacilityQueryResult = Apollo.QueryResult<GetAllMedicalFacilityQuery, GetAllMedicalFacilityQueryVariables>;
 export const GetAllMedicalFacilitySelectDocument = gql`
     query getAllMedicalFacilitySelect {
@@ -3975,8 +4124,13 @@ export function useGetAllMedicalFacilitySelectLazyQuery(baseOptions?: Apollo.Laz
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalFacilitySelectQuery, GetAllMedicalFacilitySelectQueryVariables>(GetAllMedicalFacilitySelectDocument, options);
         }
+export function useGetAllMedicalFacilitySelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalFacilitySelectQuery, GetAllMedicalFacilitySelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalFacilitySelectQuery, GetAllMedicalFacilitySelectQueryVariables>(GetAllMedicalFacilitySelectDocument, options);
+        }
 export type GetAllMedicalFacilitySelectQueryHookResult = ReturnType<typeof useGetAllMedicalFacilitySelectQuery>;
 export type GetAllMedicalFacilitySelectLazyQueryHookResult = ReturnType<typeof useGetAllMedicalFacilitySelectLazyQuery>;
+export type GetAllMedicalFacilitySelectSuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalFacilitySelectSuspenseQuery>;
 export type GetAllMedicalFacilitySelectQueryResult = Apollo.QueryResult<GetAllMedicalFacilitySelectQuery, GetAllMedicalFacilitySelectQueryVariables>;
 export const GetMedicalFacilityByIdDocument = gql`
     query getMedicalFacilityById($input: String!) {
@@ -4028,7 +4182,7 @@ export const GetMedicalFacilityByIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalFacilityByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>) {
+export function useGetMedicalFacilityByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables> & ({ variables: GetMedicalFacilityByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>(GetMedicalFacilityByIdDocument, options);
       }
@@ -4036,8 +4190,13 @@ export function useGetMedicalFacilityByIdLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>(GetMedicalFacilityByIdDocument, options);
         }
+export function useGetMedicalFacilityByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>(GetMedicalFacilityByIdDocument, options);
+        }
 export type GetMedicalFacilityByIdQueryHookResult = ReturnType<typeof useGetMedicalFacilityByIdQuery>;
 export type GetMedicalFacilityByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityByIdLazyQuery>;
+export type GetMedicalFacilityByIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalFacilityByIdSuspenseQuery>;
 export type GetMedicalFacilityByIdQueryResult = Apollo.QueryResult<GetMedicalFacilityByIdQuery, GetMedicalFacilityByIdQueryVariables>;
 export const GetMedicalFacilityInfoDocument = gql`
     query getMedicalFacilityInfo($userId: String, $staffId: String) {
@@ -4102,8 +4261,13 @@ export function useGetMedicalFacilityInfoLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalFacilityInfoQuery, GetMedicalFacilityInfoQueryVariables>(GetMedicalFacilityInfoDocument, options);
         }
+export function useGetMedicalFacilityInfoSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalFacilityInfoQuery, GetMedicalFacilityInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalFacilityInfoQuery, GetMedicalFacilityInfoQueryVariables>(GetMedicalFacilityInfoDocument, options);
+        }
 export type GetMedicalFacilityInfoQueryHookResult = ReturnType<typeof useGetMedicalFacilityInfoQuery>;
 export type GetMedicalFacilityInfoLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityInfoLazyQuery>;
+export type GetMedicalFacilityInfoSuspenseQueryHookResult = ReturnType<typeof useGetMedicalFacilityInfoSuspenseQuery>;
 export type GetMedicalFacilityInfoQueryResult = Apollo.QueryResult<GetMedicalFacilityInfoQuery, GetMedicalFacilityInfoQueryVariables>;
 export const GetGeneralMedicalFacilityInfoDocument = gql`
     query getGeneralMedicalFacilityInfo($userId: String, $staffId: String) {
@@ -4164,8 +4328,13 @@ export function useGetGeneralMedicalFacilityInfoLazyQuery(baseOptions?: Apollo.L
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetGeneralMedicalFacilityInfoQuery, GetGeneralMedicalFacilityInfoQueryVariables>(GetGeneralMedicalFacilityInfoDocument, options);
         }
+export function useGetGeneralMedicalFacilityInfoSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGeneralMedicalFacilityInfoQuery, GetGeneralMedicalFacilityInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGeneralMedicalFacilityInfoQuery, GetGeneralMedicalFacilityInfoQueryVariables>(GetGeneralMedicalFacilityInfoDocument, options);
+        }
 export type GetGeneralMedicalFacilityInfoQueryHookResult = ReturnType<typeof useGetGeneralMedicalFacilityInfoQuery>;
 export type GetGeneralMedicalFacilityInfoLazyQueryHookResult = ReturnType<typeof useGetGeneralMedicalFacilityInfoLazyQuery>;
+export type GetGeneralMedicalFacilityInfoSuspenseQueryHookResult = ReturnType<typeof useGetGeneralMedicalFacilityInfoSuspenseQuery>;
 export type GetGeneralMedicalFacilityInfoQueryResult = Apollo.QueryResult<GetGeneralMedicalFacilityInfoQuery, GetGeneralMedicalFacilityInfoQueryVariables>;
 export const GetMedicalFacilityIdByUserIdDocument = gql`
     query getMedicalFacilityIdByUserId($userId: String!) {
@@ -4193,7 +4362,7 @@ export const GetMedicalFacilityIdByUserIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalFacilityIdByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>) {
+export function useGetMedicalFacilityIdByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables> & ({ variables: GetMedicalFacilityIdByUserIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>(GetMedicalFacilityIdByUserIdDocument, options);
       }
@@ -4201,8 +4370,13 @@ export function useGetMedicalFacilityIdByUserIdLazyQuery(baseOptions?: Apollo.La
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>(GetMedicalFacilityIdByUserIdDocument, options);
         }
+export function useGetMedicalFacilityIdByUserIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>(GetMedicalFacilityIdByUserIdDocument, options);
+        }
 export type GetMedicalFacilityIdByUserIdQueryHookResult = ReturnType<typeof useGetMedicalFacilityIdByUserIdQuery>;
 export type GetMedicalFacilityIdByUserIdLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityIdByUserIdLazyQuery>;
+export type GetMedicalFacilityIdByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalFacilityIdByUserIdSuspenseQuery>;
 export type GetMedicalFacilityIdByUserIdQueryResult = Apollo.QueryResult<GetMedicalFacilityIdByUserIdQuery, GetMedicalFacilityIdByUserIdQueryVariables>;
 export const GetAllMedicalFacilityPaginationDocument = gql`
     query getAllMedicalFacilityPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
@@ -4264,7 +4438,7 @@ export const GetAllMedicalFacilityPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllMedicalFacilityPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>) {
+export function useGetAllMedicalFacilityPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables> & ({ variables: GetAllMedicalFacilityPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>(GetAllMedicalFacilityPaginationDocument, options);
       }
@@ -4272,8 +4446,13 @@ export function useGetAllMedicalFacilityPaginationLazyQuery(baseOptions?: Apollo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>(GetAllMedicalFacilityPaginationDocument, options);
         }
+export function useGetAllMedicalFacilityPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>(GetAllMedicalFacilityPaginationDocument, options);
+        }
 export type GetAllMedicalFacilityPaginationQueryHookResult = ReturnType<typeof useGetAllMedicalFacilityPaginationQuery>;
 export type GetAllMedicalFacilityPaginationLazyQueryHookResult = ReturnType<typeof useGetAllMedicalFacilityPaginationLazyQuery>;
+export type GetAllMedicalFacilityPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalFacilityPaginationSuspenseQuery>;
 export type GetAllMedicalFacilityPaginationQueryResult = Apollo.QueryResult<GetAllMedicalFacilityPaginationQuery, GetAllMedicalFacilityPaginationQueryVariables>;
 export const GetTotalFacilitiesCountDocument = gql`
     query getTotalFacilitiesCount($search: String) {
@@ -4305,8 +4484,13 @@ export function useGetTotalFacilitiesCountLazyQuery(baseOptions?: Apollo.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalFacilitiesCountQuery, GetTotalFacilitiesCountQueryVariables>(GetTotalFacilitiesCountDocument, options);
         }
+export function useGetTotalFacilitiesCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalFacilitiesCountQuery, GetTotalFacilitiesCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalFacilitiesCountQuery, GetTotalFacilitiesCountQueryVariables>(GetTotalFacilitiesCountDocument, options);
+        }
 export type GetTotalFacilitiesCountQueryHookResult = ReturnType<typeof useGetTotalFacilitiesCountQuery>;
 export type GetTotalFacilitiesCountLazyQueryHookResult = ReturnType<typeof useGetTotalFacilitiesCountLazyQuery>;
+export type GetTotalFacilitiesCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalFacilitiesCountSuspenseQuery>;
 export type GetTotalFacilitiesCountQueryResult = Apollo.QueryResult<GetTotalFacilitiesCountQuery, GetTotalFacilitiesCountQueryVariables>;
 export const GetMedicalFacilityNameByIdDocument = gql`
     query getMedicalFacilityNameById($input: String!) {
@@ -4333,7 +4517,7 @@ export const GetMedicalFacilityNameByIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalFacilityNameByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>) {
+export function useGetMedicalFacilityNameByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables> & ({ variables: GetMedicalFacilityNameByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>(GetMedicalFacilityNameByIdDocument, options);
       }
@@ -4341,8 +4525,13 @@ export function useGetMedicalFacilityNameByIdLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>(GetMedicalFacilityNameByIdDocument, options);
         }
+export function useGetMedicalFacilityNameByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>(GetMedicalFacilityNameByIdDocument, options);
+        }
 export type GetMedicalFacilityNameByIdQueryHookResult = ReturnType<typeof useGetMedicalFacilityNameByIdQuery>;
 export type GetMedicalFacilityNameByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalFacilityNameByIdLazyQuery>;
+export type GetMedicalFacilityNameByIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalFacilityNameByIdSuspenseQuery>;
 export type GetMedicalFacilityNameByIdQueryResult = Apollo.QueryResult<GetMedicalFacilityNameByIdQuery, GetMedicalFacilityNameByIdQueryVariables>;
 export const GetMedicalStaffByFacilityIdDocument = gql`
     query getMedicalStaffByFacilityId($input: String!) {
@@ -4376,7 +4565,7 @@ export const GetMedicalStaffByFacilityIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalStaffByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>) {
+export function useGetMedicalStaffByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables> & ({ variables: GetMedicalStaffByFacilityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>(GetMedicalStaffByFacilityIdDocument, options);
       }
@@ -4384,8 +4573,13 @@ export function useGetMedicalStaffByFacilityIdLazyQuery(baseOptions?: Apollo.Laz
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>(GetMedicalStaffByFacilityIdDocument, options);
         }
+export function useGetMedicalStaffByFacilityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>(GetMedicalStaffByFacilityIdDocument, options);
+        }
 export type GetMedicalStaffByFacilityIdQueryHookResult = ReturnType<typeof useGetMedicalStaffByFacilityIdQuery>;
 export type GetMedicalStaffByFacilityIdLazyQueryHookResult = ReturnType<typeof useGetMedicalStaffByFacilityIdLazyQuery>;
+export type GetMedicalStaffByFacilityIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalStaffByFacilityIdSuspenseQuery>;
 export type GetMedicalStaffByFacilityIdQueryResult = Apollo.QueryResult<GetMedicalStaffByFacilityIdQuery, GetMedicalStaffByFacilityIdQueryVariables>;
 export const GetMedicalStaffByIdDocument = gql`
     query getMedicalStaffById($input: String!) {
@@ -4426,7 +4620,7 @@ export const GetMedicalStaffByIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalStaffByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>) {
+export function useGetMedicalStaffByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables> & ({ variables: GetMedicalStaffByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>(GetMedicalStaffByIdDocument, options);
       }
@@ -4434,8 +4628,13 @@ export function useGetMedicalStaffByIdLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>(GetMedicalStaffByIdDocument, options);
         }
+export function useGetMedicalStaffByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>(GetMedicalStaffByIdDocument, options);
+        }
 export type GetMedicalStaffByIdQueryHookResult = ReturnType<typeof useGetMedicalStaffByIdQuery>;
 export type GetMedicalStaffByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalStaffByIdLazyQuery>;
+export type GetMedicalStaffByIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalStaffByIdSuspenseQuery>;
 export type GetMedicalStaffByIdQueryResult = Apollo.QueryResult<GetMedicalStaffByIdQuery, GetMedicalStaffByIdQueryVariables>;
 export const GetMedicalStaffByUserIdDocument = gql`
     query getMedicalStaffByUserId($input: String!) {
@@ -4469,7 +4668,7 @@ export const GetMedicalStaffByUserIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalStaffByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>) {
+export function useGetMedicalStaffByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables> & ({ variables: GetMedicalStaffByUserIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>(GetMedicalStaffByUserIdDocument, options);
       }
@@ -4477,8 +4676,13 @@ export function useGetMedicalStaffByUserIdLazyQuery(baseOptions?: Apollo.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>(GetMedicalStaffByUserIdDocument, options);
         }
+export function useGetMedicalStaffByUserIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>(GetMedicalStaffByUserIdDocument, options);
+        }
 export type GetMedicalStaffByUserIdQueryHookResult = ReturnType<typeof useGetMedicalStaffByUserIdQuery>;
 export type GetMedicalStaffByUserIdLazyQueryHookResult = ReturnType<typeof useGetMedicalStaffByUserIdLazyQuery>;
+export type GetMedicalStaffByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalStaffByUserIdSuspenseQuery>;
 export type GetMedicalStaffByUserIdQueryResult = Apollo.QueryResult<GetMedicalStaffByUserIdQuery, GetMedicalStaffByUserIdQueryVariables>;
 export const GetUserSelectedDocument = gql`
     query getUserSelected($input: String!) {
@@ -4505,7 +4709,7 @@ export const GetUserSelectedDocument = gql`
  *   },
  * });
  */
-export function useGetUserSelectedQuery(baseOptions: Apollo.QueryHookOptions<GetUserSelectedQuery, GetUserSelectedQueryVariables>) {
+export function useGetUserSelectedQuery(baseOptions: Apollo.QueryHookOptions<GetUserSelectedQuery, GetUserSelectedQueryVariables> & ({ variables: GetUserSelectedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserSelectedQuery, GetUserSelectedQueryVariables>(GetUserSelectedDocument, options);
       }
@@ -4513,8 +4717,13 @@ export function useGetUserSelectedLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserSelectedQuery, GetUserSelectedQueryVariables>(GetUserSelectedDocument, options);
         }
+export function useGetUserSelectedSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserSelectedQuery, GetUserSelectedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserSelectedQuery, GetUserSelectedQueryVariables>(GetUserSelectedDocument, options);
+        }
 export type GetUserSelectedQueryHookResult = ReturnType<typeof useGetUserSelectedQuery>;
 export type GetUserSelectedLazyQueryHookResult = ReturnType<typeof useGetUserSelectedLazyQuery>;
+export type GetUserSelectedSuspenseQueryHookResult = ReturnType<typeof useGetUserSelectedSuspenseQuery>;
 export type GetUserSelectedQueryResult = Apollo.QueryResult<GetUserSelectedQuery, GetUserSelectedQueryVariables>;
 export const GetMedicalSpecialtiesSelectDocument = gql`
     query getMedicalSpecialtiesSelect($input: String!) {
@@ -4541,7 +4750,7 @@ export const GetMedicalSpecialtiesSelectDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalSpecialtiesSelectQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>) {
+export function useGetMedicalSpecialtiesSelectQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables> & ({ variables: GetMedicalSpecialtiesSelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>(GetMedicalSpecialtiesSelectDocument, options);
       }
@@ -4549,8 +4758,13 @@ export function useGetMedicalSpecialtiesSelectLazyQuery(baseOptions?: Apollo.Laz
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>(GetMedicalSpecialtiesSelectDocument, options);
         }
+export function useGetMedicalSpecialtiesSelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>(GetMedicalSpecialtiesSelectDocument, options);
+        }
 export type GetMedicalSpecialtiesSelectQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesSelectQuery>;
 export type GetMedicalSpecialtiesSelectLazyQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesSelectLazyQuery>;
+export type GetMedicalSpecialtiesSelectSuspenseQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesSelectSuspenseQuery>;
 export type GetMedicalSpecialtiesSelectQueryResult = Apollo.QueryResult<GetMedicalSpecialtiesSelectQuery, GetMedicalSpecialtiesSelectQueryVariables>;
 export const GetDoctorbyIdDocument = gql`
     query getDoctorbyId($input: String!) {
@@ -4608,7 +4822,7 @@ export const GetDoctorbyIdDocument = gql`
  *   },
  * });
  */
-export function useGetDoctorbyIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>) {
+export function useGetDoctorbyIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables> & ({ variables: GetDoctorbyIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>(GetDoctorbyIdDocument, options);
       }
@@ -4616,8 +4830,13 @@ export function useGetDoctorbyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>(GetDoctorbyIdDocument, options);
         }
+export function useGetDoctorbyIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>(GetDoctorbyIdDocument, options);
+        }
 export type GetDoctorbyIdQueryHookResult = ReturnType<typeof useGetDoctorbyIdQuery>;
 export type GetDoctorbyIdLazyQueryHookResult = ReturnType<typeof useGetDoctorbyIdLazyQuery>;
+export type GetDoctorbyIdSuspenseQueryHookResult = ReturnType<typeof useGetDoctorbyIdSuspenseQuery>;
 export type GetDoctorbyIdQueryResult = Apollo.QueryResult<GetDoctorbyIdQuery, GetDoctorbyIdQueryVariables>;
 export const GetDoctorbyUserIdDocument = gql`
     query getDoctorbyUserId($input: String!) {
@@ -4675,7 +4894,7 @@ export const GetDoctorbyUserIdDocument = gql`
  *   },
  * });
  */
-export function useGetDoctorbyUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>) {
+export function useGetDoctorbyUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables> & ({ variables: GetDoctorbyUserIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>(GetDoctorbyUserIdDocument, options);
       }
@@ -4683,8 +4902,13 @@ export function useGetDoctorbyUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>(GetDoctorbyUserIdDocument, options);
         }
+export function useGetDoctorbyUserIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>(GetDoctorbyUserIdDocument, options);
+        }
 export type GetDoctorbyUserIdQueryHookResult = ReturnType<typeof useGetDoctorbyUserIdQuery>;
 export type GetDoctorbyUserIdLazyQueryHookResult = ReturnType<typeof useGetDoctorbyUserIdLazyQuery>;
+export type GetDoctorbyUserIdSuspenseQueryHookResult = ReturnType<typeof useGetDoctorbyUserIdSuspenseQuery>;
 export type GetDoctorbyUserIdQueryResult = Apollo.QueryResult<GetDoctorbyUserIdQuery, GetDoctorbyUserIdQueryVariables>;
 export const GetAllDoctorPendingDocument = gql`
     query getAllDoctorPending {
@@ -4745,8 +4969,13 @@ export function useGetAllDoctorPendingLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllDoctorPendingQuery, GetAllDoctorPendingQueryVariables>(GetAllDoctorPendingDocument, options);
         }
+export function useGetAllDoctorPendingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllDoctorPendingQuery, GetAllDoctorPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllDoctorPendingQuery, GetAllDoctorPendingQueryVariables>(GetAllDoctorPendingDocument, options);
+        }
 export type GetAllDoctorPendingQueryHookResult = ReturnType<typeof useGetAllDoctorPendingQuery>;
 export type GetAllDoctorPendingLazyQueryHookResult = ReturnType<typeof useGetAllDoctorPendingLazyQuery>;
+export type GetAllDoctorPendingSuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorPendingSuspenseQuery>;
 export type GetAllDoctorPendingQueryResult = Apollo.QueryResult<GetAllDoctorPendingQuery, GetAllDoctorPendingQueryVariables>;
 export const GetAllDoctorByFacilityIdDocument = gql`
     query getAllDoctorByFacilityId($input: String!) {
@@ -4800,7 +5029,7 @@ export const GetAllDoctorByFacilityIdDocument = gql`
  *   },
  * });
  */
-export function useGetAllDoctorByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>) {
+export function useGetAllDoctorByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables> & ({ variables: GetAllDoctorByFacilityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>(GetAllDoctorByFacilityIdDocument, options);
       }
@@ -4808,8 +5037,13 @@ export function useGetAllDoctorByFacilityIdLazyQuery(baseOptions?: Apollo.LazyQu
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>(GetAllDoctorByFacilityIdDocument, options);
         }
+export function useGetAllDoctorByFacilityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>(GetAllDoctorByFacilityIdDocument, options);
+        }
 export type GetAllDoctorByFacilityIdQueryHookResult = ReturnType<typeof useGetAllDoctorByFacilityIdQuery>;
 export type GetAllDoctorByFacilityIdLazyQueryHookResult = ReturnType<typeof useGetAllDoctorByFacilityIdLazyQuery>;
+export type GetAllDoctorByFacilityIdSuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorByFacilityIdSuspenseQuery>;
 export type GetAllDoctorByFacilityIdQueryResult = Apollo.QueryResult<GetAllDoctorByFacilityIdQuery, GetAllDoctorByFacilityIdQueryVariables>;
 export const GetDoctorToUpdateByIdDocument = gql`
     query getDoctorToUpdateById($input: String!) {
@@ -4863,7 +5097,7 @@ export const GetDoctorToUpdateByIdDocument = gql`
  *   },
  * });
  */
-export function useGetDoctorToUpdateByIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>) {
+export function useGetDoctorToUpdateByIdQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables> & ({ variables: GetDoctorToUpdateByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>(GetDoctorToUpdateByIdDocument, options);
       }
@@ -4871,8 +5105,13 @@ export function useGetDoctorToUpdateByIdLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>(GetDoctorToUpdateByIdDocument, options);
         }
+export function useGetDoctorToUpdateByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>(GetDoctorToUpdateByIdDocument, options);
+        }
 export type GetDoctorToUpdateByIdQueryHookResult = ReturnType<typeof useGetDoctorToUpdateByIdQuery>;
 export type GetDoctorToUpdateByIdLazyQueryHookResult = ReturnType<typeof useGetDoctorToUpdateByIdLazyQuery>;
+export type GetDoctorToUpdateByIdSuspenseQueryHookResult = ReturnType<typeof useGetDoctorToUpdateByIdSuspenseQuery>;
 export type GetDoctorToUpdateByIdQueryResult = Apollo.QueryResult<GetDoctorToUpdateByIdQuery, GetDoctorToUpdateByIdQueryVariables>;
 export const GetAllDoctorPaginationDocument = gql`
     query getAllDoctorPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
@@ -4936,7 +5175,7 @@ export const GetAllDoctorPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllDoctorPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>) {
+export function useGetAllDoctorPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables> & ({ variables: GetAllDoctorPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>(GetAllDoctorPaginationDocument, options);
       }
@@ -4944,8 +5183,13 @@ export function useGetAllDoctorPaginationLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>(GetAllDoctorPaginationDocument, options);
         }
+export function useGetAllDoctorPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>(GetAllDoctorPaginationDocument, options);
+        }
 export type GetAllDoctorPaginationQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationQuery>;
 export type GetAllDoctorPaginationLazyQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationLazyQuery>;
+export type GetAllDoctorPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationSuspenseQuery>;
 export type GetAllDoctorPaginationQueryResult = Apollo.QueryResult<GetAllDoctorPaginationQuery, GetAllDoctorPaginationQueryVariables>;
 export const GetAllDoctorPaginationOfFacilityDocument = gql`
     query getAllDoctorPaginationOfFacility($filter: FilterDoctorInput, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String!) {
@@ -5011,7 +5255,7 @@ export const GetAllDoctorPaginationOfFacilityDocument = gql`
  *   },
  * });
  */
-export function useGetAllDoctorPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>) {
+export function useGetAllDoctorPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables> & ({ variables: GetAllDoctorPaginationOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>(GetAllDoctorPaginationOfFacilityDocument, options);
       }
@@ -5019,8 +5263,13 @@ export function useGetAllDoctorPaginationOfFacilityLazyQuery(baseOptions?: Apoll
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>(GetAllDoctorPaginationOfFacilityDocument, options);
         }
+export function useGetAllDoctorPaginationOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>(GetAllDoctorPaginationOfFacilityDocument, options);
+        }
 export type GetAllDoctorPaginationOfFacilityQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationOfFacilityQuery>;
 export type GetAllDoctorPaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationOfFacilityLazyQuery>;
+export type GetAllDoctorPaginationOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorPaginationOfFacilitySuspenseQuery>;
 export type GetAllDoctorPaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllDoctorPaginationOfFacilityQuery, GetAllDoctorPaginationOfFacilityQueryVariables>;
 export const GetTotalDoctorsCountDocument = gql`
     query getTotalDoctorsCount($filter: FilterDoctorInput, $userId: String, $staffId: String) {
@@ -5054,8 +5303,13 @@ export function useGetTotalDoctorsCountLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalDoctorsCountQuery, GetTotalDoctorsCountQueryVariables>(GetTotalDoctorsCountDocument, options);
         }
+export function useGetTotalDoctorsCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalDoctorsCountQuery, GetTotalDoctorsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalDoctorsCountQuery, GetTotalDoctorsCountQueryVariables>(GetTotalDoctorsCountDocument, options);
+        }
 export type GetTotalDoctorsCountQueryHookResult = ReturnType<typeof useGetTotalDoctorsCountQuery>;
 export type GetTotalDoctorsCountLazyQueryHookResult = ReturnType<typeof useGetTotalDoctorsCountLazyQuery>;
+export type GetTotalDoctorsCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalDoctorsCountSuspenseQuery>;
 export type GetTotalDoctorsCountQueryResult = Apollo.QueryResult<GetTotalDoctorsCountQuery, GetTotalDoctorsCountQueryVariables>;
 export const GetPackageByIdDocument = gql`
     query getPackageById($input: String!) {
@@ -5103,7 +5357,7 @@ export const GetPackageByIdDocument = gql`
  *   },
  * });
  */
-export function useGetPackageByIdQuery(baseOptions: Apollo.QueryHookOptions<GetPackageByIdQuery, GetPackageByIdQueryVariables>) {
+export function useGetPackageByIdQuery(baseOptions: Apollo.QueryHookOptions<GetPackageByIdQuery, GetPackageByIdQueryVariables> & ({ variables: GetPackageByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPackageByIdQuery, GetPackageByIdQueryVariables>(GetPackageByIdDocument, options);
       }
@@ -5111,8 +5365,13 @@ export function useGetPackageByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetPackageByIdQuery, GetPackageByIdQueryVariables>(GetPackageByIdDocument, options);
         }
+export function useGetPackageByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPackageByIdQuery, GetPackageByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPackageByIdQuery, GetPackageByIdQueryVariables>(GetPackageByIdDocument, options);
+        }
 export type GetPackageByIdQueryHookResult = ReturnType<typeof useGetPackageByIdQuery>;
 export type GetPackageByIdLazyQueryHookResult = ReturnType<typeof useGetPackageByIdLazyQuery>;
+export type GetPackageByIdSuspenseQueryHookResult = ReturnType<typeof useGetPackageByIdSuspenseQuery>;
 export type GetPackageByIdQueryResult = Apollo.QueryResult<GetPackageByIdQuery, GetPackageByIdQueryVariables>;
 export const GetAllPackageByFacilityIdDocument = gql`
     query getAllPackageByFacilityId($input: String!) {
@@ -5160,7 +5419,7 @@ export const GetAllPackageByFacilityIdDocument = gql`
  *   },
  * });
  */
-export function useGetAllPackageByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>) {
+export function useGetAllPackageByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables> & ({ variables: GetAllPackageByFacilityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>(GetAllPackageByFacilityIdDocument, options);
       }
@@ -5168,8 +5427,13 @@ export function useGetAllPackageByFacilityIdLazyQuery(baseOptions?: Apollo.LazyQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>(GetAllPackageByFacilityIdDocument, options);
         }
+export function useGetAllPackageByFacilityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>(GetAllPackageByFacilityIdDocument, options);
+        }
 export type GetAllPackageByFacilityIdQueryHookResult = ReturnType<typeof useGetAllPackageByFacilityIdQuery>;
 export type GetAllPackageByFacilityIdLazyQueryHookResult = ReturnType<typeof useGetAllPackageByFacilityIdLazyQuery>;
+export type GetAllPackageByFacilityIdSuspenseQueryHookResult = ReturnType<typeof useGetAllPackageByFacilityIdSuspenseQuery>;
 export type GetAllPackageByFacilityIdQueryResult = Apollo.QueryResult<GetAllPackageByFacilityIdQuery, GetAllPackageByFacilityIdQueryVariables>;
 export const GetAllPackagePaginationOfFacilityDocument = gql`
     query getAllPackagePaginationOfFacility($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String, $staffId: String) {
@@ -5231,7 +5495,7 @@ export const GetAllPackagePaginationOfFacilityDocument = gql`
  *   },
  * });
  */
-export function useGetAllPackagePaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>) {
+export function useGetAllPackagePaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables> & ({ variables: GetAllPackagePaginationOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>(GetAllPackagePaginationOfFacilityDocument, options);
       }
@@ -5239,8 +5503,13 @@ export function useGetAllPackagePaginationOfFacilityLazyQuery(baseOptions?: Apol
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>(GetAllPackagePaginationOfFacilityDocument, options);
         }
+export function useGetAllPackagePaginationOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>(GetAllPackagePaginationOfFacilityDocument, options);
+        }
 export type GetAllPackagePaginationOfFacilityQueryHookResult = ReturnType<typeof useGetAllPackagePaginationOfFacilityQuery>;
 export type GetAllPackagePaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllPackagePaginationOfFacilityLazyQuery>;
+export type GetAllPackagePaginationOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllPackagePaginationOfFacilitySuspenseQuery>;
 export type GetAllPackagePaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllPackagePaginationOfFacilityQuery, GetAllPackagePaginationOfFacilityQueryVariables>;
 export const GetAllPackagePaginationByStaffDocument = gql`
     query getAllPackagePaginationByStaff($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $staffId: String!) {
@@ -5300,7 +5569,7 @@ export const GetAllPackagePaginationByStaffDocument = gql`
  *   },
  * });
  */
-export function useGetAllPackagePaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>) {
+export function useGetAllPackagePaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables> & ({ variables: GetAllPackagePaginationByStaffQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>(GetAllPackagePaginationByStaffDocument, options);
       }
@@ -5308,8 +5577,13 @@ export function useGetAllPackagePaginationByStaffLazyQuery(baseOptions?: Apollo.
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>(GetAllPackagePaginationByStaffDocument, options);
         }
+export function useGetAllPackagePaginationByStaffSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>(GetAllPackagePaginationByStaffDocument, options);
+        }
 export type GetAllPackagePaginationByStaffQueryHookResult = ReturnType<typeof useGetAllPackagePaginationByStaffQuery>;
 export type GetAllPackagePaginationByStaffLazyQueryHookResult = ReturnType<typeof useGetAllPackagePaginationByStaffLazyQuery>;
+export type GetAllPackagePaginationByStaffSuspenseQueryHookResult = ReturnType<typeof useGetAllPackagePaginationByStaffSuspenseQuery>;
 export type GetAllPackagePaginationByStaffQueryResult = Apollo.QueryResult<GetAllPackagePaginationByStaffQuery, GetAllPackagePaginationByStaffQueryVariables>;
 export const GetTotalPackagesCountDocument = gql`
     query getTotalPackagesCount($search: String, $userId: String, $staffId: String) {
@@ -5343,8 +5617,13 @@ export function useGetTotalPackagesCountLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalPackagesCountQuery, GetTotalPackagesCountQueryVariables>(GetTotalPackagesCountDocument, options);
         }
+export function useGetTotalPackagesCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalPackagesCountQuery, GetTotalPackagesCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalPackagesCountQuery, GetTotalPackagesCountQueryVariables>(GetTotalPackagesCountDocument, options);
+        }
 export type GetTotalPackagesCountQueryHookResult = ReturnType<typeof useGetTotalPackagesCountQuery>;
 export type GetTotalPackagesCountLazyQueryHookResult = ReturnType<typeof useGetTotalPackagesCountLazyQuery>;
+export type GetTotalPackagesCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalPackagesCountSuspenseQuery>;
 export type GetTotalPackagesCountQueryResult = Apollo.QueryResult<GetTotalPackagesCountQuery, GetTotalPackagesCountQueryVariables>;
 export const GetMedicalSpecialtyByIdDocument = gql`
     query getMedicalSpecialtyById($input: String!) {
@@ -5386,7 +5665,7 @@ export const GetMedicalSpecialtyByIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalSpecialtyByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>) {
+export function useGetMedicalSpecialtyByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables> & ({ variables: GetMedicalSpecialtyByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>(GetMedicalSpecialtyByIdDocument, options);
       }
@@ -5394,8 +5673,13 @@ export function useGetMedicalSpecialtyByIdLazyQuery(baseOptions?: Apollo.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>(GetMedicalSpecialtyByIdDocument, options);
         }
+export function useGetMedicalSpecialtyByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>(GetMedicalSpecialtyByIdDocument, options);
+        }
 export type GetMedicalSpecialtyByIdQueryHookResult = ReturnType<typeof useGetMedicalSpecialtyByIdQuery>;
 export type GetMedicalSpecialtyByIdLazyQueryHookResult = ReturnType<typeof useGetMedicalSpecialtyByIdLazyQuery>;
+export type GetMedicalSpecialtyByIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalSpecialtyByIdSuspenseQuery>;
 export type GetMedicalSpecialtyByIdQueryResult = Apollo.QueryResult<GetMedicalSpecialtyByIdQuery, GetMedicalSpecialtyByIdQueryVariables>;
 export const GetMedicalSpecialtiesByMedicalFacilityIdDocument = gql`
     query getMedicalSpecialtiesByMedicalFacilityId($input: String!) {
@@ -5437,7 +5721,7 @@ export const GetMedicalSpecialtiesByMedicalFacilityIdDocument = gql`
  *   },
  * });
  */
-export function useGetMedicalSpecialtiesByMedicalFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>) {
+export function useGetMedicalSpecialtiesByMedicalFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables> & ({ variables: GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>(GetMedicalSpecialtiesByMedicalFacilityIdDocument, options);
       }
@@ -5445,8 +5729,13 @@ export function useGetMedicalSpecialtiesByMedicalFacilityIdLazyQuery(baseOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>(GetMedicalSpecialtiesByMedicalFacilityIdDocument, options);
         }
+export function useGetMedicalSpecialtiesByMedicalFacilityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>(GetMedicalSpecialtiesByMedicalFacilityIdDocument, options);
+        }
 export type GetMedicalSpecialtiesByMedicalFacilityIdQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesByMedicalFacilityIdQuery>;
 export type GetMedicalSpecialtiesByMedicalFacilityIdLazyQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesByMedicalFacilityIdLazyQuery>;
+export type GetMedicalSpecialtiesByMedicalFacilityIdSuspenseQueryHookResult = ReturnType<typeof useGetMedicalSpecialtiesByMedicalFacilityIdSuspenseQuery>;
 export type GetMedicalSpecialtiesByMedicalFacilityIdQueryResult = Apollo.QueryResult<GetMedicalSpecialtiesByMedicalFacilityIdQuery, GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables>;
 export const GetAllMedicalSpecialtiesPaginationOfFacilityDocument = gql`
     query getAllMedicalSpecialtiesPaginationOfFacility($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String, $staffId: String) {
@@ -5502,7 +5791,7 @@ export const GetAllMedicalSpecialtiesPaginationOfFacilityDocument = gql`
  *   },
  * });
  */
-export function useGetAllMedicalSpecialtiesPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>) {
+export function useGetAllMedicalSpecialtiesPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables> & ({ variables: GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>(GetAllMedicalSpecialtiesPaginationOfFacilityDocument, options);
       }
@@ -5510,8 +5799,13 @@ export function useGetAllMedicalSpecialtiesPaginationOfFacilityLazyQuery(baseOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>(GetAllMedicalSpecialtiesPaginationOfFacilityDocument, options);
         }
+export function useGetAllMedicalSpecialtiesPaginationOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>(GetAllMedicalSpecialtiesPaginationOfFacilityDocument, options);
+        }
 export type GetAllMedicalSpecialtiesPaginationOfFacilityQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationOfFacilityQuery>;
 export type GetAllMedicalSpecialtiesPaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationOfFacilityLazyQuery>;
+export type GetAllMedicalSpecialtiesPaginationOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationOfFacilitySuspenseQuery>;
 export type GetAllMedicalSpecialtiesPaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllMedicalSpecialtiesPaginationOfFacilityQuery, GetAllMedicalSpecialtiesPaginationOfFacilityQueryVariables>;
 export const GetAllMedicalSpecialtiesPaginationByStaffDocument = gql`
     query getAllMedicalSpecialtiesPaginationByStaff($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $staffId: String!) {
@@ -5565,7 +5859,7 @@ export const GetAllMedicalSpecialtiesPaginationByStaffDocument = gql`
  *   },
  * });
  */
-export function useGetAllMedicalSpecialtiesPaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>) {
+export function useGetAllMedicalSpecialtiesPaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables> & ({ variables: GetAllMedicalSpecialtiesPaginationByStaffQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>(GetAllMedicalSpecialtiesPaginationByStaffDocument, options);
       }
@@ -5573,8 +5867,13 @@ export function useGetAllMedicalSpecialtiesPaginationByStaffLazyQuery(baseOption
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>(GetAllMedicalSpecialtiesPaginationByStaffDocument, options);
         }
+export function useGetAllMedicalSpecialtiesPaginationByStaffSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>(GetAllMedicalSpecialtiesPaginationByStaffDocument, options);
+        }
 export type GetAllMedicalSpecialtiesPaginationByStaffQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationByStaffQuery>;
 export type GetAllMedicalSpecialtiesPaginationByStaffLazyQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationByStaffLazyQuery>;
+export type GetAllMedicalSpecialtiesPaginationByStaffSuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesPaginationByStaffSuspenseQuery>;
 export type GetAllMedicalSpecialtiesPaginationByStaffQueryResult = Apollo.QueryResult<GetAllMedicalSpecialtiesPaginationByStaffQuery, GetAllMedicalSpecialtiesPaginationByStaffQueryVariables>;
 export const GetTotalMedicalSpecialtiesCountDocument = gql`
     query getTotalMedicalSpecialtiesCount($search: String, $userId: String, $staffId: String) {
@@ -5612,8 +5911,13 @@ export function useGetTotalMedicalSpecialtiesCountLazyQuery(baseOptions?: Apollo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalMedicalSpecialtiesCountQuery, GetTotalMedicalSpecialtiesCountQueryVariables>(GetTotalMedicalSpecialtiesCountDocument, options);
         }
+export function useGetTotalMedicalSpecialtiesCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalMedicalSpecialtiesCountQuery, GetTotalMedicalSpecialtiesCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalMedicalSpecialtiesCountQuery, GetTotalMedicalSpecialtiesCountQueryVariables>(GetTotalMedicalSpecialtiesCountDocument, options);
+        }
 export type GetTotalMedicalSpecialtiesCountQueryHookResult = ReturnType<typeof useGetTotalMedicalSpecialtiesCountQuery>;
 export type GetTotalMedicalSpecialtiesCountLazyQueryHookResult = ReturnType<typeof useGetTotalMedicalSpecialtiesCountLazyQuery>;
+export type GetTotalMedicalSpecialtiesCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalMedicalSpecialtiesCountSuspenseQuery>;
 export type GetTotalMedicalSpecialtiesCountQueryResult = Apollo.QueryResult<GetTotalMedicalSpecialtiesCountQuery, GetTotalMedicalSpecialtiesCountQueryVariables>;
 export const GetVaccineByIdDocument = gql`
     query getVaccineById($input: String!) {
@@ -5658,7 +5962,7 @@ export const GetVaccineByIdDocument = gql`
  *   },
  * });
  */
-export function useGetVaccineByIdQuery(baseOptions: Apollo.QueryHookOptions<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>) {
+export function useGetVaccineByIdQuery(baseOptions: Apollo.QueryHookOptions<GetVaccineByIdQuery, GetVaccineByIdQueryVariables> & ({ variables: GetVaccineByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>(GetVaccineByIdDocument, options);
       }
@@ -5666,8 +5970,13 @@ export function useGetVaccineByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>(GetVaccineByIdDocument, options);
         }
+export function useGetVaccineByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>(GetVaccineByIdDocument, options);
+        }
 export type GetVaccineByIdQueryHookResult = ReturnType<typeof useGetVaccineByIdQuery>;
 export type GetVaccineByIdLazyQueryHookResult = ReturnType<typeof useGetVaccineByIdLazyQuery>;
+export type GetVaccineByIdSuspenseQueryHookResult = ReturnType<typeof useGetVaccineByIdSuspenseQuery>;
 export type GetVaccineByIdQueryResult = Apollo.QueryResult<GetVaccineByIdQuery, GetVaccineByIdQueryVariables>;
 export const GetAllVaccinationByFacilityIdDocument = gql`
     query getAllVaccinationByFacilityId($input: String!) {
@@ -5712,7 +6021,7 @@ export const GetAllVaccinationByFacilityIdDocument = gql`
  *   },
  * });
  */
-export function useGetAllVaccinationByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>) {
+export function useGetAllVaccinationByFacilityIdQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables> & ({ variables: GetAllVaccinationByFacilityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>(GetAllVaccinationByFacilityIdDocument, options);
       }
@@ -5720,8 +6029,13 @@ export function useGetAllVaccinationByFacilityIdLazyQuery(baseOptions?: Apollo.L
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>(GetAllVaccinationByFacilityIdDocument, options);
         }
+export function useGetAllVaccinationByFacilityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>(GetAllVaccinationByFacilityIdDocument, options);
+        }
 export type GetAllVaccinationByFacilityIdQueryHookResult = ReturnType<typeof useGetAllVaccinationByFacilityIdQuery>;
 export type GetAllVaccinationByFacilityIdLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationByFacilityIdLazyQuery>;
+export type GetAllVaccinationByFacilityIdSuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationByFacilityIdSuspenseQuery>;
 export type GetAllVaccinationByFacilityIdQueryResult = Apollo.QueryResult<GetAllVaccinationByFacilityIdQuery, GetAllVaccinationByFacilityIdQueryVariables>;
 export const GetAllVaccinationPaginationOfFacilityDocument = gql`
     query getAllVaccinationPaginationOfFacility($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String, $staffId: String) {
@@ -5780,7 +6094,7 @@ export const GetAllVaccinationPaginationOfFacilityDocument = gql`
  *   },
  * });
  */
-export function useGetAllVaccinationPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>) {
+export function useGetAllVaccinationPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables> & ({ variables: GetAllVaccinationPaginationOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>(GetAllVaccinationPaginationOfFacilityDocument, options);
       }
@@ -5788,8 +6102,13 @@ export function useGetAllVaccinationPaginationOfFacilityLazyQuery(baseOptions?: 
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>(GetAllVaccinationPaginationOfFacilityDocument, options);
         }
+export function useGetAllVaccinationPaginationOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>(GetAllVaccinationPaginationOfFacilityDocument, options);
+        }
 export type GetAllVaccinationPaginationOfFacilityQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationOfFacilityQuery>;
 export type GetAllVaccinationPaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationOfFacilityLazyQuery>;
+export type GetAllVaccinationPaginationOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationOfFacilitySuspenseQuery>;
 export type GetAllVaccinationPaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllVaccinationPaginationOfFacilityQuery, GetAllVaccinationPaginationOfFacilityQueryVariables>;
 export const GetAllVaccinationPaginationByStaffDocument = gql`
     query getAllVaccinationPaginationByStaff($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $staffId: String!) {
@@ -5846,7 +6165,7 @@ export const GetAllVaccinationPaginationByStaffDocument = gql`
  *   },
  * });
  */
-export function useGetAllVaccinationPaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>) {
+export function useGetAllVaccinationPaginationByStaffQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables> & ({ variables: GetAllVaccinationPaginationByStaffQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>(GetAllVaccinationPaginationByStaffDocument, options);
       }
@@ -5854,8 +6173,13 @@ export function useGetAllVaccinationPaginationByStaffLazyQuery(baseOptions?: Apo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>(GetAllVaccinationPaginationByStaffDocument, options);
         }
+export function useGetAllVaccinationPaginationByStaffSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>(GetAllVaccinationPaginationByStaffDocument, options);
+        }
 export type GetAllVaccinationPaginationByStaffQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationByStaffQuery>;
 export type GetAllVaccinationPaginationByStaffLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationByStaffLazyQuery>;
+export type GetAllVaccinationPaginationByStaffSuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationPaginationByStaffSuspenseQuery>;
 export type GetAllVaccinationPaginationByStaffQueryResult = Apollo.QueryResult<GetAllVaccinationPaginationByStaffQuery, GetAllVaccinationPaginationByStaffQueryVariables>;
 export const GetTotalVaccinationsCountDocument = gql`
     query getTotalVaccinationsCount($search: String, $userId: String, $staffId: String) {
@@ -5889,8 +6213,13 @@ export function useGetTotalVaccinationsCountLazyQuery(baseOptions?: Apollo.LazyQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalVaccinationsCountQuery, GetTotalVaccinationsCountQueryVariables>(GetTotalVaccinationsCountDocument, options);
         }
+export function useGetTotalVaccinationsCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalVaccinationsCountQuery, GetTotalVaccinationsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalVaccinationsCountQuery, GetTotalVaccinationsCountQueryVariables>(GetTotalVaccinationsCountDocument, options);
+        }
 export type GetTotalVaccinationsCountQueryHookResult = ReturnType<typeof useGetTotalVaccinationsCountQuery>;
 export type GetTotalVaccinationsCountLazyQueryHookResult = ReturnType<typeof useGetTotalVaccinationsCountLazyQuery>;
+export type GetTotalVaccinationsCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalVaccinationsCountSuspenseQuery>;
 export type GetTotalVaccinationsCountQueryResult = Apollo.QueryResult<GetTotalVaccinationsCountQuery, GetTotalVaccinationsCountQueryVariables>;
 export const GetSpecialtySelectDocument = gql`
     query getSpecialtySelect($input: String!) {
@@ -5917,7 +6246,7 @@ export const GetSpecialtySelectDocument = gql`
  *   },
  * });
  */
-export function useGetSpecialtySelectQuery(baseOptions: Apollo.QueryHookOptions<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>) {
+export function useGetSpecialtySelectQuery(baseOptions: Apollo.QueryHookOptions<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables> & ({ variables: GetSpecialtySelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>(GetSpecialtySelectDocument, options);
       }
@@ -5925,8 +6254,13 @@ export function useGetSpecialtySelectLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>(GetSpecialtySelectDocument, options);
         }
+export function useGetSpecialtySelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>(GetSpecialtySelectDocument, options);
+        }
 export type GetSpecialtySelectQueryHookResult = ReturnType<typeof useGetSpecialtySelectQuery>;
 export type GetSpecialtySelectLazyQueryHookResult = ReturnType<typeof useGetSpecialtySelectLazyQuery>;
+export type GetSpecialtySelectSuspenseQueryHookResult = ReturnType<typeof useGetSpecialtySelectSuspenseQuery>;
 export type GetSpecialtySelectQueryResult = Apollo.QueryResult<GetSpecialtySelectQuery, GetSpecialtySelectQueryVariables>;
 export const GetAllPackageSelectDocument = gql`
     query getAllPackageSelect($input: String!) {
@@ -5953,7 +6287,7 @@ export const GetAllPackageSelectDocument = gql`
  *   },
  * });
  */
-export function useGetAllPackageSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>) {
+export function useGetAllPackageSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables> & ({ variables: GetAllPackageSelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>(GetAllPackageSelectDocument, options);
       }
@@ -5961,8 +6295,13 @@ export function useGetAllPackageSelectLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>(GetAllPackageSelectDocument, options);
         }
+export function useGetAllPackageSelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>(GetAllPackageSelectDocument, options);
+        }
 export type GetAllPackageSelectQueryHookResult = ReturnType<typeof useGetAllPackageSelectQuery>;
 export type GetAllPackageSelectLazyQueryHookResult = ReturnType<typeof useGetAllPackageSelectLazyQuery>;
+export type GetAllPackageSelectSuspenseQueryHookResult = ReturnType<typeof useGetAllPackageSelectSuspenseQuery>;
 export type GetAllPackageSelectQueryResult = Apollo.QueryResult<GetAllPackageSelectQuery, GetAllPackageSelectQueryVariables>;
 export const GetAllVaccinationSelectDocument = gql`
     query getAllVaccinationSelect($input: String!) {
@@ -5989,7 +6328,7 @@ export const GetAllVaccinationSelectDocument = gql`
  *   },
  * });
  */
-export function useGetAllVaccinationSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>) {
+export function useGetAllVaccinationSelectQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables> & ({ variables: GetAllVaccinationSelectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>(GetAllVaccinationSelectDocument, options);
       }
@@ -5997,8 +6336,13 @@ export function useGetAllVaccinationSelectLazyQuery(baseOptions?: Apollo.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>(GetAllVaccinationSelectDocument, options);
         }
+export function useGetAllVaccinationSelectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>(GetAllVaccinationSelectDocument, options);
+        }
 export type GetAllVaccinationSelectQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectQuery>;
 export type GetAllVaccinationSelectLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectLazyQuery>;
+export type GetAllVaccinationSelectSuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationSelectSuspenseQuery>;
 export type GetAllVaccinationSelectQueryResult = Apollo.QueryResult<GetAllVaccinationSelectQuery, GetAllVaccinationSelectQueryVariables>;
 export const GetAllUsersPaginationDocument = gql`
     query getAllUsersPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
@@ -6044,7 +6388,7 @@ export const GetAllUsersPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllUsersPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>) {
+export function useGetAllUsersPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables> & ({ variables: GetAllUsersPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>(GetAllUsersPaginationDocument, options);
       }
@@ -6052,8 +6396,13 @@ export function useGetAllUsersPaginationLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>(GetAllUsersPaginationDocument, options);
         }
+export function useGetAllUsersPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>(GetAllUsersPaginationDocument, options);
+        }
 export type GetAllUsersPaginationQueryHookResult = ReturnType<typeof useGetAllUsersPaginationQuery>;
 export type GetAllUsersPaginationLazyQueryHookResult = ReturnType<typeof useGetAllUsersPaginationLazyQuery>;
+export type GetAllUsersPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllUsersPaginationSuspenseQuery>;
 export type GetAllUsersPaginationQueryResult = Apollo.QueryResult<GetAllUsersPaginationQuery, GetAllUsersPaginationQueryVariables>;
 export const GetTotalUsersCountDocument = gql`
     query getTotalUsersCount($search: String) {
@@ -6085,8 +6434,13 @@ export function useGetTotalUsersCountLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>(GetTotalUsersCountDocument, options);
         }
+export function useGetTotalUsersCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>(GetTotalUsersCountDocument, options);
+        }
 export type GetTotalUsersCountQueryHookResult = ReturnType<typeof useGetTotalUsersCountQuery>;
 export type GetTotalUsersCountLazyQueryHookResult = ReturnType<typeof useGetTotalUsersCountLazyQuery>;
+export type GetTotalUsersCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalUsersCountSuspenseQuery>;
 export type GetTotalUsersCountQueryResult = Apollo.QueryResult<GetTotalUsersCountQuery, GetTotalUsersCountQueryVariables>;
 export const GetAllRegisterByOptionDocument = gql`
     query getAllRegisterByOption($input: GetRegisterByOptionInput!) {
@@ -6151,7 +6505,7 @@ export const GetAllRegisterByOptionDocument = gql`
  *   },
  * });
  */
-export function useGetAllRegisterByOptionQuery(baseOptions: Apollo.QueryHookOptions<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>) {
+export function useGetAllRegisterByOptionQuery(baseOptions: Apollo.QueryHookOptions<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables> & ({ variables: GetAllRegisterByOptionQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>(GetAllRegisterByOptionDocument, options);
       }
@@ -6159,8 +6513,13 @@ export function useGetAllRegisterByOptionLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>(GetAllRegisterByOptionDocument, options);
         }
+export function useGetAllRegisterByOptionSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>(GetAllRegisterByOptionDocument, options);
+        }
 export type GetAllRegisterByOptionQueryHookResult = ReturnType<typeof useGetAllRegisterByOptionQuery>;
 export type GetAllRegisterByOptionLazyQueryHookResult = ReturnType<typeof useGetAllRegisterByOptionLazyQuery>;
+export type GetAllRegisterByOptionSuspenseQueryHookResult = ReturnType<typeof useGetAllRegisterByOptionSuspenseQuery>;
 export type GetAllRegisterByOptionQueryResult = Apollo.QueryResult<GetAllRegisterByOptionQuery, GetAllRegisterByOptionQueryVariables>;
 export const GetAllStaffPaginationDocument = gql`
     query getAllStaffPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
@@ -6211,7 +6570,7 @@ export const GetAllStaffPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllStaffPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>) {
+export function useGetAllStaffPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables> & ({ variables: GetAllStaffPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>(GetAllStaffPaginationDocument, options);
       }
@@ -6219,8 +6578,13 @@ export function useGetAllStaffPaginationLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>(GetAllStaffPaginationDocument, options);
         }
+export function useGetAllStaffPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>(GetAllStaffPaginationDocument, options);
+        }
 export type GetAllStaffPaginationQueryHookResult = ReturnType<typeof useGetAllStaffPaginationQuery>;
 export type GetAllStaffPaginationLazyQueryHookResult = ReturnType<typeof useGetAllStaffPaginationLazyQuery>;
+export type GetAllStaffPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllStaffPaginationSuspenseQuery>;
 export type GetAllStaffPaginationQueryResult = Apollo.QueryResult<GetAllStaffPaginationQuery, GetAllStaffPaginationQueryVariables>;
 export const TotalStaffsCountDocument = gql`
     query totalStaffsCount($search: String, $userId: String) {
@@ -6253,8 +6617,13 @@ export function useTotalStaffsCountLazyQuery(baseOptions?: Apollo.LazyQueryHookO
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>(TotalStaffsCountDocument, options);
         }
+export function useTotalStaffsCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>(TotalStaffsCountDocument, options);
+        }
 export type TotalStaffsCountQueryHookResult = ReturnType<typeof useTotalStaffsCountQuery>;
 export type TotalStaffsCountLazyQueryHookResult = ReturnType<typeof useTotalStaffsCountLazyQuery>;
+export type TotalStaffsCountSuspenseQueryHookResult = ReturnType<typeof useTotalStaffsCountSuspenseQuery>;
 export type TotalStaffsCountQueryResult = Apollo.QueryResult<TotalStaffsCountQuery, TotalStaffsCountQueryVariables>;
 export const GetAllMedicalStaffPaginationOfFacilityDocument = gql`
     query getAllMedicalStaffPaginationOfFacility($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String, $userId: String!) {
@@ -6307,7 +6676,7 @@ export const GetAllMedicalStaffPaginationOfFacilityDocument = gql`
  *   },
  * });
  */
-export function useGetAllMedicalStaffPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>) {
+export function useGetAllMedicalStaffPaginationOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables> & ({ variables: GetAllMedicalStaffPaginationOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>(GetAllMedicalStaffPaginationOfFacilityDocument, options);
       }
@@ -6315,8 +6684,13 @@ export function useGetAllMedicalStaffPaginationOfFacilityLazyQuery(baseOptions?:
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>(GetAllMedicalStaffPaginationOfFacilityDocument, options);
         }
+export function useGetAllMedicalStaffPaginationOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>(GetAllMedicalStaffPaginationOfFacilityDocument, options);
+        }
 export type GetAllMedicalStaffPaginationOfFacilityQueryHookResult = ReturnType<typeof useGetAllMedicalStaffPaginationOfFacilityQuery>;
 export type GetAllMedicalStaffPaginationOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllMedicalStaffPaginationOfFacilityLazyQuery>;
+export type GetAllMedicalStaffPaginationOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalStaffPaginationOfFacilitySuspenseQuery>;
 export type GetAllMedicalStaffPaginationOfFacilityQueryResult = Apollo.QueryResult<GetAllMedicalStaffPaginationOfFacilityQuery, GetAllMedicalStaffPaginationOfFacilityQueryVariables>;
 export const GetAllCustomerPaginationDocument = gql`
     query getAllCustomerPagination($search: String, $page: Float!, $limit: Float!, $sortField: String, $sortOrder: String) {
@@ -6375,7 +6749,7 @@ export const GetAllCustomerPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllCustomerPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>) {
+export function useGetAllCustomerPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables> & ({ variables: GetAllCustomerPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>(GetAllCustomerPaginationDocument, options);
       }
@@ -6383,8 +6757,13 @@ export function useGetAllCustomerPaginationLazyQuery(baseOptions?: Apollo.LazyQu
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>(GetAllCustomerPaginationDocument, options);
         }
+export function useGetAllCustomerPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>(GetAllCustomerPaginationDocument, options);
+        }
 export type GetAllCustomerPaginationQueryHookResult = ReturnType<typeof useGetAllCustomerPaginationQuery>;
 export type GetAllCustomerPaginationLazyQueryHookResult = ReturnType<typeof useGetAllCustomerPaginationLazyQuery>;
+export type GetAllCustomerPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllCustomerPaginationSuspenseQuery>;
 export type GetAllCustomerPaginationQueryResult = Apollo.QueryResult<GetAllCustomerPaginationQuery, GetAllCustomerPaginationQueryVariables>;
 export const GetTotalCustomersCountDocument = gql`
     query getTotalCustomersCount($search: String) {
@@ -6416,8 +6795,13 @@ export function useGetTotalCustomersCountLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTotalCustomersCountQuery, GetTotalCustomersCountQueryVariables>(GetTotalCustomersCountDocument, options);
         }
+export function useGetTotalCustomersCountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTotalCustomersCountQuery, GetTotalCustomersCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTotalCustomersCountQuery, GetTotalCustomersCountQueryVariables>(GetTotalCustomersCountDocument, options);
+        }
 export type GetTotalCustomersCountQueryHookResult = ReturnType<typeof useGetTotalCustomersCountQuery>;
 export type GetTotalCustomersCountLazyQueryHookResult = ReturnType<typeof useGetTotalCustomersCountLazyQuery>;
+export type GetTotalCustomersCountSuspenseQueryHookResult = ReturnType<typeof useGetTotalCustomersCountSuspenseQuery>;
 export type GetTotalCustomersCountQueryResult = Apollo.QueryResult<GetTotalCustomersCountQuery, GetTotalCustomersCountQueryVariables>;
 export const GetTottalBlogDocument = gql`
     query getTottalBlog($search: String, $isDeleted: Boolean) {
@@ -6450,8 +6834,13 @@ export function useGetTottalBlogLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetTottalBlogQuery, GetTottalBlogQueryVariables>(GetTottalBlogDocument, options);
         }
+export function useGetTottalBlogSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTottalBlogQuery, GetTottalBlogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTottalBlogQuery, GetTottalBlogQueryVariables>(GetTottalBlogDocument, options);
+        }
 export type GetTottalBlogQueryHookResult = ReturnType<typeof useGetTottalBlogQuery>;
 export type GetTottalBlogLazyQueryHookResult = ReturnType<typeof useGetTottalBlogLazyQuery>;
+export type GetTottalBlogSuspenseQueryHookResult = ReturnType<typeof useGetTottalBlogSuspenseQuery>;
 export type GetTottalBlogQueryResult = Apollo.QueryResult<GetTottalBlogQuery, GetTottalBlogQueryVariables>;
 export const GetAllBlogPaginationDocument = gql`
     query getAllBlogPagination($search: String, $page: Float!, $limit: Float!, $sortOrder: String, $isDeleted: Boolean) {
@@ -6499,7 +6888,7 @@ export const GetAllBlogPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllBlogPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>) {
+export function useGetAllBlogPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables> & ({ variables: GetAllBlogPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>(GetAllBlogPaginationDocument, options);
       }
@@ -6507,8 +6896,13 @@ export function useGetAllBlogPaginationLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>(GetAllBlogPaginationDocument, options);
         }
+export function useGetAllBlogPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>(GetAllBlogPaginationDocument, options);
+        }
 export type GetAllBlogPaginationQueryHookResult = ReturnType<typeof useGetAllBlogPaginationQuery>;
 export type GetAllBlogPaginationLazyQueryHookResult = ReturnType<typeof useGetAllBlogPaginationLazyQuery>;
+export type GetAllBlogPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllBlogPaginationSuspenseQuery>;
 export type GetAllBlogPaginationQueryResult = Apollo.QueryResult<GetAllBlogPaginationQuery, GetAllBlogPaginationQueryVariables>;
 export const GetBlogBySlugDocument = gql`
     query getBlogBySlug($slug: String!) {
@@ -6565,7 +6959,7 @@ export const GetBlogBySlugDocument = gql`
  *   },
  * });
  */
-export function useGetBlogBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>) {
+export function useGetBlogBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetBlogBySlugQuery, GetBlogBySlugQueryVariables> & ({ variables: GetBlogBySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>(GetBlogBySlugDocument, options);
       }
@@ -6573,8 +6967,13 @@ export function useGetBlogBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>(GetBlogBySlugDocument, options);
         }
+export function useGetBlogBySlugSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>(GetBlogBySlugDocument, options);
+        }
 export type GetBlogBySlugQueryHookResult = ReturnType<typeof useGetBlogBySlugQuery>;
 export type GetBlogBySlugLazyQueryHookResult = ReturnType<typeof useGetBlogBySlugLazyQuery>;
+export type GetBlogBySlugSuspenseQueryHookResult = ReturnType<typeof useGetBlogBySlugSuspenseQuery>;
 export type GetBlogBySlugQueryResult = Apollo.QueryResult<GetBlogBySlugQuery, GetBlogBySlugQueryVariables>;
 export const GetAllBlogOfFacilityPaginationDocument = gql`
     query getAllBlogOfFacilityPagination($search: String, $page: Float!, $limit: Float!, $sortOrder: String, $facilityId: String!, $isDeleted: Boolean) {
@@ -6640,7 +7039,7 @@ export const GetAllBlogOfFacilityPaginationDocument = gql`
  *   },
  * });
  */
-export function useGetAllBlogOfFacilityPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>) {
+export function useGetAllBlogOfFacilityPaginationQuery(baseOptions: Apollo.QueryHookOptions<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables> & ({ variables: GetAllBlogOfFacilityPaginationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>(GetAllBlogOfFacilityPaginationDocument, options);
       }
@@ -6648,78 +7047,194 @@ export function useGetAllBlogOfFacilityPaginationLazyQuery(baseOptions?: Apollo.
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>(GetAllBlogOfFacilityPaginationDocument, options);
         }
+export function useGetAllBlogOfFacilityPaginationSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>(GetAllBlogOfFacilityPaginationDocument, options);
+        }
 export type GetAllBlogOfFacilityPaginationQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationQuery>;
 export type GetAllBlogOfFacilityPaginationLazyQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationLazyQuery>;
+export type GetAllBlogOfFacilityPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationSuspenseQuery>;
 export type GetAllBlogOfFacilityPaginationQueryResult = Apollo.QueryResult<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>;
-export const RegisterDoctorCreatedDocument = gql`
-    subscription registerDoctorCreated($doctorId: String!, $date: String!) {
-  registerDoctorCreated(doctorId: $doctorId, date: $date) {
+export const GetAllDoctorCountOfFacilityDocument = gql`
+    query getAllDoctorCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+  getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
     id
-    date
-    typeOfService
-    cancel
-    profile {
-      id
-      customerId
-      email
-      ethnic
-      fullname
-      address
-      gender
-      job
-      dataOfBirth
-      identity
-      medicalInsurance
-      numberPhone
-      relationship
-      customer {
-        id
-        userId
-        fullname
-        gender
-        numberPhone
-        email
-        address
-        dateOfBirth
-        ethnic
-      }
-    }
-    state
-    packageId
-    profileId
-    specialtyId
-    vaccineId
-    session {
-      startTime
-      endTime
-    }
+    doctorName
+    registerCount(startTime: $startTime, endTime: $endTime)
   }
 }
     `;
 
 /**
- * __useRegisterDoctorCreatedSubscription__
+ * __useGetAllDoctorCountOfFacilityQuery__
  *
- * To run a query within a React component, call `useRegisterDoctorCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useRegisterDoctorCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllDoctorCountOfFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllDoctorCountOfFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRegisterDoctorCreatedSubscription({
+ * const { data, loading, error } = useGetAllDoctorCountOfFacilityQuery({
  *   variables: {
- *      doctorId: // value for 'doctorId'
- *      date: // value for 'date'
+ *      userId: // value for 'userId'
+ *      staffId: // value for 'staffId'
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
  *   },
  * });
  */
-export function useRegisterDoctorCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterDoctorCreatedSubscription, RegisterDoctorCreatedSubscriptionVariables>) {
+export function useGetAllDoctorCountOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables> & ({ variables: GetAllDoctorCountOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<RegisterDoctorCreatedSubscription, RegisterDoctorCreatedSubscriptionVariables>(RegisterDoctorCreatedDocument, options);
+        return Apollo.useQuery<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>(GetAllDoctorCountOfFacilityDocument, options);
       }
-export type RegisterDoctorCreatedSubscriptionHookResult = ReturnType<typeof useRegisterDoctorCreatedSubscription>;
-export type RegisterDoctorCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterDoctorCreatedSubscription>;
+export function useGetAllDoctorCountOfFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>(GetAllDoctorCountOfFacilityDocument, options);
+        }
+export function useGetAllDoctorCountOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>(GetAllDoctorCountOfFacilityDocument, options);
+        }
+export type GetAllDoctorCountOfFacilityQueryHookResult = ReturnType<typeof useGetAllDoctorCountOfFacilityQuery>;
+export type GetAllDoctorCountOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllDoctorCountOfFacilityLazyQuery>;
+export type GetAllDoctorCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorCountOfFacilitySuspenseQuery>;
+export type GetAllDoctorCountOfFacilityQueryResult = Apollo.QueryResult<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>;
+export const GetAllPackageCountOfFacilityDocument = gql`
+    query getAllPackageCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+  getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
+    id
+    packageName
+    registerCount(startTime: $startTime, endTime: $endTime)
+  }
+}
+    `;
+
+/**
+ * __useGetAllPackageCountOfFacilityQuery__
+ *
+ * To run a query within a React component, call `useGetAllPackageCountOfFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPackageCountOfFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPackageCountOfFacilityQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      staffId: // value for 'staffId'
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useGetAllPackageCountOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables> & ({ variables: GetAllPackageCountOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>(GetAllPackageCountOfFacilityDocument, options);
+      }
+export function useGetAllPackageCountOfFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>(GetAllPackageCountOfFacilityDocument, options);
+        }
+export function useGetAllPackageCountOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>(GetAllPackageCountOfFacilityDocument, options);
+        }
+export type GetAllPackageCountOfFacilityQueryHookResult = ReturnType<typeof useGetAllPackageCountOfFacilityQuery>;
+export type GetAllPackageCountOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllPackageCountOfFacilityLazyQuery>;
+export type GetAllPackageCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllPackageCountOfFacilitySuspenseQuery>;
+export type GetAllPackageCountOfFacilityQueryResult = Apollo.QueryResult<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>;
+export const GetAllMedicalSpecialtiesCountOfFacilityDocument = gql`
+    query getAllMedicalSpecialtiesCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+  getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
+    id
+    specialtyName
+    registerCount(startTime: $startTime, endTime: $endTime)
+  }
+}
+    `;
+
+/**
+ * __useGetAllMedicalSpecialtiesCountOfFacilityQuery__
+ *
+ * To run a query within a React component, call `useGetAllMedicalSpecialtiesCountOfFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMedicalSpecialtiesCountOfFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMedicalSpecialtiesCountOfFacilityQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      staffId: // value for 'staffId'
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useGetAllMedicalSpecialtiesCountOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables> & ({ variables: GetAllMedicalSpecialtiesCountOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>(GetAllMedicalSpecialtiesCountOfFacilityDocument, options);
+      }
+export function useGetAllMedicalSpecialtiesCountOfFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>(GetAllMedicalSpecialtiesCountOfFacilityDocument, options);
+        }
+export function useGetAllMedicalSpecialtiesCountOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>(GetAllMedicalSpecialtiesCountOfFacilityDocument, options);
+        }
+export type GetAllMedicalSpecialtiesCountOfFacilityQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesCountOfFacilityQuery>;
+export type GetAllMedicalSpecialtiesCountOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesCountOfFacilityLazyQuery>;
+export type GetAllMedicalSpecialtiesCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesCountOfFacilitySuspenseQuery>;
+export type GetAllMedicalSpecialtiesCountOfFacilityQueryResult = Apollo.QueryResult<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>;
+export const GetAllVaccinationCountOfFacilityDocument = gql`
+    query getAllVaccinationCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+  getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
+    id
+    vaccineName
+    registerCount(startTime: $startTime, endTime: $endTime)
+  }
+}
+    `;
+
+/**
+ * __useGetAllVaccinationCountOfFacilityQuery__
+ *
+ * To run a query within a React component, call `useGetAllVaccinationCountOfFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllVaccinationCountOfFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllVaccinationCountOfFacilityQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      staffId: // value for 'staffId'
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useGetAllVaccinationCountOfFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables> & ({ variables: GetAllVaccinationCountOfFacilityQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>(GetAllVaccinationCountOfFacilityDocument, options);
+      }
+export function useGetAllVaccinationCountOfFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>(GetAllVaccinationCountOfFacilityDocument, options);
+        }
+export function useGetAllVaccinationCountOfFacilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>(GetAllVaccinationCountOfFacilityDocument, options);
+        }
+export type GetAllVaccinationCountOfFacilityQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilityQuery>;
+export type GetAllVaccinationCountOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilityLazyQuery>;
+export type GetAllVaccinationCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilitySuspenseQuery>;
+export type GetAllVaccinationCountOfFacilityQueryResult = Apollo.QueryResult<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>;
 export const RegisterCreatedDocument = gql`
     subscription registerCreated($option: GetRegisterByOptionInput!) {
   registerCreated(option: $option) {
@@ -6783,7 +7298,7 @@ export const RegisterCreatedDocument = gql`
  *   },
  * });
  */
-export function useRegisterCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterCreatedSubscription, RegisterCreatedSubscriptionVariables>) {
+export function useRegisterCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterCreatedSubscription, RegisterCreatedSubscriptionVariables> & ({ variables: RegisterCreatedSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<RegisterCreatedSubscription, RegisterCreatedSubscriptionVariables>(RegisterCreatedDocument, options);
       }

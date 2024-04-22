@@ -32,7 +32,6 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
-import { FcSearch } from "react-icons/fc";
 import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
@@ -389,19 +388,9 @@ function FormAddMedicalFacility() {
               <Form.Control.Feedback type="invalid">
                 Vui lòng nhập địa chỉ
               </Form.Control.Feedback>
-              <Button
-                variant="outline-success"
-                className="my-3"
-                onClick={() => {
-                  dispatch(
-                    hanldeFindLocation(state.createMedicalFacility.address)
-                  );
-                }}>
-                Tìm trên bản đồ <FcSearch size={24} />
-              </Button>
 
               <div className="mb-5" style={{ height: "400px", width: "800px" }}>
-                <h3>Chọn vị trí trên bản đồ</h3>
+                <h5>Chọn vị trí trên bản đồ</h5>
                 <MapInputCpn
                   lat={10.275796634253519}
                   lng={105.298391156358}

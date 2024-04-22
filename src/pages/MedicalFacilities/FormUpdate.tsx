@@ -40,9 +40,14 @@ import { getToken } from "src/utils/contain";
 import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import ShowAlert from "src/components/sub/alerts";
-import { getEnumValueTypeOfFacility } from "src/utils/getData";
+import {
+  getEnumValueStateService,
+  getEnumValueTypeOfFacility,
+  getSelectedOption,
+} from "src/utils/getData";
 import { GetETypeOfFacility } from "src/utils/enum-value";
 import MapInputCpn from "src/components/sub/MapInput";
+import { IOption } from "src/utils/enum";
 function FormUpdateMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -69,6 +74,9 @@ function FormUpdateMedicalFacility() {
         ...dateMedical.getMedicalFacilityById,
         typeOfFacility: getEnumValueTypeOfFacility(
           dateMedical.getMedicalFacilityById.typeOfFacility
+        ),
+        status: getEnumValueStateService(
+          dateMedical.getMedicalFacilityById.status
         ),
       };
       dispatch(handleSetForm(dataUpdate));
@@ -116,7 +124,7 @@ function FormUpdateMedicalFacility() {
       },
     },
   });
-  const [optUsers, setOptUser] = useState([
+  const [optUsers, setOptUser] = useState<[IOption]>([
     {
       value: "",
       label: "",
@@ -128,10 +136,12 @@ function FormUpdateMedicalFacility() {
   });
   useEffect(() => {
     if (dataUsers?.getUserFacilitySelect) {
-      const options = dataUsers?.getUserFacilitySelect.map((user) => ({
-        value: user.id,
-        label: user.username,
-      }));
+      const options: [IOption] = (dataUsers?.getUserFacilitySelect.map(
+        (user) => ({
+          value: user.id,
+          label: user.username,
+        })
+      ) || []) as [IOption];
       setOptUser(options);
     }
   }, [dataUsers]);
@@ -566,7 +576,10 @@ function FormUpdateMedicalFacility() {
                 </Form.Label>
                 <Select
                   required
-                  value={optUsersSelected}
+                  value={getSelectedOption(
+                    state.updateMedicalFacility.userId,
+                    optUsers
+                  )}
                   onChange={(e) => {
                     if (e?.label && e.value) {
                       dispatch(handleChangeForm("userId", e?.value));

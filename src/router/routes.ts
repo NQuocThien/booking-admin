@@ -48,6 +48,8 @@ import ListBlogsPage from "src/pages/Blogs/ListBlog";
 import FormAddBlog from "src/pages/Blogs/FormAdd";
 import FormUpdateBlog from "src/pages/Blogs/FormUpdate";
 import BlogDetailPage from "src/pages/Blogs/BlogDetail";
+import PendingPage from "src/pages/MedicalFacilities/Facility-Page/PendingPage";
+import RegisHistoryPage from "src/pages/MedicalFacilities/Facility-Page/RegisDetailPage";
 export interface IRoute {
   path: string;
   name: string;
@@ -227,6 +229,16 @@ const routes_clinic: IRoute[] = [
   { path: "/dashboard", name: "Dashboard", element: DashboardPage },
   { path: "/facility-page", name: "Dashboard", element: FacilityHomePage },
   {
+    path: "/facility-page/regis-pending",
+    name: "Dashboard",
+    element: PendingPage,
+  },
+  {
+    path: "/facility-page/regis-pending/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
     path: "/facility-page/home",
     name: "Dashboard",
     element: GeneralInforFacilityPage,
@@ -387,6 +399,16 @@ const routes_staff_manager: IRoute[] = [
     path: "/facility-page/home",
     name: "Dashboard",
     element: GeneralInforFacilityPage,
+  },
+  {
+    path: "/facility-page/regis-pending",
+    name: "Dashboard",
+    element: PendingPage,
+  },
+  {
+    path: "/facility-page/regis-pending/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
   },
   {
     path: "/facility-page/update/:id",
@@ -570,6 +592,18 @@ const routes_staff_vaccination: IRoute[] = [
     element: CoordinateVaccinationByStaff,
   },
 ];
+const routes_staff_pending: IRoute[] = [
+  {
+    path: "/staff-page/regis-pending",
+    name: "Dashboard",
+    element: PendingPage,
+  },
+  {
+    path: "/staff-page/regis-pending/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+];
 
 export {
   routes_admin,
@@ -580,4 +614,5 @@ export {
   routes_staff_specialties,
   routes_staff_vaccination,
   routes_staff_packages,
+  routes_staff_pending,
 };

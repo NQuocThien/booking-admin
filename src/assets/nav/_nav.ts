@@ -119,6 +119,12 @@ const _navClinic: Item[] = [
     },
   },
   {
+    component: "NavItem",
+    name: "Chờ duyệt",
+    to: "/facility-page/regis-pending",
+    iconName: "MdOutlinePendingActions",
+  },
+  {
     component: "NavGroup",
     name: "Điều phối",
     iconName: "MdOutlineSpaceDashboard",
@@ -231,6 +237,12 @@ const _navStaffManager: Item[] = [
     name: "CSYT",
     to: "/facility-page/home",
     iconName: "MdMedicalServices",
+  },
+  {
+    component: "NavItem",
+    name: "Chờ duyệt",
+    to: "/facility-page/regis-pending",
+    iconName: "MdOutlinePendingActions",
   },
   {
     component: "NavItem",
@@ -390,6 +402,14 @@ const _navStaffSpecialties: Item[] = [
     ],
   },
 ];
+const _navStaffManagerPending: Item[] = [
+  {
+    component: "NavItem",
+    name: "Chờ duyệt",
+    to: "/staff-page/regis-pending",
+    iconName: "MdOutlinePendingActions",
+  },
+];
 export {
   _navAdmin,
   _navClinic,
@@ -399,4 +419,5 @@ export {
   _navStaffPackage,
   _navStaffVaccination,
   _navStaffSpecialties,
+  _navStaffManagerPending,
 };

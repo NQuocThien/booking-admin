@@ -1,6 +1,6 @@
 export enum GetEPermission {
   Magager = "Quản lý",
-  MagagerBlog = "Quản lý bài viết",
+  MagagerPending = "Duyệt khám",
   ManagerSpecialty = "Quản lý chuyên khoa",
   MagagerPackage = "Quản lý gói khám",
   MagagerVaccine = "Quản lý tim chủng",
@@ -32,4 +32,17 @@ export enum GetETypeOfFacility {
   privateHospital = "Bệnh viện tư",
   clinic = "Phòng khám",
   vaccinationCenter = "Trung tâm tiêm chủng",
+}
+
+export enum GetETypeOfService {
+  Doctor = "Khám theo Bác sĩ",
+  Specialty = "Khám theo Chuyên khoa",
+  Package = "Khám theo gói",
+  Vaccine = "Tiêm chủng",
+}
+
+export enum GetEStateRegister {
+  Pending = "Chưa duyệt",
+  Approved = "Đã duyệt",
+  Success = "Đã khám",
 }

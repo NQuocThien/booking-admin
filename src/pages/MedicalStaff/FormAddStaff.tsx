@@ -264,14 +264,14 @@ function FormAddMedicalStaff() {
                     />
                     <Form.Check // blog
                       type="switch"
-                      value={EPermission.MagagerBlog}
+                      value={EPermission.MagagerPending}
                       id="MagagerBlog"
                       checked={
                         !state.createMedicalStaff.permissions?.includes(
                           EPermission.Magager
                         ) &&
                         state.createMedicalStaff.permissions.includes(
-                          EPermission.MagagerBlog
+                          EPermission.MagagerPending
                         )
                       }
                       disabled={state.createMedicalStaff.permissions?.includes(
@@ -281,10 +281,10 @@ function FormAddMedicalStaff() {
                         const currPer: EPermission[] =
                           state.createMedicalStaff.permissions;
                         if (e.currentTarget.checked) {
-                          currPer.push(EPermission.MagagerBlog);
+                          currPer.push(EPermission.MagagerPending);
                         } else {
                           const index = currPer.findIndex(
-                            (per) => per === EPermission.MagagerBlog
+                            (per) => per === EPermission.MagagerPending
                           );
                           if (index !== -1) {
                             currPer.splice(index, 1);
@@ -292,7 +292,7 @@ function FormAddMedicalStaff() {
                         }
                         dispatch(handleChangeForm("permissions", currPer));
                       }}
-                      label="Quản lý bài viết"
+                      label="Quản lý duyệt khám"
                     />
                     <Form.Check // package
                       type="switch"

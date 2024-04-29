@@ -38,6 +38,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { showToast } from "../../sub/toasts";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import moment from "moment";
+import { GetEStateRegister, GetETypeOfService } from "src/utils/enum-value";
 interface IProps {
   listSchedule: Schedule[] | undefined;
   title: string;
@@ -127,11 +128,16 @@ function ListRegisterV2(props: IProps) {
 
   useEffect(() => {
     if (dataCreated) {
-      const newData: Register[] = handleSortRegis([
-        ...listRegister,
-        dataCreated.registerCreated,
-      ]);
-      setListRegister(newData);
+      const index: number = listRegister.findIndex(
+        (r) => r.id === dataCreated.registerCreated.id
+      );
+      if (index === -1) {
+        const newData: Register[] = handleSortRegis([
+          ...listRegister,
+          dataCreated.registerCreated,
+        ]);
+        setListRegister(newData);
+      }
     }
   }, [dataCreated]);
 
@@ -314,9 +320,9 @@ function ListRegisterV2(props: IProps) {
     const inputConfirm: ConfirmRegisterInput = {
       registerId: regis.id,
       state:
-        regis.state === "Đã khám"
-          ? EStateRegister.Pending
-          : EStateRegister.Success,
+        regis.state === GetEStateRegister.Approved
+          ? EStateRegister.Success
+          : EStateRegister.Approved,
     };
     await confirmRegister({
       variables: {
@@ -325,14 +331,14 @@ function ListRegisterV2(props: IProps) {
     }).then(() => {
       showToast(`Đã sửa trạng thái bệnh nhân👌`, undefined, 1000);
       if (listRegister) {
-        const editedRegiss: Register[] = listRegister?.map((regis) => {
-          if (regis.id === inputConfirm.registerId) {
+        const editedRegiss: Register[] = listRegister.map((r) => {
+          if (r.id === regis.id) {
             const newRegis: Register = {
-              ...regis,
+              ...r,
               state:
-                inputConfirm.state === EStateRegister.Success
-                  ? "Đã khám"
-                  : "Chưa khám",
+                regis.state === GetEStateRegister.Success
+                  ? GetEStateRegister.Approved
+                  : GetEStateRegister.Success,
             };
             return newRegis;
           }
@@ -515,7 +521,7 @@ function ListRegisterV2(props: IProps) {
                           <Dropdown.Menu>
                             <Dropdown.Item
                               onClick={() => handleConfirmRegister(regis)}>
-                              {regis.state === "Chưa khám"
+                              {regis.state === "Đã duyệt"
                                 ? "Xác nhận khám"
                                 : "Hoàn tác"}
                             </Dropdown.Item>

@@ -263,7 +263,7 @@ function ListRegister(props: IProps) {
       registerId: regis.id,
       state:
         regis.state === "Đã khám"
-          ? EStateRegister.Pending
+          ? EStateRegister.Approved
           : EStateRegister.Success,
     };
     await confirmRegister({

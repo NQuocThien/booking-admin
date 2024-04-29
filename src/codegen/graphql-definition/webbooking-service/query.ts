@@ -1461,11 +1461,16 @@ const getAllDoctorCountOfFacility = gql`
     $staffId: String
     $startTime: String!
     $endTime: String!
+    $isPending: Boolean
   ) {
     getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
       id
       doctorName
-      registerCount(startTime: $startTime, endTime: $endTime)
+      registerCount(
+        startTime: $startTime
+        endTime: $endTime
+        isPending: $isPending
+      )
     }
   }
 `;
@@ -1475,11 +1480,16 @@ const getAllPackageCountOfFacility = gql`
     $staffId: String
     $startTime: String!
     $endTime: String!
+    $isPending: Boolean
   ) {
     getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
       id
       packageName
-      registerCount(startTime: $startTime, endTime: $endTime)
+      registerCount(
+        startTime: $startTime
+        endTime: $endTime
+        isPending: $isPending
+      )
     }
   }
 `;
@@ -1489,11 +1499,16 @@ const getAllMedicalSpecialtiesCountOfFacility = gql`
     $staffId: String
     $startTime: String!
     $endTime: String!
+    $isPending: Boolean
   ) {
     getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
       id
       specialtyName
-      registerCount(startTime: $startTime, endTime: $endTime)
+      registerCount(
+        startTime: $startTime
+        endTime: $endTime
+        isPending: $isPending
+      )
     }
   }
 `;
@@ -1503,11 +1518,128 @@ const getAllVaccinationCountOfFacility = gql`
     $staffId: String
     $startTime: String!
     $endTime: String!
+    $isPending: Boolean
   ) {
     getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
       id
       vaccineName
-      registerCount(startTime: $startTime, endTime: $endTime)
+      registerCount(
+        startTime: $startTime
+        endTime: $endTime
+        isPending: $isPending
+      )
+    }
+  }
+`;
+
+const getAllRegisPending = gql`
+  query getAllRegisPending($input: GetRegisPendingInput!) {
+    getAllRegisPending(input: $input) {
+      id
+      cancel
+      createdAt
+      date
+      profileId
+      session {
+        startTime
+        endTime
+      }
+      typeOfService
+      doctorId
+      packageId
+      specialtyId
+      vaccineId
+      state
+
+      profile {
+        id
+        fullname
+        address
+        email
+        numberPhone
+        gender
+        ethnic
+        identity
+        medicalInsurance
+        job
+        relationship
+        dataOfBirth
+        customerId
+        customer {
+          id
+          fullname
+          address
+          numberPhone
+          gender
+          ethnic
+          dateOfBirth
+          userId
+          email
+        }
+      }
+    }
+  }
+`;
+const getRegisHistory = gql`
+  query getRegisHistory(
+    $profileId: String!
+    $userId: String
+    $staffId: String
+  ) {
+    getRegisHistory(profileId: $profileId, userId: $userId, staffId: $staffId) {
+      id
+      typeOfService
+      cancel
+      createdAt
+      date
+      state
+      profileId
+      session {
+        startTime
+        endTime
+      }
+      doctor {
+        doctorName
+      }
+      specialty {
+        specialtyName
+      }
+      vaccination {
+        vaccineName
+      }
+      package {
+        packageName
+      }
+    }
+  }
+`;
+const getProfileById = gql`
+  query getProfileById($profileId: String!) {
+    getProfileById(id: $profileId) {
+      id
+      customerId
+      email
+      ethnic
+      fullname
+      address
+      gender
+      job
+      dataOfBirth
+      identity
+      medicalInsurance
+      numberPhone
+      relationship
+      customer {
+        id
+        userId
+        fullname
+        gender
+        numberPhone
+        email
+        address
+        dateOfBirth
+        ethnic
+      }
     }
   }
 `;

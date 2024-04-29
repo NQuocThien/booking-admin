@@ -256,6 +256,7 @@ export type Doctor = {
 
 export type DoctorRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
 
@@ -295,13 +296,14 @@ export enum EGenderPackage {
 
 export enum EPermission {
   Magager = 'Magager',
-  MagagerBlog = 'MagagerBlog',
   MagagerPackage = 'MagagerPackage',
+  MagagerPending = 'MagagerPending',
   MagagerVaccine = 'MagagerVaccine',
   ManagerSpecialty = 'ManagerSpecialty'
 }
 
 export enum EStateRegister {
+  Approved = 'Approved',
   Pending = 'Pending',
   Success = 'Success'
 }
@@ -321,6 +323,13 @@ export enum ETypeOfFacility {
 export enum ETypeOfNotification {
   NotSeen = 'NotSeen',
   Seen = 'Seen'
+}
+
+export enum ETypeOfService {
+  Doctor = 'Doctor',
+  Package = 'Package',
+  Specialty = 'Specialty',
+  Vaccine = 'Vaccine'
 }
 
 export enum EnumBlogStatus {
@@ -378,10 +387,21 @@ export type GeneralInforUpdateInput = {
   logoHeader?: InputMaybe<LinkImageInput>;
 };
 
+export type GetRegisPendingInput = {
+  doctorIds: Array<Scalars['String']['input']>;
+  endTime: Scalars['String']['input'];
+  packageIds: Array<Scalars['String']['input']>;
+  specialtyIds: Array<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  typeOfService?: InputMaybe<ETypeOfService>;
+  vaccineIds: Array<Scalars['String']['input']>;
+};
+
 export type GetRegisterByOptionInput = {
   date: Scalars['DateTime']['input'];
   doctorId?: InputMaybe<Scalars['String']['input']>;
   packageId?: InputMaybe<Scalars['String']['input']>;
+  pedding?: InputMaybe<Scalars['Boolean']['input']>;
   specialtyId?: InputMaybe<Scalars['String']['input']>;
   vaccineId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -502,6 +522,7 @@ export type MedicalSpecialties = {
 
 export type MedicalSpecialtiesRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
 
@@ -844,6 +865,7 @@ export type Package = {
 
 export type PackageRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
 
@@ -903,6 +925,8 @@ export type Query = {
   getAllPackagePaginationOfFacilityForClient: Array<Package>;
   getAllPackageSelect: Array<Package>;
   getAllProfile: Array<Profile>;
+  getAllRegisCountByOption: Register;
+  getAllRegisOfService: Array<Register>;
   getAllRegisPending: Array<Register>;
   getAllRegisterByOption: Array<Register>;
   getAllStaffPagination: Array<MedicalStaff>;
@@ -929,7 +953,9 @@ export type Query = {
   getMedicalStaffByUserId: MedicalStaff;
   getPackageById: Package;
   getProfileByCustomerId: Array<Profile>;
+  getProfileById: Profile;
   getProfiles: Profile;
+  getRegisHistory: Array<Register>;
   getSetting: Setting;
   getTopMedicalFacilities: Array<MedicalFacilities>;
   getTotalBlogsCount: Scalars['Float']['output'];
@@ -1167,8 +1193,18 @@ export type QueryGetAllPackageSelectArgs = {
 };
 
 
-export type QueryGetAllRegisPendingArgs = {
+export type QueryGetAllRegisCountByOptionArgs = {
   input: GetRegisterByOptionInput;
+};
+
+
+export type QueryGetAllRegisOfServiceArgs = {
+  input: GetRegisterByOptionInput;
+};
+
+
+export type QueryGetAllRegisPendingArgs = {
+  input: GetRegisPendingInput;
 };
 
 
@@ -1313,8 +1349,20 @@ export type QueryGetProfileByCustomerIdArgs = {
 };
 
 
+export type QueryGetProfileByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryGetProfilesArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryGetRegisHistoryArgs = {
+  profileId: Scalars['String']['input'];
+  staffId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1516,11 +1564,17 @@ export type Setting = {
 export type Subscription = {
   __typename?: 'Subscription';
   registerCreated: Register;
+  registerPendingCreated: Register;
 };
 
 
 export type SubscriptionRegisterCreatedArgs = {
   option: GetRegisterByOptionInput;
+};
+
+
+export type SubscriptionRegisterPendingCreatedArgs = {
+  option: GetRegisPendingInput;
 };
 
 export type UpdateBlogInput = {
@@ -1749,6 +1803,7 @@ export type Vaccination = {
 
 export type VaccinationRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
 
@@ -2463,6 +2518,7 @@ export type GetAllDoctorCountOfFacilityQueryVariables = Exact<{
   staffId?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2473,6 +2529,7 @@ export type GetAllPackageCountOfFacilityQueryVariables = Exact<{
   staffId?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2483,6 +2540,7 @@ export type GetAllMedicalSpecialtiesCountOfFacilityQueryVariables = Exact<{
   staffId?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2493,10 +2551,34 @@ export type GetAllVaccinationCountOfFacilityQueryVariables = Exact<{
   staffId?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
+  isPending?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
 export type GetAllVaccinationCountOfFacilityQuery = { __typename?: 'Query', getAllVaccinationOfFacility: Array<{ __typename?: 'Vaccination', id: string, vaccineName: string, registerCount?: number | null }> };
+
+export type GetAllRegisPendingQueryVariables = Exact<{
+  input: GetRegisPendingInput;
+}>;
+
+
+export type GetAllRegisPendingQuery = { __typename?: 'Query', getAllRegisPending: Array<{ __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null }> };
+
+export type GetRegisHistoryQueryVariables = Exact<{
+  profileId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+  staffId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetRegisHistoryQuery = { __typename?: 'Query', getRegisHistory: Array<{ __typename?: 'Register', id: string, typeOfService: string, cancel: boolean, createdAt: any, date: any, state: string, profileId: string, session: { __typename?: 'Session', startTime: string, endTime: string }, doctor?: { __typename?: 'Doctor', doctorName: string } | null, specialty?: { __typename?: 'MedicalSpecialties', specialtyName: string } | null, vaccination?: { __typename?: 'Vaccination', vaccineName: string } | null, package?: { __typename?: 'Package', packageName: string } | null }> };
+
+export type GetProfileByIdQueryVariables = Exact<{
+  profileId: Scalars['String']['input'];
+}>;
+
+
+export type GetProfileByIdQuery = { __typename?: 'Query', getProfileById: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } };
 
 export type RegisterCreatedSubscriptionVariables = Exact<{
   option: GetRegisterByOptionInput;
@@ -2504,6 +2586,13 @@ export type RegisterCreatedSubscriptionVariables = Exact<{
 
 
 export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
+
+export type RegisterPendingCreatedSubscriptionVariables = Exact<{
+  input: GetRegisPendingInput;
+}>;
+
+
+export type RegisterPendingCreatedSubscription = { __typename?: 'Subscription', registerPendingCreated: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
 
 
 export const LoginDocument = gql`
@@ -7056,11 +7145,11 @@ export type GetAllBlogOfFacilityPaginationLazyQueryHookResult = ReturnType<typeo
 export type GetAllBlogOfFacilityPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationSuspenseQuery>;
 export type GetAllBlogOfFacilityPaginationQueryResult = Apollo.QueryResult<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>;
 export const GetAllDoctorCountOfFacilityDocument = gql`
-    query getAllDoctorCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+    query getAllDoctorCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
   getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
     id
     doctorName
-    registerCount(startTime: $startTime, endTime: $endTime)
+    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
   }
 }
     `;
@@ -7081,6 +7170,7 @@ export const GetAllDoctorCountOfFacilityDocument = gql`
  *      staffId: // value for 'staffId'
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
+ *      isPending: // value for 'isPending'
  *   },
  * });
  */
@@ -7101,11 +7191,11 @@ export type GetAllDoctorCountOfFacilityLazyQueryHookResult = ReturnType<typeof u
 export type GetAllDoctorCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorCountOfFacilitySuspenseQuery>;
 export type GetAllDoctorCountOfFacilityQueryResult = Apollo.QueryResult<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>;
 export const GetAllPackageCountOfFacilityDocument = gql`
-    query getAllPackageCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+    query getAllPackageCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
   getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
     id
     packageName
-    registerCount(startTime: $startTime, endTime: $endTime)
+    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
   }
 }
     `;
@@ -7126,6 +7216,7 @@ export const GetAllPackageCountOfFacilityDocument = gql`
  *      staffId: // value for 'staffId'
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
+ *      isPending: // value for 'isPending'
  *   },
  * });
  */
@@ -7146,11 +7237,11 @@ export type GetAllPackageCountOfFacilityLazyQueryHookResult = ReturnType<typeof 
 export type GetAllPackageCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllPackageCountOfFacilitySuspenseQuery>;
 export type GetAllPackageCountOfFacilityQueryResult = Apollo.QueryResult<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>;
 export const GetAllMedicalSpecialtiesCountOfFacilityDocument = gql`
-    query getAllMedicalSpecialtiesCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+    query getAllMedicalSpecialtiesCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
   getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
     id
     specialtyName
-    registerCount(startTime: $startTime, endTime: $endTime)
+    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
   }
 }
     `;
@@ -7171,6 +7262,7 @@ export const GetAllMedicalSpecialtiesCountOfFacilityDocument = gql`
  *      staffId: // value for 'staffId'
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
+ *      isPending: // value for 'isPending'
  *   },
  * });
  */
@@ -7191,11 +7283,11 @@ export type GetAllMedicalSpecialtiesCountOfFacilityLazyQueryHookResult = ReturnT
 export type GetAllMedicalSpecialtiesCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesCountOfFacilitySuspenseQuery>;
 export type GetAllMedicalSpecialtiesCountOfFacilityQueryResult = Apollo.QueryResult<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>;
 export const GetAllVaccinationCountOfFacilityDocument = gql`
-    query getAllVaccinationCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!) {
+    query getAllVaccinationCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
   getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
     id
     vaccineName
-    registerCount(startTime: $startTime, endTime: $endTime)
+    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
   }
 }
     `;
@@ -7216,6 +7308,7 @@ export const GetAllVaccinationCountOfFacilityDocument = gql`
  *      staffId: // value for 'staffId'
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
+ *      isPending: // value for 'isPending'
  *   },
  * });
  */
@@ -7235,6 +7328,213 @@ export type GetAllVaccinationCountOfFacilityQueryHookResult = ReturnType<typeof 
 export type GetAllVaccinationCountOfFacilityLazyQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilityLazyQuery>;
 export type GetAllVaccinationCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilitySuspenseQuery>;
 export type GetAllVaccinationCountOfFacilityQueryResult = Apollo.QueryResult<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>;
+export const GetAllRegisPendingDocument = gql`
+    query getAllRegisPending($input: GetRegisPendingInput!) {
+  getAllRegisPending(input: $input) {
+    id
+    cancel
+    createdAt
+    date
+    profileId
+    session {
+      startTime
+      endTime
+    }
+    typeOfService
+    doctorId
+    packageId
+    specialtyId
+    vaccineId
+    state
+    profile {
+      id
+      fullname
+      address
+      email
+      numberPhone
+      gender
+      ethnic
+      identity
+      medicalInsurance
+      job
+      relationship
+      dataOfBirth
+      customerId
+      customer {
+        id
+        fullname
+        address
+        numberPhone
+        gender
+        ethnic
+        dateOfBirth
+        userId
+        email
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllRegisPendingQuery__
+ *
+ * To run a query within a React component, call `useGetAllRegisPendingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRegisPendingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllRegisPendingQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllRegisPendingQuery(baseOptions: Apollo.QueryHookOptions<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables> & ({ variables: GetAllRegisPendingQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>(GetAllRegisPendingDocument, options);
+      }
+export function useGetAllRegisPendingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>(GetAllRegisPendingDocument, options);
+        }
+export function useGetAllRegisPendingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>(GetAllRegisPendingDocument, options);
+        }
+export type GetAllRegisPendingQueryHookResult = ReturnType<typeof useGetAllRegisPendingQuery>;
+export type GetAllRegisPendingLazyQueryHookResult = ReturnType<typeof useGetAllRegisPendingLazyQuery>;
+export type GetAllRegisPendingSuspenseQueryHookResult = ReturnType<typeof useGetAllRegisPendingSuspenseQuery>;
+export type GetAllRegisPendingQueryResult = Apollo.QueryResult<GetAllRegisPendingQuery, GetAllRegisPendingQueryVariables>;
+export const GetRegisHistoryDocument = gql`
+    query getRegisHistory($profileId: String!, $userId: String, $staffId: String) {
+  getRegisHistory(profileId: $profileId, userId: $userId, staffId: $staffId) {
+    id
+    typeOfService
+    cancel
+    createdAt
+    date
+    state
+    profileId
+    session {
+      startTime
+      endTime
+    }
+    doctor {
+      doctorName
+    }
+    specialty {
+      specialtyName
+    }
+    vaccination {
+      vaccineName
+    }
+    package {
+      packageName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRegisHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetRegisHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegisHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegisHistoryQuery({
+ *   variables: {
+ *      profileId: // value for 'profileId'
+ *      userId: // value for 'userId'
+ *      staffId: // value for 'staffId'
+ *   },
+ * });
+ */
+export function useGetRegisHistoryQuery(baseOptions: Apollo.QueryHookOptions<GetRegisHistoryQuery, GetRegisHistoryQueryVariables> & ({ variables: GetRegisHistoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>(GetRegisHistoryDocument, options);
+      }
+export function useGetRegisHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>(GetRegisHistoryDocument, options);
+        }
+export function useGetRegisHistorySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>(GetRegisHistoryDocument, options);
+        }
+export type GetRegisHistoryQueryHookResult = ReturnType<typeof useGetRegisHistoryQuery>;
+export type GetRegisHistoryLazyQueryHookResult = ReturnType<typeof useGetRegisHistoryLazyQuery>;
+export type GetRegisHistorySuspenseQueryHookResult = ReturnType<typeof useGetRegisHistorySuspenseQuery>;
+export type GetRegisHistoryQueryResult = Apollo.QueryResult<GetRegisHistoryQuery, GetRegisHistoryQueryVariables>;
+export const GetProfileByIdDocument = gql`
+    query getProfileById($profileId: String!) {
+  getProfileById(id: $profileId) {
+    id
+    customerId
+    email
+    ethnic
+    fullname
+    address
+    gender
+    job
+    dataOfBirth
+    identity
+    medicalInsurance
+    numberPhone
+    relationship
+    customer {
+      id
+      userId
+      fullname
+      gender
+      numberPhone
+      email
+      address
+      dateOfBirth
+      ethnic
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProfileByIdQuery__
+ *
+ * To run a query within a React component, call `useGetProfileByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileByIdQuery({
+ *   variables: {
+ *      profileId: // value for 'profileId'
+ *   },
+ * });
+ */
+export function useGetProfileByIdQuery(baseOptions: Apollo.QueryHookOptions<GetProfileByIdQuery, GetProfileByIdQueryVariables> & ({ variables: GetProfileByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProfileByIdQuery, GetProfileByIdQueryVariables>(GetProfileByIdDocument, options);
+      }
+export function useGetProfileByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfileByIdQuery, GetProfileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProfileByIdQuery, GetProfileByIdQueryVariables>(GetProfileByIdDocument, options);
+        }
+export function useGetProfileByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProfileByIdQuery, GetProfileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProfileByIdQuery, GetProfileByIdQueryVariables>(GetProfileByIdDocument, options);
+        }
+export type GetProfileByIdQueryHookResult = ReturnType<typeof useGetProfileByIdQuery>;
+export type GetProfileByIdLazyQueryHookResult = ReturnType<typeof useGetProfileByIdLazyQuery>;
+export type GetProfileByIdSuspenseQueryHookResult = ReturnType<typeof useGetProfileByIdSuspenseQuery>;
+export type GetProfileByIdQueryResult = Apollo.QueryResult<GetProfileByIdQuery, GetProfileByIdQueryVariables>;
 export const RegisterCreatedDocument = gql`
     subscription registerCreated($option: GetRegisterByOptionInput!) {
   registerCreated(option: $option) {
@@ -7304,3 +7604,73 @@ export function useRegisterCreatedSubscription(baseOptions: Apollo.SubscriptionH
       }
 export type RegisterCreatedSubscriptionHookResult = ReturnType<typeof useRegisterCreatedSubscription>;
 export type RegisterCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterCreatedSubscription>;
+export const RegisterPendingCreatedDocument = gql`
+    subscription registerPendingCreated($input: GetRegisPendingInput!) {
+  registerPendingCreated(option: $input) {
+    id
+    cancel
+    createdAt
+    date
+    profileId
+    typeOfService
+    doctorId
+    packageId
+    specialtyId
+    vaccineId
+    state
+    session {
+      startTime
+      endTime
+    }
+    profile {
+      id
+      fullname
+      address
+      email
+      numberPhone
+      gender
+      ethnic
+      identity
+      medicalInsurance
+      job
+      relationship
+      dataOfBirth
+      customerId
+      customer {
+        id
+        fullname
+        address
+        numberPhone
+        gender
+        ethnic
+        dateOfBirth
+        userId
+        email
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useRegisterPendingCreatedSubscription__
+ *
+ * To run a query within a React component, call `useRegisterPendingCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRegisterPendingCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRegisterPendingCreatedSubscription({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterPendingCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<RegisterPendingCreatedSubscription, RegisterPendingCreatedSubscriptionVariables> & ({ variables: RegisterPendingCreatedSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<RegisterPendingCreatedSubscription, RegisterPendingCreatedSubscriptionVariables>(RegisterPendingCreatedDocument, options);
+      }
+export type RegisterPendingCreatedSubscriptionHookResult = ReturnType<typeof useRegisterPendingCreatedSubscription>;
+export type RegisterPendingCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterPendingCreatedSubscription>;

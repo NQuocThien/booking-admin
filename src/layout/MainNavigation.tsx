@@ -7,6 +7,7 @@ import {
   _navDoctor,
   _navStaffGeneral,
   _navStaffManager,
+  _navStaffManagerPending,
   _navStaffPackage,
   _navStaffSpecialties,
   _navStaffVaccination,
@@ -14,7 +15,7 @@ import {
 import SideBarNav from "src/components/layout/SideBarNav";
 import { useAuth } from "src/context/AuthContext";
 import { GetEPermission, GetRole } from "src/utils/enum-value";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 function renderStaffPermission(permission: string[]): Item[] {
   var items: Item[];
   if (permission.includes(GetEPermission.Magager)) {
@@ -23,6 +24,9 @@ function renderStaffPermission(permission: string[]): Item[] {
     items = _navStaffGeneral;
     if (permission.includes(GetEPermission.ManagerSpecialty)) {
       items = [...items, ..._navStaffSpecialties];
+    }
+    if (permission.includes(GetEPermission.MagagerPending)) {
+      items = [...items, ..._navStaffManagerPending];
     }
     if (permission.includes(GetEPermission.MagagerPackage)) {
       items = [...items, ..._navStaffPackage];

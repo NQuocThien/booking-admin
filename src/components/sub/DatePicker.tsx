@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "date-fns/locale/vi";
@@ -9,10 +9,16 @@ import { Locale, format } from "date-fns";
 interface IPorps {
   onChange: (date: Date) => void;
   filterDate?: (date: Date) => boolean;
+  currentValue?: string;
 }
 const DatePickerCpn: React.FC<IPorps> = (props) => {
-  const { filterDate, onChange } = props;
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const { filterDate, onChange, currentValue = undefined } = props;
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    (currentValue && new Date(currentValue)) || new Date()
+  );
+  useEffect(() => {
+    if (currentValue) setSelectedDate(new Date(currentValue));
+  }, [currentValue]);
   return (
     <DatePicker
       selected={selectedDate}

@@ -15,13 +15,14 @@ import {
 } from "src/graphql/webbooking-service.generated";
 import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
-import { GetETypeOfFacility, GetRole } from "./enum-value";
+import { GetEPermission, GetETypeOfFacility, GetRole } from "./enum-value";
 
 export const getSelectedOption = (id: string, options: [IOption]): IOption => {
   return (
     options.find((option) => option.value === id) || { value: "", label: "" }
   );
 };
+
 export const getDayOfWeek = (day: string | undefined) => {
   switch (day) {
     case "Monday":
@@ -253,8 +254,8 @@ export const getEnumValuePermission = (
     case "Quản lý":
       return EPermission.Magager;
 
-    case "Quản lý bài viết":
-      return EPermission.MagagerBlog;
+    case GetEPermission.MagagerPending:
+      return EPermission.MagagerPending;
 
     case "Quản lý chuyên khoa":
       return EPermission.ManagerSpecialty;

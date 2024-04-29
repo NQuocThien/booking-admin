@@ -46,3 +46,51 @@ const registerCreated = gql`
     }
   }
 `;
+const registerPendingCreated = gql`
+  subscription registerPendingCreated($input: GetRegisPendingInput!) {
+    registerPendingCreated(option: $input) {
+      id
+      cancel
+      createdAt
+      date
+      profileId
+      typeOfService
+      doctorId
+      packageId
+      specialtyId
+      vaccineId
+      state
+      session {
+        startTime
+        endTime
+      }
+
+      profile {
+        id
+        fullname
+        address
+        email
+        numberPhone
+        gender
+        ethnic
+        identity
+        medicalInsurance
+        job
+        relationship
+        dataOfBirth
+        customerId
+        customer {
+          id
+          fullname
+          address
+          numberPhone
+          gender
+          ethnic
+          dateOfBirth
+          userId
+          email
+        }
+      }
+    }
+  }
+`;

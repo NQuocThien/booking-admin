@@ -9,6 +9,7 @@ import {
   routes_staff_general,
   routes_staff_manager,
   routes_staff_packages,
+  routes_staff_pending,
   routes_staff_specialties,
   routes_staff_vaccination,
 } from "src/router/routes";
@@ -31,6 +32,9 @@ function renderStaffPermission(permission: string[]): IRoute[] {
     }
     if (permission.includes(GetEPermission.MagagerVaccine)) {
       items = [...items, ...routes_staff_vaccination];
+    }
+    if (permission.includes(GetEPermission.MagagerPending)) {
+      items = [...items, ...routes_staff_pending];
     }
   }
   return items;

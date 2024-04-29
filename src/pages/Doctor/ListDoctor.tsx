@@ -5,6 +5,7 @@ import { useAuth } from "src/context/AuthContext";
 import {
   useDeleteDoctorMutation,
   useGetAllDoctorPaginationQuery,
+  useGetTotalDoctorsCountQuery,
   useGetTotalFacilitiesCountQuery,
 } from "src/graphql/webbooking-service.generated";
 import { getToken } from "src/utils/contain";
@@ -43,7 +44,7 @@ function ListDoctorPage() {
       sortOrder: state.pagination.sort,
     },
   });
-  const { data: dataTotal } = useGetTotalFacilitiesCountQuery({
+  const { data: dataTotal } = useGetTotalDoctorsCountQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -51,7 +52,9 @@ function ListDoctorPage() {
       },
     },
     variables: {
-      search: state.searchTerm,
+      filter: {
+        doctorName: state.searchTerm,
+      },
     },
   });
   const [deleteDoctor, { loading: loadingDeleteDoctor }] =
@@ -65,11 +68,11 @@ function ListDoctorPage() {
     }
   }, [data]);
   useEffect(() => {
-    if (dataTotal?.getTotalFacilitiesCount) {
+    if (dataTotal?.getTotalDoctorsCount) {
       dispatch(
         handleChangePagination({
           ...state.pagination,
-          total: dataTotal.getTotalFacilitiesCount,
+          total: dataTotal?.getTotalDoctorsCount,
         })
       );
     }

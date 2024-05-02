@@ -416,3 +416,10 @@ const deleteUnDeleteBlog = gql`
     }
   }
 `;
+const uploadFileRegister = gql`
+  mutation uploadFileRegister($input: UpLoadFileRegisInput!) {
+    uploadFileRegister(input: $input) {
+      id
+    }
+  }
+`;

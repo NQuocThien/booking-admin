@@ -43,6 +43,8 @@ import { SiGoogletagmanager, SiStaffbase } from "react-icons/si";
 import { GiMedicalPackAlt } from "react-icons/gi";
 import { showToast } from "src/components/sub/toasts";
 import { Link } from "react-router-dom";
+import { handleNotification } from "src/utils/tools";
+import { getEnumValueTypeOfService } from "src/utils/getData";
 interface IFilterMonth {
   startTime: string;
   endTime: string;
@@ -403,7 +405,15 @@ function PendingPage() {
 
   useEffect(() => {
     if (dataCreated) {
-      setListRegis((pre) => [...pre, dataCreated.registerPendingCreated]);
+      handleNotification();
+      if (
+        stateServices.currentType === undefined ||
+        stateServices.currentType ===
+          getEnumValueTypeOfService(
+            dataCreated.registerPendingCreated.typeOfService
+          )
+      )
+        setListRegis((pre) => [...pre, dataCreated.registerPendingCreated]);
       if (
         dataCreated.registerPendingCreated.typeOfService ===
         GetETypeOfService.Doctor

@@ -49,7 +49,8 @@ import FormAddBlog from "src/pages/Blogs/FormAdd";
 import FormUpdateBlog from "src/pages/Blogs/FormUpdate";
 import BlogDetailPage from "src/pages/Blogs/BlogDetail";
 import PendingPage from "src/pages/MedicalFacilities/Facility-Page/PendingPage";
-import RegisHistoryPage from "src/pages/MedicalFacilities/Facility-Page/RegisDetailPage";
+import RegisHistoryPage from "src/pages/MedicalFacilities/Facility-Page/RegisHistoryPage";
+import RegisDetailPage from "src/pages/MedicalFacilities/Facility-Page/RegisDetailPage";
 export interface IRoute {
   path: string;
   name: string;
@@ -349,9 +350,19 @@ const routes_clinic: IRoute[] = [
     element: CoordinateDoctor,
   },
   {
+    path: "/facility-page/coordinate/doctors/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
     path: "/facility-page/coordinate/specialties",
     name: "Dashboard",
     element: CoordinateMedcialSpecialties,
+  },
+  {
+    path: "/facility-page/coordinate/specialties/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
   },
   {
     path: "/facility-page/coordinate/vaccination",
@@ -359,9 +370,19 @@ const routes_clinic: IRoute[] = [
     element: CoordinateVaccination,
   },
   {
+    path: "/facility-page/coordinate/vaccination/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
     path: "/facility-page/coordinate/packages",
     name: "Dashboard",
     element: CoordinatePackages,
+  },
+  {
+    path: "/facility-page/coordinate/packages/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
   },
 ];
 
@@ -382,6 +403,11 @@ const routes_doctor: IRoute[] = [
     path: "/doctor-page/registration",
     name: "Dashboard",
     element: DoctorRegistration,
+  },
+  {
+    path: "/doctor-page/registration/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
   },
 ];
 
@@ -516,6 +542,11 @@ const routes_staff_manager: IRoute[] = [
     element: CoordinateDoctor,
   },
   {
+    path: "/facility-page/coordinate/doctors/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
     path: "/facility-page/coordinate/specialties",
     name: "Dashboard",
     element: CoordinateMedcialSpecialties,
@@ -557,6 +588,11 @@ const routes_staff_specialties: IRoute[] = [
     name: "Dashboard",
     element: CoordinateMedcialSpecialtiesByStaff,
   },
+  {
+    path: "/staff-page/specialties/registration/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
 ];
 const routes_staff_packages: IRoute[] = [
   {
@@ -573,6 +609,11 @@ const routes_staff_packages: IRoute[] = [
     path: "/staff-page/packages/registration",
     name: "Dashboard",
     element: CoordinatePackagesByStaff,
+  },
+  {
+    path: "/staff-page/packages/registration/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
   },
 ];
 const routes_staff_vaccination: IRoute[] = [
@@ -591,6 +632,11 @@ const routes_staff_vaccination: IRoute[] = [
     name: "Dashboard",
     element: CoordinateVaccinationByStaff,
   },
+  {
+    path: "/staff-page/vaccination/registration/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
 ];
 const routes_staff_pending: IRoute[] = [
   {
@@ -602,6 +648,11 @@ const routes_staff_pending: IRoute[] = [
     path: "/staff-page/regis-pending/:profileId",
     name: "Dashboard",
     element: RegisHistoryPage,
+  },
+  {
+    path: "/staff-page/regis-pending/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
 ];
 

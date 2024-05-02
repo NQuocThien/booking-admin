@@ -138,7 +138,6 @@ export type CreateMedicalStaffInput = {
 export type CreateNotificationInput = {
   content: Scalars['String']['input'];
   detailPath: Scalars['String']['input'];
-  status: ETypeOfNotification;
   userId: Scalars['String']['input'];
 };
 
@@ -552,7 +551,7 @@ export type Mutation = {
   createMedicalFacility: MedicalFacilities;
   createMedicalSpecialty: MedicalSpecialties;
   createMedicalStaff: MedicalStaff;
-  createNotifition: Notification;
+  createNotification: Notification;
   createPackage: Package;
   createProfile: Profile;
   createRegisterDoctor: Register;
@@ -573,6 +572,8 @@ export type Mutation = {
   deleteVaccination: Vaccination;
   login: LoginRespone;
   logout: LogoutUser;
+  seenAllNotification: Scalars['String']['output'];
+  seenNotificationById: Scalars['String']['output'];
   signup: User;
   signupUser: User;
   updateBlog: Blog;
@@ -592,6 +593,7 @@ export type Mutation = {
   updateUser: User;
   updateUserWithPass: User;
   updateVaccination: Vaccination;
+  uploadFileRegister: Register;
 };
 
 
@@ -645,7 +647,7 @@ export type MutationCreateMedicalStaffArgs = {
 };
 
 
-export type MutationCreateNotifitionArgs = {
+export type MutationCreateNotificationArgs = {
   input: CreateNotificationInput;
 };
 
@@ -745,6 +747,16 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationSeenAllNotificationArgs = {
+  userId: Scalars['String']['input'];
+};
+
+
+export type MutationSeenNotificationByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationSignupArgs = {
   createUserInput: CreateUserInput;
 };
@@ -839,9 +851,15 @@ export type MutationUpdateVaccinationArgs = {
   input: UpdateVaccineInput;
 };
 
+
+export type MutationUploadFileRegisterArgs = {
+  input: UpLoadFileRegisInput;
+};
+
 export type Notification = {
   __typename?: 'Notification';
   content: Scalars['String']['output'];
+  createdAt: Scalars['Float']['output'];
   detailPath: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   status: ETypeOfNotification;
@@ -917,6 +935,7 @@ export type Query = {
   getAllMedicalStaff: Array<MedicalStaff>;
   getAllMedicalStaffPaginationOfFacility: Array<MedicalStaff>;
   getAllNotification: Array<Notification>;
+  getAllNotificationByUserId: Array<Notification>;
   getAllPackage: Array<Package>;
   getAllPackageByFacilityId: Array<Package>;
   getAllPackageOfFacility: Array<Package>;
@@ -955,6 +974,7 @@ export type Query = {
   getProfileByCustomerId: Array<Profile>;
   getProfileById: Profile;
   getProfiles: Profile;
+  getRegisById: Register;
   getRegisHistory: Array<Register>;
   getSetting: Setting;
   getTopMedicalFacilities: Array<MedicalFacilities>;
@@ -1143,6 +1163,11 @@ export type QueryGetAllMedicalStaffPaginationOfFacilityArgs = {
   sortField?: InputMaybe<Scalars['String']['input']>;
   sortOrder?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllNotificationByUserIdArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -1359,6 +1384,11 @@ export type QueryGetProfilesArgs = {
 };
 
 
+export type QueryGetRegisByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryGetRegisHistoryArgs = {
   profileId: Scalars['String']['input'];
   staffId?: InputMaybe<Scalars['String']['input']>;
@@ -1512,6 +1542,7 @@ export type Register = {
   date: Scalars['DateTime']['output'];
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']['output']>;
+  files?: Maybe<Array<LinkImage>>;
   id: Scalars['ID']['output'];
   package?: Maybe<Package>;
   packageId?: Maybe<Scalars['String']['output']>;
@@ -1563,8 +1594,14 @@ export type Setting = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  notifyCreated: Notification;
   registerCreated: Register;
   registerPendingCreated: Register;
+};
+
+
+export type SubscriptionNotifyCreatedArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -1575,6 +1612,11 @@ export type SubscriptionRegisterCreatedArgs = {
 
 export type SubscriptionRegisterPendingCreatedArgs = {
   option: GetRegisPendingInput;
+};
+
+export type UpLoadFileRegisInput = {
+  files?: InputMaybe<Array<LinkImageInput>>;
+  id: Scalars['String']['input'];
 };
 
 export type UpdateBlogInput = {
@@ -2024,6 +2066,13 @@ export type DeleteUnDeleteBlogMutationVariables = Exact<{
 
 
 export type DeleteUnDeleteBlogMutation = { __typename?: 'Mutation', deleteUnDeleteBlog: { __typename?: 'Blog', id: string } };
+
+export type UploadFileRegisterMutationVariables = Exact<{
+  input: UpLoadFileRegisInput;
+}>;
+
+
+export type UploadFileRegisterMutation = { __typename?: 'Mutation', uploadFileRegister: { __typename?: 'Register', id: string } };
 
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2579,6 +2628,13 @@ export type GetProfileByIdQueryVariables = Exact<{
 
 
 export type GetProfileByIdQuery = { __typename?: 'Query', getProfileById: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } };
+
+export type GetRegisByIdQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetRegisByIdQuery = { __typename?: 'Query', getRegisById: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, doctor?: { __typename?: 'Doctor', doctorName: string } | null, specialty?: { __typename?: 'MedicalSpecialties', specialtyName: string } | null, vaccination?: { __typename?: 'Vaccination', vaccineName: string } | null, package?: { __typename?: 'Package', packageName: string } | null, files?: Array<{ __typename?: 'LinkImage', filename: string, type: string, url: string }> | null, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
 
 export type RegisterCreatedSubscriptionVariables = Exact<{
   option: GetRegisterByOptionInput;
@@ -3763,6 +3819,39 @@ export function useDeleteUnDeleteBlogMutation(baseOptions?: Apollo.MutationHookO
 export type DeleteUnDeleteBlogMutationHookResult = ReturnType<typeof useDeleteUnDeleteBlogMutation>;
 export type DeleteUnDeleteBlogMutationResult = Apollo.MutationResult<DeleteUnDeleteBlogMutation>;
 export type DeleteUnDeleteBlogMutationOptions = Apollo.BaseMutationOptions<DeleteUnDeleteBlogMutation, DeleteUnDeleteBlogMutationVariables>;
+export const UploadFileRegisterDocument = gql`
+    mutation uploadFileRegister($input: UpLoadFileRegisInput!) {
+  uploadFileRegister(input: $input) {
+    id
+  }
+}
+    `;
+export type UploadFileRegisterMutationFn = Apollo.MutationFunction<UploadFileRegisterMutation, UploadFileRegisterMutationVariables>;
+
+/**
+ * __useUploadFileRegisterMutation__
+ *
+ * To run a mutation, you first call `useUploadFileRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileRegisterMutation, { data, loading, error }] = useUploadFileRegisterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUploadFileRegisterMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileRegisterMutation, UploadFileRegisterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadFileRegisterMutation, UploadFileRegisterMutationVariables>(UploadFileRegisterDocument, options);
+      }
+export type UploadFileRegisterMutationHookResult = ReturnType<typeof useUploadFileRegisterMutation>;
+export type UploadFileRegisterMutationResult = Apollo.MutationResult<UploadFileRegisterMutation>;
+export type UploadFileRegisterMutationOptions = Apollo.BaseMutationOptions<UploadFileRegisterMutation, UploadFileRegisterMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -7535,6 +7624,103 @@ export type GetProfileByIdQueryHookResult = ReturnType<typeof useGetProfileByIdQ
 export type GetProfileByIdLazyQueryHookResult = ReturnType<typeof useGetProfileByIdLazyQuery>;
 export type GetProfileByIdSuspenseQueryHookResult = ReturnType<typeof useGetProfileByIdSuspenseQuery>;
 export type GetProfileByIdQueryResult = Apollo.QueryResult<GetProfileByIdQuery, GetProfileByIdQueryVariables>;
+export const GetRegisByIdDocument = gql`
+    query getRegisById($id: String!) {
+  getRegisById(id: $id) {
+    id
+    cancel
+    createdAt
+    date
+    profileId
+    session {
+      startTime
+      endTime
+    }
+    doctor {
+      doctorName
+    }
+    specialty {
+      specialtyName
+    }
+    vaccination {
+      vaccineName
+    }
+    package {
+      packageName
+    }
+    typeOfService
+    doctorId
+    packageId
+    specialtyId
+    vaccineId
+    state
+    files {
+      filename
+      type
+      url
+    }
+    profile {
+      id
+      fullname
+      address
+      email
+      numberPhone
+      gender
+      ethnic
+      identity
+      medicalInsurance
+      job
+      relationship
+      dataOfBirth
+      customerId
+      customer {
+        id
+        fullname
+        address
+        numberPhone
+        gender
+        ethnic
+        dateOfBirth
+        userId
+        email
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRegisByIdQuery__
+ *
+ * To run a query within a React component, call `useGetRegisByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegisByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegisByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRegisByIdQuery(baseOptions: Apollo.QueryHookOptions<GetRegisByIdQuery, GetRegisByIdQueryVariables> & ({ variables: GetRegisByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRegisByIdQuery, GetRegisByIdQueryVariables>(GetRegisByIdDocument, options);
+      }
+export function useGetRegisByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRegisByIdQuery, GetRegisByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRegisByIdQuery, GetRegisByIdQueryVariables>(GetRegisByIdDocument, options);
+        }
+export function useGetRegisByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRegisByIdQuery, GetRegisByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRegisByIdQuery, GetRegisByIdQueryVariables>(GetRegisByIdDocument, options);
+        }
+export type GetRegisByIdQueryHookResult = ReturnType<typeof useGetRegisByIdQuery>;
+export type GetRegisByIdLazyQueryHookResult = ReturnType<typeof useGetRegisByIdLazyQuery>;
+export type GetRegisByIdSuspenseQueryHookResult = ReturnType<typeof useGetRegisByIdSuspenseQuery>;
+export type GetRegisByIdQueryResult = Apollo.QueryResult<GetRegisByIdQuery, GetRegisByIdQueryVariables>;
 export const RegisterCreatedDocument = gql`
     subscription registerCreated($option: GetRegisterByOptionInput!) {
   registerCreated(option: $option) {

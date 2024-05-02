@@ -8,6 +8,7 @@ import {
   EStateRegister,
   EStatusService,
   ETypeOfFacility,
+  ETypeOfService,
   EnumBlogStatus,
   EnumBlogType,
   Schedule,
@@ -15,7 +16,12 @@ import {
 } from "src/graphql/webbooking-service.generated";
 import { EQuickAddSessions, IOption } from "./enum";
 import moment from "moment";
-import { GetEPermission, GetETypeOfFacility, GetRole } from "./enum-value";
+import {
+  GetEPermission,
+  GetETypeOfFacility,
+  GetETypeOfService,
+  GetRole,
+} from "./enum-value";
 
 export const getSelectedOption = (id: string, options: [IOption]): IOption => {
   return (
@@ -332,6 +338,26 @@ export const getEnumValueBlogType = (
 
     case EnumBlogType.Service:
       return EnumBlogType.Service;
+
+    default:
+      return undefined;
+  }
+};
+export const getEnumValueTypeOfService = (
+  input: string
+): ETypeOfService | undefined => {
+  switch (input) {
+    case GetETypeOfService.Doctor:
+      return ETypeOfService.Doctor;
+
+    case GetETypeOfService.Vaccine:
+      return ETypeOfService.Vaccine;
+
+    case GetETypeOfService.Package:
+      return ETypeOfService.Package;
+
+    case GetETypeOfService.Specialty:
+      return ETypeOfService.Specialty;
 
     default:
       return undefined;

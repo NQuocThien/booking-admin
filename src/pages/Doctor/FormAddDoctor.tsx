@@ -243,6 +243,7 @@ function FormAddDoctor() {
                     const inputElement = e.target as HTMLInputElement;
                     if (inputElement?.files?.length) {
                       const selectedFile = inputElement.files[0];
+                      console.log("test image doctor:", selectedFile);
                       dispatch(handleChangAvatar(selectedFile));
                     }
                   }}

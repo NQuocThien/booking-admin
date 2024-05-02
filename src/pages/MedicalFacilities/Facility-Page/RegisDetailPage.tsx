@@ -1,72 +1,65 @@
-import {
-  Badge,
-  Col,
-  Container,
-  Dropdown,
-  Row,
-  Spinner,
-  Table,
-} from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
   ConfirmRegisterInput,
   EStateRegister,
-  EStatusService,
-  GetRegisHistoryQuery,
-  Profile,
-  Register,
+  GetRegisByIdQuery,
+  LinkImage,
+  LinkImageInput,
   useConfirmRegisterMutation,
-  useGetProfileByIdQuery,
-  useGetRegisHistoryQuery,
+  useGetRegisByIdQuery,
+  useUploadFileRegisterMutation,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
+import { GrPowerReset } from "react-icons/gr";
 import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
-import { MdOutlineMailOutline, MdOutlineWorkOutline } from "react-icons/md";
+import {
+  MdOutlineMailOutline,
+  MdOutlineVaccines,
+  MdOutlineWorkOutline,
+} from "react-icons/md";
 import CustomBreadcrumbs, {
   IBreadcrumbItem,
 } from "src/components/sub/Breadcrumbs";
 import { useEffect, useState } from "react";
-import { AiOutlineSchedule } from "react-icons/ai";
+import { AiFillTag, AiOutlineSchedule } from "react-icons/ai";
 import { useAuth } from "src/context/AuthContext";
 import { formatDate, getToken } from "src/utils/contain";
-import { FaPhone, FaRegAddressCard, FaTransgender } from "react-icons/fa6";
-import { LiaBirthdayCakeSolid } from "react-icons/lia";
-import { TbCirclesRelation } from "react-icons/tb";
 import {
-  GetEStateRegister,
-  GetETypeOfService,
-  GetRole,
-} from "src/utils/enum-value";
-import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
+  FaPhone,
+  FaRegAddressCard,
+  FaRegHeart,
+  FaTransgender,
+} from "react-icons/fa6";
+import { LiaBirthdayCakeSolid, LiaUserNurseSolid } from "react-icons/lia";
+import { TbCirclesRelation } from "react-icons/tb";
+import { GetEStateRegister, GetETypeOfService } from "src/utils/enum-value";
 import { showToast } from "src/components/sub/toasts";
-function RegisHistoryPage() {
-  const { profileId } = useParams();
+import { LuClock3, LuPackageCheck } from "react-icons/lu";
+import { IoCalendarNumberOutline } from "react-icons/io5";
+import { GiMatterStates } from "react-icons/gi";
+import FileUploadComponent from "src/components/sub/UpLoad";
+import { uploadMultiFile } from "src/utils/upload";
+import { FaSave } from "react-icons/fa";
+function RegisDetailPage() {
+  const { regisId } = useParams();
   const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
-  const [listRegis, setListRegis] =
-    useState<GetRegisHistoryQuery["getRegisHistory"]>();
-  const [profile, setProfile] = useState<Profile>();
+  const [regis, setRegis] = useState<GetRegisByIdQuery["getRegisById"]>();
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   checkExpirationToken();
-
+  const [files, setFiles] = useState<LinkImage[]>([]);
   // =================================================================================================
 
-  const { data, loading, error } = useGetRegisHistoryQuery({
+  const { data, loading, error } = useGetRegisByIdQuery({
     fetchPolicy: "no-cache",
-    variables: {
-      profileId: profileId || "",
-      userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
-      staffId: currRole === GetRole.Staff ? infoStaff?.id : undefined,
+    context: {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
     },
-  });
-  const {
-    data: dataProfile,
-    loading: loadingProfile,
-    error: errorProfile,
-  } = useGetProfileByIdQuery({
-    fetchPolicy: "no-cache",
     variables: {
-      profileId: profileId || "",
+      id: regisId || "",
     },
   });
 
@@ -79,13 +72,21 @@ function RegisHistoryPage() {
         },
       },
     });
+
+  const [uploadFiles, { loading: loadUpload, error: errUpload }] =
+    useUploadFileRegisterMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    });
   // =================================================================================================
   useEffect(() => {
-    setListRegis(data?.getRegisHistory);
+    if (data?.getRegisById) setRegis(data?.getRegisById);
   }, [data]);
-  useEffect(() => {
-    if (dataProfile?.getProfileById) setProfile(dataProfile.getProfileById);
-  }, [dataProfile]);
+
   const location = useLocation();
   useEffect(() => {
     if (location.pathname.search("/facility-page/regis-pending") !== -1) {
@@ -93,9 +94,9 @@ function RegisHistoryPage() {
         { url: "/facility-page/regis-pending", label: "Duyệt đăng ký" },
         {
           url: "",
-          label: `Chi tiết hồ sơ "${
-            dataProfile?.getProfileById.fullname
-          } (${formatDate(dataProfile?.getProfileById.dataOfBirth)})" `,
+          label: `Chi tiết đăng ký"${regis?.profile?.fullname} (${formatDate(
+            regis?.profile?.dataOfBirth
+          )})" `,
         },
       ]);
     } else if (location.pathname.search("/staff-page/regis-pending/") !== -1) {
@@ -103,20 +104,38 @@ function RegisHistoryPage() {
         { url: "/staff-page/regis-pending/", label: "Duyệt đăng ký" },
         {
           url: "",
-          label: `Chi tiết hồ sơ "${
-            dataProfile?.getProfileById.fullname
-          } (${formatDate(dataProfile?.getProfileById.dataOfBirth)})" `,
+          label: `Chi tiết hồ sơ "${regis?.profile?.fullname} (${formatDate(
+            regis?.profile?.dataOfBirth
+          )})" `,
+        },
+      ]);
+    } else {
+      setBreadcrumbs([
+        {
+          url: "",
+          back: true,
+          label: "Danh sách chờ khám",
+        },
+        {
+          url: "",
+          label: `Chi tiết hồ sơ "${regis?.profile?.fullname} (${formatDate(
+            regis?.profile?.dataOfBirth
+          )})" `,
         },
       ]);
     }
-  }, [location, dataProfile]);
+  }, [location, data]);
+
+  useEffect(() => {
+    if (regis?.files) setFiles(regis.files);
+  }, [regis]);
   // =================================================================================================
   const handleConfirmRegister = async (
-    regis: Register,
+    regisId: string,
     state: EStateRegister
   ) => {
     const inputConfirm: ConfirmRegisterInput = {
-      registerId: regis.id,
+      registerId: regisId,
       state: state,
     };
     await confirmRegister({
@@ -131,25 +150,48 @@ function RegisHistoryPage() {
         newState = GetEStateRegister.Success;
       if (state === EStateRegister.Pending)
         newState = GetEStateRegister.Pending;
-      setListRegis((pre) =>
-        pre?.map((r) => {
-          if (r.id === regis.id) {
-            const newRegis = {
-              ...r,
-              state: newState,
-            };
-            return newRegis;
-          }
-          return r;
-        })
+      setRegis(
+        (pre) =>
+          (pre && {
+            ...pre,
+            state: newState,
+          }) ||
+          pre
       );
       showToast(`Đổi trạng thái đăng ký👌`, undefined, 1000);
     });
   };
+  const handleUploadFiles = async (files: File[]) => {
+    await uploadMultiFile("document", files, (error: any, result: any) => {
+      if (error) {
+        console.log("Lỗi nè: ", error);
+      } else {
+        console.log("Kết quả:", result);
+      }
+    });
+  };
+  const handleSaveFiles = async (inputFiles: LinkImageInput[] | undefined) => {
+    await uploadFiles({
+      variables: {
+        input: {
+          id: regisId || "",
+          files: inputFiles,
+        },
+      },
+    })
+      .then(() => {
+        showToast("Đã lưu file", undefined, 2000);
+        setRegis((pre) => (pre && { ...pre, files: inputFiles }) || pre);
+      })
+      .catch((err) => {
+        showToast("Lỗi lưu file ", "error");
+        console.log("Lỗi: ", err);
+      });
+  };
   // =================================================================================================
   if (loading) return <Spinner animation="border" variant="primary" />;
-  if (error || !profileId) {
-    console.log("profile: ", profileId);
+  if (error || !regisId) {
+    console.log("profile: ", regisId);
     console.log(error);
     return <ShowAlert />;
   }
@@ -159,277 +201,332 @@ function RegisHistoryPage() {
       <Row className={`${style.top}`}>
         <Col className={`col-4`}>
           <div className={`${style.top__info} ${s.component}`}>
-            <p className={`${style.top__info_name}`}>
+            <p className={`${style.top__info_name} m-0`}>
               {" "}
-              Hồ Sơ: {profile?.fullname}
+              Người đăng ký: {regis?.profile?.customer?.fullname}
             </p>
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
               <FaTransgender className={`text-warning`} />
-              <p className={`${style.contend}`}> Giới tính:{profile?.gender}</p>
+              <p className={`${style.contend} m-0`}>
+                {" "}
+                Giới tính:{regis?.profile?.customer?.gender}
+              </p>
             </div>
             <div className={`${style.top__info_item}`}>
               <MdOutlineMailOutline className={`text-warning`} />
-              <p>Email: {profile?.email}</p>
+              <p className="m-0">Email: {regis?.profile?.customer?.email}</p>
             </div>
             <div className={`${style.top__info_item}`}>
               <FaPhone className={`text-warning`} />
-              <p>Số điện thoại: {profile?.numberPhone}</p>
+              <p className="m-0">
+                Số điện thoại: {regis?.profile?.customer?.numberPhone}
+              </p>
             </div>
             <div className={`${style.top__info_item}`}>
               <LiaBirthdayCakeSolid className={`text-warning`} />
-              <p>Ngày sinh: {formatDate(profile?.dataOfBirth)}</p>
+              <p className="m-0">
+                Ngày sinh: {formatDate(regis?.profile?.customer?.dateOfBirth)}
+              </p>
             </div>
             <div className={`${style.top__info_item}`}>
               <AiOutlineSchedule className={`text-warning`} />
-              <p>Dân tộc: {profile?.ethnic}</p>
+              <p className="m-0">Dân tộc: {regis?.profile?.customer?.ethnic}</p>
+            </div>
+          </div>
+        </Col>
+        <Col className={`col-4`}>
+          <div className={`${style.top__info} ${s.component}`}>
+            <p className={`${style.top__info_name} m-0`}>
+              {" "}
+              Hồ Sơ: {regis?.profile?.fullname}
+            </p>
+            <div className={`${style.top__info_line}`}></div>
+            <div className={`${style.top__info_item}`}>
+              <FaTransgender className={`text-warning`} />
+              <p className={`${style.contend} m-0`}>
+                {" "}
+                Giới tính:{regis?.profile?.gender}
+              </p>
+            </div>
+            <div className={`${style.top__info_item}`}>
+              <MdOutlineMailOutline className={`text-warning`} />
+              <p className="m-0">Email: {regis?.profile?.email}</p>
+            </div>
+            <div className={`${style.top__info_item}`}>
+              <FaPhone className={`text-warning`} />
+              <p className="m-0">
+                Số điện thoại: {regis?.profile?.numberPhone}
+              </p>
+            </div>
+            <div className={`${style.top__info_item}`}>
+              <LiaBirthdayCakeSolid className={`text-warning`} />
+              <p className="m-0">
+                Ngày sinh: {formatDate(regis?.profile?.dataOfBirth)}
+              </p>
+            </div>
+            <div className={`${style.top__info_item}`}>
+              <AiOutlineSchedule className={`text-warning`} />
+              <p className="m-0">Dân tộc: {regis?.profile?.ethnic}</p>
             </div>
             <div className={`${style.top__info_item}`}>
               <MdOutlineWorkOutline className={`text-warning`} />
-              <p> Công việc:{profile?.job}</p>
+              <p className="m-0"> Công việc:{regis?.profile?.job}</p>
             </div>
-            {profile?.identity && (
+            {regis?.profile?.identity && (
               <div className={`${style.top__info_item}`}>
                 <FaRegAddressCard className={`text-warning`} />
-                <p>{profile?.identity}</p>
+                <p className="m-0">{regis?.profile?.identity}</p>
               </div>
             )}
-            {profile?.medicalInsurance && (
+            {regis?.profile?.medicalInsurance && (
               <div className={`${style.top__info_item}`}>
                 <AiOutlineSchedule className={`text-warning`} />
-                <p>{profile?.medicalInsurance}</p>
+                <p className="m-0">{regis?.profile?.medicalInsurance}</p>
               </div>
             )}
             <div className={`${style.top__info_item}`}>
               <TbCirclesRelation className={`text-warning`} />
-              <p>Mối quan hệ với người đăng ký: {profile?.relationship}</p>
+              <p className="m-0">
+                Mối quan hệ với người đăng ký: {regis?.profile?.relationship}
+              </p>
             </div>
           </div>
         </Col>
-        <Col className="col-8 bg-light">
-          <h5>Lịch sử đăng ký </h5>
-          <Table hover striped>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Ngày-Phiên</th>
-                <th>Dịch vụ khám</th>
-                <th>Tr.thái</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody
-              className="overflow-scroll"
-              style={{ minHeight: "40vh", maxHeight: "80vh" }}>
-              {listRegis?.map((regis, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td className={`${regis.cancel && "bg-danger"}`}>
-                    <p className="m-0">{formatDate(regis.date)}</p>
-                    <Badge>
-                      {regis.session.startTime} - {regis.session.endTime}
-                    </Badge>
-                  </td>
-                  <td>
-                    {regis.typeOfService === GetETypeOfService.Doctor &&
-                      `Bác sĩ "${regis.doctor?.doctorName}"`}
-                    {regis.typeOfService === GetETypeOfService.Package &&
-                      `Khám theo gói "${regis.package?.packageName}"`}
-                    {regis.typeOfService === GetETypeOfService.Vaccine &&
-                      `Tiêm chủng "${regis.vaccination?.vaccineName}"`}
-                    {regis.typeOfService === GetETypeOfService.Specialty &&
-                      `Chuyên khoa "${regis.specialty?.specialtyName}"`}
-                    {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
-                  </td>
-                  <td>
+        <Col className={`col-4`}>
+          <div className={`${style.top__info} ${s.component}`}>
+            <p className={`${style.top__info_name} m-0`}>
+              {" "}
+              Thông tin đăng ký khám
+            </p>
+            <div className={`${style.top__info_line}`}></div>
+            <div className={`${style.top__info_item}`}>
+              <AiFillTag className={`text-success`} />
+              <p className={`${style.contend} m-0`}>
+                {" "}
+                Loại dịch vụ: {regis?.typeOfService}
+              </p>
+            </div>
+            {regis?.typeOfService === GetETypeOfService.Doctor && (
+              <div className={`${style.top__info_item}`}>
+                <LiaUserNurseSolid className={`text-success`} />
+                <p className="m-0">Bác sĩ: {regis?.doctor?.doctorName}</p>
+              </div>
+            )}
+            {regis?.typeOfService === GetETypeOfService.Specialty && (
+              <div className={`${style.top__info_item}`}>
+                <FaRegHeart className={`text-success`} />
+                <p className="m-0">
+                  Chuyên khoa: {regis?.specialty?.specialtyName}
+                </p>
+              </div>
+            )}
+            {regis?.typeOfService === GetETypeOfService.Package && (
+              <div className={`${style.top__info_item}`}>
+                <LuPackageCheck className={`text-success`} />
+                <p className="m-0">Gói khám: {regis?.package?.packageName}</p>
+              </div>
+            )}
+            {regis?.typeOfService === GetETypeOfService.Vaccine && (
+              <div className={`${style.top__info_item}`}>
+                <MdOutlineVaccines className={`text-success`} />
+                <p className="m-0">
+                  Tiêm chủng: {regis?.vaccination?.vaccineName}
+                </p>
+              </div>
+            )}
+            <div className={`${style.top__info_item}`}>
+              <IoCalendarNumberOutline className={`text-success`} />
+              <p className="m-0">Ngày khám: {formatDate(regis?.date)}</p>
+            </div>
+            <div className={`${style.top__info_item}`}>
+              <LuClock3 className={`text-success`} />
+              <p className="m-0">
+                Phiên khám: {regis?.session.startTime} -{" "}
+                {regis?.session.endTime}
+              </p>
+            </div>
+            {!regis?.cancel && (
+              <div style={{ width: "100%" }} className={``}>
+                <div className="d-flex align-items-center">
+                  <GiMatterStates className={`text-success`} />
+                  <p className="m-0">
+                    Trạng thái:{" "}
                     <span
                       className={`${
-                        regis.state === GetEStateRegister.Pending && "text-dark"
+                        regis?.state === GetEStateRegister.Approved &&
+                        "text-primary"
                       } ${
-                        regis.state === GetEStateRegister.Approved &&
+                        regis?.state === GetEStateRegister.Pending &&
                         "text-warning"
                       } ${
-                        regis.state === GetEStateRegister.Success &&
+                        regis?.state === GetEStateRegister.Success &&
                         "text-success"
                       }`}>
-                      {regis.state}
+                      {regis?.state}
                     </span>
-                  </td>
-                  <td>
-                    <Dropdown drop="down">
-                      <Dropdown.Toggle
-                        as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {regis.state === GetEStateRegister.Pending && (
-                          <>
-                            <Dropdown.Item
-                              onClick={() => {
-                                const input: Register = {
-                                  id: regis.id,
-                                  cancel: regis.cancel,
-                                  createdAt: regis.createdAt,
-                                  date: regis.date,
-                                  profileId: regis.profileId,
-                                  session: regis.session,
-                                  state: regis.state,
-                                  typeOfService: regis.typeOfService,
-                                };
-                                handleConfirmRegister(
-                                  input,
-                                  EStateRegister.Approved
-                                );
-                              }}>
-                              Duyệt đăng ký
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => {
-                                const input: Register = {
-                                  id: regis.id,
-                                  cancel: regis.cancel,
-                                  createdAt: regis.createdAt,
-                                  date: regis.date,
-                                  profileId: regis.profileId,
-                                  session: regis.session,
-                                  state: regis.state,
-                                  typeOfService: regis.typeOfService,
-                                };
-                                // handleConfirmRegister(input);
-                              }}>
-                              Hủy đăng ký
-                            </Dropdown.Item>
-                          </>
-                        )}
-                        {regis.state === GetEStateRegister.Approved && (
-                          <Dropdown.Item
-                            onClick={() => {
-                              const input: Register = {
-                                id: regis.id,
-                                cancel: regis.cancel,
-                                createdAt: regis.createdAt,
-                                date: regis.date,
-                                profileId: regis.profileId,
-                                session: regis.session,
-                                state: regis.state,
-                                typeOfService: regis.typeOfService,
-                              };
-                              handleConfirmRegister(
-                                input,
-                                EStateRegister.Success
-                              );
-                            }}>
-                            Duyệt Khám
-                          </Dropdown.Item>
-                        )}
-                        {regis.state === GetEStateRegister.Success && (
-                          <Dropdown.Item
-                            onClick={() => {
-                              const input: Register = {
-                                id: regis.id,
-                                cancel: regis.cancel,
-                                createdAt: regis.createdAt,
-                                date: regis.date,
-                                profileId: regis.profileId,
-                                session: regis.session,
-                                state: regis.state,
-                                typeOfService: regis.typeOfService,
-                              };
-                              handleConfirmRegister(
-                                input,
-                                EStateRegister.Approved
-                              );
-                            }}>
-                            Hoàn tác khám
-                          </Dropdown.Item>
-                        )}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                  </p>
+                </div>
+                {regis?.state === GetEStateRegister.Pending && (
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      handleConfirmRegister(regis.id, EStateRegister.Approved)
+                    }>
+                    Duyệt đăng ký{" "}
+                    {loadConfirm && (
+                      <Spinner
+                        animation="border"
+                        size="sm"
+                        variant="light"></Spinner>
+                    )}
+                  </Button>
+                )}
+                {regis?.state === GetEStateRegister.Approved && (
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      handleConfirmRegister(regis.id, EStateRegister.Success)
+                    }>
+                    Hoàng thành khám
+                    {loadConfirm && (
+                      <Spinner
+                        animation="border"
+                        size="sm"
+                        variant="light"></Spinner>
+                    )}
+                  </Button>
+                )}
+              </div>
+            )}
+            {regis?.cancel && (
+              <div style={{ width: "100%" }} className={``}>
+                <div className="d-flex align-items-center">
+                  <GiMatterStates className={`text-success`} />
+                  <p className="m-0">
+                    Trạng thái: <span className="text-danger">Đã hủy</span>
+                  </p>
+                </div>
+                <div className="d-flex justify-content-center">
+                  {regis?.state === GetEStateRegister.Pending && (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        handleConfirmRegister(regis.id, EStateRegister.Approved)
+                      }>
+                      Duyệt đăng ký{" "}
+                      {loadConfirm && (
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          variant="light"></Spinner>
+                      )}
+                    </Button>
+                  )}
+                  {regis?.state === GetEStateRegister.Approved && (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        handleConfirmRegister(regis.id, EStateRegister.Success)
+                      }>
+                      Hoàn thành khám
+                      {loadConfirm && (
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          variant="light"></Spinner>
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </Col>
       </Row>
-      {/* <ModalCpn
-        handleClose={() => setShowModal({ ...showModal, customer: false })}
-        handleSave={() => {}}
-        headerText="Thông tin người đăng ký khám"
-        onlySclose
-        openRequest={showModal.customer}>
-        <div className="shadow-lg bg-light p-3 mt-3">
-          {selectedRegiser?.profile?.customer && (
-            <>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <IoPersonCircleOutline />
-                  </span>
-                  Họ và tên:{" "}
-                  <span className="text-success ms-2">
-                    {selectedRegiser.profile.customer.fullname}{" "}
-                  </span>
-                </h6>
+      <Row className={`${s.component} ${style.top__info}`}>
+        <p className={`${style.top__info_name} m-0 fw-bold`}>
+          {" "}
+          Danh sách file đính kèm
+        </p>
+        <div className={`${style.top__info_line}`}></div>
+        <Row>
+          <Col>
+            <p className="m-0 fw-bold">Danh sách file đã lưu 1</p>
+            <ul>
+              {files?.map((file, i) => (
+                <li key={i}>
+                  {i + 1}. {file.filename}
+                  <Button
+                    size="sm"
+                    variant="light"
+                    className="text-danger fw-bold"
+                    onClick={() => {
+                      var newFile = files.filter(
+                        (f) => f.filename !== file.filename
+                      );
+                      setFiles(newFile);
+                    }}>
+                    x
+                  </Button>
+                </li>
+              ))}
+            </ul>
+            {regis?.files?.length !== files?.length && (
+              <div className="d-flex">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    if (regis?.files)
+                      setFiles(
+                        regis?.files.map((file) => ({
+                          filename: file.filename,
+                          type: file.type,
+                          url: file.url,
+                        }))
+                      );
+                  }}>
+                  <GrPowerReset />
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() =>
+                    handleSaveFiles(
+                      files?.map(
+                        (file) =>
+                          ({
+                            filename: file.filename,
+                            type: file.type,
+                            url: file.url,
+                          } as LinkImageInput)
+                      )
+                    )
+                  }>
+                  <FaSave />
+                </Button>
               </div>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <CiCalendarDate />
-                  </span>
-                  Ngày sinh:
-                  <span className="text-info ms-2">
-                    {formatDate(selectedRegiser.profile.customer.dateOfBirth)}
-                  </span>
-                </h6>
-              </div>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <FaPhone />
-                  </span>
-                  Số điện thoại:
-                  <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.numberPhone}
-                  </span>
-                </h6>
-              </div>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <MdOutlineEmail />
-                  </span>
-                  Email:
-                  <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.email}
-                  </span>
-                </h6>
-              </div>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <MdOutlineTransgender />
-                  </span>
-                  Giới tính:
-                  <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.gender}
-                  </span>
-                </h6>
-              </div>
-              <div className="px-3">
-                <h6>
-                  <span className="text-primary mx-1">
-                    <FaPeopleGroup />
-                  </span>
-                  Dân tộc:
-                  <span className="text-info ms-2">
-                    {selectedRegiser.profile.customer.ethnic}
-                  </span>
-                </h6>
-              </div>
-            </>
-          )}
-        </div>
-      </ModalCpn> */}
+            )}
+          </Col>
+          <Col>
+            <p className="m-0 fw-bold">Tải thêm File:</p>
+            <FileUploadComponent
+              onSave={(linkFile) => {
+                const currFile: LinkImageInput[] = files?.map(
+                  (file) =>
+                    ({
+                      filename: file.filename,
+                      type: file.type,
+                      url: file.url,
+                    } as LinkImageInput)
+                );
+                const newFile: LinkImageInput[] = [...currFile, ...linkFile];
+                handleSaveFiles(newFile);
+              }}
+            />
+          </Col>
+        </Row>
+      </Row>
     </Container>
   );
 }
-export default RegisHistoryPage;
+export default RegisDetailPage;

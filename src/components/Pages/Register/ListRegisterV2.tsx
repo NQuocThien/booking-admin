@@ -39,6 +39,8 @@ import { showToast } from "../../sub/toasts";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import moment from "moment";
 import { GetEStateRegister, GetETypeOfService } from "src/utils/enum-value";
+import { Link } from "react-router-dom";
+
 interface IProps {
   listSchedule: Schedule[] | undefined;
   title: string;
@@ -524,6 +526,11 @@ function ListRegisterV2(props: IProps) {
                               {regis.state === "Đã duyệt"
                                 ? "Xác nhận khám"
                                 : "Hoàn tác"}
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              as={Link}
+                              to={`${regis.profile?.id}`}>
+                              Xem lịch sử
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => handleShowProfile(regis)}>

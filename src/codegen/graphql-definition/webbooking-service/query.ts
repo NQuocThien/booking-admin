@@ -1643,3 +1643,68 @@ const getProfileById = gql`
     }
   }
 `;
+const getRegisById = gql`
+  query getRegisById($id: String!) {
+    getRegisById(id: $id) {
+      id
+      cancel
+      createdAt
+      date
+      profileId
+      session {
+        startTime
+        endTime
+      }
+      doctor {
+        doctorName
+      }
+      specialty {
+        specialtyName
+      }
+      vaccination {
+        vaccineName
+      }
+      package {
+        packageName
+      }
+      typeOfService
+      doctorId
+      packageId
+      specialtyId
+      vaccineId
+      state
+      files {
+        filename
+        type
+        url
+      }
+
+      profile {
+        id
+        fullname
+        address
+        email
+        numberPhone
+        gender
+        ethnic
+        identity
+        medicalInsurance
+        job
+        relationship
+        dataOfBirth
+        customerId
+        customer {
+          id
+          fullname
+          address
+          numberPhone
+          gender
+          ethnic
+          dateOfBirth
+          userId
+          email
+        }
+      }
+    }
+  }
+`;

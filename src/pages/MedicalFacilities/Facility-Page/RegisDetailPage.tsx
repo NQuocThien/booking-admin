@@ -34,14 +34,19 @@ import {
 } from "react-icons/fa6";
 import { LiaBirthdayCakeSolid, LiaUserNurseSolid } from "react-icons/lia";
 import { TbCirclesRelation } from "react-icons/tb";
-import { GetEStateRegister, GetETypeOfService } from "src/utils/enum-value";
+import {
+  GetEPermission,
+  GetEStateRegister,
+  GetETypeOfService,
+  GetRole,
+} from "src/utils/enum-value";
 import { showToast } from "src/components/sub/toasts";
 import { LuClock3, LuPackageCheck } from "react-icons/lu";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { GiMatterStates } from "react-icons/gi";
 import FileUploadComponent from "src/components/sub/UpLoad";
-import { uploadMultiFile } from "src/utils/upload";
 import { FaSave } from "react-icons/fa";
+import { TfiReload } from "react-icons/tfi";
 function RegisDetailPage() {
   const { regisId } = useParams();
   const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
@@ -51,7 +56,7 @@ function RegisDetailPage() {
   const [files, setFiles] = useState<LinkImage[]>([]);
   // =================================================================================================
 
-  const { data, loading, error } = useGetRegisByIdQuery({
+  const { refetch, data, loading, error } = useGetRegisByIdQuery({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -124,7 +129,7 @@ function RegisDetailPage() {
         },
       ]);
     }
-  }, [location, data]);
+  }, [location, data, regis]);
 
   useEffect(() => {
     if (regis?.files) setFiles(regis.files);
@@ -161,15 +166,7 @@ function RegisDetailPage() {
       showToast(`Đổi trạng thái đăng ký👌`, undefined, 1000);
     });
   };
-  const handleUploadFiles = async (files: File[]) => {
-    await uploadMultiFile("document", files, (error: any, result: any) => {
-      if (error) {
-        console.log("Lỗi nè: ", error);
-      } else {
-        console.log("Kết quả:", result);
-      }
-    });
-  };
+
   const handleSaveFiles = async (inputFiles: LinkImageInput[] | undefined) => {
     await uploadFiles({
       variables: {
@@ -188,10 +185,62 @@ function RegisDetailPage() {
         console.log("Lỗi: ", err);
       });
   };
+
+  const checkRole = (): boolean => {
+    if (
+      currRole !== GetRole.Facility &&
+      currRole !== GetRole.Staff &&
+      currRole !== GetRole.Doctor
+    ) {
+      return false;
+    }
+    const typeService = regis?.typeOfService;
+    if (currRole === GetRole.Staff) {
+      if (
+        typeService === GetETypeOfService.Doctor &&
+        !infoStaff?.permissions.find((per) => per === GetEPermission.Magager)
+      )
+        return false;
+      if (
+        typeService === GetETypeOfService.Package &&
+        !infoStaff?.permissions.find(
+          (per) =>
+            per === GetEPermission.Magager ||
+            per === GetEPermission.MagagerPackage
+        )
+      )
+        return false;
+      if (
+        typeService === GetETypeOfService.Specialty &&
+        !infoStaff?.permissions.find(
+          (per) =>
+            per === GetEPermission.Magager ||
+            per === GetEPermission.ManagerSpecialty
+        )
+      )
+        return false;
+      if (
+        typeService === GetETypeOfService.Vaccine &&
+        !infoStaff?.permissions.find(
+          (per) =>
+            per === GetEPermission.Magager ||
+            per === GetEPermission.MagagerVaccine
+        )
+      ) {
+        return false;
+      }
+    }
+    if (
+      currRole === GetRole.Doctor &&
+      typeService !== GetETypeOfService.Doctor
+    ) {
+      return false;
+    }
+    return true;
+  };
   // =================================================================================================
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !regisId) {
-    console.log("profile: ", regisId);
     console.log(error);
     return <ShowAlert />;
   }
@@ -348,7 +397,7 @@ function RegisDetailPage() {
             </div>
             {!regis?.cancel && (
               <div style={{ width: "100%" }} className={``}>
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center mb-2">
                   <GiMatterStates className={`text-success`} />
                   <p className="m-0">
                     Trạng thái:{" "}
@@ -385,6 +434,7 @@ function RegisDetailPage() {
                 {regis?.state === GetEStateRegister.Approved && (
                   <Button
                     size="sm"
+                    variant="success"
                     onClick={() =>
                       handleConfirmRegister(regis.id, EStateRegister.Success)
                     }>
@@ -452,16 +502,34 @@ function RegisDetailPage() {
         <div className={`${style.top__info_line}`}></div>
         <Row>
           <Col>
-            <p className="m-0 fw-bold">Danh sách file đã lưu 1</p>
+            <div className="m-0 fw-bold">
+              Danh sách file đã lưu
+              <Button size="sm" onClick={() => refetch()}>
+                <TfiReload />
+              </Button>
+            </div>
             <ul>
               {files?.map((file, i) => (
                 <li key={i}>
-                  {i + 1}. {file.filename}
+                  {i + 1}.{" "}
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    className="text-decoration-none">
+                    {file.filename}
+                  </a>
                   <Button
                     size="sm"
                     variant="light"
                     className="text-danger fw-bold"
                     onClick={() => {
+                      if (!checkRole()) {
+                        showToast(
+                          "Không có quyền thực hiện thao tác",
+                          "warning"
+                        );
+                        return;
+                      }
                       var newFile = files.filter(
                         (f) => f.filename !== file.filename
                       );
@@ -473,9 +541,11 @@ function RegisDetailPage() {
               ))}
             </ul>
             {regis?.files?.length !== files?.length && (
-              <div className="d-flex">
+              <div className="d-flex ms-4">
                 <Button
                   size="sm"
+                  variant="outline-success"
+                  className="me-3"
                   onClick={() => {
                     if (regis?.files)
                       setFiles(
@@ -509,20 +579,24 @@ function RegisDetailPage() {
           </Col>
           <Col>
             <p className="m-0 fw-bold">Tải thêm File:</p>
-            <FileUploadComponent
-              onSave={(linkFile) => {
-                const currFile: LinkImageInput[] = files?.map(
-                  (file) =>
-                    ({
-                      filename: file.filename,
-                      type: file.type,
-                      url: file.url,
-                    } as LinkImageInput)
-                );
-                const newFile: LinkImageInput[] = [...currFile, ...linkFile];
-                handleSaveFiles(newFile);
-              }}
-            />
+            {regis?.typeOfService && (
+              <FileUploadComponent
+                remaining={5 - files.length > 0 ? 5 - files.length : 0}
+                checkRole={checkRole}
+                onSave={(linkFile) => {
+                  const currFile: LinkImageInput[] = files?.map(
+                    (file) =>
+                      ({
+                        filename: file.filename,
+                        type: file.type,
+                        url: file.url,
+                      } as LinkImageInput)
+                  );
+                  const newFile: LinkImageInput[] = [...currFile, ...linkFile];
+                  handleSaveFiles(newFile);
+                }}
+              />
+            )}
           </Col>
         </Row>
       </Row>

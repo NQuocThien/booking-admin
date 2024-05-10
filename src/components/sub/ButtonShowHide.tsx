@@ -42,11 +42,6 @@ const ButtonGroupCheck = (props: IPropButtonGroupCheck) => {
             )}
           </Button>
         </ButtonGroup>
-        {/* <div className="col">
-          {loading !== undefined && (
-            <StatusCpn loading={loading} error={error} />
-          )}
-        </div> */}
       </Row>
     </div>
   );

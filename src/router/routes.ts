@@ -235,6 +235,11 @@ const routes_clinic: IRoute[] = [
     element: PendingPage,
   },
   {
+    path: "/facility-page/regis-pending/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/regis-pending/:profileId",
     name: "Dashboard",
     element: RegisHistoryPage,
@@ -355,9 +360,24 @@ const routes_clinic: IRoute[] = [
     element: RegisHistoryPage,
   },
   {
+    path: "/facility-page/coordinate/doctors/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/doctors/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/coordinate/specialties",
     name: "Dashboard",
     element: CoordinateMedcialSpecialties,
+  },
+  {
+    path: "/facility-page/coordinate/specialties/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/facility-page/coordinate/specialties/:profileId",
@@ -365,9 +385,19 @@ const routes_clinic: IRoute[] = [
     element: RegisHistoryPage,
   },
   {
+    path: "/facility-page/coordinate/specialties/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/coordinate/vaccination",
     name: "Dashboard",
     element: CoordinateVaccination,
+  },
+  {
+    path: "/facility-page/coordinate/vaccination/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/facility-page/coordinate/vaccination/:profileId",
@@ -375,9 +405,24 @@ const routes_clinic: IRoute[] = [
     element: RegisHistoryPage,
   },
   {
+    path: "/facility-page/coordinate/vaccination/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/coordinate/packages",
     name: "Dashboard",
     element: CoordinatePackages,
+  },
+  {
+    path: "/facility-page/coordinate/packages/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/packages/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/facility-page/coordinate/packages/:profileId",
@@ -430,6 +475,11 @@ const routes_staff_manager: IRoute[] = [
     path: "/facility-page/regis-pending",
     name: "Dashboard",
     element: PendingPage,
+  },
+  {
+    path: "/facility-page/regis-pending/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/facility-page/regis-pending/:profileId",
@@ -589,6 +639,11 @@ const routes_staff_specialties: IRoute[] = [
     element: CoordinateMedcialSpecialtiesByStaff,
   },
   {
+    path: "/staff-page/specialties/registration/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/staff-page/specialties/registration/:profileId",
     name: "Dashboard",
     element: RegisHistoryPage,
@@ -609,6 +664,11 @@ const routes_staff_packages: IRoute[] = [
     path: "/staff-page/packages/registration",
     name: "Dashboard",
     element: CoordinatePackagesByStaff,
+  },
+  {
+    path: "/staff-page/packages/registration/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/staff-page/packages/registration/:profileId",
@@ -633,6 +693,11 @@ const routes_staff_vaccination: IRoute[] = [
     element: CoordinateVaccinationByStaff,
   },
   {
+    path: "/staff-page/vaccination/registration/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/staff-page/vaccination/registration/:profileId",
     name: "Dashboard",
     element: RegisHistoryPage,
@@ -643,6 +708,11 @@ const routes_staff_pending: IRoute[] = [
     path: "/staff-page/regis-pending",
     name: "Dashboard",
     element: PendingPage,
+  },
+  {
+    path: "/staff-page/regis-pending/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/staff-page/regis-pending/:profileId",

@@ -5,6 +5,7 @@ import {
   handleChangeOptFacilities,
   handleChangeOptSpecialties,
   handleChangeStateForm,
+  handleChangeUser,
   handleSetValidate,
   initState,
   reducer,
@@ -28,11 +29,13 @@ import {
   LinkImageInput,
   ScheduleInput,
   UpdateDoctorInput,
+  UpdateUserAndDoctorInput,
   useGetAllMedicalFacilitySelectLazyQuery,
   useGetDoctorToUpdateByIdQuery,
   useGetMedicalSpecialtiesSelectQuery,
   useGetUserDoctorPendingUpdateQuery,
   useUpdateDoctorMutation,
+  useUpdateUserAndDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
@@ -53,6 +56,7 @@ import {
 import WorkScheduleUpdateCpn from "src/components/WorkSchedule/WorkScheduleUpdate";
 import StatusCpn from "src/components/sub/Status";
 import { useAuth } from "src/context/AuthContext";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormUpdateDoctor() {
   const [state, dispatch] = useReducer(reducer, initState);
   const { checkExpirationToken } = useAuth();
@@ -64,7 +68,7 @@ function FormUpdateDoctor() {
     loading: loadingDataUpdate,
     error: errorDataUpdate,
   } = useGetDoctorToUpdateByIdQuery({
-    fetchPolicy: "network-only",
+    fetchPolicy: "no-cache",
     variables: {
       input: idDoctor || "",
     },
@@ -143,6 +147,15 @@ function FormUpdateDoctor() {
       },
     },
   });
+  const [updateUserAndDoctor, { loading: loadingUpdatedUserAndDoctor }] =
+    useUpdateUserAndDoctorMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
   const [optUsers, setOptUser] = useState<IOption[]>([
     {
       value: "",
@@ -155,6 +168,15 @@ function FormUpdateDoctor() {
         (user) => ({
           value: user.id,
           label: user.username,
+        })
+      );
+      const username = dataUsers.getUserDoctorPendingUpdate.find(
+        (item) => item.id === state.updateDoctor.userId
+      )?.username;
+      dispatch(
+        handleChangeUser({
+          ...state.updateUser,
+          username: username || state.updateUser.username,
         })
       );
       setOptUser(options);
@@ -231,15 +253,30 @@ function FormUpdateDoctor() {
           },
           academicTitle: state.updateDoctor.academicTitle,
         };
-
-        await updateDoctor({
-          variables: {
-            input: input,
-          },
-        }).then((res) => {
-          showToast("Đã sửa thông tin  👌👌");
-          navigate(-1);
-        });
+        if (state.formMedical) {
+          const inputUserAndDoctor: UpdateUserAndDoctorInput = {
+            ...input,
+            username: state.updateUser.username,
+            password: state.updateUser.password,
+          };
+          await updateUserAndDoctor({
+            variables: {
+              input: inputUserAndDoctor,
+            },
+          }).then((res) => {
+            showToast("Đã sửa thông tin  👌👌");
+            navigate(-1);
+          });
+        } else {
+          await updateDoctor({
+            variables: {
+              input: input,
+            },
+          }).then((res) => {
+            showToast("Đã sửa thông tin  👌👌");
+            navigate(-1);
+          });
+        }
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");
@@ -365,6 +402,12 @@ function FormUpdateDoctor() {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
+                  }}
+                  onBlur={(e) => {
+                    if (!validatePhoneNumber(state.updateDoctor.numberPhone)) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
                   }}
                   required
                   type="text"
@@ -494,27 +537,56 @@ function FormUpdateDoctor() {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Group className="mb-3" controlId="formGroupUser">
-                <Form.Label>
-                  Chọn tài khoản:{" "}
-                  {loading && (
-                    <Spinner animation="border" variant="primary" size="sm" />
-                  )}
-                </Form.Label>
-                <Select
-                  value={optUsers.find(
-                    (item) => item.value === state.updateDoctor.userId || null
-                  )}
-                  onChange={(e) => {
-                    dispatch(handleChangeForm("userId", e?.value));
-                  }}
-                  options={optUsers}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+          {!state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="formGroupUser">
+                  <Form.Label>
+                    Chọn tài khoản:{" "}
+                    <StatusCpn loading={loading} error={error} />
+                  </Form.Label>
+                  <Select
+                    required
+                    value={optUsers.find(
+                      (item) => item.value === state.updateDoctor.userId
+                    )}
+                    onChange={(e) => {
+                      dispatch(handleChangeForm("userId", e?.value));
+                    }}
+                    options={optUsers}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
+          {state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Tên tài khoản:</Form.Label>
+                  <Form.Control value={state.updateUser.username} required />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Mật khẩu:</Form.Label>
+                  <Form.Control
+                    value={state.updateUser.password}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        handleChangeUser({
+                          ...state.updateUser,
+                          password: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
           <Row>
             <WorkScheduleUpdateCpn state={state} dispatch={dispatch} />
           </Row>
@@ -524,7 +596,7 @@ function FormUpdateDoctor() {
               <Button variant="primary" type="submit">
                 <IoSaveOutline className="mx-2" />
                 Lưu
-                {loadingUpdated && (
+                {(loadingUpdated || loadingUpdatedUserAndDoctor) && (
                   <Spinner animation="border" variant="light" size="sm" />
                 )}
               </Button>

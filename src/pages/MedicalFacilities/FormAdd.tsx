@@ -37,6 +37,7 @@ import { uploadImage } from "src/utils/upload";
 import { showToast } from "src/components/sub/toasts";
 import { GetETypeOfFacility } from "src/utils/enum-value";
 import MapInputCpn from "src/components/sub/MapInput";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormAddMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -238,6 +239,16 @@ function FormAddMedicalFacility() {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
+                  }}
+                  onBlur={(e) => {
+                    if (
+                      !validatePhoneNumber(
+                        state.createMedicalFacility.numberPhone
+                      )
+                    ) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
                   }}
                   required
                   type="text"

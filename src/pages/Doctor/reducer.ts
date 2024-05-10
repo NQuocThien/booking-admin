@@ -9,8 +9,13 @@ export interface IOption {
   value: string;
   label: string;
 }
+interface IUserInput {
+  username: string;
+  password: string;
+}
 export interface IStateFormAddDoctor {
   createDoctor: CreateDoctorInput;
+  createUser: IUserInput;
   validate: boolean;
   avatarFile: Blob | null;
   formMedical: boolean;
@@ -66,6 +71,10 @@ export const initState: IStateFormAddDoctor = {
       value: "",
     },
   ],
+  createUser: {
+    password: "",
+    username: "",
+  },
 };
 
 //actions
@@ -78,6 +87,7 @@ const HC_STATE_FORM = "hc-change-state-form";
 const HC_OPT_SPECIALTIES = "hc-change-opt-specialties";
 const HC_OPT_FACILITES = "hc-change-opt-facilities";
 const HC_WORK_SCHEDULE = "hc-work-schedule";
+const HC_USER_CREATE = "hc-user-create";
 export const handleChangeForm = (
   name: keyof CreateDoctorInput,
   value: any
@@ -131,6 +141,14 @@ export const handleChangeOptFacilities = (
 export const hanldeFindLocation = (payload: string): IActionFormAddDoctor => {
   return {
     type: HC_FIND_LOCATION,
+    payload: payload,
+  };
+};
+export const hanldeChangeCreateUserDoctor = (
+  payload: IUserInput
+): IActionFormAddDoctor => {
+  return {
+    type: HC_USER_CREATE,
     payload: payload,
   };
 };
@@ -195,6 +213,11 @@ export const reducer = (
           ...state.createDoctor,
           workSchedule: action.payload,
         },
+      };
+    case HC_USER_CREATE:
+      return {
+        ...state,
+        createUser: action.payload,
       };
     default:
       return state;

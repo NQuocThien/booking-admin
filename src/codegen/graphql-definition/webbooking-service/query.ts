@@ -1184,6 +1184,7 @@ const getAllRegisterByOption = gql`
         relationship
         customer {
           id
+          customerKey
           userId
           fullname
           gender
@@ -1299,6 +1300,7 @@ const getAllCustomerPagination = gql`
     ) {
       id
       userId
+      customerKey
       fullname
       gender
       numberPhone
@@ -1462,6 +1464,7 @@ const getAllDoctorCountOfFacility = gql`
     $startTime: String!
     $endTime: String!
     $isPending: Boolean
+    $isCancel: Boolean
   ) {
     getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1470,6 +1473,7 @@ const getAllDoctorCountOfFacility = gql`
         startTime: $startTime
         endTime: $endTime
         isPending: $isPending
+        isCancel: $isCancel
       )
     }
   }
@@ -1481,6 +1485,7 @@ const getAllPackageCountOfFacility = gql`
     $startTime: String!
     $endTime: String!
     $isPending: Boolean
+    $isCancel: Boolean
   ) {
     getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1489,6 +1494,7 @@ const getAllPackageCountOfFacility = gql`
         startTime: $startTime
         endTime: $endTime
         isPending: $isPending
+        isCancel: $isCancel
       )
     }
   }
@@ -1500,6 +1506,7 @@ const getAllMedicalSpecialtiesCountOfFacility = gql`
     $startTime: String!
     $endTime: String!
     $isPending: Boolean
+    $isCancel: Boolean
   ) {
     getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1508,6 +1515,7 @@ const getAllMedicalSpecialtiesCountOfFacility = gql`
         startTime: $startTime
         endTime: $endTime
         isPending: $isPending
+        isCancel: $isCancel
       )
     }
   }
@@ -1519,6 +1527,7 @@ const getAllVaccinationCountOfFacility = gql`
     $startTime: String!
     $endTime: String!
     $isPending: Boolean
+    $isCancel: Boolean
   ) {
     getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1527,6 +1536,7 @@ const getAllVaccinationCountOfFacility = gql`
         startTime: $startTime
         endTime: $endTime
         isPending: $isPending
+        isCancel: $isCancel
       )
     }
   }
@@ -1569,6 +1579,7 @@ const getAllRegisPending = gql`
           id
           fullname
           address
+          customerKey
           numberPhone
           gender
           ethnic
@@ -1617,6 +1628,7 @@ const getProfileById = gql`
   query getProfileById($profileId: String!) {
     getProfileById(id: $profileId) {
       id
+
       customerId
       email
       ethnic
@@ -1631,6 +1643,7 @@ const getProfileById = gql`
       relationship
       customer {
         id
+        customerKey
         userId
         fullname
         gender

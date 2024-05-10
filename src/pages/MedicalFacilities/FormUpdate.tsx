@@ -48,6 +48,7 @@ import {
 import { GetETypeOfFacility } from "src/utils/enum-value";
 import MapInputCpn from "src/components/sub/MapInput";
 import { IOption } from "src/utils/enum";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormUpdateMedicalFacility() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -340,6 +341,16 @@ function FormUpdateMedicalFacility() {
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
                   }}
+                  onBlur={(e) => {
+                    if (
+                      !validatePhoneNumber(
+                        state.updateMedicalFacility.numberPhone
+                      )
+                    ) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
+                  }}
                   required
                   type="text"
                   placeholder="0789624614"
@@ -353,25 +364,16 @@ function FormUpdateMedicalFacility() {
                 <Form.Label>Trạng thái hoạt động:</Form.Label>
                 <Form.Select
                   onChange={(e) => {
-                    dispatch(handleChangeForm("status", e.target.value));
+                    dispatch(
+                      handleChangeForm(
+                        "status",
+                        e.target.value as EStatusService
+                      )
+                    );
                   }}
-                  value={EStatusService.Open}>
-                  <option
-                    selected={
-                      state.updateMedicalFacility.status === EStatusService.Open
-                    }
-                    value={EStatusService.Open}>
-                    Mở
-                  </option>
-                  <option
-                    selected={
-                      state.updateMedicalFacility.status ===
-                      EStatusService.Close
-                    }
-                    value={EStatusService.Close}>
-                    {" "}
-                    Đóngs
-                  </option>
+                  value={state.updateMedicalFacility.status}>
+                  <option value={EStatusService.Open}>Mở</option>
+                  <option value={EStatusService.Close}> Đóng</option>
                 </Form.Select>
               </Form.Group>
             </Col>

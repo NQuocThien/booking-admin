@@ -233,7 +233,7 @@ function RegisHistoryPage() {
             </Button>
           </div>
 
-          <Table hover striped>
+          <Table hover>
             <thead>
               <tr>
                 <th>#</th>
@@ -248,14 +248,14 @@ function RegisHistoryPage() {
               style={{ minHeight: "40vh", maxHeight: "80vh" }}>
               {listRegis?.map((regis, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td className={`${regis.cancel && "bg-danger"}`}>
+                  <td className="align-middle">{index + 1}</td>
+                  <td className="align-middle">
                     <p className="m-0">{formatDate(regis.date)}</p>
                     <Badge>
                       {regis.session.startTime} - {regis.session.endTime}
                     </Badge>
                   </td>
-                  <td>
+                  <td className="align-middle">
                     {regis.typeOfService === GetETypeOfService.Doctor &&
                       `Bác sĩ "${regis.doctor?.doctorName}"`}
                     {regis.typeOfService === GetETypeOfService.Package &&
@@ -264,9 +264,8 @@ function RegisHistoryPage() {
                       `Tiêm chủng "${regis.vaccination?.vaccineName}"`}
                     {regis.typeOfService === GetETypeOfService.Specialty &&
                       `Chuyên khoa "${regis.specialty?.specialtyName}"`}
-                    {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
                   </td>
-                  <td>
+                  <td className="align-middle">
                     <span
                       className={`${
                         regis.state === GetEStateRegister.Pending && "text-dark"
@@ -277,10 +276,11 @@ function RegisHistoryPage() {
                         regis.state === GetEStateRegister.Success &&
                         "text-success"
                       }`}>
-                      {regis.state}
+                      {!regis.cancel && regis.state}
+                      {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
                     </span>
                   </td>
-                  <td>
+                  <td className="align-middle">
                     <Dropdown drop="down">
                       <Dropdown.Toggle
                         as={CustomToggleCiMenuKebab}></Dropdown.Toggle>

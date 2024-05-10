@@ -6,6 +6,7 @@ import {
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
   handleChangeStateForm,
+  handleChangeUser,
   handleSetDataFormUpdate,
   handleSetValidate,
   initState,
@@ -32,6 +33,7 @@ import {
   useGetMedicalStaffByIdQuery,
   useGetSpecialtySelectQuery,
   useUpdateMedicalStaffMutation,
+  useUpdateUserAndStaffMutation,
 } from "src/graphql/webbooking-service.generated";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
 import { IoSaveOutline } from "react-icons/io5";
@@ -45,6 +47,7 @@ import {
   getEnumValuePermission,
   getSelectedOption,
 } from "src/utils/getData";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormUpdateMedicalStaff() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -86,6 +89,17 @@ function FormUpdateMedicalStaff() {
         },
       },
     });
+  const [
+    updateStaffAndUser,
+    { loading: loadUpdateAndUser, error: errUpdateAndUser },
+  ] = useUpdateUserAndStaffMutation({
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
   const {
     data: dataSpecialty,
     loading: loadSpecialty,
@@ -188,14 +202,28 @@ function FormUpdateMedicalStaff() {
         userId: state.updateStaff.userId,
         specialtyId: state.updateStaff.specialtyId,
       };
-      updateStaff({
-        variables: {
-          input: state.updateStaff,
-        },
-      }).then(() => {
-        showToast("Đã sửa nhân viên 👌👌");
-        navigate(-1);
-      });
+      if (state.formMedical) {
+        await updateStaffAndUser({
+          variables: {
+            input: {
+              ...state.updateStaff,
+              password: state.updateUser.password,
+            },
+          },
+        }).then(() => {
+          showToast("Đã sửa nhân viên 👌👌");
+          navigate(-1);
+        });
+      } else {
+        await updateStaff({
+          variables: {
+            input: state.updateStaff,
+          },
+        }).then(() => {
+          showToast("Đã sửa nhân viên 👌👌");
+          navigate(-1);
+        });
+      }
     }
   };
   const handleRemoveItemService = (
@@ -286,6 +314,12 @@ function FormUpdateMedicalStaff() {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
+                  }}
+                  onBlur={(e) => {
+                    if (!validatePhoneNumber(state.updateStaff.numberPhone)) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
                   }}
                   required
                   type="text"
@@ -524,23 +558,63 @@ function FormUpdateMedicalStaff() {
               </Col>
             )}
           </Row>
-          <Row>
-            <Form.Group className="mb-3" controlId="formGroupPackage">
-              <Form.Label>
-                Chọn tài khoản <StatusCpn loading={loadUser} error={errUser} />
-              </Form.Label>
-              <Select
-                value={getSelectedOption(
-                  state.updateStaff.userId,
-                  state.optionsUser
-                )}
-                options={state.optionsUser}
-                onChange={(e) => {
-                  dispatch(handleChangeForm("userId", e?.value));
-                }}
-              />
-            </Form.Group>
-          </Row>
+          {!state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="formGroupUser">
+                  <Form.Label>
+                    Chọn tài khoản:{" "}
+                    <StatusCpn loading={loading} error={error} />
+                  </Form.Label>
+                  <Select
+                    required
+                    value={state.optionsUser.find(
+                      (item) => item.value === state.updateStaff.userId
+                    )}
+                    onChange={(e) => {
+                      dispatch(handleChangeForm("userId", e?.value));
+                    }}
+                    options={state.optionsUser}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
+          {state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Tên tài khoản:</Form.Label>
+                  <Form.Control
+                    value={
+                      state.optionsUser.find(
+                        (item) => item.value === state.updateStaff.userId
+                      )?.label
+                    }
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Mật khẩu:</Form.Label>
+                  <Form.Control
+                    value={state.updateUser.password}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        handleChangeUser({
+                          ...state.updateUser,
+                          password: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
 
           <Row className="mt-3">
             <div className="d-flex justify-content-end">
@@ -550,8 +624,10 @@ function FormUpdateMedicalStaff() {
                 <StatusCpn
                   size="sm"
                   variant="light"
-                  loading={loadUpdate || loadingFacilitySelect}
-                  error={errUpdate}
+                  loading={
+                    loadUpdate || loadingFacilitySelect || loadUpdateAndUser
+                  }
+                  error={errUpdate || errUpdateAndUser}
                 />
               </Button>
             </div>

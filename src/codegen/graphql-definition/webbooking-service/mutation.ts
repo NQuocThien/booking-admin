@@ -423,3 +423,40 @@ const uploadFileRegister = gql`
     }
   }
 `;
+const cancelRegisterByAdmin = gql`
+  mutation cancelRegisterByAdmin($id: String!, $content: String!) {
+    cancelRegisterByAdmin(id: $id, content: $content) {
+      id
+    }
+  }
+`;
+const signupAndCreateDoctor = gql`
+  mutation signupAndCreateDoctor($input: CreateDoctorAndUserInput!) {
+    signupAndCreateDoctor(input: $input) {
+      id
+    }
+  }
+`;
+
+const updateUserAndDoctor = gql`
+  mutation updateUserAndDoctor($input: UpdateUserAndDoctorInput!) {
+    updateUserAndDoctor(input: $input) {
+      id
+    }
+  }
+`;
+
+const createUserAndStaff = gql`
+  mutation createUserAndStaff($input: CreatUserAndStaffInput!) {
+    createUserAndStaff(input: $input) {
+      id
+    }
+  }
+`;
+const updateUserAndStaff = gql`
+  mutation updateUserAndStaff($input: UpdateUserAndStaffInput!) {
+    updateUserAndStaff(input: $input) {
+      id
+    }
+  }
+`;

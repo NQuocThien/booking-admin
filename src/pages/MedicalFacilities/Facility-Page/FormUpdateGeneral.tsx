@@ -313,25 +313,16 @@ function FormUpdateGeneralMedicalFacility() {
                 <Form.Label>Trạng thái hoạt động:</Form.Label>
                 <Form.Select
                   onChange={(e) => {
-                    dispatch(handleChangeForm("status", e.target.value));
+                    dispatch(
+                      handleChangeForm(
+                        "status",
+                        e.target.value as EStatusService
+                      )
+                    );
                   }}
-                  value={EStatusService.Open}>
-                  <option
-                    selected={
-                      state.updateMedicalFacility.status === EStatusService.Open
-                    }
-                    value={EStatusService.Open}>
-                    Mở
-                  </option>
-                  <option
-                    selected={
-                      state.updateMedicalFacility.status ===
-                      EStatusService.Close
-                    }
-                    value={EStatusService.Close}>
-                    {" "}
-                    Đóngs
-                  </option>
+                  value={state.updateMedicalFacility.status}>
+                  <option value={EStatusService.Open}>Mở</option>
+                  <option value={EStatusService.Close}> Đóng</option>
                 </Form.Select>
               </Form.Group>
             </Col>

@@ -24,6 +24,7 @@ const registerCreated = gql`
         customer {
           id
           userId
+          customerKey
           fullname
           gender
           numberPhone
@@ -81,6 +82,7 @@ const registerPendingCreated = gql`
         customerId
         customer {
           id
+          customerKey
           fullname
           address
           numberPhone

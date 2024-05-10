@@ -56,7 +56,7 @@ function DoctorDetailForDoctorPage() {
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !userInfor?.id) {
     console.log(error);
-    console.log("user id: ", userInfor?.id);
+    // console.log("user id: ", userInfor?.id);
 
     return <ShowAlert />;
   }

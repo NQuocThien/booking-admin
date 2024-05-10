@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { Alert, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { ILinkImage } from "src/assets/contains/item-interface";
 import { formatFileSize } from "src/utils/tools";
 import { uploadMultiFile } from "src/utils/upload";
 import { showToast } from "./toasts";
-
+import { useAuth } from "src/context/AuthContext";
+import { MdFileUpload } from "react-icons/md";
 interface IProps {
+  checkRole: () => boolean;
   onSave: (fileLink: ILinkImage[]) => void;
+  remaining: number;
 }
-function Upload({ onSave }: IProps) {
+function Upload({ onSave, checkRole, remaining }: IProps) {
+  const { checkExpirationToken } = useAuth();
+  checkExpirationToken();
   const [files, setFiles] = useState<File[]>([]);
-  const handleUpload = () => {
-    uploadMultiFile("document", files, (error, result) => {
+
+  const handleUpload = async () => {
+    if (files.length === 0) {
+      showToast("Chưa chọn file ⚠️", "warning");
+      return;
+    }
+
+    await uploadMultiFile("document", files, (error, result) => {
       if (error) {
         console.error("Lỗi khi tải lên tệp tin:", error);
       } else {
@@ -23,7 +34,6 @@ function Upload({ onSave }: IProps) {
             url: `${process.env.REACT_APP_BACKEND_URI_DOCUMENTS}/${r?.filename}`,
           });
         });
-        console.log("test result: ", linkFile);
         showToast("Đã upload các file");
         onSave(linkFile);
         setFiles([]);
@@ -32,21 +42,35 @@ function Upload({ onSave }: IProps) {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!checkRole()) {
+      showToast("Không có quyền thực hiện thao tác này", "warning");
+      return;
+    }
+
     const acceptedFiles = event.target.files;
-    const max = 5;
 
     if (acceptedFiles && files.length === 0) {
       const filesArray = Array.from(acceptedFiles);
-      if (filesArray.length > 5) {
-        alert(`Vui lòng không chọn quá ${max} file.`);
+      if (!checkFile(filesArray)) {
+        alert(`Vui lòng không lưu file quá 5MB`);
+        event.target.value = "";
+        return;
+      }
+      if (filesArray.length > remaining) {
+        alert(`Vui lòng không lưu tối đa quá 5 file`);
         event.target.value = "";
         return;
       }
       setFiles(filesArray);
     } else if (acceptedFiles && files.length > 0) {
       const filesArray = Array.from(acceptedFiles);
-      if (filesArray.length + files.length > 5) {
-        alert(`Vui lòng không chọn quá ${max} file.`);
+      if (!checkFile(filesArray)) {
+        alert(`Vui lòng không lưu file quá 5MB`);
+        event.target.value = "";
+        return;
+      }
+      if (filesArray.length + files.length > remaining) {
+        alert(`Vui lòng không lưu tối đa quá 5 file`);
         event.target.value = "";
         return;
       }
@@ -60,6 +84,13 @@ function Upload({ onSave }: IProps) {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
+  };
+
+  const checkFile = (files: File[]): boolean => {
+    for (let file of files) {
+      if (file.size > 5242880) return false;
+    }
+    return true;
   };
   return (
     <div>
@@ -92,6 +123,7 @@ function Upload({ onSave }: IProps) {
           onClick={() => {
             handleUpload();
           }}>
+          <MdFileUpload />
           Tải lên
         </Button>
       </div>

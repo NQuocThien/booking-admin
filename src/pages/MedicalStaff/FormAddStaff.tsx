@@ -6,12 +6,21 @@ import {
   handleChangeOptionSpecialty,
   handleChangeOptionUser,
   handleChangeStateForm,
+  handleChangeUserCreate,
   handleSetValidate,
   initState,
   reducer,
 } from "./reducer";
 import Select from "react-select";
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+  Table,
+} from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
@@ -19,6 +28,7 @@ import {
   EGenderPackage,
   EPermission,
   useCreateMedicalStaffMutation,
+  useCreateUserAndStaffMutation,
   useGetAllMedicalFacilitySelectLazyQuery,
   useGetAllUserStaffSelectQuery,
   useGetSpecialtySelectQuery,
@@ -30,19 +40,30 @@ import ShowAlert from "src/components/sub/alerts";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { showToast } from "src/components/sub/toasts";
 import StatusCpn from "src/components/sub/Status";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormAddMedicalStaff() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
   const { id: idMedical } = useParams();
   const token = getToken();
-  const [createMedicalStaff] = useCreateMedicalStaffMutation({
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  const [createMedicalStaff, { loading: loadingCreate }] =
+    useCreateMedicalStaffMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  });
+    });
+  const [createMedicalStaffAndUser, { loading: loadingCreateAndUser }] =
+    useCreateUserAndStaffMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
 
   const {
     data: dataSpecialty,
@@ -130,14 +151,37 @@ function FormAddMedicalStaff() {
     e.preventDefault();
     dispatch(handleSetValidate(true));
     if (form.checkValidity() === true) {
-      createMedicalStaff({
-        variables: {
-          input: state.createMedicalStaff,
-        },
-      }).then(() => {
-        showToast("Đã thêm nhân viên 👌👌");
-        navigate(-1);
-      });
+      try {
+        if (state.formMedical) {
+          const { userId, ...inforStaff } = state.createMedicalStaff;
+          await createMedicalStaffAndUser({
+            variables: {
+              input: {
+                ...inforStaff,
+                username: state.createUser.username,
+                password: state.createUser.password,
+              },
+            },
+          }).then(() => {
+            showToast("Đã thêm nhân viên và tạo tài khoản👌👌");
+            navigate(-1);
+          });
+        } else {
+          await createMedicalStaff({
+            variables: {
+              input: state.createMedicalStaff,
+            },
+          }).then(() => {
+            showToast("Đã thêm nhân viên 👌👌");
+            navigate(-1);
+          });
+        }
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.log(e);
+          showToast("Lỗi: " + e.message, "error");
+        }
+      }
     }
   };
   const handleRemoveItemService = (
@@ -223,6 +267,14 @@ function FormAddMedicalStaff() {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
+                  }}
+                  onBlur={(e) => {
+                    if (
+                      !validatePhoneNumber(state.createMedicalStaff.numberPhone)
+                    ) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
                   }}
                   required
                   type="text"
@@ -461,25 +513,75 @@ function FormAddMedicalStaff() {
               </Col>
             )}
           </Row>
-          <Row>
-            <Form.Group className="mb-3" controlId="formGroupPackage">
-              <Form.Label>
-                Chọn tài khoản <StatusCpn loading={loadUser} error={errUser} />
-              </Form.Label>
-              <Select
-                options={state.optionsUser}
-                onChange={(e) => {
-                  dispatch(handleChangeForm("userId", e?.value));
-                }}
-              />
-            </Form.Group>
-          </Row>
+          {!state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="formGroupUser">
+                  <Form.Label>
+                    Chọn tài khoản:{" "}
+                    <StatusCpn loading={loadUser} error={errUser} />
+                  </Form.Label>
+                  <Select
+                    required
+                    // value={state.}
+                    onChange={(e) => {
+                      dispatch(handleChangeForm("userId", e?.value));
+                    }}
+                    options={state.optionsUser}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
+          {state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Tên tài khoản:</Form.Label>
+                  <Form.Control
+                    value={state.createUser.username}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        handleChangeUserCreate({
+                          ...state.createUser,
+                          username: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Mật khẩu:</Form.Label>
+                  <Form.Control
+                    value={state.createUser.password}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        handleChangeUserCreate({
+                          ...state.createUser,
+                          password: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
 
           <Row className="mt-3">
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">
                 <IoSaveOutline className="mx-2" />
                 Lưu
+                {(loadingCreate || loadingCreateAndUser) && (
+                  <Spinner size="sm" variant="border" />
+                )}
               </Button>
             </div>
           </Row>

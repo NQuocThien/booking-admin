@@ -49,6 +49,18 @@ export type ConfirmRegisterInput = {
   state: EStateRegister;
 };
 
+export type CreatUserAndStaffInput = {
+  email: Scalars['String']['input'];
+  gender: EGender;
+  medicalFacilityId: Scalars['String']['input'];
+  numberPhone: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  permissions: Array<EPermission>;
+  specialtyId?: InputMaybe<Array<Scalars['String']['input']>>;
+  staffName: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+};
+
 export type CreateBlogInput = {
   content: Scalars['String']['input'];
   keywords: Scalars['String']['input'];
@@ -72,6 +84,23 @@ export type CreateCustomerInput = {
   userId: Scalars['String']['input'];
 };
 
+export type CreateDoctorAndUserInput = {
+  academicTitle?: InputMaybe<EAcademicTitle>;
+  avatar: LinkImageInput;
+  degree: EDegree;
+  discription: Scalars['String']['input'];
+  doctorName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  gender: EGender;
+  medicalFactilitiesId: Scalars['String']['input'];
+  numberPhone: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  specialistId: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+  workSchedule: WorkScheduleInput;
+};
+
 export type CreateDoctorInput = {
   academicTitle?: InputMaybe<EAcademicTitle>;
   avatar: LinkImageInput;
@@ -90,9 +119,15 @@ export type CreateDoctorInput = {
 
 export type CreateEvaluateInput = {
   comment: Scalars['String']['input'];
+  customerName: Scalars['String']['input'];
+  doctorId?: InputMaybe<Scalars['String']['input']>;
+  packageId?: InputMaybe<Scalars['String']['input']>;
   rating: Scalars['Float']['input'];
   registerId: Scalars['String']['input'];
+  specialtyId?: InputMaybe<Scalars['String']['input']>;
+  typeOfService: ETypeOfService;
   userId: Scalars['String']['input'];
+  vaccineId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateMedicalFacilityInput = {
@@ -220,6 +255,7 @@ export type CreateVaccineInput = {
 export type Customer = {
   __typename?: 'Customer';
   address: Scalars['String']['output'];
+  customerKey: Scalars['String']['output'];
   dateOfBirth: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   ethnic: Scalars['String']['output'];
@@ -255,6 +291,7 @@ export type Doctor = {
 
 export type DoctorRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
@@ -346,10 +383,18 @@ export enum EnumBlogType {
 export type Evaluate = {
   __typename?: 'Evaluate';
   comment: Scalars['String']['output'];
+  createdAt: Scalars['Float']['output'];
+  customerName: Scalars['String']['output'];
+  doctorId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  packageId?: Maybe<Scalars['String']['output']>;
   rating: Scalars['Float']['output'];
   registerId: Scalars['String']['output'];
+  specialtyId?: Maybe<Scalars['String']['output']>;
+  typeOfService: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['Float']['output']>;
   userId: Scalars['String']['output'];
+  vaccineId?: Maybe<Scalars['String']['output']>;
 };
 
 export type FilterDoctorInput = {
@@ -386,7 +431,15 @@ export type GeneralInforUpdateInput = {
   logoHeader?: InputMaybe<LinkImageInput>;
 };
 
+export type GetEvaluateOptionInput = {
+  doctorId?: InputMaybe<Scalars['String']['input']>;
+  packageId?: InputMaybe<Scalars['String']['input']>;
+  specialtyId?: InputMaybe<Scalars['String']['input']>;
+  vaccineId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type GetRegisPendingInput = {
+  cancel: Scalars['Boolean']['input'];
   doctorIds: Array<Scalars['String']['input']>;
   endTime: Scalars['String']['input'];
   packageIds: Array<Scalars['String']['input']>;
@@ -521,6 +574,7 @@ export type MedicalSpecialties = {
 
 export type MedicalSpecialtiesRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
@@ -543,6 +597,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   activeUser: User;
   cancelRegister: Register;
+  cancelRegisterByAdmin: Register;
   confirmRegister: Register;
   createBlog: Blog;
   createCustomer: Customer;
@@ -558,6 +613,7 @@ export type Mutation = {
   createRegisterPackage: Register;
   createRegisterSpecialty: Register;
   createRegisterVaccine: Register;
+  createUserAndStaff: MedicalStaff;
   createVaccination: Vaccination;
   deleteDoctor: Doctor;
   deleteEvaluate: Evaluate;
@@ -575,6 +631,7 @@ export type Mutation = {
   seenAllNotification: Scalars['String']['output'];
   seenNotificationById: Scalars['String']['output'];
   signup: User;
+  signupAndCreateDoctor: Doctor;
   signupUser: User;
   updateBlog: Blog;
   updateCustomer: Customer;
@@ -591,6 +648,8 @@ export type Mutation = {
   updateRoles: User;
   updateSetting: Setting;
   updateUser: User;
+  updateUserAndDoctor: Doctor;
+  updateUserAndStaff: MedicalStaff;
   updateUserWithPass: User;
   updateVaccination: Vaccination;
   uploadFileRegister: Register;
@@ -603,6 +662,12 @@ export type MutationActiveUserArgs = {
 
 
 export type MutationCancelRegisterArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationCancelRegisterByAdminArgs = {
+  content: Scalars['String']['input'];
   id: Scalars['String']['input'];
 };
 
@@ -679,6 +744,11 @@ export type MutationCreateRegisterSpecialtyArgs = {
 
 export type MutationCreateRegisterVaccineArgs = {
   input: CreateRegisterVaccineInput;
+};
+
+
+export type MutationCreateUserAndStaffArgs = {
+  input: CreatUserAndStaffInput;
 };
 
 
@@ -762,6 +832,11 @@ export type MutationSignupArgs = {
 };
 
 
+export type MutationSignupAndCreateDoctorArgs = {
+  input: CreateDoctorAndUserInput;
+};
+
+
 export type MutationSignupUserArgs = {
   createUserInput: CreateUserByAdminInput;
 };
@@ -842,6 +917,16 @@ export type MutationUpdateUserArgs = {
 };
 
 
+export type MutationUpdateUserAndDoctorArgs = {
+  input: UpdateUserAndDoctorInput;
+};
+
+
+export type MutationUpdateUserAndStaffArgs = {
+  input: UpdateUserAndStaffInput;
+};
+
+
 export type MutationUpdateUserWithPassArgs = {
   updateUserInput: UpdateUserWithPassInput;
 };
@@ -883,6 +968,7 @@ export type Package = {
 
 export type PackageRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
@@ -904,6 +990,7 @@ export type Profile = {
   numberPhone: Scalars['String']['output'];
   register?: Maybe<Array<Register>>;
   relationship: Scalars['String']['output'];
+  shares?: Maybe<Array<Scalars['String']['output']>>;
 };
 
 export type Query = {
@@ -961,6 +1048,8 @@ export type Query = {
   getDoctorbyId: Doctor;
   getDoctorbyUserId: Doctor;
   getEvaluateById: Evaluate;
+  getEvaluateByOption: Array<Evaluate>;
+  getEvaluateByRegisId: Evaluate;
   getGeneralInfor: GeneralInfor;
   getMedicalFacilityById: MedicalFacilities;
   getMedicalFacilityInfo: MedicalFacilities;
@@ -1323,6 +1412,16 @@ export type QueryGetEvaluateByIdArgs = {
 };
 
 
+export type QueryGetEvaluateByOptionArgs = {
+  option: GetEvaluateOptionInput;
+};
+
+
+export type QueryGetEvaluateByRegisIdArgs = {
+  regisId: Scalars['String']['input'];
+};
+
+
 export type QueryGetMedicalFacilityByIdArgs = {
   id: Scalars['String']['input'];
 };
@@ -1668,8 +1767,6 @@ export type UpdateEvaluateInput = {
   comment: Scalars['String']['input'];
   id: Scalars['String']['input'];
   rating: Scalars['Float']['input'];
-  registerId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
 };
 
 export type UpdateMedicalFacilityInput = {
@@ -1766,6 +1863,38 @@ export type UpdateSettingInput = {
   id: Scalars['Int']['input'];
 };
 
+export type UpdateUserAndDoctorInput = {
+  academicTitle?: InputMaybe<EAcademicTitle>;
+  avatar: LinkImageInput;
+  degree: EDegree;
+  discription: Scalars['String']['input'];
+  doctorName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  gender: EGender;
+  id: Scalars['String']['input'];
+  medicalFactilitiesId: Scalars['String']['input'];
+  numberPhone: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  specialistId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+  workSchedule: WorkScheduleInput;
+};
+
+export type UpdateUserAndStaffInput = {
+  email: Scalars['String']['input'];
+  gender: EGender;
+  id: Scalars['String']['input'];
+  medicalFacilityId: Scalars['String']['input'];
+  numberPhone: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  permissions: Array<EPermission>;
+  specialtyId?: InputMaybe<Array<Scalars['String']['input']>>;
+  staffName: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
 export type UpdateUserInput = {
   active?: InputMaybe<Scalars['Boolean']['input']>;
   avatar?: InputMaybe<LinkImageInput>;
@@ -1845,6 +1974,7 @@ export type Vaccination = {
 
 export type VaccinationRegisterCountArgs = {
   endTime: Scalars['String']['input'];
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
   startTime: Scalars['String']['input'];
 };
@@ -2073,6 +2203,42 @@ export type UploadFileRegisterMutationVariables = Exact<{
 
 
 export type UploadFileRegisterMutation = { __typename?: 'Mutation', uploadFileRegister: { __typename?: 'Register', id: string } };
+
+export type CancelRegisterByAdminMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  content: Scalars['String']['input'];
+}>;
+
+
+export type CancelRegisterByAdminMutation = { __typename?: 'Mutation', cancelRegisterByAdmin: { __typename?: 'Register', id: string } };
+
+export type SignupAndCreateDoctorMutationVariables = Exact<{
+  input: CreateDoctorAndUserInput;
+}>;
+
+
+export type SignupAndCreateDoctorMutation = { __typename?: 'Mutation', signupAndCreateDoctor: { __typename?: 'Doctor', id: string } };
+
+export type UpdateUserAndDoctorMutationVariables = Exact<{
+  input: UpdateUserAndDoctorInput;
+}>;
+
+
+export type UpdateUserAndDoctorMutation = { __typename?: 'Mutation', updateUserAndDoctor: { __typename?: 'Doctor', id: string } };
+
+export type CreateUserAndStaffMutationVariables = Exact<{
+  input: CreatUserAndStaffInput;
+}>;
+
+
+export type CreateUserAndStaffMutation = { __typename?: 'Mutation', createUserAndStaff: { __typename?: 'MedicalStaff', id: string } };
+
+export type UpdateUserAndStaffMutationVariables = Exact<{
+  input: UpdateUserAndStaffInput;
+}>;
+
+
+export type UpdateUserAndStaffMutation = { __typename?: 'Mutation', updateUserAndStaff: { __typename?: 'MedicalStaff', id: string } };
 
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2473,7 +2639,7 @@ export type GetAllRegisterByOptionQueryVariables = Exact<{
 }>;
 
 
-export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
+export type GetAllRegisterByOptionQuery = { __typename?: 'Query', getAllRegisterByOption: Array<{ __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, customerKey: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } }> };
 
 export type GetAllStaffPaginationQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2515,7 +2681,7 @@ export type GetAllCustomerPaginationQueryVariables = Exact<{
 }>;
 
 
-export type GetAllCustomerPaginationQuery = { __typename?: 'Query', getAllCustomerPagination: Array<{ __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string, profiles?: Array<{ __typename?: 'Profile', id: string, fullname: string, address: string, gender: string, dataOfBirth: any, numberPhone: string, email: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, customerId: string, ethnic: string }> | null }> };
+export type GetAllCustomerPaginationQuery = { __typename?: 'Query', getAllCustomerPagination: Array<{ __typename?: 'Customer', id: string, userId: string, customerKey: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string, profiles?: Array<{ __typename?: 'Profile', id: string, fullname: string, address: string, gender: string, dataOfBirth: any, numberPhone: string, email: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, customerId: string, ethnic: string }> | null }> };
 
 export type GetTotalCustomersCountQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2568,6 +2734,7 @@ export type GetAllDoctorCountOfFacilityQueryVariables = Exact<{
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2579,6 +2746,7 @@ export type GetAllPackageCountOfFacilityQueryVariables = Exact<{
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2590,6 +2758,7 @@ export type GetAllMedicalSpecialtiesCountOfFacilityQueryVariables = Exact<{
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2601,6 +2770,7 @@ export type GetAllVaccinationCountOfFacilityQueryVariables = Exact<{
   startTime: Scalars['String']['input'];
   endTime: Scalars['String']['input'];
   isPending?: InputMaybe<Scalars['Boolean']['input']>;
+  isCancel?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -2611,7 +2781,7 @@ export type GetAllRegisPendingQueryVariables = Exact<{
 }>;
 
 
-export type GetAllRegisPendingQuery = { __typename?: 'Query', getAllRegisPending: Array<{ __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null }> };
+export type GetAllRegisPendingQuery = { __typename?: 'Query', getAllRegisPending: Array<{ __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, customerKey: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null }> };
 
 export type GetRegisHistoryQueryVariables = Exact<{
   profileId: Scalars['String']['input'];
@@ -2627,7 +2797,7 @@ export type GetProfileByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileByIdQuery = { __typename?: 'Query', getProfileById: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } };
+export type GetProfileByIdQuery = { __typename?: 'Query', getProfileById: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, customerKey: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } };
 
 export type GetRegisByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -2641,14 +2811,14 @@ export type RegisterCreatedSubscriptionVariables = Exact<{
 }>;
 
 
-export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
+export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, customerKey: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
 
 export type RegisterPendingCreatedSubscriptionVariables = Exact<{
   input: GetRegisPendingInput;
 }>;
 
 
-export type RegisterPendingCreatedSubscription = { __typename?: 'Subscription', registerPendingCreated: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
+export type RegisterPendingCreatedSubscription = { __typename?: 'Subscription', registerPendingCreated: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, customerKey: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
 
 
 export const LoginDocument = gql`
@@ -3852,6 +4022,172 @@ export function useUploadFileRegisterMutation(baseOptions?: Apollo.MutationHookO
 export type UploadFileRegisterMutationHookResult = ReturnType<typeof useUploadFileRegisterMutation>;
 export type UploadFileRegisterMutationResult = Apollo.MutationResult<UploadFileRegisterMutation>;
 export type UploadFileRegisterMutationOptions = Apollo.BaseMutationOptions<UploadFileRegisterMutation, UploadFileRegisterMutationVariables>;
+export const CancelRegisterByAdminDocument = gql`
+    mutation cancelRegisterByAdmin($id: String!, $content: String!) {
+  cancelRegisterByAdmin(id: $id, content: $content) {
+    id
+  }
+}
+    `;
+export type CancelRegisterByAdminMutationFn = Apollo.MutationFunction<CancelRegisterByAdminMutation, CancelRegisterByAdminMutationVariables>;
+
+/**
+ * __useCancelRegisterByAdminMutation__
+ *
+ * To run a mutation, you first call `useCancelRegisterByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelRegisterByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelRegisterByAdminMutation, { data, loading, error }] = useCancelRegisterByAdminMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      content: // value for 'content'
+ *   },
+ * });
+ */
+export function useCancelRegisterByAdminMutation(baseOptions?: Apollo.MutationHookOptions<CancelRegisterByAdminMutation, CancelRegisterByAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelRegisterByAdminMutation, CancelRegisterByAdminMutationVariables>(CancelRegisterByAdminDocument, options);
+      }
+export type CancelRegisterByAdminMutationHookResult = ReturnType<typeof useCancelRegisterByAdminMutation>;
+export type CancelRegisterByAdminMutationResult = Apollo.MutationResult<CancelRegisterByAdminMutation>;
+export type CancelRegisterByAdminMutationOptions = Apollo.BaseMutationOptions<CancelRegisterByAdminMutation, CancelRegisterByAdminMutationVariables>;
+export const SignupAndCreateDoctorDocument = gql`
+    mutation signupAndCreateDoctor($input: CreateDoctorAndUserInput!) {
+  signupAndCreateDoctor(input: $input) {
+    id
+  }
+}
+    `;
+export type SignupAndCreateDoctorMutationFn = Apollo.MutationFunction<SignupAndCreateDoctorMutation, SignupAndCreateDoctorMutationVariables>;
+
+/**
+ * __useSignupAndCreateDoctorMutation__
+ *
+ * To run a mutation, you first call `useSignupAndCreateDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupAndCreateDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupAndCreateDoctorMutation, { data, loading, error }] = useSignupAndCreateDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSignupAndCreateDoctorMutation(baseOptions?: Apollo.MutationHookOptions<SignupAndCreateDoctorMutation, SignupAndCreateDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupAndCreateDoctorMutation, SignupAndCreateDoctorMutationVariables>(SignupAndCreateDoctorDocument, options);
+      }
+export type SignupAndCreateDoctorMutationHookResult = ReturnType<typeof useSignupAndCreateDoctorMutation>;
+export type SignupAndCreateDoctorMutationResult = Apollo.MutationResult<SignupAndCreateDoctorMutation>;
+export type SignupAndCreateDoctorMutationOptions = Apollo.BaseMutationOptions<SignupAndCreateDoctorMutation, SignupAndCreateDoctorMutationVariables>;
+export const UpdateUserAndDoctorDocument = gql`
+    mutation updateUserAndDoctor($input: UpdateUserAndDoctorInput!) {
+  updateUserAndDoctor(input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateUserAndDoctorMutationFn = Apollo.MutationFunction<UpdateUserAndDoctorMutation, UpdateUserAndDoctorMutationVariables>;
+
+/**
+ * __useUpdateUserAndDoctorMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserAndDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserAndDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserAndDoctorMutation, { data, loading, error }] = useUpdateUserAndDoctorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserAndDoctorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserAndDoctorMutation, UpdateUserAndDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserAndDoctorMutation, UpdateUserAndDoctorMutationVariables>(UpdateUserAndDoctorDocument, options);
+      }
+export type UpdateUserAndDoctorMutationHookResult = ReturnType<typeof useUpdateUserAndDoctorMutation>;
+export type UpdateUserAndDoctorMutationResult = Apollo.MutationResult<UpdateUserAndDoctorMutation>;
+export type UpdateUserAndDoctorMutationOptions = Apollo.BaseMutationOptions<UpdateUserAndDoctorMutation, UpdateUserAndDoctorMutationVariables>;
+export const CreateUserAndStaffDocument = gql`
+    mutation createUserAndStaff($input: CreatUserAndStaffInput!) {
+  createUserAndStaff(input: $input) {
+    id
+  }
+}
+    `;
+export type CreateUserAndStaffMutationFn = Apollo.MutationFunction<CreateUserAndStaffMutation, CreateUserAndStaffMutationVariables>;
+
+/**
+ * __useCreateUserAndStaffMutation__
+ *
+ * To run a mutation, you first call `useCreateUserAndStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserAndStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserAndStaffMutation, { data, loading, error }] = useCreateUserAndStaffMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserAndStaffMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserAndStaffMutation, CreateUserAndStaffMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserAndStaffMutation, CreateUserAndStaffMutationVariables>(CreateUserAndStaffDocument, options);
+      }
+export type CreateUserAndStaffMutationHookResult = ReturnType<typeof useCreateUserAndStaffMutation>;
+export type CreateUserAndStaffMutationResult = Apollo.MutationResult<CreateUserAndStaffMutation>;
+export type CreateUserAndStaffMutationOptions = Apollo.BaseMutationOptions<CreateUserAndStaffMutation, CreateUserAndStaffMutationVariables>;
+export const UpdateUserAndStaffDocument = gql`
+    mutation updateUserAndStaff($input: UpdateUserAndStaffInput!) {
+  updateUserAndStaff(input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateUserAndStaffMutationFn = Apollo.MutationFunction<UpdateUserAndStaffMutation, UpdateUserAndStaffMutationVariables>;
+
+/**
+ * __useUpdateUserAndStaffMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserAndStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserAndStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserAndStaffMutation, { data, loading, error }] = useUpdateUserAndStaffMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserAndStaffMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserAndStaffMutation, UpdateUserAndStaffMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserAndStaffMutation, UpdateUserAndStaffMutationVariables>(UpdateUserAndStaffDocument, options);
+      }
+export type UpdateUserAndStaffMutationHookResult = ReturnType<typeof useUpdateUserAndStaffMutation>;
+export type UpdateUserAndStaffMutationResult = Apollo.MutationResult<UpdateUserAndStaffMutation>;
+export type UpdateUserAndStaffMutationOptions = Apollo.BaseMutationOptions<UpdateUserAndStaffMutation, UpdateUserAndStaffMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -6643,6 +6979,7 @@ export const GetAllRegisterByOptionDocument = gql`
       relationship
       customer {
         id
+        customerKey
         userId
         fullname
         gender
@@ -6881,6 +7218,7 @@ export const GetAllCustomerPaginationDocument = gql`
   ) {
     id
     userId
+    customerKey
     fullname
     gender
     numberPhone
@@ -7234,11 +7572,16 @@ export type GetAllBlogOfFacilityPaginationLazyQueryHookResult = ReturnType<typeo
 export type GetAllBlogOfFacilityPaginationSuspenseQueryHookResult = ReturnType<typeof useGetAllBlogOfFacilityPaginationSuspenseQuery>;
 export type GetAllBlogOfFacilityPaginationQueryResult = Apollo.QueryResult<GetAllBlogOfFacilityPaginationQuery, GetAllBlogOfFacilityPaginationQueryVariables>;
 export const GetAllDoctorCountOfFacilityDocument = gql`
-    query getAllDoctorCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
+    query getAllDoctorCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean, $isCancel: Boolean) {
   getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
     id
     doctorName
-    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
+    registerCount(
+      startTime: $startTime
+      endTime: $endTime
+      isPending: $isPending
+      isCancel: $isCancel
+    )
   }
 }
     `;
@@ -7260,6 +7603,7 @@ export const GetAllDoctorCountOfFacilityDocument = gql`
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
  *      isPending: // value for 'isPending'
+ *      isCancel: // value for 'isCancel'
  *   },
  * });
  */
@@ -7280,11 +7624,16 @@ export type GetAllDoctorCountOfFacilityLazyQueryHookResult = ReturnType<typeof u
 export type GetAllDoctorCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllDoctorCountOfFacilitySuspenseQuery>;
 export type GetAllDoctorCountOfFacilityQueryResult = Apollo.QueryResult<GetAllDoctorCountOfFacilityQuery, GetAllDoctorCountOfFacilityQueryVariables>;
 export const GetAllPackageCountOfFacilityDocument = gql`
-    query getAllPackageCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
+    query getAllPackageCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean, $isCancel: Boolean) {
   getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
     id
     packageName
-    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
+    registerCount(
+      startTime: $startTime
+      endTime: $endTime
+      isPending: $isPending
+      isCancel: $isCancel
+    )
   }
 }
     `;
@@ -7306,6 +7655,7 @@ export const GetAllPackageCountOfFacilityDocument = gql`
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
  *      isPending: // value for 'isPending'
+ *      isCancel: // value for 'isCancel'
  *   },
  * });
  */
@@ -7326,11 +7676,16 @@ export type GetAllPackageCountOfFacilityLazyQueryHookResult = ReturnType<typeof 
 export type GetAllPackageCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllPackageCountOfFacilitySuspenseQuery>;
 export type GetAllPackageCountOfFacilityQueryResult = Apollo.QueryResult<GetAllPackageCountOfFacilityQuery, GetAllPackageCountOfFacilityQueryVariables>;
 export const GetAllMedicalSpecialtiesCountOfFacilityDocument = gql`
-    query getAllMedicalSpecialtiesCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
+    query getAllMedicalSpecialtiesCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean, $isCancel: Boolean) {
   getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
     id
     specialtyName
-    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
+    registerCount(
+      startTime: $startTime
+      endTime: $endTime
+      isPending: $isPending
+      isCancel: $isCancel
+    )
   }
 }
     `;
@@ -7352,6 +7707,7 @@ export const GetAllMedicalSpecialtiesCountOfFacilityDocument = gql`
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
  *      isPending: // value for 'isPending'
+ *      isCancel: // value for 'isCancel'
  *   },
  * });
  */
@@ -7372,11 +7728,16 @@ export type GetAllMedicalSpecialtiesCountOfFacilityLazyQueryHookResult = ReturnT
 export type GetAllMedicalSpecialtiesCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllMedicalSpecialtiesCountOfFacilitySuspenseQuery>;
 export type GetAllMedicalSpecialtiesCountOfFacilityQueryResult = Apollo.QueryResult<GetAllMedicalSpecialtiesCountOfFacilityQuery, GetAllMedicalSpecialtiesCountOfFacilityQueryVariables>;
 export const GetAllVaccinationCountOfFacilityDocument = gql`
-    query getAllVaccinationCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean) {
+    query getAllVaccinationCountOfFacility($userId: String, $staffId: String, $startTime: String!, $endTime: String!, $isPending: Boolean, $isCancel: Boolean) {
   getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
     id
     vaccineName
-    registerCount(startTime: $startTime, endTime: $endTime, isPending: $isPending)
+    registerCount(
+      startTime: $startTime
+      endTime: $endTime
+      isPending: $isPending
+      isCancel: $isCancel
+    )
   }
 }
     `;
@@ -7398,6 +7759,7 @@ export const GetAllVaccinationCountOfFacilityDocument = gql`
  *      startTime: // value for 'startTime'
  *      endTime: // value for 'endTime'
  *      isPending: // value for 'isPending'
+ *      isCancel: // value for 'isCancel'
  *   },
  * });
  */
@@ -7453,6 +7815,7 @@ export const GetAllRegisPendingDocument = gql`
         id
         fullname
         address
+        customerKey
         numberPhone
         gender
         ethnic
@@ -7579,6 +7942,7 @@ export const GetProfileByIdDocument = gql`
     relationship
     customer {
       id
+      customerKey
       userId
       fullname
       gender
@@ -7745,6 +8109,7 @@ export const RegisterCreatedDocument = gql`
       customer {
         id
         userId
+        customerKey
         fullname
         gender
         numberPhone
@@ -7824,6 +8189,7 @@ export const RegisterPendingCreatedDocument = gql`
       customerId
       customer {
         id
+        customerKey
         fullname
         address
         numberPhone

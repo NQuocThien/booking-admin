@@ -6,8 +6,13 @@ export interface IOption {
   value: string;
   label: string;
 }
+interface ICreateUser {
+  username: string;
+  password: string;
+}
 export interface IStateForm {
   createMedicalStaff: CreateMedicalStaffInput;
+  createUser: ICreateUser;
   validate: boolean;
   formMedical: boolean;
   optionsSpecialties: [IOption];
@@ -56,6 +61,10 @@ export const initState: IStateForm = {
       value: "",
     },
   ],
+  createUser: {
+    password: "",
+    username: "",
+  },
 };
 
 //actions
@@ -65,6 +74,7 @@ const HC_STATE_FORM = "hc-change-state-form";
 const HC_OPTION_SPECIALTY = "hc-option-specialty";
 const HC_OPTION_USER = "hc-option-users";
 const HC_OPTION_FACILITY = "hc-option-facility";
+const HC_USER_CREATE = "hc-user-create";
 export const handleChangeForm = (
   name: keyof CreateMedicalStaffInput,
   value: any
@@ -111,6 +121,14 @@ export const handleChangeOptionFacility = (
     payload: payload,
   };
 };
+export const handleChangeUserCreate = (
+  payload: ICreateUser
+): IActionFormAdd => {
+  return {
+    type: HC_USER_CREATE,
+    payload: payload,
+  };
+};
 
 // reducer
 export const reducer = (
@@ -153,6 +171,11 @@ export const reducer = (
       return {
         ...state,
         optionsFacility: action.payload,
+      };
+    case HC_USER_CREATE:
+      return {
+        ...state,
+        createUser: action.payload,
       };
     default:
       return state;

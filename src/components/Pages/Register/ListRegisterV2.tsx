@@ -38,7 +38,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { showToast } from "../../sub/toasts";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import moment from "moment";
-import { GetEStateRegister, GetETypeOfService } from "src/utils/enum-value";
+import { GetEStateRegister } from "src/utils/enum-value";
 import { Link } from "react-router-dom";
 
 interface IProps {
@@ -459,6 +459,7 @@ function ListRegisterV2(props: IProps) {
       <Row
         style={{
           maxHeight: "70vh",
+          minHeight: "50vh",
           overflow: "auto",
         }}>
         <Col>
@@ -485,7 +486,7 @@ function ListRegisterV2(props: IProps) {
                   !selectedSession
                 ) {
                   return (
-                    <tr key={i}>
+                    <tr key={i} className="mb-5">
                       <td className="align-middle">{i + 1}</td>
                       <td className="align-middle">
                         {regis?.profile?.fullname} ({regis?.profile?.gender}){" "}
@@ -521,6 +522,9 @@ function ListRegisterV2(props: IProps) {
                           <Dropdown.Toggle
                             as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
+                            <Dropdown.Item as={Link} to={`detail/${regis.id}`}>
+                              Chi tiết
+                            </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => handleConfirmRegister(regis)}>
                               {regis.state === "Đã duyệt"

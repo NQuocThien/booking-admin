@@ -15,3 +15,22 @@ export const formatFileSize = (size: number) => {
     return `${(size / 1073741824).toFixed(1)} GB`;
   }
 };
+
+export function validatePhoneNumber(phoneNumber: string): boolean {
+  const strippedPhoneNumber = phoneNumber.replace(/\D/g, "");
+  if (phoneNumber.trim().length !== 10) {
+    return false;
+  }
+  if (strippedPhoneNumber.length !== 10) {
+    return false;
+  }
+  if (strippedPhoneNumber.charAt(0) !== "0") {
+    return false;
+  }
+  if (!/^\d+$/.test(strippedPhoneNumber)) {
+    return false;
+  }
+
+  // Nếu tất cả các điều kiện trên đều đúng, số điện thoại là hợp lệ
+  return true;
+}

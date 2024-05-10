@@ -6,8 +6,13 @@ export interface IOption {
   value: string;
   label: string;
 }
+interface IUpdateUser {
+  username: string;
+  password: string;
+}
 export interface IStateForm {
   updateStaff: UpdateMedicalStaffInput;
+  updateUser: IUpdateUser;
   validate: boolean;
   formMedical: boolean;
   optionsSpecialties: [IOption];
@@ -55,6 +60,10 @@ export const initState: IStateForm = {
       value: "",
     },
   ],
+  updateUser: {
+    username: "",
+    password: "",
+  },
 };
 
 //actions
@@ -65,6 +74,7 @@ const HC_STATE_FORM = "hc-change-state-form";
 const HC_OPTION_SPECIALTY = "hc-option-specialty";
 const HC_OPTION_USER = "hc-option-users";
 const HC_OPTION_FACILITY = "hc-option-facility";
+const HC_CHANGE_USER = "hc-change-user";
 export const handleChangeForm = (
   name: keyof UpdateMedicalStaffInput,
   value: any
@@ -120,6 +130,12 @@ export const handleChangeOptionFacility = (
     payload: payload,
   };
 };
+export const handleChangeUser = (payload: IUpdateUser): IActionFormAdd => {
+  return {
+    type: HC_CHANGE_USER,
+    payload: payload,
+  };
+};
 // reducer
 export const reducer = (
   state: IStateForm,
@@ -166,6 +182,11 @@ export const reducer = (
       return {
         ...state,
         optionsFacility: action.payload,
+      };
+    case HC_CHANGE_USER:
+      return {
+        ...state,
+        updateUser: action.payload,
       };
     default:
       return state;

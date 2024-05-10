@@ -46,9 +46,9 @@ export async function uploadFile(
         new Promise((resolve, reject) => {
           const formData = new FormData();
           formData.append("file", file);
-          console.log(
-            `===> Test file ${file} --> ${formData} --> ${backendUpload[typeFile]}`
-          );
+          // console.log(
+          //   `===> Test file ${file} --> ${formData} --> ${backendUpload[typeFile]}`
+          // );
           axios
             .post(backendUpload[typeFile], formData, {
               headers: {
@@ -126,7 +126,7 @@ export async function uploadMultiFile(
     const promises = files.map((file) => {
       const formData = new FormData();
       formData.append("file", file);
-      console.log("form data item: ", formData, file);
+      // console.log("form data item: ", formData, file);
       return axios.post(backendUpload[typeFile], formData, {
         headers: {
           "Content-Type": "multipart/form-data",

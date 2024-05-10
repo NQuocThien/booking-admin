@@ -7,13 +7,23 @@ import {
   handleChangeOptSpecialties,
   handleChangeStateForm,
   handleSetValidate,
+  hanldeChangeCreateUserDoctor,
   initState,
   reducer,
 } from "./reducer";
-import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Image,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
+  CreateDoctorAndUserInput,
   CreateDoctorInput,
   EAcademicTitle,
   EDegree,
@@ -25,6 +35,7 @@ import {
   useGetAllMedicalFacilitySelectLazyQuery,
   useGetMedicalSpecialtiesSelectQuery,
   useGetUserDoctorPendingQuery,
+  useSignupAndCreateDoctorMutation,
 } from "src/graphql/webbooking-service.generated";
 import Select from "react-select";
 import s from "src/assets/scss/layout/MainLayout.module.scss";
@@ -35,6 +46,7 @@ import { showToast } from "src/components/sub/toasts";
 import { IOption } from "./reducer";
 import WorkSchedule from "src/components/WorkSchedule/WorkSchedule";
 import StatusCpn from "src/components/sub/Status";
+import { validatePhoneNumber } from "src/utils/tools";
 function FormAddDoctor() {
   const [state, dispatch] = useReducer(reducer, initState);
   const navigate = useNavigate();
@@ -63,7 +75,7 @@ function FormAddDoctor() {
       },
     },
   });
-  const [createDoctor] = useCreateDoctorMutation({
+  const [createDoctor, { loading: loadingDoctor }] = useCreateDoctorMutation({
     fetchPolicy: "no-cache",
     context: {
       headers: {
@@ -71,6 +83,15 @@ function FormAddDoctor() {
       },
     },
   });
+  const [signUpAndCreateDoctor, { loading: loadingSignAndCreate }] =
+    useSignupAndCreateDoctorMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
   const [optUsers, setOptUser] = useState([
     {
       value: "",
@@ -142,20 +163,39 @@ function FormAddDoctor() {
           state.avatarFile,
           "doctors"
         );
-        const input: CreateDoctorInput = {
-          ...state.createDoctor,
-          avatar: avatar,
-        };
-        await createDoctor({
-          variables: {
-            input: input,
-          },
-        }).then((res) => {
-          showToast("Đã thêm Bác Sĩ 👌👌");
-          navigate(-1);
-        });
+        if (!state.formMedical) {
+          const input: CreateDoctorInput = {
+            ...state.createDoctor,
+            avatar: avatar,
+          };
+          await createDoctor({
+            variables: {
+              input: input,
+            },
+          }).then((res) => {
+            showToast("Đã thêm Bác Sĩ 👌👌");
+            navigate(-1);
+          });
+        } else {
+          const { userId, ...doctor } = state.createDoctor;
+          const input: CreateDoctorAndUserInput = {
+            ...doctor,
+            avatar: avatar,
+            username: state.createUser.username,
+            password: state.createUser.password,
+          };
+          await signUpAndCreateDoctor({
+            variables: {
+              input: input,
+            },
+          }).then((res) => {
+            showToast("Đã thêm Bác Sĩ và tài khoản 👌👌");
+            navigate(-1);
+          });
+        }
       } catch (e: unknown) {
         if (e instanceof Error) {
+          console.log(e);
           showToast("Lỗi: " + e.message, "error");
         }
       }
@@ -243,7 +283,6 @@ function FormAddDoctor() {
                     const inputElement = e.target as HTMLInputElement;
                     if (inputElement?.files?.length) {
                       const selectedFile = inputElement.files[0];
-                      console.log("test image doctor:", selectedFile);
                       dispatch(handleChangAvatar(selectedFile));
                     }
                   }}
@@ -279,6 +318,12 @@ function FormAddDoctor() {
                     dispatch(
                       handleChangeForm("numberPhone", e.currentTarget.value)
                     );
+                  }}
+                  onBlur={(e) => {
+                    if (!validatePhoneNumber(state.createDoctor.numberPhone)) {
+                      alert("Số điện thoại không hợp lệ");
+                      dispatch(handleChangeForm("numberPhone", ""));
+                    }
                   }}
                   required
                   type="text"
@@ -436,24 +481,66 @@ function FormAddDoctor() {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Group className="mb-3" controlId="formGroupUser">
-                <Form.Label>
-                  Chọn tài khoản:{" "}
-                  <StatusCpn loading={loadingUsers} error={errorUsers} />
-                </Form.Label>
-                <Select
-                  required
-                  // value={selectedOption}
-                  onChange={(e) => {
-                    dispatch(handleChangeForm("userId", e?.value));
-                  }}
-                  options={optUsers}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+          {!state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="formGroupUser">
+                  <Form.Label>
+                    Chọn tài khoản:{" "}
+                    <StatusCpn loading={loadingUsers} error={errorUsers} />
+                  </Form.Label>
+                  <Select
+                    required
+                    // value={selectedOption}
+                    onChange={(e) => {
+                      dispatch(handleChangeForm("userId", e?.value));
+                    }}
+                    options={optUsers}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
+          {state.formMedical && (
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Tên tài khoản:</Form.Label>
+                  <Form.Control
+                    value={state.createUser.username}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        hanldeChangeCreateUserDoctor({
+                          ...state.createUser,
+                          username: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Mật khẩu:</Form.Label>
+                  <Form.Control
+                    value={state.createUser.password}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      dispatch(
+                        hanldeChangeCreateUserDoctor({
+                          ...state.createUser,
+                          password: value,
+                        })
+                      );
+                    }}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          )}
           <Row>
             <WorkSchedule
               workSchedule={state.createDoctor.workSchedule}
@@ -465,6 +552,9 @@ function FormAddDoctor() {
               <Button variant="primary" type="submit">
                 <IoSaveOutline className="mx-2" />
                 Lưu
+                {(loadingDoctor || loadingSignAndCreate) && (
+                  <Spinner variant="light" animation="border" />
+                )}
               </Button>
             </div>
           </Row>

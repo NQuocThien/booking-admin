@@ -320,6 +320,15 @@ const confirmRegister = gql`
     }
   }
 `;
+const confirmRegisters = gql`
+  mutation confirmRegisters($input: [ConfirmRegisterInput!]!) {
+    confirmRegisters(input: $input) {
+      id
+      state
+      note
+    }
+  }
+`;
 const deleteMedicalStaff = gql`
   mutation deleteMedicalStaff($input: String!) {
     deleteMedicalStaff(input: $input) {
@@ -458,5 +467,28 @@ const updateUserAndStaff = gql`
     updateUserAndStaff(input: $input) {
       id
     }
+  }
+`;
+const deleteDoctorAndUser = gql`
+  mutation deleteUserAndDoctor(
+    $doctorId: String!
+    $medicalFactilitiesId: String!
+  ) {
+    deleteUserAndDoctor(
+      doctorId: $doctorId
+      medicalFactilitiesId: $medicalFactilitiesId
+    ) {
+      id
+    }
+  }
+`;
+const generateExcelDoctor = gql`
+  mutation generateExcel {
+    generateExcel
+  }
+`;
+const generateExcelRegisByOption = gql`
+  mutation generateExcelRegisByOption($input: GetRegisterByOptionInput!) {
+    generateExcelRegisByOption(input: $input)
   }
 `;

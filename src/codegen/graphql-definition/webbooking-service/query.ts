@@ -1543,8 +1543,18 @@ const getAllVaccinationCountOfFacility = gql`
 `;
 
 const getAllRegisPending = gql`
-  query getAllRegisPending($input: GetRegisPendingInput!) {
-    getAllRegisPending(input: $input) {
+  query getAllRegisPending(
+    $input: GetRegisPendingInput!
+    $page: Float!
+    $limit: Float!
+    $search: String
+  ) {
+    getAllRegisPending(
+      input: $input
+      page: $page
+      limit: $limit
+      search: $search
+    ) {
       id
       cancel
       createdAt
@@ -1664,6 +1674,7 @@ const getRegisById = gql`
       createdAt
       date
       profileId
+      note
       session {
         startTime
         endTime

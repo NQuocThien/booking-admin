@@ -1,4 +1,5 @@
 import {
+  MedicalFacilities,
   MedicalStaff,
   User,
   useCheckLoginQueryLazyQuery,
@@ -10,11 +11,12 @@ import { GetRole } from "src/utils/enum-value";
 
 interface AuthContextType {
   isLoginIn: boolean;
-  login: (token: string) => void;
-  logout: () => void;
   userInfor: User | undefined;
   infoStaff: MedicalStaff | undefined;
   currRole: GetRole | undefined;
+  infoFacility: MedicalFacilities | undefined;
+  login: (token: string) => void;
+  logout: () => void;
   handleChangeCurrRole: (role: GetRole) => void;
   handleChangeUserInfor: (dataUser: User) => void;
   checkExpirationToken: () => void;
@@ -32,14 +34,19 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 function AuthContextProvider({ children }: AuthProviderProps) {
-  const [isLoginIn, setIsLoginIn] = useState<boolean>(false);
   const [userInfor, setUserInfor] = useState<User>();
   const [currRole, setCurrRole] = useState<GetRole>();
   const [infoStaff, setInfoStaff] = useState<MedicalStaff>();
+  const [infoFacility, setInfoFacility] = useState<MedicalFacilities>();
+
   const tokenKey = process.env.REACT_APP_ACCESS_TOKEN
     ? process.env.REACT_APP_ACCESS_TOKEN
     : "access_token";
   const token: string = getLocalStorage(tokenKey) || "null";
+
+  //====================================> FETCHING <================================
+  const [isLoginIn, setIsLoginIn] = useState<boolean>(false);
+
   const [checkLogin, { data }] = useCheckLoginQueryLazyQuery({
     context: {
       headers: {
@@ -55,6 +62,8 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         Authorization: `Bearer ${token}`,
       },
     });
+
+  //================================================================
   useEffect(() => {
     if (token) checkLogin();
   }, []);
@@ -68,6 +77,8 @@ function AuthContextProvider({ children }: AuthProviderProps) {
             input: userInfor?.id || "",
           },
         });
+      else if (data?.checklogin.roles?.includes(GetRole.Facility)) {
+      }
     } else {
       setIsLoginIn(false);
     }
@@ -121,11 +132,8 @@ function AuthContextProvider({ children }: AuthProviderProps) {
   const handleChangeUserInfor = (dataUser: User) => {
     setUserInfor(dataUser);
   };
-  // const handleChangeRole = (role: Role) => {
-  //   setCurrRoute(role);
-  // };
+
   const checkExpirationToken = () => {
-    // cắt token lấy payload và giải mã Base64 URL-encoded  thành JSON rồi chuyển json thành object
     const expirationTime = JSON.parse(atob(token.split(".")[1])).exp;
     const currentTime = Math.floor(Date.now() / 1000); // Lấy thời gian hiện tại ở đơn vị giây
     if (expirationTime && expirationTime < currentTime) {
@@ -141,6 +149,7 @@ function AuthContextProvider({ children }: AuthProviderProps) {
         userInfor,
         infoStaff,
         currRole,
+        infoFacility: infoFacility,
         handleChangeUserInfor,
         handleChangeCurrRole,
         checkExpirationToken,

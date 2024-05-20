@@ -581,7 +581,6 @@ function FormUpdateDoctor() {
                         })
                       );
                     }}
-                    required
                   />
                 </Form.Group>
               </Col>

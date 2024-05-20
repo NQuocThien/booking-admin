@@ -56,6 +56,11 @@ import { showToast } from "src/components/sub/toasts";
 import { Link } from "react-router-dom";
 import { handleNotification } from "src/utils/tools";
 import { getEnumValueTypeOfService } from "src/utils/getData";
+import { useStatePending } from "src/context/PendingPageContext";
+import { IPagination } from "src/assets/contains/item-interface";
+import PaginationCpn from "src/components/sub/Pagination";
+import SearchInputCpn from "src/components/sub/InputSearch";
+import SearchInputCpnV2 from "src/components/sub/InputSearchV2";
 interface IFilterMonth {
   startTime: string;
   endTime: string;
@@ -79,6 +84,7 @@ interface IShowModal {
   customer: boolean;
   profile: boolean;
   cancel: boolean;
+  confirm: boolean;
 }
 interface IInputCancel {
   regisId: string;
@@ -86,15 +92,38 @@ interface IInputCancel {
 }
 function PendingPage() {
   const { userInfor, checkExpirationToken, currRole, infoStaff } = useAuth();
+  const {
+    startTime,
+    endTime,
+    typeOfService,
+    handleChangeTypeOfService,
+    handleChangeEndTime,
+    handleChangeStartTime,
+  } = useStatePending();
   checkExpirationToken();
 
   const getValueFilter = (date: Date): IFilterMonth => {
     const current = new Date();
-    const startTime = formatDate(current.toDateString()); // Lấy ngày hiện tại
-    const endTime = new Date(current.getTime() + 24 * 60 * 60 * 1000); // Thêm 1 ngày cho ngày hiện tại
+    if (!!endTime) {
+      if (startTime === undefined)
+        return {
+          endTime: endTime.toDateString(),
+          startTime: formatDate(current.toDateString()),
+        };
+      else if (!!startTime) {
+        return {
+          endTime: endTime.toDateString(),
+          startTime: startTime.toDateString(),
+        };
+      }
+    }
+
+    const start = formatDate(current.toDateString()); // Lấy ngày hiện tại
+
+    const end = new Date(current.getTime() + 24 * 60 * 60 * 1000); // Thêm 1 ngày cho ngày hiện tại
     return {
-      endTime: formatDate(endTime.toDateString()),
-      startTime: startTime,
+      endTime: formatDate(end.toDateString()),
+      startTime: start,
     };
   };
   // ===========================================================================================================
@@ -119,6 +148,7 @@ function PendingPage() {
       total: 0,
     },
     cancel: false,
+    currentType: typeOfService,
   });
   const [regisPending, setRegisPending] = useState<GetAllRegisPendingQuery>();
   const [listRegis, setListRegis] = useState<Register[]>([]);
@@ -127,8 +157,15 @@ function PendingPage() {
     customer: false,
     profile: false,
     cancel: false,
+    confirm: false,
   });
   const [inputCancel, setInputCancel] = useState<IInputCancel>();
+  const [pagination, setPagination] = useState<IPagination>({
+    current: 1,
+    total: 1,
+    sort: "asc",
+  });
+  const [search, setSearch] = useState<string>();
   // =================================================================
 
   const [getData, { data, loading, error }] =
@@ -316,6 +353,7 @@ function PendingPage() {
             staffId: infoStaff?.id || "",
           },
         });
+
         getDataRegisDoctor({
           variables: {
             staffId: infoStaff?.id || "",
@@ -376,6 +414,8 @@ function PendingPage() {
           total: total,
         },
       }));
+      if (stateServices.currentType === ETypeOfService.Package)
+        setPagination((pre) => ({ ...pre, total: total }));
     }
   }, [dataDataRegisDoctor]);
 
@@ -397,6 +437,8 @@ function PendingPage() {
           total: total,
         },
       }));
+      if (stateServices.currentType === ETypeOfService.Package)
+        setPagination((pre) => ({ ...pre, total: total }));
     }
   }, [dataDataRegisPackage]);
 
@@ -419,6 +461,8 @@ function PendingPage() {
           total: total,
         },
       }));
+      if (stateServices.currentType === ETypeOfService.Vaccine)
+        setPagination((pre) => ({ ...pre, total: total }));
     }
   }, [dataDataRegisVaccination]);
 
@@ -441,6 +485,8 @@ function PendingPage() {
           total: total,
         },
       }));
+      if (stateServices.currentType === ETypeOfService.Specialty)
+        setPagination((pre) => ({ ...pre, total: total }));
     }
   }, [dataDataRegisMedicalSpecialty]);
 
@@ -496,22 +542,63 @@ function PendingPage() {
 
   //----- Get regis pending -----
   useEffect(() => {
-    if (stateServices)
+    if (currRole === GetRole.Facility)
       getRegisPending({
         variables: {
           input: {
-            doctorIds: stateServices.doctor.ids,
-            packageIds: stateServices.package.ids,
-            vaccineIds: stateServices.vaccine.ids,
-            specialtyIds: stateServices.specialty.ids,
+            userId: userInfor?.id,
             startTime: month.startTime,
             endTime: month.endTime,
             typeOfService: stateServices.currentType,
             cancel: stateServices.cancel,
           },
+          limit: pagination.rowPerPage || 15,
+          page: pagination.current,
+          search: search,
         },
       });
-  }, [stateServices]);
+    else if (currRole === GetRole.Staff)
+      getRegisPending({
+        variables: {
+          input: {
+            facilityIdFromStaff: infoStaff?.medicalFacilityId,
+            startTime: month.startTime,
+            endTime: month.endTime,
+            typeOfService: stateServices.currentType,
+            cancel: stateServices.cancel,
+          },
+          limit: pagination.rowPerPage || 15,
+          page: pagination.current,
+          search: search,
+        },
+      });
+
+    if (stateServices.currentType === undefined) {
+      const totalRefig: number =
+        stateServices.doctor.total +
+        stateServices.package.total +
+        stateServices.vaccine.total +
+        stateServices.specialty.total;
+      setPagination((pre) => ({ ...pre, total: totalRefig }));
+    } else if (stateServices.currentType === ETypeOfService.Doctor) {
+      setPagination((pre) => ({ ...pre, total: stateServices.doctor.total }));
+    } else if (stateServices.currentType === ETypeOfService.Package) {
+      setPagination((pre) => ({ ...pre, total: stateServices.package.total }));
+    } else if (stateServices.currentType === ETypeOfService.Specialty) {
+      setPagination((pre) => ({
+        ...pre,
+        total: stateServices.specialty.total,
+      }));
+    } else if (stateServices.currentType === ETypeOfService.Vaccine) {
+      setPagination((pre) => ({ ...pre, total: stateServices.vaccine.total }));
+    }
+  }, [
+    stateServices.cancel,
+    stateServices.currentType,
+    month,
+    pagination.current,
+    search,
+  ]);
 
   useEffect(() => {
     if (dataRegisPending) {
@@ -569,19 +656,20 @@ function PendingPage() {
       variables: {
         input: inputConfirm,
       },
-    }).then(() => {
-      handleUpdateNumberRegis(regis.typeOfService);
-
-      const newRegisPending = listRegis.filter(
-        (regis) => regis.id !== regis.id
-      );
-      setListRegis(newRegisPending);
-      showToast(
-        `Đã duyệt đăng ký ${regis.profile?.fullname}👌`,
-        undefined,
-        1000
-      );
-    });
+    })
+      .then(() => {
+        handleUpdateNumberRegis(regis.typeOfService);
+        const newRegisPending = listRegis.filter((r) => r.id !== regis.id);
+        setListRegis(newRegisPending);
+        showToast(
+          `Đã duyệt đăng ký ${regis.profile?.fullname}👌`,
+          undefined,
+          1000
+        );
+      })
+      .catch((e) => {
+        showToast(e.message, "error");
+      });
   };
   const handleCancel = async () => {
     if (inputCancel) {
@@ -598,10 +686,7 @@ function PendingPage() {
           );
 
           setListRegis((pre) =>
-            pre.map(
-              (r) =>
-                (r.id !== inputCancel.regisId && r) || { ...r, cancel: true }
-            )
+            pre.filter((r) => r.id !== inputCancel.regisId)
           );
           setShowModal((pre) => ({ ...pre, cancel: false }));
         })
@@ -668,15 +753,29 @@ function PendingPage() {
   return (
     <div>
       <div className={`${s.component}  mb-2`}>
-        <div className="d-flex align-items-center justify-content-between g-3">
-          <h4>
-            Danh sách đăng ký khám chờ duyệt
-            {!errCreated && (
-              <Spinner size="sm" animation="grow" variant="danger" />
-            )}
-            {loadConfirm && <Spinner size="sm" />}{" "}
-          </h4>
-          <Button
+        <Row>
+          <Col>
+            <h4>
+              Danh sách đăng ký khám chờ duyệt
+              {!errCreated && (
+                <Spinner size="sm" animation="grow" variant="danger" />
+              )}
+              {loadConfirm && <Spinner size="sm" />}{" "}
+            </h4>
+          </Col>
+          <Col>
+            <SearchInputCpnV2
+              onSearch={(s) => {
+                setSearch(s);
+              }}
+              onCancel={(item) => {
+                const cancel = stateServices.cancel;
+                setStateServices((pre) => ({ ...pre, cancel: item }));
+                refetchCount(item);
+              }}
+            />
+          </Col>
+          {/* <Button
             size="sm"
             className="fs-6"
             active={stateServices.cancel}
@@ -689,8 +788,8 @@ function PendingPage() {
               (stateServices.cancel && "danger") || "outline-secondary"
             }`}>
             <TiCancel />
-          </Button>
-        </div>
+          </Button> */}
+        </Row>
       </div>
       <div className={`${s.component} mb-2 d-flex g-4`}>
         <Col lg={4}>
@@ -699,6 +798,7 @@ function PendingPage() {
             <div>
               <DatePickerCpn
                 onChange={(date) => {
+                  handleChangeStartTime(date);
                   setMonth((pre) => ({
                     ...pre,
                     startTime: date.toDateString(),
@@ -723,6 +823,7 @@ function PendingPage() {
             <div>
               <DatePickerCpn
                 onChange={(date) => {
+                  handleChangeEndTime(date);
                   setMonth((pre) => ({ ...pre, endTime: date.toDateString() }));
                 }}
                 filterDate={(date) => {
@@ -742,15 +843,20 @@ function PendingPage() {
                 xl={3}
                 lg={4}
                 sm={6}
-                onClick={() =>
+                onClick={() => {
+                  handleChangeTypeOfService(
+                    stateServices.currentType !== ETypeOfService.Doctor
+                      ? ETypeOfService.Doctor
+                      : undefined
+                  );
                   setStateServices((pre) => ({
                     ...pre,
                     currentType:
                       pre.currentType !== ETypeOfService.Doctor
                         ? ETypeOfService.Doctor
                         : undefined,
-                  }))
-                }>
+                  }));
+                }}>
                 <GeneralStatistic
                   title="Bác sĩ"
                   number={stateServices.doctor.total}
@@ -766,15 +872,20 @@ function PendingPage() {
                 xl={3}
                 lg={4}
                 sm={6}
-                onClick={() =>
+                onClick={() => {
+                  handleChangeTypeOfService(
+                    stateServices.currentType !== ETypeOfService.Package
+                      ? ETypeOfService.Package
+                      : undefined
+                  );
                   setStateServices((pre) => ({
                     ...pre,
                     currentType:
                       pre.currentType !== ETypeOfService.Package
                         ? ETypeOfService.Package
                         : undefined,
-                  }))
-                }>
+                  }));
+                }}>
                 <GeneralStatistic
                   title="Gói khám"
                   number={stateServices.package.total}
@@ -790,15 +901,21 @@ function PendingPage() {
                 xl={3}
                 lg={4}
                 sm={6}
-                onClick={() =>
+                onClick={() => {
+                  handleChangeTypeOfService(
+                    stateServices.currentType !== ETypeOfService.Specialty
+                      ? ETypeOfService.Specialty
+                      : undefined
+                  );
+
                   setStateServices((pre) => ({
                     ...pre,
                     currentType:
                       pre.currentType !== ETypeOfService.Specialty
                         ? ETypeOfService.Specialty
                         : undefined,
-                  }))
-                }>
+                  }));
+                }}>
                 <GeneralStatistic
                   title="Chuyên khoa"
                   number={stateServices.specialty.total}
@@ -816,15 +933,20 @@ function PendingPage() {
                 xl={3}
                 lg={4}
                 sm={6}
-                onClick={() =>
+                onClick={() => {
+                  handleChangeTypeOfService(
+                    stateServices.currentType !== ETypeOfService.Vaccine
+                      ? ETypeOfService.Vaccine
+                      : undefined
+                  );
                   setStateServices((pre) => ({
                     ...pre,
                     currentType:
                       pre.currentType !== ETypeOfService.Vaccine
                         ? ETypeOfService.Vaccine
                         : undefined,
-                  }))
-                }>
+                  }));
+                }}>
                 <GeneralStatistic
                   title="Tim chủng"
                   number={stateServices.vaccine.total}
@@ -855,127 +977,145 @@ function PendingPage() {
           <LoadingIndicator loading={loadingRegisPending} />
         )}
         {!loadingRegisPending && (
-          <Table striped hover responsive size="sm" className="mb-5  bg-light">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Tên bệnh nhân</th>
-                <th>Ngày sinh</th>
-                <th>Ngày/Phiên</th>
-                <th>Dịch vụ</th>
-                <th>Tạo lúc</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {listRegis.map((regis, key) => (
-                <tr key={key}>
-                  <td className="align-middle">{key + 1}</td>
-                  <td className="align-middle" style={{ minWidth: 230 }}>
-                    <span className="fw-bold">{regis.profile?.fullname}</span>(
-                    {regis.profile?.gender})
-                  </td>
-                  <td className="align-middle" style={{ minWidth: 100 }}>
-                    {formatDate(regis.profile?.dataOfBirth)}
-                  </td>
-                  <td className="align-middle">
-                    <span className="text-success">
-                      {formatDate(regis.date)}
-                    </span>
-                    <br />
-                    {regis.session.startTime}-{regis.session.endTime}
-                  </td>
-                  <td>{regis.typeOfService}</td>
-                  <td className="align-middle">
-                    <Badge>{getTimeRegis(regis.createdAt)}</Badge>
-                  </td>
-                  <td className="align-middle">
-                    {" "}
-                    <Dropdown drop="down">
-                      <Dropdown.Toggle
-                        as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item as={Link} to={`detail/${regis.id}`}>
-                          Chi tiết
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => {
-                            const input: Register = {
-                              id: regis.id,
-                              cancel: regis.cancel,
-                              createdAt: regis.createdAt,
-                              date: regis.date,
-                              profileId: regis.profileId,
-                              session: regis.session,
-                              state: regis.state,
-                              typeOfService: regis.typeOfService,
-                              profile: regis.profile,
-                            };
-                            handleConfirmRegister(input);
-                          }}>
-                          Duyệt đăng ký
-                        </Dropdown.Item>
-                        <Dropdown.Item as={Link} to={`${regis.profile?.id}`}>
-                          Xem lịch sử
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => {
-                            const input: Register = {
-                              id: regis.id,
-                              cancel: regis.cancel,
-                              createdAt: regis.createdAt,
-                              date: regis.date,
-                              profileId: regis.profileId,
-                              session: regis.session,
-                              state: regis.state,
-                              typeOfService: regis.typeOfService,
-                              profile: regis.profile,
-                            };
-                            handleShowProfile(input);
-                          }}>
-                          Xem hồ sơ
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => {
-                            const input: Register = {
-                              id: regis.id,
-                              cancel: regis.cancel,
-                              createdAt: regis.createdAt,
-                              date: regis.date,
-                              profileId: regis.profileId,
-                              session: regis.session,
-                              state: regis.state,
-                              typeOfService: regis.typeOfService,
-                              profile: regis.profile,
-                            };
-                            handleShowCustomer(input);
-                          }}>
-                          Xem người đăng ký
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => {
-                            const input: Register = {
-                              id: regis.id,
-                              cancel: regis.cancel,
-                              createdAt: regis.createdAt,
-                              date: regis.date,
-                              profileId: regis.profileId,
-                              session: regis.session,
-                              state: regis.state,
-                              typeOfService: regis.typeOfService,
-                              profile: regis.profile,
-                            };
-                            handleShowCancel(input);
-                          }}>
-                          Hủy đăng ký
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
+          <div>
+            <Table
+              striped
+              hover
+              responsive
+              size="sm"
+              className="mb-5  bg-light">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tên bệnh nhân</th>
+                  <th>Ngày sinh</th>
+                  <th>Ngày/Phiên</th>
+                  <th>Dịch vụ</th>
+                  <th>Tạo lúc</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {listRegis.map((regis, key) => (
+                  <tr key={key}>
+                    <td className="align-middle">{key + 1}</td>
+                    <td className="align-middle" style={{ minWidth: 230 }}>
+                      <span className="fw-bold">{regis.profile?.fullname}</span>
+                      ({regis.profile?.gender})
+                    </td>
+                    <td className="align-middle" style={{ minWidth: 100 }}>
+                      {formatDate(regis.profile?.dataOfBirth)}
+                    </td>
+                    <td className="align-middle">
+                      <span className="text-success">
+                        {formatDate(regis.date)}
+                      </span>
+                      <br />
+                      {regis.session.startTime}-{regis.session.endTime}
+                    </td>
+                    <td>{regis.typeOfService}</td>
+                    <td className="align-middle">
+                      <Badge>{getTimeRegis(regis.createdAt)}</Badge>
+                    </td>
+                    <td className="align-middle">
+                      {" "}
+                      <Dropdown drop="down">
+                        <Dropdown.Toggle
+                          as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item as={Link} to={`detail/${regis.id}`}>
+                            Chi tiết
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              const input: Register = {
+                                id: regis.id,
+                                cancel: regis.cancel,
+                                createdAt: regis.createdAt,
+                                date: regis.date,
+                                profileId: regis.profileId,
+                                session: regis.session,
+                                state: regis.state,
+                                typeOfService: regis.typeOfService,
+                                profile: regis.profile,
+                              };
+                              handleConfirmRegister(input);
+                            }}>
+                            Duyệt đăng ký
+                          </Dropdown.Item>
+                          <Dropdown.Item as={Link} to={`${regis.profile?.id}`}>
+                            Xem lịch sử
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              const input: Register = {
+                                id: regis.id,
+                                cancel: regis.cancel,
+                                createdAt: regis.createdAt,
+                                date: regis.date,
+                                profileId: regis.profileId,
+                                session: regis.session,
+                                state: regis.state,
+                                typeOfService: regis.typeOfService,
+                                profile: regis.profile,
+                              };
+                              handleShowProfile(input);
+                            }}>
+                            Xem hồ sơ
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              const input: Register = {
+                                id: regis.id,
+                                cancel: regis.cancel,
+                                createdAt: regis.createdAt,
+                                date: regis.date,
+                                profileId: regis.profileId,
+                                session: regis.session,
+                                state: regis.state,
+                                typeOfService: regis.typeOfService,
+                                profile: regis.profile,
+                              };
+                              handleShowCustomer(input);
+                            }}>
+                            Xem người đăng ký
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              const input: Register = {
+                                id: regis.id,
+                                cancel: regis.cancel,
+                                createdAt: regis.createdAt,
+                                date: regis.date,
+                                profileId: regis.profileId,
+                                session: regis.session,
+                                state: regis.state,
+                                typeOfService: regis.typeOfService,
+                                profile: regis.profile,
+                              };
+                              handleShowCancel(input);
+                            }}>
+                            Hủy đăng ký
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+            <div className="d-flex justify-content-center">
+              <PaginationCpn
+                setPageActive={(page: number) => {
+                  setPagination((pre) => ({ ...pre, current: page }));
+                }}
+                totalPage={Math.ceil(
+                  pagination.total / (pagination.rowPerPage || 15)
+                )}
+                activePage={pagination.current}
+              />
+            </div>
+          </div>
         )}
       </Row>
       {/* PROFILE DETAIL */}
@@ -1310,6 +1450,86 @@ function PendingPage() {
           )}
         </div>
       </ModalCpn>
+      {/* Regis confirm */}
+      {/* <ModalCpn
+        handleClose={() => setShowModal({ ...showModal, confirm: false })}
+        handleSave={() => {}}
+        headerText="Xac"
+        onlySclose
+        openRequest={showModal.customer}>
+        <div className="shadow-lg bg-light p-3 mt-3">
+          {selectedRegiser?.profile?.customer && (
+            <>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <IoPersonCircleOutline />
+                  </span>
+                  Họ và tên:{" "}
+                  <span className="text-success ms-2">
+                    {selectedRegiser.profile.customer.fullname}{" "}
+                  </span>
+                </h6>
+              </div>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <CiCalendarDate />
+                  </span>
+                  Ngày sinh:
+                  <span className="text-info ms-2">
+                    {formatDate(selectedRegiser.profile.customer.dateOfBirth)}
+                  </span>
+                </h6>
+              </div>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <FaPhone />
+                  </span>
+                  Số điện thoại:
+                  <span className="text-info ms-2">
+                    {selectedRegiser.profile.customer.numberPhone}
+                  </span>
+                </h6>
+              </div>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <MdOutlineEmail />
+                  </span>
+                  Email:
+                  <span className="text-info ms-2">
+                    {selectedRegiser.profile.customer.email}
+                  </span>
+                </h6>
+              </div>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <MdOutlineTransgender />
+                  </span>
+                  Giới tính:
+                  <span className="text-info ms-2">
+                    {selectedRegiser.profile.customer.gender}
+                  </span>
+                </h6>
+              </div>
+              <div className="px-3">
+                <h6>
+                  <span className="text-primary mx-1">
+                    <FaPeopleGroup />
+                  </span>
+                  Dân tộc:
+                  <span className="text-info ms-2">
+                    {selectedRegiser.profile.customer.ethnic}
+                  </span>
+                </h6>
+              </div>
+            </>
+          )}
+        </div>
+      </ModalCpn> */}
     </div>
   );
 }

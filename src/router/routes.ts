@@ -245,6 +245,11 @@ const routes_clinic: IRoute[] = [
     element: RegisHistoryPage,
   },
   {
+    path: "/facility-page/regis-pending/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/home",
     name: "Dashboard",
     element: GeneralInforFacilityPage,

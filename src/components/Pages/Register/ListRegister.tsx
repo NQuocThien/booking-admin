@@ -258,38 +258,38 @@ function ListRegister(props: IProps) {
     setSetSelectedRegister(regis);
     setShowModal((pre) => ({ ...pre, customer: true }));
   };
-  const handleConfirmRegister = async (regis: Register) => {
-    const inputConfirm: ConfirmRegisterInput = {
-      registerId: regis.id,
-      state:
-        regis.state === "Đã khám"
-          ? EStateRegister.Approved
-          : EStateRegister.Success,
-    };
-    await confirmRegister({
-      variables: {
-        input: inputConfirm,
-      },
-    }).then(() => {
-      showToast(`Đã sửa trạng thái bệnh nhân👌`, undefined, 1000);
-      if (listRegister) {
-        const editedRegiss: Register[] = listRegister?.map((regis) => {
-          if (regis.id === inputConfirm.registerId) {
-            const newRegis: Register = {
-              ...regis,
-              state:
-                inputConfirm.state === EStateRegister.Success
-                  ? "Đã khám"
-                  : "Chưa khám",
-            };
-            return newRegis;
-          }
-          return regis;
-        });
-        setListRegister(editedRegiss);
-      }
-    });
-  };
+  // const handleConfirmRegister = async (regis: Register) => {
+  //   const inputConfirm: ConfirmRegisterInput = {
+  //     registerId: regis.id,
+  //     state:
+  //       regis.state === "Đã khám"
+  //         ? EStateRegister.Approved
+  //         : EStateRegister.Success,
+  //   };
+  //   await confirmRegister({
+  //     variables: {
+  //       input: inputConfirm,
+  //     },
+  //   }).then(() => {
+  //     showToast(`Đã sửa trạng thái bệnh nhân👌`, undefined, 1000);
+  //     if (listRegister) {
+  //       const editedRegiss: Register[] = listRegister?.map((regis) => {
+  //         if (regis.id === inputConfirm.registerId) {
+  //           const newRegis: Register = {
+  //             ...regis,
+  //             state:
+  //               inputConfirm.state === EStateRegister.Success
+  //                 ? "Đã khám"
+  //                 : "Chưa khám",
+  //           };
+  //           return newRegis;
+  //         }
+  //         return regis;
+  //       });
+  //       setListRegister(editedRegiss);
+  //     }
+  //   });
+  // };
   return (
     <Row>
       <Row>
@@ -383,12 +383,12 @@ function ListRegister(props: IProps) {
                           <Dropdown.Toggle
                             as={CustomToggleCiMenuKebab}></Dropdown.Toggle>
                           <Dropdown.Menu>
-                            <Dropdown.Item
+                            {/* <Dropdown.Item
                               onClick={() => handleConfirmRegister(regis)}>
                               {regis.state === "Chưa khám"
                                 ? "Xác nhận khám"
                                 : "Hoàn tác"}
-                            </Dropdown.Item>
+                            </Dropdown.Item> */}
                             <Dropdown.Item
                               onClick={() => handleShowProfile(regis)}>
                               Xem hồ sơ

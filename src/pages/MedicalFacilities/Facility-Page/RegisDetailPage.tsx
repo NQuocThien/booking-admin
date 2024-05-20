@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import ShowAlert from "src/components/sub/alerts";
 import {
@@ -43,10 +43,11 @@ import {
 import { showToast } from "src/components/sub/toasts";
 import { LuClock3, LuPackageCheck } from "react-icons/lu";
 import { IoCalendarNumberOutline } from "react-icons/io5";
-import { GiMatterStates } from "react-icons/gi";
+import { GiMatterStates, GiNotebook } from "react-icons/gi";
 import FileUploadComponent from "src/components/sub/UpLoad";
 import { FaSave } from "react-icons/fa";
 import { TfiReload } from "react-icons/tfi";
+import ModalCpn from "src/components/sub/Modal";
 function RegisDetailPage() {
   const { regisId } = useParams();
   const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
@@ -54,6 +55,8 @@ function RegisDetailPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   checkExpirationToken();
   const [files, setFiles] = useState<LinkImage[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [note, setNote] = useState<string>();
   // =================================================================================================
 
   const { refetch, data, loading, error } = useGetRegisByIdQuery({
@@ -137,11 +140,13 @@ function RegisDetailPage() {
   // =================================================================================================
   const handleConfirmRegister = async (
     regisId: string,
-    state: EStateRegister
+    state: EStateRegister,
+    note?: string
   ) => {
     const inputConfirm: ConfirmRegisterInput = {
       registerId: regisId,
       state: state,
+      note: note,
     };
     await confirmRegister({
       variables: {
@@ -160,9 +165,11 @@ function RegisDetailPage() {
           (pre && {
             ...pre,
             state: newState,
+            note: inputConfirm.note,
           }) ||
           pre
       );
+      setShowModal(false);
       showToast(`Đổi trạng thái đăng ký👌`, undefined, 1000);
     });
   };
@@ -435,9 +442,7 @@ function RegisDetailPage() {
                   <Button
                     size="sm"
                     variant="success"
-                    onClick={() =>
-                      handleConfirmRegister(regis.id, EStateRegister.Success)
-                    }>
+                    onClick={() => setShowModal(true)}>
                     Hoàng thành khám
                     {loadConfirm && (
                       <Spinner
@@ -491,6 +496,14 @@ function RegisDetailPage() {
                 </div>
               </div>
             )}
+            <div>
+              <div className="d-flex align-items-center ">
+                <GiNotebook className={`text-success`} />
+                <p className="m-0 ms-1">Ghi chú:</p>
+              </div>
+              <div
+                dangerouslySetInnerHTML={{ __html: regis?.note || "" }}></div>
+            </div>
           </div>
         </Col>
       </Row>
@@ -600,6 +613,29 @@ function RegisDetailPage() {
           </Col>
         </Row>
       </Row>
+      <ModalCpn
+        handleClose={() => setShowModal(false)}
+        handleSave={() =>
+          regis && handleConfirmRegister(regis.id, EStateRegister.Success, note)
+        }
+        headerText="Xác nhận khám"
+        openRequest={showModal}>
+        <div className="shadow-lg bg-light p-3 mt-3">
+          <Form>
+            <Form.Group className="mb-3" controlId="text-note">
+              <Form.Label>Ghi chú</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={(e) => {
+                  const text = e.currentTarget.value;
+                  setNote(text);
+                }}
+              />
+            </Form.Group>
+          </Form>
+        </div>
+      </ModalCpn>
     </Container>
   );
 }

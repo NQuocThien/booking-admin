@@ -45,6 +45,7 @@ export type Blog = {
 };
 
 export type ConfirmRegisterInput = {
+  note?: InputMaybe<Scalars['String']['input']>;
   registerId: Scalars['String']['input'];
   state: EStateRegister;
 };
@@ -202,6 +203,7 @@ export type CreateProfileInput = {
 };
 
 export type CreateRegisterDoctorInput = {
+  createBy?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['DateTime']['input'];
   doctorId: Scalars['String']['input'];
   profileId: Scalars['String']['input'];
@@ -209,6 +211,7 @@ export type CreateRegisterDoctorInput = {
 };
 
 export type CreateRegisterPackageInput = {
+  createBy?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['DateTime']['input'];
   packageId: Scalars['String']['input'];
   profileId: Scalars['String']['input'];
@@ -216,6 +219,7 @@ export type CreateRegisterPackageInput = {
 };
 
 export type CreateRegisterSpecialtyInput = {
+  createBy?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['DateTime']['input'];
   profileId: Scalars['String']['input'];
   session: SessionInput;
@@ -223,6 +227,7 @@ export type CreateRegisterSpecialtyInput = {
 };
 
 export type CreateRegisterVaccineInput = {
+  createBy?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['DateTime']['input'];
   profileId: Scalars['String']['input'];
   session: SessionInput;
@@ -263,6 +268,7 @@ export type Customer = {
   gender: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   numberPhone: Scalars['String']['output'];
+  profileShares?: Maybe<Array<Profile>>;
   profiles?: Maybe<Array<Profile>>;
   userId: Scalars['String']['output'];
 };
@@ -440,13 +446,11 @@ export type GetEvaluateOptionInput = {
 
 export type GetRegisPendingInput = {
   cancel: Scalars['Boolean']['input'];
-  doctorIds: Array<Scalars['String']['input']>;
   endTime: Scalars['String']['input'];
-  packageIds: Array<Scalars['String']['input']>;
-  specialtyIds: Array<Scalars['String']['input']>;
+  facilityIdFromStaff?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['String']['input'];
   typeOfService?: InputMaybe<ETypeOfService>;
-  vaccineIds: Array<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GetRegisterByOptionInput = {
@@ -599,6 +603,7 @@ export type Mutation = {
   cancelRegister: Register;
   cancelRegisterByAdmin: Register;
   confirmRegister: Register;
+  confirmRegisters: Array<Register>;
   createBlog: Blog;
   createCustomer: Customer;
   createDoctor: Doctor;
@@ -625,11 +630,15 @@ export type Mutation = {
   deleteProfile: Profile;
   deleteUnDeleteBlog: Blog;
   deleteUser: User;
+  deleteUserAndDoctor: Doctor;
   deleteVaccination: Vaccination;
+  generateExcel: Scalars['String']['output'];
+  generateExcelRegisByOption: Scalars['String']['output'];
   login: LoginRespone;
   logout: LogoutUser;
   seenAllNotification: Scalars['String']['output'];
   seenNotificationById: Scalars['String']['output'];
+  shareProfile: Profile;
   signup: User;
   signupAndCreateDoctor: Doctor;
   signupUser: User;
@@ -674,6 +683,11 @@ export type MutationCancelRegisterByAdminArgs = {
 
 export type MutationConfirmRegisterArgs = {
   input: ConfirmRegisterInput;
+};
+
+
+export type MutationConfirmRegistersArgs = {
+  input: Array<ConfirmRegisterInput>;
 };
 
 
@@ -807,8 +821,19 @@ export type MutationDeleteUserArgs = {
 };
 
 
+export type MutationDeleteUserAndDoctorArgs = {
+  doctorId: Scalars['String']['input'];
+  medicalFactilitiesId: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteVaccinationArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type MutationGenerateExcelRegisByOptionArgs = {
+  input: GetRegisterByOptionInput;
 };
 
 
@@ -824,6 +849,12 @@ export type MutationSeenAllNotificationArgs = {
 
 export type MutationSeenNotificationByIdArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationShareProfileArgs = {
+  customerKey: Scalars['String']['input'];
+  profileId: Scalars['String']['input'];
 };
 
 
@@ -993,6 +1024,12 @@ export type Profile = {
   shares?: Maybe<Array<Scalars['String']['output']>>;
 };
 
+
+export type ProfileRegisterArgs = {
+  cancel?: InputMaybe<Scalars['Boolean']['input']>;
+  stateRegis?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   checklogin: User;
@@ -1034,6 +1071,7 @@ export type Query = {
   getAllRegisCountByOption: Register;
   getAllRegisOfService: Array<Register>;
   getAllRegisPending: Array<Register>;
+  getAllRegisPendingCount: Scalars['Float']['output'];
   getAllRegisterByOption: Array<Register>;
   getAllStaffPagination: Array<MedicalStaff>;
   getAllUsersPagination: Array<User>;
@@ -1061,6 +1099,7 @@ export type Query = {
   getMedicalStaffByUserId: MedicalStaff;
   getPackageById: Package;
   getProfileByCustomerId: Array<Profile>;
+  getProfileByCustomerKey: Array<Profile>;
   getProfileById: Profile;
   getProfiles: Profile;
   getRegisById: Register;
@@ -1319,6 +1358,14 @@ export type QueryGetAllRegisOfServiceArgs = {
 
 export type QueryGetAllRegisPendingArgs = {
   input: GetRegisPendingInput;
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAllRegisPendingCountArgs = {
+  input: GetRegisPendingInput;
 };
 
 
@@ -1470,6 +1517,11 @@ export type QueryGetPackageByIdArgs = {
 
 export type QueryGetProfileByCustomerIdArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryGetProfileByCustomerKeyArgs = {
+  customerKey: Scalars['String']['input'];
 };
 
 
@@ -1634,15 +1686,28 @@ export type QueryTotalUsersCountArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type RegisPendingInput = {
+  cancel: Scalars['Boolean']['input'];
+  doctorIds: Array<Scalars['String']['input']>;
+  endTime: Scalars['String']['input'];
+  packageIds: Array<Scalars['String']['input']>;
+  specialtyIds: Array<Scalars['String']['input']>;
+  startTime: Scalars['String']['input'];
+  typeOfService?: InputMaybe<ETypeOfService>;
+  vaccineIds: Array<Scalars['String']['input']>;
+};
+
 export type Register = {
   __typename?: 'Register';
   cancel: Scalars['Boolean']['output'];
   createdAt: Scalars['DateTime']['output'];
+  createdBy?: Maybe<Scalars['String']['output']>;
   date: Scalars['DateTime']['output'];
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']['output']>;
   files?: Maybe<Array<LinkImage>>;
   id: Scalars['ID']['output'];
+  note?: Maybe<Scalars['String']['output']>;
   package?: Maybe<Package>;
   packageId?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<Profile>;
@@ -1710,7 +1775,7 @@ export type SubscriptionRegisterCreatedArgs = {
 
 
 export type SubscriptionRegisterPendingCreatedArgs = {
-  option: GetRegisPendingInput;
+  option: RegisPendingInput;
 };
 
 export type UpLoadFileRegisInput = {
@@ -1759,7 +1824,7 @@ export type UpdateDoctorInput = {
   numberPhone: Scalars['String']['input'];
   price: Scalars['Float']['input'];
   specialistId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
   workSchedule: WorkScheduleInput;
 };
 
@@ -1874,10 +1939,10 @@ export type UpdateUserAndDoctorInput = {
   id: Scalars['String']['input'];
   medicalFactilitiesId: Scalars['String']['input'];
   numberPhone: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  password?: InputMaybe<Scalars['String']['input']>;
   price: Scalars['Float']['input'];
   specialistId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
   username: Scalars['String']['input'];
   workSchedule: WorkScheduleInput;
 };
@@ -2162,6 +2227,13 @@ export type ConfirmRegisterMutationVariables = Exact<{
 
 export type ConfirmRegisterMutation = { __typename?: 'Mutation', confirmRegister: { __typename?: 'Register', id: string } };
 
+export type ConfirmRegistersMutationVariables = Exact<{
+  input: Array<ConfirmRegisterInput> | ConfirmRegisterInput;
+}>;
+
+
+export type ConfirmRegistersMutation = { __typename?: 'Mutation', confirmRegisters: Array<{ __typename?: 'Register', id: string, state: string, note?: string | null }> };
+
 export type DeleteMedicalStaffMutationVariables = Exact<{
   input: Scalars['String']['input'];
 }>;
@@ -2239,6 +2311,26 @@ export type UpdateUserAndStaffMutationVariables = Exact<{
 
 
 export type UpdateUserAndStaffMutation = { __typename?: 'Mutation', updateUserAndStaff: { __typename?: 'MedicalStaff', id: string } };
+
+export type DeleteUserAndDoctorMutationVariables = Exact<{
+  doctorId: Scalars['String']['input'];
+  medicalFactilitiesId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteUserAndDoctorMutation = { __typename?: 'Mutation', deleteUserAndDoctor: { __typename?: 'Doctor', id: string } };
+
+export type GenerateExcelMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateExcelMutation = { __typename?: 'Mutation', generateExcel: string };
+
+export type GenerateExcelRegisByOptionMutationVariables = Exact<{
+  input: GetRegisterByOptionInput;
+}>;
+
+
+export type GenerateExcelRegisByOptionMutation = { __typename?: 'Mutation', generateExcelRegisByOption: string };
 
 export type CheckLoginQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2778,6 +2870,9 @@ export type GetAllVaccinationCountOfFacilityQuery = { __typename?: 'Query', getA
 
 export type GetAllRegisPendingQueryVariables = Exact<{
   input: GetRegisPendingInput;
+  page: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -2804,7 +2899,7 @@ export type GetRegisByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetRegisByIdQuery = { __typename?: 'Query', getRegisById: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, doctor?: { __typename?: 'Doctor', doctorName: string } | null, specialty?: { __typename?: 'MedicalSpecialties', specialtyName: string } | null, vaccination?: { __typename?: 'Vaccination', vaccineName: string } | null, package?: { __typename?: 'Package', packageName: string } | null, files?: Array<{ __typename?: 'LinkImage', filename: string, type: string, url: string }> | null, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
+export type GetRegisByIdQuery = { __typename?: 'Query', getRegisById: { __typename?: 'Register', id: string, cancel: boolean, createdAt: any, date: any, profileId: string, note?: string | null, typeOfService: string, doctorId?: string | null, packageId?: string | null, specialtyId?: string | null, vaccineId?: string | null, state: string, session: { __typename?: 'Session', startTime: string, endTime: string }, doctor?: { __typename?: 'Doctor', doctorName: string } | null, specialty?: { __typename?: 'MedicalSpecialties', specialtyName: string } | null, vaccination?: { __typename?: 'Vaccination', vaccineName: string } | null, package?: { __typename?: 'Package', packageName: string } | null, files?: Array<{ __typename?: 'LinkImage', filename: string, type: string, url: string }> | null, profile?: { __typename?: 'Profile', id: string, fullname: string, address: string, email: string, numberPhone: string, gender: string, ethnic: string, identity?: string | null, medicalInsurance?: string | null, job: string, relationship: string, dataOfBirth: any, customerId: string, customer?: { __typename?: 'Customer', id: string, fullname: string, address: string, numberPhone: string, gender: string, ethnic: string, dateOfBirth: any, userId: string, email: string } | null } | null } };
 
 export type RegisterCreatedSubscriptionVariables = Exact<{
   option: GetRegisterByOptionInput;
@@ -2814,7 +2909,7 @@ export type RegisterCreatedSubscriptionVariables = Exact<{
 export type RegisterCreatedSubscription = { __typename?: 'Subscription', registerCreated: { __typename?: 'Register', id: string, date: any, typeOfService: string, cancel: boolean, state: string, packageId?: string | null, profileId: string, specialtyId?: string | null, vaccineId?: string | null, createdAt: any, profile?: { __typename?: 'Profile', id: string, customerId: string, email: string, ethnic: string, fullname: string, address: string, gender: string, job: string, dataOfBirth: any, identity?: string | null, medicalInsurance?: string | null, numberPhone: string, relationship: string, customer?: { __typename?: 'Customer', id: string, userId: string, customerKey: string, fullname: string, gender: string, numberPhone: string, email: string, address: string, dateOfBirth: any, ethnic: string } | null } | null, session: { __typename?: 'Session', startTime: string, endTime: string } } };
 
 export type RegisterPendingCreatedSubscriptionVariables = Exact<{
-  input: GetRegisPendingInput;
+  input: RegisPendingInput;
 }>;
 
 
@@ -3764,6 +3859,41 @@ export function useConfirmRegisterMutation(baseOptions?: Apollo.MutationHookOpti
 export type ConfirmRegisterMutationHookResult = ReturnType<typeof useConfirmRegisterMutation>;
 export type ConfirmRegisterMutationResult = Apollo.MutationResult<ConfirmRegisterMutation>;
 export type ConfirmRegisterMutationOptions = Apollo.BaseMutationOptions<ConfirmRegisterMutation, ConfirmRegisterMutationVariables>;
+export const ConfirmRegistersDocument = gql`
+    mutation confirmRegisters($input: [ConfirmRegisterInput!]!) {
+  confirmRegisters(input: $input) {
+    id
+    state
+    note
+  }
+}
+    `;
+export type ConfirmRegistersMutationFn = Apollo.MutationFunction<ConfirmRegistersMutation, ConfirmRegistersMutationVariables>;
+
+/**
+ * __useConfirmRegistersMutation__
+ *
+ * To run a mutation, you first call `useConfirmRegistersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmRegistersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmRegistersMutation, { data, loading, error }] = useConfirmRegistersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConfirmRegistersMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmRegistersMutation, ConfirmRegistersMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmRegistersMutation, ConfirmRegistersMutationVariables>(ConfirmRegistersDocument, options);
+      }
+export type ConfirmRegistersMutationHookResult = ReturnType<typeof useConfirmRegistersMutation>;
+export type ConfirmRegistersMutationResult = Apollo.MutationResult<ConfirmRegistersMutation>;
+export type ConfirmRegistersMutationOptions = Apollo.BaseMutationOptions<ConfirmRegistersMutation, ConfirmRegistersMutationVariables>;
 export const DeleteMedicalStaffDocument = gql`
     mutation deleteMedicalStaff($input: String!) {
   deleteMedicalStaff(input: $input) {
@@ -4188,6 +4318,104 @@ export function useUpdateUserAndStaffMutation(baseOptions?: Apollo.MutationHookO
 export type UpdateUserAndStaffMutationHookResult = ReturnType<typeof useUpdateUserAndStaffMutation>;
 export type UpdateUserAndStaffMutationResult = Apollo.MutationResult<UpdateUserAndStaffMutation>;
 export type UpdateUserAndStaffMutationOptions = Apollo.BaseMutationOptions<UpdateUserAndStaffMutation, UpdateUserAndStaffMutationVariables>;
+export const DeleteUserAndDoctorDocument = gql`
+    mutation deleteUserAndDoctor($doctorId: String!, $medicalFactilitiesId: String!) {
+  deleteUserAndDoctor(
+    doctorId: $doctorId
+    medicalFactilitiesId: $medicalFactilitiesId
+  ) {
+    id
+  }
+}
+    `;
+export type DeleteUserAndDoctorMutationFn = Apollo.MutationFunction<DeleteUserAndDoctorMutation, DeleteUserAndDoctorMutationVariables>;
+
+/**
+ * __useDeleteUserAndDoctorMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserAndDoctorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserAndDoctorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserAndDoctorMutation, { data, loading, error }] = useDeleteUserAndDoctorMutation({
+ *   variables: {
+ *      doctorId: // value for 'doctorId'
+ *      medicalFactilitiesId: // value for 'medicalFactilitiesId'
+ *   },
+ * });
+ */
+export function useDeleteUserAndDoctorMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserAndDoctorMutation, DeleteUserAndDoctorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserAndDoctorMutation, DeleteUserAndDoctorMutationVariables>(DeleteUserAndDoctorDocument, options);
+      }
+export type DeleteUserAndDoctorMutationHookResult = ReturnType<typeof useDeleteUserAndDoctorMutation>;
+export type DeleteUserAndDoctorMutationResult = Apollo.MutationResult<DeleteUserAndDoctorMutation>;
+export type DeleteUserAndDoctorMutationOptions = Apollo.BaseMutationOptions<DeleteUserAndDoctorMutation, DeleteUserAndDoctorMutationVariables>;
+export const GenerateExcelDocument = gql`
+    mutation generateExcel {
+  generateExcel
+}
+    `;
+export type GenerateExcelMutationFn = Apollo.MutationFunction<GenerateExcelMutation, GenerateExcelMutationVariables>;
+
+/**
+ * __useGenerateExcelMutation__
+ *
+ * To run a mutation, you first call `useGenerateExcelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateExcelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateExcelMutation, { data, loading, error }] = useGenerateExcelMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateExcelMutation(baseOptions?: Apollo.MutationHookOptions<GenerateExcelMutation, GenerateExcelMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateExcelMutation, GenerateExcelMutationVariables>(GenerateExcelDocument, options);
+      }
+export type GenerateExcelMutationHookResult = ReturnType<typeof useGenerateExcelMutation>;
+export type GenerateExcelMutationResult = Apollo.MutationResult<GenerateExcelMutation>;
+export type GenerateExcelMutationOptions = Apollo.BaseMutationOptions<GenerateExcelMutation, GenerateExcelMutationVariables>;
+export const GenerateExcelRegisByOptionDocument = gql`
+    mutation generateExcelRegisByOption($input: GetRegisterByOptionInput!) {
+  generateExcelRegisByOption(input: $input)
+}
+    `;
+export type GenerateExcelRegisByOptionMutationFn = Apollo.MutationFunction<GenerateExcelRegisByOptionMutation, GenerateExcelRegisByOptionMutationVariables>;
+
+/**
+ * __useGenerateExcelRegisByOptionMutation__
+ *
+ * To run a mutation, you first call `useGenerateExcelRegisByOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateExcelRegisByOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateExcelRegisByOptionMutation, { data, loading, error }] = useGenerateExcelRegisByOptionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGenerateExcelRegisByOptionMutation(baseOptions?: Apollo.MutationHookOptions<GenerateExcelRegisByOptionMutation, GenerateExcelRegisByOptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateExcelRegisByOptionMutation, GenerateExcelRegisByOptionMutationVariables>(GenerateExcelRegisByOptionDocument, options);
+      }
+export type GenerateExcelRegisByOptionMutationHookResult = ReturnType<typeof useGenerateExcelRegisByOptionMutation>;
+export type GenerateExcelRegisByOptionMutationResult = Apollo.MutationResult<GenerateExcelRegisByOptionMutation>;
+export type GenerateExcelRegisByOptionMutationOptions = Apollo.BaseMutationOptions<GenerateExcelRegisByOptionMutation, GenerateExcelRegisByOptionMutationVariables>;
 export const CheckLoginQueryDocument = gql`
     query CheckLoginQuery {
   checklogin {
@@ -7780,8 +8008,8 @@ export type GetAllVaccinationCountOfFacilityLazyQueryHookResult = ReturnType<typ
 export type GetAllVaccinationCountOfFacilitySuspenseQueryHookResult = ReturnType<typeof useGetAllVaccinationCountOfFacilitySuspenseQuery>;
 export type GetAllVaccinationCountOfFacilityQueryResult = Apollo.QueryResult<GetAllVaccinationCountOfFacilityQuery, GetAllVaccinationCountOfFacilityQueryVariables>;
 export const GetAllRegisPendingDocument = gql`
-    query getAllRegisPending($input: GetRegisPendingInput!) {
-  getAllRegisPending(input: $input) {
+    query getAllRegisPending($input: GetRegisPendingInput!, $page: Float!, $limit: Float!, $search: String) {
+  getAllRegisPending(input: $input, page: $page, limit: $limit, search: $search) {
     id
     cancel
     createdAt
@@ -7841,6 +8069,9 @@ export const GetAllRegisPendingDocument = gql`
  * const { data, loading, error } = useGetAllRegisPendingQuery({
  *   variables: {
  *      input: // value for 'input'
+ *      page: // value for 'page'
+ *      limit: // value for 'limit'
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -7996,6 +8227,7 @@ export const GetRegisByIdDocument = gql`
     createdAt
     date
     profileId
+    note
     session {
       startTime
       endTime
@@ -8156,7 +8388,7 @@ export function useRegisterCreatedSubscription(baseOptions: Apollo.SubscriptionH
 export type RegisterCreatedSubscriptionHookResult = ReturnType<typeof useRegisterCreatedSubscription>;
 export type RegisterCreatedSubscriptionResult = Apollo.SubscriptionResult<RegisterCreatedSubscription>;
 export const RegisterPendingCreatedDocument = gql`
-    subscription registerPendingCreated($input: GetRegisPendingInput!) {
+    subscription registerPendingCreated($input: RegisPendingInput!) {
   registerPendingCreated(option: $input) {
     id
     cancel

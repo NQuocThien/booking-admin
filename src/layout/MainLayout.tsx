@@ -7,6 +7,7 @@ import MainNavigation from "./MainNavigation";
 import MainContent from "./MainContent";
 import { useGetSettingQuery } from "src/graphql/webbooking-service.generated";
 import ToastsPcn from "src/components/sub/toasts";
+import { PendingContextProvider } from "src/context/PendingPageContext";
 
 function MainLayout() {
   const [showed, setShowed] = useState<boolean>(true);
@@ -22,7 +23,6 @@ function MainLayout() {
     <Container fluid className={s.App}>
       <ToastsPcn />
       <Row className="no-gutters">
-        {/* // navigation */}
         {showed && (
           <Col xl={2} lg={2} md={2} className={s.nav}>
             <MainNavigation />
@@ -40,7 +40,9 @@ function MainLayout() {
             </Row>
             {/* // main */}
             <Row className={s.main}>
-              <MainContent />
+              <PendingContextProvider>
+                <MainContent />
+              </PendingContextProvider>
             </Row>
             {/* //footer */}
             <Row className={s.footer}>

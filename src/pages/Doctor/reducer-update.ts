@@ -11,7 +11,7 @@ export interface IOption {
 }
 interface IUpdateUser {
   username: string;
-  password: string;
+  password: string | undefined;
 }
 export interface IStateFormUpdateDoctor {
   updateDoctor: UpdateDoctorInput;
@@ -44,7 +44,6 @@ const initUpdateDoctor: UpdateDoctorInput = {
   discription: "",
   price: 0,
   specialistId: "",
-  userId: "",
   academicTitle: undefined,
   workSchedule: {
     dayOff: [],

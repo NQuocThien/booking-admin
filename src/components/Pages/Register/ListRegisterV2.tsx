@@ -8,15 +8,20 @@ import {
   Overlay,
   Badge,
   Spinner,
+  Form,
 } from "react-bootstrap";
 import {
   ConfirmRegisterInput,
+  ConfirmRegistersMutation,
   EStateRegister,
   GetRegisterByOptionInput,
   Register,
   Schedule,
   Session,
   useConfirmRegisterMutation,
+  useConfirmRegistersMutation,
+  useGenerateExcelMutation,
+  useGenerateExcelRegisByOptionMutation,
   useGetAllRegisterByOptionLazyQuery,
   useRegisterCreatedSubscription,
 } from "src/graphql/webbooking-service.generated";
@@ -34,13 +39,15 @@ import { FaPhone } from "react-icons/fa";
 import { MdOutlineEmail, MdOutlineTransgender } from "react-icons/md";
 import { SiGoogletagmanager, SiStaffbase } from "react-icons/si";
 import { GiMedicalPackAlt } from "react-icons/gi";
-import { FaPeopleGroup } from "react-icons/fa6";
+import { FaFileImport, FaPeopleGroup } from "react-icons/fa6";
 import { showToast } from "../../sub/toasts";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import moment from "moment";
 import { GetEStateRegister } from "src/utils/enum-value";
 import { Link } from "react-router-dom";
-
+import { VscExport } from "react-icons/vsc";
+import { downloadExcelFile } from "src/utils/upload";
+import * as XLSX from "xlsx";
 interface IProps {
   listSchedule: Schedule[] | undefined;
   title: string;
@@ -52,7 +59,18 @@ interface IProps {
 interface IShowModal {
   customer: boolean;
   profile: boolean;
+  confirm: boolean;
 }
+interface FormattedData {
+  index: string;
+  fullname: string;
+  gender: string;
+  dateOfBirth: string;
+  numberPhone: string;
+  session: string;
+  state: string;
+}
+
 function ListRegisterV2(props: IProps) {
   const {
     listSchedule,
@@ -71,6 +89,7 @@ function ListRegisterV2(props: IProps) {
   const [showModal, setShowModal] = useState<IShowModal>({
     customer: false,
     profile: false,
+    confirm: false,
   });
   const [subscription, setSubscription] = useState<boolean>(false);
   const [option, setOption] = useState<GetRegisterByOptionInput>({
@@ -83,6 +102,10 @@ function ListRegisterV2(props: IProps) {
   const [show, setShow] = useState(false);
   const [target, setTarget] = useState(null);
   const ref = useRef(null);
+  const [regis, setRegis] = useState<Register>();
+  const [note, setNote] = useState<string>();
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<Blob>();
   // =================================================================
   const [getRegisters, { data, loading, error, refetch }] =
     useGetAllRegisterByOptionLazyQuery({
@@ -95,6 +118,24 @@ function ListRegisterV2(props: IProps) {
     });
   const [confirmRegister, { loading: loadConfirm, error: errConfirm }] =
     useConfirmRegisterMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    });
+  const [confirmRegisters, { loading: loadConfirms, error: errConfirms }] =
+    useConfirmRegistersMutation({
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    });
+  const [download, { loading: downloading }] =
+    useGenerateExcelRegisByOptionMutation({
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -318,54 +359,191 @@ function ListRegisterV2(props: IProps) {
     setSetSelectedRegister(regis);
     setShowModal((pre) => ({ ...pre, customer: true }));
   };
-  const handleConfirmRegister = async (regis: Register) => {
-    const inputConfirm: ConfirmRegisterInput = {
-      registerId: regis.id,
-      state:
-        regis.state === GetEStateRegister.Approved
-          ? EStateRegister.Success
-          : EStateRegister.Approved,
-    };
-    await confirmRegister({
-      variables: {
-        input: inputConfirm,
-      },
-    }).then(() => {
-      showToast(`Đã sửa trạng thái bệnh nhân👌`, undefined, 1000);
-      if (listRegister) {
-        const editedRegiss: Register[] = listRegister.map((r) => {
-          if (r.id === regis.id) {
-            const newRegis: Register = {
-              ...r,
-              state:
-                regis.state === GetEStateRegister.Success
-                  ? GetEStateRegister.Approved
-                  : GetEStateRegister.Success,
-            };
-            return newRegis;
-          }
-          return regis;
-        });
-        setListRegister(editedRegiss);
-      }
-    });
+  const handleConfirmRegister = async () => {
+    if (regis) {
+      const inputConfirm: ConfirmRegisterInput = {
+        registerId: regis.id,
+        state:
+          regis.state === GetEStateRegister.Approved
+            ? EStateRegister.Success
+            : EStateRegister.Approved,
+        note: note,
+      };
+      await confirmRegister({
+        variables: {
+          input: inputConfirm,
+        },
+      }).then(() => {
+        showToast(`Đã sửa trạng thái bệnh nhân👌`, undefined, 1000);
+        if (listRegister) {
+          const editedRegiss: Register[] = listRegister.map((r) => {
+            if (r.id === regis.id) {
+              const newRegis: Register = {
+                ...r,
+                state:
+                  regis.state === GetEStateRegister.Success
+                    ? GetEStateRegister.Approved
+                    : GetEStateRegister.Success,
+              };
+              return newRegis;
+            }
+            return r;
+          });
+          setListRegister(editedRegiss);
+        }
+        setShowModal((pre) => ({ ...pre, confirm: false }));
+      });
+    }
   };
   const getTimeRegis = (date: string): string => {
     const time = new Date(date);
     return `${time.getMonth()}/${time.getDate()} - ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
+  };
+  const handleShowConfirmModal = (regis: Register) => {
+    setRegis(regis);
+    if (regis.state === "Đã duyệt") {
+      setShowModal((pre) => ({ ...pre, confirm: true }));
+    }
+  };
+  const handleDownload = async () => {
+    if (selectedDate) {
+      const dateFormat: string = format(selectedDate, "yyyy-MM-dd");
+      await download({
+        variables: {
+          input: {
+            doctorId: doctorId,
+            packageId: packageId,
+            specialtyId: specialtyId,
+            vaccineId: vaccineId,
+            date: dateFormat,
+          },
+        },
+      }).then((res) => {
+        if (res.data?.generateExcelRegisByOption) {
+          const url: string = res.data.generateExcelRegisByOption;
+          console.log("URL:", url);
+          downloadExcelFile(url);
+        }
+      });
+    }
+  };
+  const handleUploadClick = async () => {
+    if (uploadRef.current) uploadRef.current.click();
+  };
+  const handleUploadChage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+
+    const inputElelment = e.target as HTMLInputElement;
+    if (inputElelment?.files?.length) {
+      const selectedFile = inputElelment?.files[0];
+      setFile(selectedFile);
+
+      const reader = new FileReader();
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        if (event.target?.result) {
+          const data = new Uint8Array(event.target.result as ArrayBuffer);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, {
+            header: 1,
+          });
+
+          const headers = jsonData[1];
+          const dataRows = jsonData.slice(2);
+
+          const formattedData: ConfirmRegisterInput[] = dataRows.map((row) => ({
+            registerId: row[headers.indexOf("Mã đăng ký")] || "",
+            state:
+              row[headers.indexOf("Đã khám")] === "x"
+                ? EStateRegister.Success
+                : EStateRegister.Pending,
+            note: row[headers.indexOf("Ghi chú")],
+          }));
+          console.group("Data Formatted");
+          console.log(formattedData);
+          console.groupEnd();
+          confirmRegisters({
+            variables: {
+              input: formattedData,
+            },
+          })
+            .then((response) => {
+              console.log(
+                "Data uploaded successfully:",
+                response.data?.confirmRegisters
+              );
+              if (response.data?.confirmRegisters) {
+                const data = response.data.confirmRegisters;
+                data.map((d) => {
+                  setListRegister((pre) => {
+                    const newRegis: Register[] = pre.map((p) => {
+                      if (p.id === d.id)
+                        return {
+                          ...p,
+                          state: d.state,
+                          note: d.note,
+                        };
+                      return p;
+                    });
+
+                    return newRegis;
+                  });
+                });
+              }
+              showToast("Nhập file thành công");
+            })
+            .catch((error) => {
+              console.error("Error uploading data:", error);
+              showToast("Lỗi", "error");
+            });
+        }
+      };
+
+      reader.readAsArrayBuffer(selectedFile);
+
+      e.target.files = null;
+    }
   };
   return (
     <div>
       <Row>
         <Col className="col">
           <Row>
+            <input
+              ref={uploadRef}
+              className="d-none"
+              type="file"
+              name="uploader"
+              id="uploader"
+              onChange={handleUploadChage}
+            />
             <Col sm={10}>
-              <p className="fw-medium">
-                {title}{" "}
+              <div className="">
+                <span className="fw-medium fs-6">{title} </span>
                 {subscription && (
                   <Spinner size="sm" animation="grow" variant="danger" />
                 )}
-              </p>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    handleDownload();
+                  }}>
+                  <VscExport />
+                  {downloading && <Spinner size="sm" />}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline-success"
+                  className="ms-2"
+                  onClick={() => {
+                    handleUploadClick();
+                  }}>
+                  <FaFileImport />
+                  {downloading && <Spinner size="sm" />}
+                </Button>
+              </div>
             </Col>
             <Col>
               <Button
@@ -463,10 +641,10 @@ function ListRegisterV2(props: IProps) {
           overflow: "auto",
         }}>
         <Col>
-          <p>
+          <div className="fs-5 mb-2 d-flex g-2">
             Danh sách đăng ký khám:{" "}
             <StatusCpn size="sm" loading={loadConfirm} error={errConfirm} />
-          </p>
+          </div>
           <Table striped hover>
             <thead>
               <tr>
@@ -489,7 +667,7 @@ function ListRegisterV2(props: IProps) {
                     <tr key={i} className="mb-5">
                       <td className="align-middle">{i + 1}</td>
                       <td className="align-middle">
-                        {regis?.profile?.fullname} ({regis?.profile?.gender}){" "}
+                        {regis?.profile?.fullname} ({regis?.profile?.gender})
                         <span>
                           {regis.cancel && <Badge bg="danger">Đã hủy</Badge>}
                         </span>
@@ -526,7 +704,7 @@ function ListRegisterV2(props: IProps) {
                               Chi tiết
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => handleConfirmRegister(regis)}>
+                              onClick={() => handleShowConfirmModal(regis)}>
                               {regis.state === "Đã duyệt"
                                 ? "Xác nhận khám"
                                 : "Hoàn tác"}
@@ -760,6 +938,28 @@ function ListRegisterV2(props: IProps) {
               </div>
             </>
           )}
+        </div>
+      </ModalCpn>
+      {/* CONFiRM REGIS */}
+      <ModalCpn
+        handleClose={() => setShowModal({ ...showModal, confirm: false })}
+        handleSave={() => handleConfirmRegister()}
+        headerText="Xác nhận khám"
+        openRequest={showModal.confirm}>
+        <div className="shadow-lg bg-light p-3 mt-3">
+          <Form>
+            <Form.Group className="mb-3" controlId="text-note">
+              <Form.Label>Ghi chú</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={(e) => {
+                  const text = e.currentTarget.value;
+                  setNote(text);
+                }}
+              />
+            </Form.Group>
+          </Form>
         </div>
       </ModalCpn>
     </div>

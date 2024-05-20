@@ -4,6 +4,7 @@ import {
   Col,
   Container,
   Dropdown,
+  Form,
   Row,
   Spinner,
   Table,
@@ -13,7 +14,6 @@ import ShowAlert from "src/components/sub/alerts";
 import {
   ConfirmRegisterInput,
   EStateRegister,
-  EStatusService,
   GetRegisHistoryQuery,
   Profile,
   Register,
@@ -42,8 +42,8 @@ import {
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
 import { showToast } from "src/components/sub/toasts";
 import { IoReload } from "react-icons/io5";
-import FileUploadComponent from "src/components/sub/UpLoad";
 import { Link } from "react-router-dom";
+import ModalCpn from "src/components/sub/Modal";
 function RegisHistoryPage() {
   const { profileId } = useParams();
   const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
@@ -52,7 +52,9 @@ function RegisHistoryPage() {
   const [profile, setProfile] = useState<Profile>();
   const [breadcrumbs, setBreadcrumbs] = useState<IBreadcrumbItem[]>([]);
   checkExpirationToken();
-
+  const [showModal, setShowModal] = useState(false);
+  const [register, setRegister] = useState<Register>();
+  const [note, setNote] = useState<string>();
   // =================================================================================================
 
   const { refetch, data, loading, error } = useGetRegisHistoryQuery({
@@ -131,38 +133,52 @@ function RegisHistoryPage() {
   // =================================================================================================
   const handleConfirmRegister = async (
     regis: Register,
-    state: EStateRegister
+    state: EStateRegister,
+    note?: string
   ) => {
     const inputConfirm: ConfirmRegisterInput = {
       registerId: regis.id,
       state: state,
+      note: note,
     };
     await confirmRegister({
       variables: {
         input: inputConfirm,
       },
-    }).then(() => {
-      var newState: GetEStateRegister = GetEStateRegister.Approved;
-      if (state === EStateRegister.Approved)
-        newState = GetEStateRegister.Approved;
-      if (state === EStateRegister.Success)
-        newState = GetEStateRegister.Success;
-      if (state === EStateRegister.Pending)
-        newState = GetEStateRegister.Pending;
-      setListRegis((pre) =>
-        pre?.map((r) => {
-          if (r.id === regis.id) {
-            const newRegis = {
-              ...r,
-              state: newState,
-            };
-            return newRegis;
-          }
-          return r;
-        })
-      );
-      showToast(`Đổi trạng thái đăng ký👌`, undefined, 1000);
-    });
+    })
+      .then(() => {
+        var newState: GetEStateRegister = GetEStateRegister.Approved;
+        if (state === EStateRegister.Approved)
+          newState = GetEStateRegister.Approved;
+        if (state === EStateRegister.Success)
+          newState = GetEStateRegister.Success;
+        if (state === EStateRegister.Pending)
+          newState = GetEStateRegister.Pending;
+        setListRegis((pre) =>
+          pre?.map((r) => {
+            if (r.id === regis.id) {
+              const newRegis = {
+                ...r,
+                state: newState,
+              };
+              return newRegis;
+            }
+            return r;
+          })
+        );
+        showToast(`Đổi trạng thái đăng ký👌`, undefined, 1000);
+        setShowModal(false);
+      })
+      .catch((e) => {
+        showToast(e.message, "error");
+      });
+  };
+  const handleClickSuccess = (regis: Register) => {
+    setRegister(regis);
+    if (regis.state !== GetEStateRegister.Success) setShowModal(true);
+    else if (regis.state === GetEStateRegister.Success) {
+      handleConfirmRegister(regis, EStateRegister.Approved);
+    }
   };
   // =================================================================================================
   if (loading) return <Spinner animation="border" variant="primary" />;
@@ -254,6 +270,7 @@ function RegisHistoryPage() {
                     <Badge>
                       {regis.session.startTime} - {regis.session.endTime}
                     </Badge>
+                    {regis.id}
                   </td>
                   <td className="align-middle">
                     {regis.typeOfService === GetETypeOfService.Doctor &&
@@ -340,10 +357,7 @@ function RegisHistoryPage() {
                                 state: regis.state,
                                 typeOfService: regis.typeOfService,
                               };
-                              handleConfirmRegister(
-                                input,
-                                EStateRegister.Success
-                              );
+                              handleClickSuccess(input);
                             }}>
                             Duyệt Khám
                           </Dropdown.Item>
@@ -380,7 +394,7 @@ function RegisHistoryPage() {
       </Row>
       <Row>{/* <FileUploadComponent /> */}</Row>
       {/* <ModalCpn
-        handleClose={() => setShowModal({ ...showModal, customer: false })}
+        // handleClose={() => setShowModal({ ...showModal, customer: false })}
         handleSave={() => {}}
         headerText="Thông tin người đăng ký khám"
         onlySclose
@@ -458,6 +472,30 @@ function RegisHistoryPage() {
           )}
         </div>
       </ModalCpn> */}
+      <ModalCpn
+        handleClose={() => setShowModal(false)}
+        handleSave={() =>
+          register &&
+          handleConfirmRegister(register, EStateRegister.Success, note)
+        }
+        headerText="Xác nhận khám"
+        openRequest={showModal}>
+        <div className="shadow-lg bg-light p-3 mt-3">
+          <Form>
+            <Form.Group className="mb-3" controlId="text-note">
+              <Form.Label>Ghi chú</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={(e) => {
+                  const text = e.currentTarget.value;
+                  setNote(text);
+                }}
+              />
+            </Form.Group>
+          </Form>
+        </div>
+      </ModalCpn>
     </Container>
   );
 }

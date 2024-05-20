@@ -9,6 +9,7 @@ import style from "src/assets/scss/pages/MedicalFacilityDetail.module.scss";
 import { useEffect, useState } from "react";
 import { useAuth } from "src/context/AuthContext";
 import ListRegister from "src/components/Pages/Register/ListRegister";
+import ListRegisterV2 from "src/components/Pages/Register/ListRegisterV2";
 function DoctorRegistration() {
   // const { idDoctor, id } = useParams();
   const { checkExpirationToken, userInfor } = useAuth();
@@ -36,7 +37,8 @@ function DoctorRegistration() {
   return (
     <Container fluid className={`${style.main} `}>
       <Row className={`${s.component} mb-5`}>
-        <ListRegister
+        <ListRegisterV2
+          title="Danh sách khám"
           listSchedule={listSchedule}
           doctorId={data?.getDoctorbyUserId.id}
         />

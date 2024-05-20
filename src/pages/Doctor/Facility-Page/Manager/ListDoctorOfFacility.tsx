@@ -5,6 +5,7 @@ import { useAuth } from "src/context/AuthContext";
 import {
   FilterDoctorInput,
   useDeleteDoctorMutation,
+  useDeleteUserAndDoctorMutation,
   useGetAllDoctorPaginationOfFacilityQuery,
   useGetMedicalFacilityIdByUserIdQuery,
   useGetTotalDoctorsCountQuery,
@@ -73,8 +74,13 @@ function ListDoctorOfFacilityPage() {
     },
   });
   const [deleteDoctor, { loading: loadingDeleteDoctor }] =
-    useDeleteDoctorMutation({
+    useDeleteUserAndDoctorMutation({
       fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     });
 
   useEffect(() => {
@@ -92,19 +98,21 @@ function ListDoctorOfFacilityPage() {
       );
     }
   }, [dataTotal]);
-  const hanldeDelete = async (id: string) => {
+  const hanldeDelete = async (id: string, medicalFacilityId: string) => {
     var userConfirmed = window.confirm("Bạn có chắc muốn xóa không?");
     if (userConfirmed) {
       try {
         await deleteDoctor({
           variables: {
-            input: id,
+            doctorId: id,
+            medicalFactilitiesId: medicalFacilityId,
           },
         }).then((res) => {
           showToast("Xóa thành công ✌️", "success");
           refetch();
         });
       } catch (e) {
+        console.log(e);
         showToast("Có lỗi xảy ra 😢😢", "error");
       }
     } else {
@@ -225,7 +233,9 @@ function ListDoctorOfFacilityPage() {
                           {" "}
                           <p
                             className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                            onClick={async () => await hanldeDelete(c.id)}>
+                            onClick={async () =>
+                              await hanldeDelete(c.id, c.medicalFactilitiesId)
+                            }>
                             Xóa bác sĩ
                           </p>
                         </Dropdown.Item>

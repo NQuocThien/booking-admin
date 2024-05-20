@@ -23,6 +23,12 @@ import { useEffect, useState } from "react";
 import { GetEPermission, GetRole } from "src/utils/enum-value";
 import ChartColumnRegisService from "src/components/Charts/ChartCollumnRegisService";
 import ChartPieRegisService from "src/components/Charts/ChartPieRegisService";
+import ChartColumnRegisServiceItems from "src/components/Charts/ChartCollumnRegisServiceItems";
+import ChartColumnRegisServiceItem from "src/components/Charts/ChartPieRegisServiceItem";
+import ChartPieRegisServiceItem from "src/components/Charts/ChartPieRegisServiceItem";
+import PDFGenerator from "src/components/ExportFile/TestPDF";
+import PDFGeneratorCpn from "src/components/ExportFile/TestPDF";
+
 interface IFilterMonth {
   startTime: string;
   endTime: string;
@@ -345,11 +351,12 @@ function FacilityHomePage() {
           </Row>
         )}
       </div>
-      <div className="px-2">
-        <p>Thống kê theo tháng:</p>
+      <div className={`${s.component} d-flex align-items-center px-2`}>
+        <h6>Thống kê lượt khám theo tháng:</h6>
         <input
           type="month"
           value={selectedMonth}
+          className="ms-3"
           onChange={(e) => {
             const m = e.currentTarget.value;
             setSelectedMonth(m);
@@ -357,19 +364,134 @@ function FacilityHomePage() {
           }}
         />
       </div>
-      <div className="d-flex justify-content-between mt-3">
-        <ChartColumnRegisService
-          totalDoctor={total.totalDoctor}
-          totalPackage={total.totalPackage}
-          totalVaccine={total.totalVaccine}
-          totalSpecialty={total.totalSpecialty}
-        />
-        <ChartPieRegisService
-          totalDoctor={total.totalDoctor}
-          totalPackage={total.totalPackage}
-          totalVaccine={total.totalVaccine}
-          totalSpecialty={total.totalSpecialty}
-        />
+      {/* <div className={`${s.component} d-flex align-items-center px-2`}>
+        <PDFGeneratorCpn />
+      </div> */}
+      <div className={`${s.component} `}>
+        <div>
+          <strong className="text-primary">Thống kê chung </strong>
+        </div>
+        <div className="d-flex justify-content-between mt-3">
+          <div className="">
+            <ChartColumnRegisService
+              totalDoctor={total.totalDoctor}
+              totalPackage={total.totalPackage}
+              totalVaccine={total.totalVaccine}
+              totalSpecialty={total.totalSpecialty}
+            />
+          </div>
+
+          <ChartPieRegisService
+            totalDoctor={total.totalDoctor}
+            totalPackage={total.totalPackage}
+            totalVaccine={total.totalVaccine}
+            totalSpecialty={total.totalSpecialty}
+          />
+        </div>
+      </div>
+      <div className={`${s.component} `}>
+        <div>
+          <strong className="text-primary">Thống kê theo bác sĩ</strong>
+        </div>
+        <div className="d-flex justify-content-between mt-3">
+          <div className="">
+            <ChartColumnRegisServiceItems
+              name="Bác sĩ"
+              data={doctorCount?.getAllDoctorOfFacility.map((doc) => ({
+                name: doc.doctorName,
+                count: doc.registerCount || 0,
+              }))}
+            />
+          </div>
+          {doctorCount && (
+            <ChartPieRegisServiceItem
+              data={doctorCount?.getAllDoctorOfFacility.map((doc) => ({
+                name: doc.doctorName,
+                count: doc.registerCount || 0,
+              }))}
+            />
+          )}
+        </div>
+      </div>
+      <div className={`${s.component} `}>
+        <div>
+          <strong className="text-primary">Thống kê theo chuyên khoa</strong>
+        </div>
+        <div className="d-flex justify-content-between mt-3">
+          <div className="">
+            <ChartColumnRegisServiceItems
+              name="Chuyên khoa"
+              data={spcialtyCount?.getAllMedicalSpecialtiesOfFacility.map(
+                (doc) => ({
+                  name: doc.specialtyName,
+                  count: doc.registerCount || 0,
+                })
+              )}
+            />
+          </div>
+          {spcialtyCount && (
+            <ChartPieRegisServiceItem
+              data={spcialtyCount?.getAllMedicalSpecialtiesOfFacility.map(
+                (doc) => ({
+                  name: doc.specialtyName,
+                  count: doc.registerCount || 0,
+                })
+              )}
+            />
+          )}
+        </div>
+      </div>
+      <div className={`${s.component} `}>
+        <div>
+          <strong className="text-primary">Thống kê theo gói khám</strong>
+        </div>
+        <div className="d-flex justify-content-between mt-3">
+          <div className="">
+            <ChartColumnRegisServiceItems
+              name="Gói khám"
+              data={packageCount?.getAllPackageOfFacility.map((doc) => ({
+                name: doc.packageName,
+                count: doc.registerCount || 0,
+              }))}
+            />
+          </div>
+          {packageCount && (
+            <ChartPieRegisServiceItem
+              data={packageCount?.getAllPackageOfFacility.map((doc) => ({
+                name: doc.packageName,
+                count: doc.registerCount || 0,
+              }))}
+            />
+          )}
+        </div>
+      </div>
+      <div className={`${s.component} `}>
+        <div>
+          <strong className="text-primary">Thống kê tiêm chủng</strong>
+        </div>
+        <div className="d-flex justify-content-between mt-3">
+          <div className="">
+            <ChartColumnRegisServiceItems
+              name="Tiêm chủng"
+              data={vaccinationCount?.getAllVaccinationOfFacility.map(
+                (doc) => ({
+                  name: doc.vaccineName,
+                  count: doc.registerCount || 0,
+                })
+              )}
+            />
+          </div>
+          {vaccinationCount && (
+            <ChartPieRegisServiceItem
+              data={vaccinationCount?.getAllVaccinationOfFacility.map(
+                (doc) => ({
+                  name: doc.vaccineName,
+                  count: doc.registerCount || 0,
+                })
+              )}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

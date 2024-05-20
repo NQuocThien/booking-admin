@@ -214,3 +214,30 @@ export const uploadDoc = (files: Blob[]): Promise<ILinkImage> => {
     });
   });
 };
+
+export async function downloadExcelFile(filename: string) {
+  try {
+    // Gửi yêu cầu GET đến API endpoint để tải tập tin
+    console.log("fetch: ", `${BackendUri}/download/doctor/${filename}`);
+    const response = await axios.get(
+      `${BackendUri}/download/doctor/${filename}`,
+      {
+        responseType: "blob", // Đặt kiểu dữ liệu phản hồi là blob để xử lý dữ liệu như tập tin
+      }
+    );
+
+    // Tạo một URL đối với dữ liệu blob nhận được từ server
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Tạo một thẻ a để tải xuống tập tin
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename); // Đặt tên tập tin khi tải xuống
+    document.body.appendChild(link);
+    link.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error occurred while downloading Excel file:", error);
+    // Xử lý lỗi nếu cần
+  }
+}

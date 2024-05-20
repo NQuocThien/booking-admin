@@ -48,7 +48,7 @@ const registerCreated = gql`
   }
 `;
 const registerPendingCreated = gql`
-  subscription registerPendingCreated($input: GetRegisPendingInput!) {
+  subscription registerPendingCreated($input: RegisPendingInput!) {
     registerPendingCreated(option: $input) {
       id
       cancel

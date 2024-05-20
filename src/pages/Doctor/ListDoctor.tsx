@@ -4,6 +4,7 @@ import { FiPlus } from "react-icons/fi";
 import { useAuth } from "src/context/AuthContext";
 import {
   useDeleteDoctorMutation,
+  useDeleteUserAndDoctorMutation,
   useGetAllDoctorPaginationQuery,
   useGetTotalDoctorsCountQuery,
   useGetTotalFacilitiesCountQuery,
@@ -58,7 +59,7 @@ function ListDoctorPage() {
     },
   });
   const [deleteDoctor, { loading: loadingDeleteDoctor }] =
-    useDeleteDoctorMutation({
+    useDeleteUserAndDoctorMutation({
       fetchPolicy: "no-cache",
     });
 
@@ -77,13 +78,14 @@ function ListDoctorPage() {
       );
     }
   }, [dataTotal]);
-  const hanldeDelete = async (id: string) => {
+  const hanldeDelete = async (id: string, medicalFacilityId: string) => {
     var userConfirmed = window.confirm("Bạn có chắc muốn xóa không?");
     if (userConfirmed) {
       try {
         await deleteDoctor({
           variables: {
-            input: id,
+            doctorId: id,
+            medicalFactilitiesId: medicalFacilityId,
           },
         }).then((res) => {
           showToast("Xóa thành công ✌️", "success");
@@ -194,7 +196,9 @@ function ListDoctorPage() {
                           {" "}
                           <p
                             className="fs-6  text-dark link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                            onClick={async () => await hanldeDelete(c.id)}>
+                            onClick={async () =>
+                              await hanldeDelete(c.id, c.medicalFactilitiesId)
+                            }>
                             Xóa bác sĩ
                           </p>
                         </Dropdown.Item>

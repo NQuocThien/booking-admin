@@ -8,6 +8,7 @@ interface IProps {
   isRowPerPage?: boolean;
   optionsRow?: number[];
   rowPerPage?: number;
+  activePage?: number;
   setPageActive: (pageNumber: number) => void;
   setRowsPerPage?: (numberRow: number) => void;
 }
@@ -21,12 +22,13 @@ function PaginationCpn(props: IProps) {
     optionsRow = undefined,
     setRowsPerPage = () => {},
     rowPerPage = undefined,
+    activePage = 1,
   } = props;
   const pageNumbers: number[] = [];
   for (let i = 1; i <= totalPage; i++) {
     pageNumbers.push(i);
   }
-  const [active, setAcive] = useState<number>(1);
+  const [active, setAcive] = useState<number>(activePage);
   const handleClick = (pageClicked: number) => {
     setAcive(pageClicked);
     setPageActive(pageClicked);
@@ -70,7 +72,7 @@ function PaginationCpn(props: IProps) {
         if (page <= active + 2 && page >= active - 2) {
           return (
             <Pagination.Item
-              key={index}
+              key={`${"not"}-${index}`}
               active={active === page}
               onClick={() => handleClick(page)}>
               {page}
@@ -80,7 +82,7 @@ function PaginationCpn(props: IProps) {
           return <Pagination.Ellipsis />;
         }
       }
-      return <span></span>;
+      return <span key={`${"null"}-${index}`}></span>;
     });
   };
   return (
@@ -92,7 +94,7 @@ function PaginationCpn(props: IProps) {
           value={rowPerPage}
           onChange={(e) => setRowsPerPage(+e.currentTarget.value)}>
           {optionsRow.map((option, i) => (
-            <option value={option} key={i}>
+            <option value={option} key={`${"key"}-${i}`}>
               {option}
             </option>
           ))}

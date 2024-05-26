@@ -9,35 +9,34 @@ import {
   ToggleButton,
 } from "react-bootstrap";
 import { IoSearch } from "react-icons/io5";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaSortAlphaDown } from "react-icons/fa";
+import { FaSortAlphaDownAlt } from "react-icons/fa";
+import { Sort } from "src/assets/contains/item-interface";
 import { ApolloError } from "@apollo/client";
 import StatusCpn from "./Status";
-import { TiCancel } from "react-icons/ti";
-import { MdCallMissedOutgoing } from "react-icons/md";
+import { GetRole } from "src/utils/enum-value";
 
 interface Iprop {
   onSearch: (search: string) => void;
-  onCancel: (cancel: boolean) => void;
-  onMissed: (missed: boolean) => void;
+  onSort: (sort: Sort) => void;
+  onRole: (role: GetRole | undefined) => void;
   loading?: boolean;
   error?: ApolloError | undefined;
 }
 
-type State = "cancel" | "noCancel" | "missed";
-
-const SearchInputCpnV2 = ({
+const SearchInputUserCpn = ({
   onSearch,
-  onCancel,
-  onMissed,
+  onSort,
+  onRole,
   loading = undefined,
   error = undefined,
 }: Iprop) => {
   const [value, setValue] = useState<string>("");
-  const [state, setState] = useState<State>("noCancel");
+  const [sort, setSort] = useState<Sort>("asc");
   return (
-    <div className="row">
+    <div className="d-flex gap-3">
       <Form
-        className="col-8"
+        className="col-10"
         onSubmit={(e) => {
           e.preventDefault();
           onSearch(value);
@@ -50,61 +49,54 @@ const SearchInputCpnV2 = ({
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
+          <Form.Select
+            aria-label="select-role"
+            onChange={(e) => onRole(e.currentTarget.value as GetRole)}>
+            <option value="">Loại tài khoản</option>
+            <option value={GetRole.Admin}>Cơ sở y tế (facility)</option>
+            <option value={GetRole.Facility}>Cơ sở y tế (facility)</option>
+            <option value={GetRole.Staff}>Nhân viên y tế (staff)</option>
+            <option value={GetRole.Doctor}>Bác sĩ (doctor)</option>
+            <option value={GetRole.Customer}>Khách hàng (customer)</option>
+          </Form.Select>
           <Button variant="outline-secondary" type="submit">
             {!loading && <IoSearch />}
             {loading && <StatusCpn size="sm" error={error} loading={loading} />}
           </Button>
         </InputGroup>
       </Form>
-      <ButtonGroup className="mb-3 col">
+      <ButtonGroup className="mb-3">
         <ToggleButton
           size="sm"
           id={`radio-anpha-down`}
           type="radio"
           variant="outline-success"
           name="radio"
-          value={"false"}
-          checked={state === "noCancel"}
+          value={sort}
+          checked={sort === "asc"}
           onChange={() => {
-            setState("noCancel");
-            onCancel(false);
-            onMissed(false);
+            setSort("asc");
+            onSort("asc");
           }}>
-          <FaCheckCircle />
+          <FaSortAlphaDown />
         </ToggleButton>
         <ToggleButton
           size="sm"
           id={`radio-anpha-down-alt`}
           type="radio"
-          variant="outline-warning"
+          variant="outline-success"
           name="radio"
-          value={"true"}
-          checked={state === "missed"}
+          value={sort}
+          checked={sort === "desc"}
           onChange={() => {
-            setState("missed");
-            onMissed(true);
-            onCancel(false);
+            setSort("desc");
+            onSort("desc");
           }}>
-          <MdCallMissedOutgoing />
-        </ToggleButton>
-        <ToggleButton
-          size="sm"
-          id={`radio-anpha-down-missed`}
-          type="radio"
-          variant="outline-danger"
-          name="radio"
-          value={"true"}
-          checked={state === "cancel"}
-          onClick={() => {
-            onMissed(false);
-            setState("cancel");
-            onCancel(true);
-          }}>
-          <TiCancel />
+          <FaSortAlphaDownAlt />
         </ToggleButton>
       </ButtonGroup>
     </div>
   );
 };
 
-export default SearchInputCpnV2;
+export default SearchInputUserCpn;

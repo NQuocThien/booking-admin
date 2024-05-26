@@ -63,7 +63,10 @@ function CoordinateVaccination() {
       });
     } else if (currRole === GetRole.Staff) {
       // load data from staff id
-      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+      if (
+        infoStaff?.permissions.includes(GetEPermission.Magager) ||
+        infoStaff?.permissions.includes(GetEPermission.MagagerVaccine)
+      ) {
         getData({
           variables: {
             limit: 10,

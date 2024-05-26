@@ -24,9 +24,10 @@ import SearchInputCpn from "src/components/sub/InputSearch";
 import PaginationCpn from "src/components/sub/Pagination";
 import { renderDayOfWeek2 } from "src/utils/getData";
 import { CustomToggleCiMenuKebab } from "src/components/Custom/Toggle";
+import { GetRole } from "src/utils/enum-value";
 function ListMedicalSpecialtyOfFacilityPage() {
   const token = getToken();
-  const { checkExpirationToken, userInfor } = useAuth();
+  const { checkExpirationToken, userInfor, infoStaff, currRole } = useAuth();
 
   checkExpirationToken();
 
@@ -44,7 +45,8 @@ function ListMedicalSpecialtyOfFacilityPage() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+        userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+        staffId: currRole === GetRole.Staff ? infoStaff?.id : undefined,
       },
     });
   const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
@@ -67,7 +69,8 @@ function ListMedicalSpecialtyOfFacilityPage() {
     },
     variables: {
       search: state.searchTerm,
-      userId: userInfor?.id || "",
+      userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+      staffId: currRole === GetRole.Staff ? infoStaff?.id : undefined,
     },
   });
   const [deleteMedicalSpcialty, { loading: loadingDeleteSpecialty }] =

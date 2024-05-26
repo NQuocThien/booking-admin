@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { ETypeOfService } from "src/graphql/webbooking-service.generated";
+import { formatDate } from "src/utils/contain";
 
 interface AuthContextType {
   startTime: Date | undefined;
@@ -32,7 +33,6 @@ function PendingContextProvider({ children }: AuthProviderProps) {
     setStartTime(date);
   };
   const handleChangeEndTime = (date: Date) => {
-    // console.log(`handleChangeStartTime`, date);
     setEndTime(date);
   };
   const handleChangeTypeOfService = (s: ETypeOfService | undefined) => {

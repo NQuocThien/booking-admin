@@ -34,10 +34,10 @@ import {
   MdOutlineTransgender,
 } from "react-icons/md";
 import { IoPersonCircleOutline, IoSettingsSharp } from "react-icons/io5";
-import { GetEPermission } from "src/utils/enum-value";
+import { GetEPermission, GetRole } from "src/utils/enum-value";
 function ListMedicalStaffOfFacilityPage() {
   const token = getToken();
-  const { checkExpirationToken, userInfor } = useAuth();
+  const { checkExpirationToken, userInfor, currRole, infoStaff } = useAuth();
 
   checkExpirationToken();
 
@@ -55,7 +55,9 @@ function ListMedicalStaffOfFacilityPage() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+        userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+        facilityId:
+          currRole === GetRole.Staff ? infoStaff?.medicalFacilityId : undefined,
       },
     });
   const { data: dataFacilityId } = useGetMedicalFacilityIdByUserIdQuery({
@@ -78,7 +80,9 @@ function ListMedicalStaffOfFacilityPage() {
     },
     variables: {
       search: state.searchTerm,
-      userId: userInfor?.id || "",
+      userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+      facilityId:
+        currRole === GetRole.Staff ? infoStaff?.medicalFacilityId : undefined,
     },
   });
   const [deleteStaff, { loading: loadingDeleteStaff }] =

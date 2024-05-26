@@ -4,6 +4,7 @@ import {
   CreateUserByAdminInput,
   User,
 } from "src/graphql/webbooking-service.generated";
+import { GetRole } from "src/utils/enum-value";
 
 interface IShowModal {
   roles: boolean;
@@ -15,6 +16,7 @@ export interface IStateListUserPage {
   stateRoles: ICheckRoles;
   createUser: CreateUserByAdminInput;
   searchTerm: string;
+  role: GetRole | undefined;
   filtered: User[];
   pagination: IPagination;
   showModals: IShowModal;
@@ -29,6 +31,7 @@ export interface IAction {
 export const initState: IStateListUserPage = {
   listUser: [],
   userClicked: undefined,
+  role: undefined,
   stateRoles: {
     admin: false,
     facility: false,
@@ -63,6 +66,7 @@ const HC_PAGINATION = "handle-change-pagination";
 const HC_SHOW_MODALS = "handle-show-modals";
 const HC_CREATE_USER = "handle-change-create-user";
 const HC_STATE_ROLE = "handle-change-state-role";
+const HC_ROLE = "handle-change-role";
 export const handleSetListUser = (value: User[]): IAction => {
   return {
     type: HANDLE_SET_LIST_USER,
@@ -113,6 +117,12 @@ export const handleChangeStateRoles = (payload: ICheckRoles): IAction => {
     payload: payload,
   };
 };
+export const handleChangeRole = (payload: GetRole | undefined): IAction => {
+  return {
+    type: HC_ROLE,
+    payload: payload,
+  };
+};
 // reducer
 export const reducer = (
   state: IStateListUserPage,
@@ -158,6 +168,11 @@ export const reducer = (
       return {
         ...state,
         showModals: action.payload,
+      };
+    case HC_ROLE:
+      return {
+        ...state,
+        role: action.payload,
       };
     default:
       return state;

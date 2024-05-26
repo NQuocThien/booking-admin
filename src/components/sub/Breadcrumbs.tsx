@@ -31,14 +31,14 @@ const CustomBreadcrumbs: React.FC<ICustomBreadcrumbsProps> = ({ paths }) => {
             {path.back && (
               <div
                 style={{ cursor: "pointer" }}
-                key={index}
+                key={`rerect-${index}`}
                 onClick={() => navigate(-1)}
                 className="me-1 pe-auto link-opacity-75-hover">
                 {path.label} /
               </div>
             )}
             {!path.back && (
-              <Link key={index} to={path.url} className="me-1">
+              <Link key={`link-${index}`} to={path.url} className="me-1">
                 {path.label} /
               </Link>
             )}

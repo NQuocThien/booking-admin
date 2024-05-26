@@ -70,13 +70,13 @@ function CoordinateDoctor() {
             page: state.pagination.current,
             filter: state.filter,
             sortOrder: state.pagination.sort,
-            userId: userInfor?.id || "",
+            staffId: infoStaff?.id || "",
           },
         });
         getDataTotal({
           variables: {
             filter: state.filter,
-            userId: userInfor?.id || "",
+            staffId: infoStaff?.id || "",
           },
         });
       } else setAuthorized(false);

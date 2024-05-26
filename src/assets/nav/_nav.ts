@@ -120,13 +120,13 @@ const _navClinic: Item[] = [
   },
   {
     component: "NavItem",
-    name: "Chờ duyệt",
+    name: "Tiếp nhận",
     to: "/facility-page/regis-pending",
     iconName: "MdOutlinePendingActions",
   },
   {
     component: "NavGroup",
-    name: "Điều phối",
+    name: "Khám bệnh",
     iconName: "MdOutlineSpaceDashboard",
     items: [
       {
@@ -160,6 +160,12 @@ const _navClinic: Item[] = [
     name: "Quản lý",
     iconName: "MdOutlineManageAccounts",
     items: [
+      {
+        component: "NavItem",
+        name: "Khách hàng",
+        to: "/facility-page/customers",
+        iconName: "MdHeadsetMic",
+      },
       {
         component: "NavItem",
         name: "Bác sĩ",
@@ -240,7 +246,7 @@ const _navStaffManager: Item[] = [
   },
   {
     component: "NavItem",
-    name: "Chờ duyệt",
+    name: "Tiếp nhận",
     to: "/facility-page/regis-pending",
     iconName: "MdOutlinePendingActions",
   },
@@ -252,7 +258,7 @@ const _navStaffManager: Item[] = [
   },
   {
     component: "NavGroup",
-    name: "Điều phối",
+    name: "Khám bệnh",
     iconName: "MdOutlineSpaceDashboard",
     items: [
       {
@@ -286,6 +292,12 @@ const _navStaffManager: Item[] = [
     name: "Quản lý",
     iconName: "MdOutlineManageAccounts",
     items: [
+      {
+        component: "NavItem",
+        name: "Khách hàng",
+        to: "/facility-page/customers",
+        iconName: "MdHeadsetMic",
+      },
       {
         component: "NavItem",
         name: "Bác sĩ",
@@ -405,7 +417,7 @@ const _navStaffSpecialties: Item[] = [
 const _navStaffManagerPending: Item[] = [
   {
     component: "NavItem",
-    name: "Chờ duyệt",
+    name: "Tiếp nhận",
     to: "/staff-page/regis-pending",
     iconName: "MdOutlinePendingActions",
   },

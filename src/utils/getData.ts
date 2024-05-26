@@ -82,7 +82,11 @@ export const renderDayOfWeek2 = (days: Schedule[]): string => {
   if (days.length === 1 && days[0].dayOfWeek === "Chủ nhật") return "Chủ nhật";
   if (days.length > 0)
     for (var i = 0; i < days.length; i++) {
-      result = result + ", " + days[i].dayOfWeek;
+      result =
+        result +
+        (i !== 0 ? ", " : " ") +
+        days[i].dayOfWeek +
+        (i === days.length - 1 ? "." : "");
     }
   return result;
 };

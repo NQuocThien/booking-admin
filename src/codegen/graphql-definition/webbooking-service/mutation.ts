@@ -492,3 +492,55 @@ const generateExcelRegisByOption = gql`
     generateExcelRegisByOption(input: $input)
   }
 `;
+const addBlockCustomerByProfileId = gql`
+  mutation addBlockCustomerByProfileId(
+    $userId: String
+    $content: String!
+    $profileId: String
+    $facilityId: String
+    $customerId: String
+    $isBlock: Boolean
+  ) {
+    addBlockCustomerByProfileId(
+      userId: $userId
+      content: $content
+      profileId: $profileId
+      facilityId: $facilityId
+      customerId: $customerId
+      isBlock: $isBlock
+    ) {
+      id
+      userId
+      medicalFacilityName
+      address
+      numberPhone
+      email
+      logo {
+        filename
+        type
+        url
+      }
+      image {
+        filename
+        type
+        url
+      }
+      lat
+      lng
+      discription
+      introduce
+      typeOfFacility
+      operatingStatus
+      legalRepresentation
+      taxCode
+      status
+      dateOff
+      schedule
+      blocks {
+        content
+        customerId
+        seen
+      }
+    }
+  }
+`;

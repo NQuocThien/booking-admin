@@ -180,6 +180,16 @@ function RegisHistoryPage() {
       handleConfirmRegister(regis, EStateRegister.Approved);
     }
   };
+  const isWarning = (date: string, state: string): boolean => {
+    const now = new Date();
+    const current = new Date(date);
+    if (
+      now.getTime() > current.getTime() &&
+      state === GetEStateRegister.Approved
+    )
+      return false;
+    return true;
+  };
   // =================================================================================================
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error || !profileId) {
@@ -187,6 +197,7 @@ function RegisHistoryPage() {
     console.log(error);
     return <ShowAlert />;
   }
+
   return (
     <Container fluid className={`${style.main} `}>
       {breadcrumbs && <CustomBreadcrumbs paths={breadcrumbs} />}
@@ -200,7 +211,7 @@ function RegisHistoryPage() {
             <div className={`${style.top__info_line}`}></div>
             <div className={`${style.top__info_item}`}>
               <FaTransgender className={`text-warning`} />
-              <p className={`${style.contend}`}> Giới tính:{profile?.gender}</p>
+              <p className={`${style.contend}`}>Giới tính:{profile?.gender}</p>
             </div>
             <div className={`${style.top__info_item}`}>
               <MdOutlineMailOutline className={`text-warning`} />
@@ -242,7 +253,7 @@ function RegisHistoryPage() {
         </Col>
         <Col className="col-8 bg-light">
           <div className="d-flex">
-            <h5 className="me-3">Lịch sử đăng ký </h5>
+            <h5 className="me-3">Lịch sử đăng ký</h5>
             <Button size="sm" onClick={() => refetch()}>
               {!loading && <IoReload />}
               {loading && <Spinner animation="border" variant="light" />}
@@ -266,11 +277,20 @@ function RegisHistoryPage() {
                 <tr key={index}>
                   <td className="align-middle">{index + 1}</td>
                   <td className="align-middle">
-                    <p className="m-0">{formatDate(regis.date)}</p>
+                    <div className="m-0">
+                      <Badge
+                        pill
+                        bg={
+                          isWarning(regis.date, regis.state)
+                            ? "secondary"
+                            : "warning"
+                        }>
+                        {formatDate(regis.date)}
+                      </Badge>
+                    </div>
                     <Badge>
                       {regis.session.startTime} - {regis.session.endTime}
                     </Badge>
-                    {regis.id}
                   </td>
                   <td className="align-middle">
                     {regis.typeOfService === GetETypeOfService.Doctor &&
@@ -341,6 +361,22 @@ function RegisHistoryPage() {
                                 // handleConfirmRegister(input);
                               }}>
                               Hủy đăng ký
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                const input: Register = {
+                                  id: regis.id,
+                                  cancel: regis.cancel,
+                                  createdAt: regis.createdAt,
+                                  date: regis.date,
+                                  profileId: regis.profileId,
+                                  session: regis.session,
+                                  state: regis.state,
+                                  typeOfService: regis.typeOfService,
+                                };
+                                // handleConfirmRegister(input);
+                              }}>
+                              Chặn khách hàng
                             </Dropdown.Item>
                           </>
                         )}

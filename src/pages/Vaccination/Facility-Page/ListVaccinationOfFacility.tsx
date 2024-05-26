@@ -50,7 +50,8 @@ function ListVaccinationOfFacilityPage() {
         page: state.pagination.current,
         search: state.searchTerm,
         sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
+        userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+        staffId: currRole === GetRole.Staff ? infoStaff?.id : undefined,
       },
     });
   const [getDataFacilityId, { data: dataFacilityId }] =
@@ -72,7 +73,8 @@ function ListVaccinationOfFacilityPage() {
       },
       variables: {
         search: state.searchTerm,
-        userId: userInfor?.id || "",
+        userId: currRole === GetRole.Facility ? userInfor?.id : undefined,
+        staffId: currRole === GetRole.Staff ? infoStaff?.id : undefined,
       },
     });
   const [deleteVacination, { loading: loadingDeleteVaccination }] =

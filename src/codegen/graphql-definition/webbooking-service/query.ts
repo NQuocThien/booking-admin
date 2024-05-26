@@ -206,6 +206,11 @@ const getMedicalFacilityInfo = gql`
       totalPackages
       totalSpecialties
       totalVaccinations
+      blocks {
+        content
+        customerId
+        seen
+      }
     }
   }
 `;
@@ -615,7 +620,8 @@ const getAllDoctorPaginationOfFacility = gql`
     $limit: Float!
     $sortField: String
     $sortOrder: String
-    $userId: String!
+    $userId: String
+    $staffId: String
   ) {
     getAllDoctorPaginationOfFacility(
       page: $page
@@ -623,6 +629,7 @@ const getAllDoctorPaginationOfFacility = gql`
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      staffId: $staffId
       filter: $filter
     ) {
       id
@@ -1130,12 +1137,14 @@ const getAllVaccinationSelect = gql`
 const getAllUserPagination = gql`
   query getAllUsersPagination(
     $search: String
+    $role: String
     $page: Float!
     $limit: Float!
     $sortField: String
     $sortOrder: String
   ) {
     getAllUsersPagination(
+      role: $role
       search: $search
       page: $page
       limit: $limit
@@ -1243,8 +1252,12 @@ const getAllStaffPagination = gql`
   }
 `;
 const totalStaffsCount = gql`
-  query totalStaffsCount($search: String, $userId: String) {
-    totalStaffsCount(search: $search, userId: $userId)
+  query totalStaffsCount(
+    $search: String
+    $userId: String
+    $facilityId: String
+  ) {
+    totalStaffsCount(search: $search, userId: $userId, facilityId: $facilityId)
   }
 `;
 const getAllMedicalStaffPaginationOfFacility = gql`
@@ -1254,7 +1267,8 @@ const getAllMedicalStaffPaginationOfFacility = gql`
     $limit: Float!
     $sortField: String
     $sortOrder: String
-    $userId: String!
+    $userId: String
+    $facilityId: String
   ) {
     getAllMedicalStaffPaginationOfFacility(
       search: $search
@@ -1263,6 +1277,7 @@ const getAllMedicalStaffPaginationOfFacility = gql`
       sortField: $sortField
       sortOrder: $sortOrder
       userId: $userId
+      facilityId: $facilityId
     ) {
       id
       userId
@@ -1465,6 +1480,7 @@ const getAllDoctorCountOfFacility = gql`
     $endTime: String!
     $isPending: Boolean
     $isCancel: Boolean
+    $missed: Boolean
   ) {
     getAllDoctorOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1474,6 +1490,7 @@ const getAllDoctorCountOfFacility = gql`
         endTime: $endTime
         isPending: $isPending
         isCancel: $isCancel
+        missed: $missed
       )
     }
   }
@@ -1486,6 +1503,7 @@ const getAllPackageCountOfFacility = gql`
     $endTime: String!
     $isPending: Boolean
     $isCancel: Boolean
+    $missed: Boolean
   ) {
     getAllPackageOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1495,6 +1513,7 @@ const getAllPackageCountOfFacility = gql`
         endTime: $endTime
         isPending: $isPending
         isCancel: $isCancel
+        missed: $missed
       )
     }
   }
@@ -1507,6 +1526,7 @@ const getAllMedicalSpecialtiesCountOfFacility = gql`
     $endTime: String!
     $isPending: Boolean
     $isCancel: Boolean
+    $missed: Boolean
   ) {
     getAllMedicalSpecialtiesOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1516,6 +1536,7 @@ const getAllMedicalSpecialtiesCountOfFacility = gql`
         endTime: $endTime
         isPending: $isPending
         isCancel: $isCancel
+        missed: $missed
       )
     }
   }
@@ -1528,6 +1549,7 @@ const getAllVaccinationCountOfFacility = gql`
     $endTime: String!
     $isPending: Boolean
     $isCancel: Boolean
+    $missed: Boolean
   ) {
     getAllVaccinationOfFacility(userId: $userId, staffId: $staffId) {
       id
@@ -1537,6 +1559,7 @@ const getAllVaccinationCountOfFacility = gql`
         endTime: $endTime
         isPending: $isPending
         isCancel: $isCancel
+        missed: $missed
       )
     }
   }
@@ -1548,12 +1571,14 @@ const getAllRegisPending = gql`
     $page: Float!
     $limit: Float!
     $search: String
+    $missed: Boolean!
   ) {
     getAllRegisPending(
       input: $input
       page: $page
       limit: $limit
       search: $search
+      missed: $missed
     ) {
       id
       cancel
@@ -1570,7 +1595,21 @@ const getAllRegisPending = gql`
       specialtyId
       vaccineId
       state
-
+      warning
+      warningThisMonth
+      createdBy
+      createRegisBy {
+        id
+        fullname
+        address
+        customerKey
+        numberPhone
+        gender
+        ethnic
+        dateOfBirth
+        userId
+        email
+      }
       profile {
         id
         fullname
@@ -1730,5 +1769,63 @@ const getRegisById = gql`
         }
       }
     }
+  }
+`;
+const getAllCustomerFromRegis = gql`
+  query getAllCustomerFromRegis(
+    $userId: String
+    $facilityId: String
+    $page: Float!
+    $limit: Float!
+    $search: String
+    $oderSort: String
+  ) {
+    getAllCustomerFromRegis(
+      userId: $userId
+      facilityId: $facilityId
+      page: $page
+      limit: $limit
+      search: $search
+      sortOrder: $oderSort
+    ) {
+      id
+      userId
+      customerKey
+      fullname
+      gender
+      numberPhone
+      email
+      address
+      dateOfBirth
+      ethnic
+      profiles {
+        id
+        fullname
+        address
+        gender
+        dataOfBirth
+        numberPhone
+        email
+        identity
+        medicalInsurance
+        job
+        relationship
+        customerId
+        ethnic
+      }
+    }
+  }
+`;
+const getAllCustomerFromRegisCount = gql`
+  query getAllCustomerFromRegisCount(
+    $userId: String
+    $facilityId: String
+    $search: String
+  ) {
+    getAllCustomerFromRegisCount(
+      userId: $userId
+      facilityId: $facilityId
+      search: $search
+    )
   }
 `;

@@ -15,7 +15,6 @@ import ModalCpn from "src/components/sub/Modal";
 import { FcSupport } from "react-icons/fc";
 import { ERoles } from "src/assets/contains/component-enum";
 import { useAuth } from "src/context/AuthContext";
-import SearchInputCpn from "src/components/sub/InputSearch";
 
 import {
   handleChangShowModal,
@@ -23,6 +22,7 @@ import {
   handleChangeCreateUser,
   handleChangeFiltered,
   handleChangePagination,
+  handleChangeRole,
   handleChangeSearchTerm,
   handleChangeStateRoles,
   handleSetListUser,
@@ -31,6 +31,7 @@ import {
 } from "./reducer";
 import PaginationCpn from "src/components/sub/Pagination";
 import StatusCpn from "src/components/sub/Status";
+import SearchInputUserCpn from "src/components/sub/InputSearchUser";
 
 function ListUserPage() {
   const token = getToken();
@@ -49,6 +50,7 @@ function ListUserPage() {
     },
     variables: {
       search: state.searchTerm,
+      role: state.role,
       limit: 10,
       page: state.pagination.current,
       sortOrder: state.pagination.sort,
@@ -285,7 +287,7 @@ function ListUserPage() {
         }}>
         Tạo tài khoản
       </Button>
-      <SearchInputCpn
+      <SearchInputUserCpn
         onSearch={(s: string) => {
           dispatch(handleChangeSearchTerm(s));
         }}
@@ -297,6 +299,7 @@ function ListUserPage() {
             })
           );
         }}
+        onRole={(role) => dispatch(handleChangeRole(role))}
       />
       <StatusCpn loading={loadUserTotal} error={errUserTotal} />
       {!loadUserTotal && <StatusCpn loading={loadUser} error={errUser} />}

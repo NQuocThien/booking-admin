@@ -35,13 +35,6 @@ function CoordinatePackages() {
           Authorization: `Bearer ${token}`,
         },
       },
-      variables: {
-        limit: 10,
-        page: state.pagination.current,
-        search: state.searchTerm,
-        sortOrder: state.pagination.sort,
-        userId: userInfor?.id || "",
-      },
     });
   const [getDataTotal, { data: dataTotal }] = useGetTotalPackagesCountLazyQuery(
     {
@@ -69,7 +62,10 @@ function CoordinatePackages() {
       });
     } else if (currRole === GetRole.Staff) {
       // load data from staff id
-      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+      if (
+        infoStaff?.permissions.includes(GetEPermission.Magager) ||
+        infoStaff?.permissions.includes(GetEPermission.MagagerPackage)
+      ) {
         await getData({
           variables: {
             limit: 10,
@@ -83,6 +79,11 @@ function CoordinatePackages() {
     }
   };
   useEffect(() => {
+    // console.log(
+    //   "test role: ",
+    //   currRole === GetRole.Facility,
+    //   currRole === GetRole.Staff
+    // );
     if (currRole === GetRole.Facility) {
       getData({
         variables: {
@@ -100,7 +101,10 @@ function CoordinatePackages() {
         },
       });
     } else if (currRole === GetRole.Staff) {
-      if (infoStaff?.permissions.includes(GetEPermission.Magager)) {
+      if (
+        infoStaff?.permissions.includes(GetEPermission.Magager) ||
+        infoStaff?.permissions.includes(GetEPermission.MagagerPackage)
+      ) {
         getData({
           variables: {
             limit: 10,

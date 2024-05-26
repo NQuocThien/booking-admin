@@ -202,7 +202,7 @@ function FormUpdateMedicalStaff() {
         userId: state.updateStaff.userId,
         specialtyId: state.updateStaff.specialtyId,
       };
-      if (state.formMedical) {
+      if (state.formMedical && state.updateStaff) {
         await updateStaffAndUser({
           variables: {
             input: {
@@ -609,7 +609,6 @@ function FormUpdateMedicalStaff() {
                         })
                       );
                     }}
-                    required
                   />
                 </Form.Group>
               </Col>

@@ -51,6 +51,7 @@ import BlogDetailPage from "src/pages/Blogs/BlogDetail";
 import PendingPage from "src/pages/MedicalFacilities/Facility-Page/PendingPage";
 import RegisHistoryPage from "src/pages/MedicalFacilities/Facility-Page/RegisHistoryPage";
 import RegisDetailPage from "src/pages/MedicalFacilities/Facility-Page/RegisDetailPage";
+import ListCustomerPageForFacility from "src/pages/Customer/Facility-Page/ListCustomer";
 export interface IRoute {
   path: string;
   name: string;
@@ -258,6 +259,11 @@ const routes_clinic: IRoute[] = [
     path: "/facility-page/update/:id",
     name: "Dashboard",
     element: FormUpdateGeneralMedicalFacility,
+  },
+  {
+    path: "/facility-page/customers",
+    name: "Dashboard",
+    element: ListCustomerPageForFacility,
   },
   {
     path: "/facility-page/doctors",
@@ -602,9 +608,34 @@ const routes_staff_manager: IRoute[] = [
     element: RegisHistoryPage,
   },
   {
+    path: "/facility-page/coordinate/doctors/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/doctors/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
     path: "/facility-page/coordinate/specialties",
     name: "Dashboard",
     element: CoordinateMedcialSpecialties,
+  },
+  {
+    path: "/facility-page/coordinate/specialties/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/specialties/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
+    path: "/facility-page/coordinate/specialties/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
   },
   {
     path: "/facility-page/coordinate/vaccination",
@@ -615,6 +646,26 @@ const routes_staff_manager: IRoute[] = [
     path: "/facility-page/coordinate/packages",
     name: "Dashboard",
     element: CoordinatePackages,
+  },
+  {
+    path: "/facility-page/coordinate/packages/detail/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/packages/:profileId/:regisId",
+    name: "Dashboard",
+    element: RegisDetailPage,
+  },
+  {
+    path: "/facility-page/coordinate/packages/:profileId",
+    name: "Dashboard",
+    element: RegisHistoryPage,
+  },
+  {
+    path: "/facility-page/customers",
+    name: "Dashboard",
+    element: ListCustomerPageForFacility,
   },
 ];
 

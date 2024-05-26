@@ -26,10 +26,12 @@ import {
   EDegree,
   EGender,
   EStatusService,
+  ExceptionInput,
   LinkImageInput,
   ScheduleInput,
   UpdateDoctorInput,
   UpdateUserAndDoctorInput,
+  WorkScheduleInput,
   useGetAllMedicalFacilitySelectLazyQuery,
   useGetDoctorToUpdateByIdQuery,
   useGetMedicalSpecialtiesSelectQuery,
@@ -57,6 +59,8 @@ import WorkScheduleUpdateCpn from "src/components/WorkSchedule/WorkScheduleUpdat
 import StatusCpn from "src/components/sub/Status";
 import { useAuth } from "src/context/AuthContext";
 import { validatePhoneNumber } from "src/utils/tools";
+import WorkScheduleCpn from "src/components/WorkSchedule/WorkSchedule";
+import { handleChangeFormWorkSchedule } from "./reducer";
 function FormUpdateDoctor() {
   const [state, dispatch] = useReducer(reducer, initState);
   const { checkExpirationToken } = useAuth();
@@ -248,6 +252,14 @@ function FormUpdateDoctor() {
               sessions: sc.sessions.map((ss) => ({
                 startTime: ss.startTime,
                 endTime: ss.endTime,
+                exceptions: ss?.exceptions?.map(
+                  (e) =>
+                    ({
+                      dates: e.dates,
+                      open: e.open,
+                      numbeSlot: e.numbeSlot,
+                    } as ExceptionInput)
+                ),
               })),
             })),
           },
@@ -284,6 +296,9 @@ function FormUpdateDoctor() {
         }
       }
     }
+  };
+  const handleChangeWorkSchedule = (workSchedule: WorkScheduleInput) => {
+    dispatch(handleChangeFormWorkSchedule(workSchedule));
   };
   if (loadingDataUpdate)
     return <Spinner animation="border" variant="primary" />;
@@ -587,7 +602,11 @@ function FormUpdateDoctor() {
             </Row>
           )}
           <Row>
-            <WorkScheduleUpdateCpn state={state} dispatch={dispatch} />
+            {/* <WorkScheduleUpdateCpn state={state} dispatch={dispatch} /> */}
+            <WorkScheduleCpn
+              workSchedule={state.updateDoctor.workSchedule}
+              setWorkSchedule={handleChangeWorkSchedule}
+            />
           </Row>
 
           <Row className="mt-3">

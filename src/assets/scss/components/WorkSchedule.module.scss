@@ -27,14 +27,32 @@
         color: $white;
         font-size: 18px;
       }
+      .controls {
+        display: none;
+        gap: 8px;
+      }
     }
     &_item:hover {
       background-color: $success;
       color: $white;
+      padding: 0;
+      .content {
+        display: none;
+      }
       .close {
         display: flex;
         height: 100%;
         align-items: center;
+        color: red;
+        font-size: 18px;
+      }
+      .controls {
+        display: flex;
+        background-color: #ffff;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
         color: red;
         font-size: 18px;
       }

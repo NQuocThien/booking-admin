@@ -12,6 +12,7 @@ import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
+  ExceptionInput,
   ScheduleInput,
   SessionInput,
   UpdateMedicalSpecialtyInput,
@@ -99,6 +100,14 @@ function FormUpdateSpecialty() {
               sessions: sc.sessions.map((ss) => ({
                 startTime: ss.startTime,
                 endTime: ss.endTime,
+                exceptions: ss?.exceptions?.map(
+                  (e) =>
+                    ({
+                      dates: e.dates,
+                      open: e.open,
+                      numbeSlot: e.numbeSlot,
+                    } as ExceptionInput)
+                ),
               })) as SessionInput[],
             })) as ScheduleInput[],
             status: state.updateSpecialty.workSchedule.status,

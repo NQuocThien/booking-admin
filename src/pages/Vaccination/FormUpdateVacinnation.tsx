@@ -12,6 +12,8 @@ import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import {
+  Exception,
+  ExceptionInput,
   ScheduleInput,
   SessionInput,
   UpdateVaccineInput,
@@ -99,6 +101,14 @@ function FormUpdateVaccination() {
               sessions: sc.sessions.map((ss) => ({
                 startTime: ss.startTime,
                 endTime: ss.endTime,
+                exceptions: ss.exceptions?.map(
+                  (e) =>
+                    ({
+                      dates: e.dates,
+                      open: e.open,
+                      numbeSlot: e.numbeSlot,
+                    } as ExceptionInput)
+                ),
               })) as SessionInput[],
             })) as ScheduleInput[],
             status: state.updateVaccine.workSchedule.status,
@@ -110,7 +120,7 @@ function FormUpdateVaccination() {
           },
         })
           .then((res) => {
-            showToast("Đã thêm vaccine 👌👌");
+            showToast("Đã sửa vaccine 👌👌");
             navigate(-1);
           })
           .catch((e) => {
@@ -120,6 +130,7 @@ function FormUpdateVaccination() {
       } catch (e: unknown) {
         if (e instanceof Error) {
           showToast("Lỗi: " + e.message, "error");
+          console.log(e);
         }
       }
     }

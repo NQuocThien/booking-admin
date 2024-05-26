@@ -411,6 +411,19 @@ export type Evaluate = {
   vaccineId?: Maybe<Scalars['String']['output']>;
 };
 
+export type Exception = {
+  __typename?: 'Exception';
+  dates: Array<Scalars['DateTime']['output']>;
+  numbeSlot?: Maybe<Scalars['Float']['output']>;
+  open: Scalars['Boolean']['output'];
+};
+
+export type ExceptionInput = {
+  dates: Array<Scalars['DateTime']['input']>;
+  numbeSlot?: InputMaybe<Scalars['Float']['input']>;
+  open: Scalars['Boolean']['input'];
+};
+
 export type FilterDoctorInput = {
   academicTitle?: InputMaybe<EAcademicTitle>;
   degree?: InputMaybe<EDegree>;
@@ -1791,11 +1804,13 @@ export type ScheduleInput = {
 export type Session = {
   __typename?: 'Session';
   endTime: Scalars['String']['output'];
+  exceptions?: Maybe<Array<Exception>>;
   startTime: Scalars['String']['output'];
 };
 
 export type SessionInput = {
   endTime: Scalars['String']['input'];
+  exceptions?: InputMaybe<Array<ExceptionInput>>;
   startTime: Scalars['String']['input'];
 };
 
@@ -2570,7 +2585,7 @@ export type GetDoctorToUpdateByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorToUpdateByIdQuery = { __typename?: 'Query', getDoctorbyId: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, doctorName: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } } };
+export type GetDoctorToUpdateByIdQuery = { __typename?: 'Query', getDoctorbyId: { __typename?: 'Doctor', id: string, userId: string, medicalFactilitiesId: string, doctorName: string, gender: string, numberPhone: string, email: string, academicTitle?: string | null, degree: string, specialistId: string, discription: string, price: number, avatar: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } } };
 
 export type GetAllDoctorPaginationQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2610,14 +2625,14 @@ export type GetPackageByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPackageByIdQuery = { __typename?: 'Query', getPackageById: { __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } } };
+export type GetPackageByIdQuery = { __typename?: 'Query', getPackageById: { __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } } };
 
 export type GetAllPackageByFacilityIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
 }>;
 
 
-export type GetAllPackageByFacilityIdQuery = { __typename?: 'Query', getAllPackageByFacilityId: Array<{ __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> };
+export type GetAllPackageByFacilityIdQuery = { __typename?: 'Query', getAllPackageByFacilityId: Array<{ __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } }> };
 
 export type GetAllPackagePaginationOfFacilityQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2630,7 +2645,7 @@ export type GetAllPackagePaginationOfFacilityQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPackagePaginationOfFacilityQuery = { __typename?: 'Query', getAllPackagePaginationOfFacility: Array<{ __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } }> };
+export type GetAllPackagePaginationOfFacilityQuery = { __typename?: 'Query', getAllPackagePaginationOfFacility: Array<{ __typename?: 'Package', id: string, medicalFactilitiesId: string, packageName: string, gender: string, price: number, examinationDetails: string, image: { __typename?: 'LinkImage', filename: string, type: string, url: string }, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, status: string, numberSlot: number, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } }> };
 
 export type GetAllPackagePaginationByStaffQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -2658,7 +2673,7 @@ export type GetMedicalSpecialtyByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetMedicalSpecialtyByIdQuery = { __typename?: 'Query', getMedicalSpecialtyById: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, specialtyName: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string }> }> } | null } };
+export type GetMedicalSpecialtyByIdQuery = { __typename?: 'Query', getMedicalSpecialtyById: { __typename?: 'MedicalSpecialties', id: string, medicalFactilityId: string, specialtyName: string, price: number, discription: string, workSchedule?: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', endTime: string, startTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } | null } };
 
 export type GetMedicalSpecialtiesByMedicalFacilityIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
@@ -2706,7 +2721,7 @@ export type GetVaccineByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetVaccineByIdQuery = { __typename?: 'Query', getVaccineById: { __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, price: number, countryOfOrigin: string, prophylactic: string, indication: string, note: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string }> }> } } };
+export type GetVaccineByIdQuery = { __typename?: 'Query', getVaccineById: { __typename?: 'Vaccination', id: string, medicalFactilitiesId: string, vaccineName: string, price: number, countryOfOrigin: string, prophylactic: string, indication: string, note: string, workSchedule: { __typename?: 'WorkSchedule', dayOff: Array<any>, numberSlot: number, status: string, schedule: Array<{ __typename?: 'Schedule', dayOfWeek: string, sessions: Array<{ __typename?: 'Session', startTime: string, endTime: string, exceptions?: Array<{ __typename?: 'Exception', dates: Array<any>, numbeSlot?: number | null, open: boolean }> | null }> }> } } };
 
 export type GetAllVaccinationByFacilityIdQueryVariables = Exact<{
   input: Scalars['String']['input'];
@@ -5988,6 +6003,11 @@ export const GetDoctorToUpdateByIdDocument = gql`
         sessions {
           startTime
           endTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
     }
@@ -6250,6 +6270,11 @@ export const GetPackageByIdDocument = gql`
         sessions {
           startTime
           endTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
     }
@@ -6312,6 +6337,11 @@ export const GetAllPackageByFacilityIdDocument = gql`
         sessions {
           startTime
           endTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
     }
@@ -6382,6 +6412,11 @@ export const GetAllPackagePaginationOfFacilityDocument = gql`
         sessions {
           startTime
           endTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
     }
@@ -6558,6 +6593,11 @@ export const GetMedicalSpecialtyByIdDocument = gql`
         sessions {
           endTime
           startTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
     }
@@ -6854,6 +6894,11 @@ export const GetVaccineByIdDocument = gql`
         sessions {
           startTime
           endTime
+          exceptions {
+            dates
+            numbeSlot
+            open
+          }
         }
       }
       status

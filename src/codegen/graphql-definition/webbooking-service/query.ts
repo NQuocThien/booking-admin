@@ -560,6 +560,11 @@ const getDoctorToUpdateById = gql`
           sessions {
             startTime
             endTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
       }
@@ -696,6 +701,11 @@ const getPackageById = gql`
           sessions {
             startTime
             endTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
       }
@@ -725,6 +735,11 @@ const getPackageByFacilityId = gql`
           sessions {
             startTime
             endTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
       }
@@ -770,6 +785,11 @@ const getAllPackagePaginationOfFacility = gql`
           sessions {
             startTime
             endTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
       }
@@ -845,6 +865,11 @@ const getMedicalSpecialtyByid = gql`
           sessions {
             endTime
             startTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
       }
@@ -982,6 +1007,11 @@ const getVaccineById = gql`
           sessions {
             startTime
             endTime
+            exceptions {
+              dates
+              numbeSlot
+              open
+            }
           }
         }
         status

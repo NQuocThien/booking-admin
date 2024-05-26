@@ -123,6 +123,11 @@ function FormUpdatePackage() {
               sessions: sc.sessions.map((ss) => ({
                 startTime: ss.startTime,
                 endTime: ss.endTime,
+                exceptions: ss.exceptions?.map((e) => ({
+                  open: e.open,
+                  dates: e.dates,
+                  numbeSlot: e.numbeSlot,
+                })),
               })) as SessionInput[],
             })) as ScheduleInput[],
             status: state.updatePackage.workSchedule.status,

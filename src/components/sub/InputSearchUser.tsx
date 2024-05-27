@@ -53,7 +53,7 @@ const SearchInputUserCpn = ({
             aria-label="select-role"
             onChange={(e) => onRole(e.currentTarget.value as GetRole)}>
             <option value="">Loại tài khoản</option>
-            <option value={GetRole.Admin}>Cơ sở y tế (facility)</option>
+            <option value={GetRole.Admin}>Quản trị viên (admin)</option>
             <option value={GetRole.Facility}>Cơ sở y tế (facility)</option>
             <option value={GetRole.Staff}>Nhân viên y tế (staff)</option>
             <option value={GetRole.Doctor}>Bác sĩ (doctor)</option>

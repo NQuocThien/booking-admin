@@ -745,7 +745,6 @@ function PendingPage() {
     if (dataRegisPending) {
       setRegisPending(dataRegisPending);
       setListRegis(dataRegisPending.getAllRegisPending);
-      console.log("list: ", dataRegisPending.getAllRegisPending);
     }
   }, [dataRegisPending]);
 
@@ -1578,7 +1577,7 @@ function PendingPage() {
         onlySclose
         openRequest={showModal.customer}>
         <div className="shadow-lg bg-light p-3 mt-3">
-          {selectedRegiser?.createdBy === undefined &&
+          {!selectedRegiser?.createdBy &&
             selectedRegiser?.profile?.customer && (
               <>
                 <div className="px-3">

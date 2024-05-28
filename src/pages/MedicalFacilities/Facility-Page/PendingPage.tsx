@@ -905,7 +905,6 @@ function PendingPage() {
       .then((res) => {
         if (res.data?.addBlockCustomerByProfileId)
           showToast("Đã chặng người dùng");
-        // console.log("test res:", res.data?.addBlockCustomerByProfileId);
         setMedical(res.data?.addBlockCustomerByProfileId);
       })
       .catch((err) => {
